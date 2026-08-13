@@ -1,0 +1,3757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HealthGPT • Intelligent Health Dashboard</title>
+
+<style>
+
+/* =========================================================
+   HEALTHGPT
+   PREMIUM CALM MEDICAL UI
+   ========================================================= */
+
+:root{
+    --bg:#f4fbfa;
+    --surface:rgba(255,255,255,.82);
+    --surface-solid:#ffffff;
+    --text:#183334;
+    --muted:#718586;
+
+    --primary:#159b8c;
+    --primary-dark:#08796d;
+    --secondary:#72d8c9;
+
+    --blue:#4b8ff8;
+    --purple:#8975f5;
+    --pink:#e982b5;
+    --orange:#f4a261;
+    --green:#39b87f;
+    --red:#ef6b73;
+
+    --border:rgba(30,90,90,.10);
+
+    --shadow:
+        0 20px 60px rgba(29,89,89,.10);
+
+    --radius:24px;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(114,216,201,.22),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 10%,
+            rgba(137,117,245,.12),
+            transparent 25%
+        ),
+        var(--bg);
+
+    color:var(--text);
+    min-height:100vh;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar{
+    width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+    background:#a8dcd5;
+    border-radius:20px;
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
+
+.app{
+    display:flex;
+    min-height:100vh;
+}
+
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.sidebar{
+    width:265px;
+    padding:25px 18px;
+
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+
+    background:
+        rgba(255,255,255,.82);
+
+    backdrop-filter:blur(25px);
+
+    border-right:1px solid var(--border);
+
+    z-index:100;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:10px 12px 25px;
+}
+
+.logo-mark{
+    width:44px;
+    height:44px;
+
+    border-radius:15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #65d9c9
+        );
+
+    color:white;
+    font-size:22px;
+
+    box-shadow:
+        0 10px 25px rgba(21,155,140,.25);
+}
+
+.logo h1{
+    font-size:20px;
+    letter-spacing:-.5px;
+}
+
+.logo span{
+    display:block;
+    font-size:10px;
+    color:var(--muted);
+    margin-top:2px;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.nav button{
+    width:100%;
+    border:0;
+    background:transparent;
+
+    color:#647b7c;
+
+    display:flex;
+    align-items:center;
+    gap:13px;
+
+    padding:12px 14px;
+
+    border-radius:15px;
+
+    cursor:pointer;
+
+    text-align:left;
+
+    transition:.25s;
+}
+
+.nav button:hover{
+    background:#eaf8f6;
+    color:var(--primary-dark);
+    transform:translateX(3px);
+}
+
+.nav button.active{
+    background:
+        linear-gradient(
+            135deg,
+            #dcf7f3,
+            #eefcf9
+        );
+
+    color:var(--primary-dark);
+
+    font-weight:700;
+}
+
+.nav-icon{
+    width:28px;
+    text-align:center;
+    font-size:18px;
+}
+
+.sidebar-bottom{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:20px;
+}
+
+.ai-status{
+    background:
+        linear-gradient(
+            135deg,
+            #e5faf6,
+            #f7fffd
+        );
+
+    border:1px solid #d2f0eb;
+
+    border-radius:18px;
+
+    padding:14px;
+}
+
+.status-dot{
+    width:9px;
+    height:9px;
+
+    display:inline-block;
+
+    background:#39c98b;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 0 5px rgba(57,201,139,.12);
+
+    margin-right:7px;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.main{
+    margin-left:265px;
+    width:calc(100% - 265px);
+
+    padding:25px 35px 50px;
+}
+
+
+/* =========================================================
+   TOPBAR
+   ========================================================= */
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:28px;
+}
+
+.greeting h2{
+    font-size:28px;
+    letter-spacing:-1px;
+}
+
+.greeting p{
+    color:var(--muted);
+    margin-top:5px;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.icon-button{
+    width:44px;
+    height:44px;
+
+    border:1px solid var(--border);
+
+    background:var(--surface);
+
+    backdrop-filter:blur(15px);
+
+    border-radius:14px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    transition:.2s;
+}
+
+.icon-button:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--shadow);
+}
+
+.profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:5px 10px 5px 5px;
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+}
+
+.avatar{
+    width:36px;
+    height:36px;
+
+    border-radius:12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #159b8c,
+            #7bded2
+        );
+
+    color:white;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-weight:800;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+
+    padding:30px;
+
+    border-radius:30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d8176,
+            #22a899 55%,
+            #76dcd0
+        );
+
+    color:white;
+
+    box-shadow:
+        0 25px 60px rgba(13,129,118,.20);
+
+    margin-bottom:22px;
+}
+
+.hero::before{
+    content:"";
+
+    position:absolute;
+
+    width:320px;
+    height:320px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.10);
+
+    right:-80px;
+    top:-130px;
+}
+
+.hero::after{
+    content:"";
+
+    position:absolute;
+
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.08);
+
+    right:190px;
+    bottom:-100px;
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.hero h1{
+    font-size:32px;
+    letter-spacing:-1px;
+}
+
+.hero p{
+    margin-top:9px;
+    opacity:.85;
+    max-width:580px;
+}
+
+.hero-score{
+    text-align:center;
+
+    min-width:150px;
+}
+
+.score-ring{
+    width:105px;
+    height:105px;
+
+    border-radius:50%;
+
+    margin:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:
+        conic-gradient(
+            white 0 84%,
+            rgba(255,255,255,.18) 84% 100%
+        );
+
+    position:relative;
+}
+
+.score-ring::after{
+    content:"";
+
+    position:absolute;
+
+    width:82px;
+    height:82px;
+
+    border-radius:50%;
+
+    background:#159b8c;
+}
+
+.score-number{
+    position:relative;
+    z-index:3;
+
+    font-size:27px;
+    font-weight:800;
+}
+
+.score-label{
+    margin-top:8px;
+    font-size:12px;
+    opacity:.8;
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.ai-search{
+    display:flex;
+    gap:10px;
+
+    margin-bottom:24px;
+
+    background:white;
+
+    padding:9px;
+
+    border-radius:20px;
+
+    border:1px solid var(--border);
+
+    box-shadow:
+        0 12px 40px rgba(30,90,90,.07);
+}
+
+.ai-search input{
+    flex:1;
+
+    border:0;
+    outline:0;
+
+    padding:12px 15px;
+
+    font-size:15px;
+
+    background:transparent;
+
+    color:var(--text);
+}
+
+.ask-button{
+    border:0;
+
+    padding:12px 20px;
+
+    border-radius:14px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.ask-button:hover{
+    background:var(--primary-dark);
+    transform:translateY(-1px);
+}
+
+
+/* =========================================================
+   GRID
+   ========================================================= */
+
+.grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0,1fr));
+
+    gap:16px;
+}
+
+
+/* =========================================================
+   MODULE CARD
+   ========================================================= */
+
+.card{
+    background:var(--surface);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid var(--border);
+
+    border-radius:var(--radius);
+
+    padding:20px;
+
+    box-shadow:
+        0 10px 35px rgba(30,90,90,.055);
+
+    transition:
+        transform .25s,
+        box-shadow .25s;
+
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+
+    box-shadow:
+        0 22px 50px rgba(30,90,90,.12);
+}
+
+.card.large{
+    grid-column:span 2;
+}
+
+.card.wide{
+    grid-column:span 2;
+}
+
+.card-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:15px;
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.module-icon{
+    width:43px;
+    height:43px;
+
+    border-radius:14px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:20px;
+}
+
+.icon-green{
+    background:#e3f8f3;
+}
+
+.icon-blue{
+    background:#e9f1ff;
+}
+
+.icon-purple{
+    background:#f0ecff;
+}
+
+.icon-pink{
+    background:#fcebf4;
+}
+
+.icon-orange{
+    background:#fff2e4;
+}
+
+.icon-red{
+    background:#ffebed;
+}
+
+.card h3{
+    font-size:15px;
+}
+
+.card small{
+    color:var(--muted);
+}
+
+.open{
+    font-size:12px;
+    color:var(--primary);
+    font-weight:700;
+}
+
+
+/* =========================================================
+   STAT
+   ========================================================= */
+
+.stat{
+    font-size:30px;
+    font-weight:800;
+
+    letter-spacing:-1px;
+}
+
+.unit{
+    font-size:13px;
+    color:var(--muted);
+    margin-left:3px;
+}
+
+.progress{
+    height:7px;
+
+    background:#e9f2f1;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-top:13px;
+}
+
+.progress-bar{
+    height:100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--primary),
+            #72d8c9
+        );
+
+    border-radius:20px;
+}
+
+
+/* =========================================================
+   CHART
+   ========================================================= */
+
+.chart{
+    height:145px;
+
+    display:flex;
+    align-items:flex-end;
+
+    gap:10px;
+
+    padding-top:15px;
+}
+
+.bar{
+    flex:1;
+
+    min-width:12px;
+
+    border-radius:9px 9px 3px 3px;
+
+    background:
+        linear-gradient(
+            to top,
+            var(--primary),
+            #91e6dc
+        );
+
+    animation:
+        grow .8s ease forwards;
+
+    transform-origin:bottom;
+}
+
+@keyframes grow{
+    from{
+        transform:scaleY(0);
+    }
+    to{
+        transform:scaleY(1);
+    }
+}
+
+
+/* =========================================================
+   MINI STATS
+   ========================================================= */
+
+.mini-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:10px;
+
+    margin-top:15px;
+}
+
+.mini{
+    background:#f7fbfa;
+
+    border-radius:15px;
+
+    padding:12px;
+}
+
+.mini strong{
+    display:block;
+    font-size:17px;
+}
+
+.mini span{
+    color:var(--muted);
+    font-size:11px;
+}
+
+
+/* =========================================================
+   AI INSIGHT
+   ========================================================= */
+
+.insight{
+    display:flex;
+    gap:12px;
+
+    padding:12px;
+
+    background:#f7fbfa;
+
+    border-radius:15px;
+
+    margin-top:10px;
+}
+
+.insight-icon{
+    font-size:20px;
+}
+
+.insight p{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:3px;
+}
+
+
+/* =========================================================
+   QUICK ACTION
+   ========================================================= */
+
+.quick-actions{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:10px;
+
+    margin-top:14px;
+}
+
+.quick{
+    border:0;
+
+    padding:12px;
+
+    border-radius:13px;
+
+    background:#eff9f7;
+
+    color:var(--primary-dark);
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    transition:.2s;
+}
+
+.quick:hover{
+    background:#dff4f0;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal{
+    position:fixed;
+
+    inset:0;
+
+    background:
+        rgba(10,35,35,.45);
+
+    backdrop-filter:blur(10px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:500;
+
+    padding:20px;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    width:min(650px,100%);
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:white;
+
+    border-radius:28px;
+
+    padding:25px;
+
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.20);
+
+    animation:
+        modalIn .25s ease;
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:translateY(20px) scale(.97);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:20px;
+}
+
+.close{
+    width:38px;
+    height:38px;
+
+    border:0;
+
+    border-radius:12px;
+
+    background:#f2f7f6;
+
+    cursor:pointer;
+
+    font-size:20px;
+}
+
+.modal-content{
+    color:#536969;
+
+    line-height:1.7;
+}
+
+.modal-input{
+    width:100%;
+
+    padding:13px 15px;
+
+    border:1px solid #dce9e7;
+
+    border-radius:14px;
+
+    outline:none;
+
+    margin:10px 0;
+
+    font-size:14px;
+}
+
+.modal-input:focus{
+    border-color:var(--primary);
+}
+
+.modal-button{
+    width:100%;
+
+    padding:13px;
+
+    border:0;
+
+    border-radius:14px;
+
+    background:var(--primary);
+
+    color:white;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast{
+    position:fixed;
+
+    right:25px;
+    bottom:25px;
+
+    background:#183c3b;
+
+    color:white;
+
+    padding:14px 18px;
+
+    border-radius:15px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.18);
+
+    opacity:0;
+
+    transform:translateY(15px);
+
+    pointer-events:none;
+
+    transition:.3s;
+
+    z-index:1000;
+}
+
+.toast.show{
+    opacity:1;
+    transform:none;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media(max-width:1100px){
+
+    .grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .card.large,
+    .card.wide{
+        grid-column:span 2;
+    }
+
+}
+
+@media(max-width:800px){
+
+    .sidebar{
+        width:75px;
+        padding:18px 10px;
+    }
+
+    .logo h1,
+    .logo span,
+    .nav button span,
+    .ai-status{
+        display:none;
+    }
+
+    .logo{
+        justify-content:center;
+    }
+
+    .nav button{
+        justify-content:center;
+    }
+
+    .main{
+        margin-left:75px;
+        width:calc(100% - 75px);
+        padding:20px;
+    }
+
+    .hero-content{
+        gap:20px;
+    }
+
+    .hero h1{
+        font-size:25px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .main{
+        padding:15px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+    }
+
+    .greeting h2{
+        font-size:22px;
+    }
+
+    .profile{
+        display:none;
+    }
+
+    .hero{
+        padding:22px;
+    }
+
+    .hero-content{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .hero-score{
+        text-align:left;
+    }
+
+    .score-ring{
+        margin:0;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .card.large,
+    .card.wide{
+        grid-column:span 1;
+    }
+
+    .mini-grid,
+    .quick-actions{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+/* =========================================================
+   SECTION ANIMATION
+   ========================================================= */
+
+.card{
+    animation:
+        fadeUp .6s ease both;
+}
+
+.card:nth-child(2){
+    animation-delay:.05s;
+}
+
+.card:nth-child(3){
+    animation-delay:.1s;
+}
+
+.card:nth-child(4){
+    animation-delay:.15s;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+<!-- ======================================================
+     SIDEBAR
+     ====================================================== -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+
+        <div class="logo-mark">
+            ✚
+        </div>
+
+        <div>
+            <h1>HealthGPT</h1>
+            <span>Calm intelligence</span>
+        </div>
+
+    </div>
+
+
+    <nav class="nav">
+
+        <button class="active" onclick="scrollToModule('overview')">
+            <div class="nav-icon">⌂</div>
+            <span>Overview</span>
+        </button>
+
+        <button onclick="openModule('doctor')">
+            <div class="nav-icon">🩺</div>
+            <span>AI Doctor</span>
+        </button>
+
+        <button onclick="openModule('twin')">
+            <div class="nav-icon">🧬</div>
+            <span>Health Twin</span>
+        </button>
+
+        <button onclick="openModule('physical')">
+            <div class="nav-icon">❤️</div>
+            <span>Physical Health</span>
+        </button>
+
+        <button onclick="openModule('mental')">
+            <div class="nav-icon">🧠</div>
+            <span>Mental Wellness</span>
+        </button>
+
+        <button onclick="openModule('nutrition')">
+            <div class="nav-icon">🥗</div>
+            <span>Nutrition</span>
+        </button>
+
+        <button onclick="openModule('medicine')">
+            <div class="nav-icon">💊</div>
+            <span>Medicines</span>
+        </button>
+
+        <button onclick="openModule('analytics')">
+            <div class="nav-icon">📊</div>
+            <span>Analytics</span>
+        </button>
+
+    </nav>
+
+
+    <div class="sidebar-bottom">
+
+        <div class="ai-status">
+
+            <span class="status-dot"></span>
+
+            <strong>AI Core Online</strong>
+
+            <br>
+
+            <small>
+                HealthGPT is ready
+            </small>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- ======================================================
+     MAIN
+     ====================================================== -->
+
+<main class="main" id="overview">
+
+
+<!-- ======================================================
+     TOPBAR
+     ====================================================== -->
+
+<div class="topbar">
+
+    <div class="greeting">
+
+        <h2>Good evening, Iqra 👋</h2>
+
+        <p>
+            Your health deserves calm, intelligent attention.
+        </p>
+
+    </div>
+
+
+    <div class="top-actions">
+
+        <button
+            class="icon-button"
+            onclick="showToast('Notifications are clear ✨')"
+        >
+            🔔
+        </button>
+
+        <button
+            class="icon-button"
+            onclick="openModule('insights')"
+        >
+            ✨
+        </button>
+
+        <div class="profile">
+
+            <div class="avatar">
+                I
+            </div>
+
+            <strong>Iqra</strong>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     HERO
+     ====================================================== -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div>
+
+            <div
+                style="
+                font-size:12px;
+                opacity:.75;
+                margin-bottom:8px;
+                "
+            >
+                YOUR PERSONAL HEALTH INTELLIGENCE
+            </div>
+
+            <h1>
+                Your health, understood.
+            </h1>
+
+            <p>
+                HealthGPT brings your wellness signals,
+                habits and insights together into one
+                calm intelligent space.
+            </p>
+
+        </div>
+
+
+        <div class="hero-score">
+
+            <div class="score-ring">
+
+                <div class="score-number">
+                    84
+                </div>
+
+            </div>
+
+            <div class="score-label">
+                Health Score
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ======================================================
+     AI SEARCH
+     ====================================================== -->
+
+<div class="ai-search">
+
+    <span
+        style="
+        display:flex;
+        align-items:center;
+        padding-left:8px;
+        font-size:20px;
+        "
+    >
+        ✨
+    </span>
+
+    <input
+        id="aiQuestion"
+        type="text"
+        placeholder="Ask HealthGPT anything about your health..."
+        onkeydown="
+            if(event.key==='Enter') askHealthGPT()
+        "
+    >
+
+    <button
+        class="ask-button"
+        onclick="askHealthGPT()"
+    >
+        Ask HealthGPT
+    </button>
+
+</div>
+
+
+<!-- ======================================================
+     14 MODULE DASHBOARD
+     ====================================================== -->
+
+<div class="grid">
+
+
+<!-- ======================================================
+     1. AI DOCTOR
+     ====================================================== -->
+
+<div
+    class="card large"
+    onclick="openModule('doctor')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-green">
+                🩺
+            </div>
+
+            <div>
+
+                <h3>AI Doctor</h3>
+
+                <small>
+                    Intelligent health conversation
+                </small>
+
+            </div>
+
+        </div>
+
+        <span class="open">
+            OPEN →
+        </span>
+
+    </div>
+
+
+    <div class="stat">
+        AI
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:13px;
+        margin-top:5px;
+        "
+    >
+        Ask questions and receive contextual
+        health information.
+    </p>
+
+
+    <div class="quick-actions">
+
+        <button
+            class="quick"
+            onclick="event.stopPropagation(); quickQuestion('How is my sleep?')"
+        >
+            Sleep
+        </button>
+
+        <button
+            class="quick"
+            onclick="event.stopPropagation(); quickQuestion('How is my hydration?')"
+        >
+            Hydration
+        </button>
+
+        <button
+            class="quick"
+            onclick="event.stopPropagation(); quickQuestion('What is my health score?')"
+        >
+            Score
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     2. HEALTH TWIN
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('twin')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-purple">
+                🧬
+            </div>
+
+            <div>
+
+                <h3>Health Twin</h3>
+
+                <small>
+                    Digital health profile
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        84
+        <span class="unit">score</span>
+    </div>
+
+    <div class="progress">
+        <div
+            class="progress-bar"
+            style="width:84%"
+        ></div>
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     3. PHYSICAL HEALTH
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('physical')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-pink">
+                ❤️
+            </div>
+
+            <div>
+
+                <h3>Physical Health</h3>
+
+                <small>
+                    Body wellness
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mini-grid">
+
+        <div class="mini">
+            <strong>72</strong>
+            <span>BPM</span>
+        </div>
+
+        <div class="mini">
+            <strong>7.6</strong>
+            <span>Sleep</span>
+        </div>
+
+        <div class="mini">
+            <strong>1.8L</strong>
+            <span>Water</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     4. MENTAL WELLNESS
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('mental')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-blue">
+                🧠
+            </div>
+
+            <div>
+
+                <h3>Mental Wellness</h3>
+
+                <small>
+                    Emotional check-in
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        Calm
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:12px;
+        margin-top:5px;
+        "
+    >
+        Take a moment to check in with yourself.
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     5. SMART NUTRITION
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('nutrition')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-orange">
+                🥗
+            </div>
+
+            <div>
+
+                <h3>Smart Nutrition</h3>
+
+                <small>
+                    Personalized meal intelligence
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        Balanced
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:12px;
+        margin-top:5px;
+        "
+    >
+        Generate a personalized demonstration meal plan.
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     6. MEDICINE INTELLIGENCE
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('medicine')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-red">
+                💊
+            </div>
+
+            <div>
+
+                <h3>Medicine Intelligence</h3>
+
+                <small>
+                    Medicine information
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        Safe
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:12px;
+        margin-top:5px;
+        "
+    >
+        Enter a medicine name for analysis.
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     7. PRESCRIPTION READER
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('prescription')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-purple">
+                📋
+            </div>
+
+            <div>
+
+                <h3>Prescription Reader</h3>
+
+                <small>
+                    OCR-ready pipeline
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        OCR
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:12px;
+        margin-top:5px;
+        "
+    >
+        Upload processing can be connected to your OCR model.
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     8. ANALYTICS
+     ====================================================== -->
+
+<div
+    class="card large"
+    onclick="openModule('analytics')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-blue">
+                📊
+            </div>
+
+            <div>
+
+                <h3>Health Analytics</h3>
+
+                <small>
+                    Seven-day health trend
+                </small>
+
+            </div>
+
+        </div>
+
+        <span class="open">
+            VIEW →
+        </span>
+
+    </div>
+
+
+    <div class="chart">
+
+        <div class="bar" style="height:55%"></div>
+        <div class="bar" style="height:62%"></div>
+        <div class="bar" style="height:68%"></div>
+        <div class="bar" style="height:73%"></div>
+        <div class="bar" style="height:79%"></div>
+        <div class="bar" style="height:87%"></div>
+        <div class="bar" style="height:94%"></div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     9. HYDRATION
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('hydration')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-blue">
+                💧
+            </div>
+
+            <div>
+
+                <h3>Hydration</h3>
+
+                <small>
+                    Daily water target
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        1.8
+        <span class="unit">L</span>
+    </div>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar"
+            style="width:72%"
+        ></div>
+
+    </div>
+
+    <small
+        style="
+        display:block;
+        margin-top:8px;
+        "
+    >
+        72% of 2.5 L target
+    </small>
+
+</div>
+
+
+<!-- ======================================================
+     10. SLEEP
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('sleep')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-purple">
+                😴
+            </div>
+
+            <div>
+
+                <h3>Sleep Intelligence</h3>
+
+                <small>
+                    Recovery tracking
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        7.6
+        <span class="unit">hours</span>
+    </div>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar"
+            style="width:87%"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     11. ACTIVITY
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('activity')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-green">
+                🏃
+            </div>
+
+            <div>
+
+                <h3>Activity & Fitness</h3>
+
+                <small>
+                    Daily movement
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        7,842
+    </div>
+
+    <small>
+        steps today
+    </small>
+
+    <div class="progress">
+
+        <div
+            class="progress-bar"
+            style="width:78%"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     12. HEART MONITOR
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('heart')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-pink">
+                ❤️
+            </div>
+
+            <div>
+
+                <h3>Heart Monitor</h3>
+
+                <small>
+                    Resting heart rate
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        72
+        <span class="unit">BPM</span>
+    </div>
+
+    <p
+        style="
+        color:var(--muted);
+        font-size:12px;
+        margin-top:5px;
+        "
+    >
+        Demo wearable signal
+    </p>
+
+</div>
+
+
+<!-- ======================================================
+     13. REPORTS
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('reports')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-orange">
+                📄
+            </div>
+
+            <div>
+
+                <h3>Health Reports</h3>
+
+                <small>
+                    AI-generated summary
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="stat">
+        Ready
+    </div>
+
+    <button
+        class="quick"
+        style="margin-top:12px;width:100%"
+        onclick="
+            event.stopPropagation();
+            openModule('reports')
+        "
+    >
+        Generate Report
+    </button>
+
+</div>
+
+
+<!-- ======================================================
+     14. AI INSIGHTS
+     ====================================================== -->
+
+<div
+    class="card"
+    onclick="openModule('insights')"
+>
+
+    <div class="card-header">
+
+        <div class="card-title">
+
+            <div class="module-icon icon-green">
+                ✨
+            </div>
+
+            <div>
+
+                <h3>AI Health Insights</h3>
+
+                <small>
+                    Smart observations
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="insight">
+
+        <div class="insight-icon">
+            💧
+        </div>
+
+        <div>
+
+            <strong>
+                Hydration reminder
+            </strong>
+
+            <p>
+                Your current intake is below your displayed target.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="insight">
+
+        <div class="insight-icon">
+            😴
+        </div>
+
+        <div>
+
+            <strong>
+                Sleep looks positive
+            </strong>
+
+            <p>
+                Your recent sleep pattern is trending well.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</div>
+
+</main>
+
+</div>
+
+
+<!-- ======================================================
+     MODAL
+     ====================================================== -->
+
+<div
+    class="modal"
+    id="modal"
+    onclick="
+        if(event.target===this) closeModal()
+    "
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2 id="modalTitle">
+                HealthGPT
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeModal()"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <div
+            class="modal-content"
+            id="modalContent"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- ======================================================
+     TOAST
+     ====================================================== -->
+
+<div
+    class="toast"
+    id="toast"
+>
+    HealthGPT
+</div>
+
+
+<script>
+
+/* =========================================================
+   HEALTHGPT FRONTEND ENGINE
+   ========================================================= */
+
+const API = "http://127.0.0.1:8000";
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const modal =
+    document.getElementById("modal");
+
+const modalTitle =
+    document.getElementById("modalTitle");
+
+const modalContent =
+    document.getElementById("modalContent");
+
+const toast =
+    document.getElementById("toast");
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function showToast(message){
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(() => {
+
+        toast.classList.remove("show");
+
+    }, 2800);
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+function openModal(title, content){
+
+    modalTitle.textContent = title;
+
+    modalContent.innerHTML = content;
+
+    modal.classList.add("show");
+}
+
+
+function closeModal(){
+
+    modal.classList.remove("show");
+}
+
+
+/* =========================================================
+   API HELPER
+   ========================================================= */
+
+async function apiRequest(
+    endpoint,
+    options = {}
+){
+
+    try{
+
+        const response =
+            await fetch(
+                API + endpoint,
+                options
+            );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+        return await response.json();
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "Backend unavailable — showing demo response"
+        );
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   AI DOCTOR
+   ========================================================= */
+
+async function askHealthGPT(){
+
+    const input =
+        document.getElementById("aiQuestion");
+
+    const question =
+        input.value.trim();
+
+    if(!question){
+
+        showToast(
+            "Ask me something first ✨"
+        );
+
+        return;
+    }
+
+    openModal(
+        "✨ HealthGPT AI Doctor",
+        `
+        <p>
+            HealthGPT is thinking...
+        </p>
+        `
+    );
+
+
+    const data =
+        await apiRequest(
+            "/api/ai/ask",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+                    question:question
+                })
+            }
+        );
+
+
+    if(data){
+
+        openModal(
+            "✨ HealthGPT AI Doctor",
+            `
+            <p>
+                <strong>You asked:</strong>
+                ${escapeHTML(question)}
+            </p>
+
+            <br>
+
+            <p>
+                ${escapeHTML(data.answer)}
+            </p>
+
+            <br>
+
+            <small>
+                ${escapeHTML(data.disclaimer)}
+            </small>
+            `
+        );
+
+    }else{
+
+        openModal(
+            "✨ HealthGPT Demo AI",
+            `
+            <p>
+                I received your question:
+            </p>
+
+            <br>
+
+            <strong>
+                ${escapeHTML(question)}
+            </strong>
+
+            <br><br>
+
+            <p>
+                Your FastAPI backend isn't running yet,
+                so this is the frontend demo response.
+            </p>
+            `
+        );
+    }
+}
+
+
+function quickQuestion(question){
+
+    document.getElementById(
+        "aiQuestion"
+    ).value = question;
+
+    askHealthGPT();
+}
+
+
+/* =========================================================
+   14 MODULE ROUTER
+   ========================================================= */
+
+async function openModule(module){
+
+    switch(module){
+
+        /* --------------------------------------------------
+           1 AI DOCTOR
+           -------------------------------------------------- */
+
+        case "doctor":
+
+            openModal(
+                "🩺 AI Doctor",
+
+                `
+                <p>
+                    Welcome to your HealthGPT AI Doctor.
+                </p>
+
+                <input
+                    class="modal-input"
+                    id="doctorInput"
+                    placeholder="Ask a health question..."
+                >
+
+                <button
+                    class="modal-button"
+                    onclick="
+                        askFromModal()
+                    "
+                >
+                    Ask HealthGPT
+                </button>
+
+                <br><br>
+
+                <small>
+                    HealthGPT provides health information
+                    and is not a replacement for professional
+                    medical diagnosis or treatment.
+                </small>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           2 HEALTH TWIN
+           -------------------------------------------------- */
+
+        case "twin":
+
+            const twin =
+                await apiRequest(
+                    "/api/health-twin"
+                );
+
+            if(twin){
+
+                openModal(
+                    "🧬 Digital Health Twin",
+
+                    `
+                    <p>
+                        <strong>
+                            ${twin.profile.user}
+                        </strong>
+                    </p>
+
+                    <div class="mini-grid">
+
+                        <div class="mini">
+                            <strong>
+                                ${twin.profile.health_score}
+                            </strong>
+                            <span>Health Score</span>
+                        </div>
+
+                        <div class="mini">
+                            <strong>
+                                ${twin.profile.sleep.hours}
+                            </strong>
+                            <span>Sleep Hours</span>
+                        </div>
+
+                        <div class="mini">
+                            <strong>
+                                ${twin.profile.heart.resting_bpm}
+                            </strong>
+                            <span>Resting BPM</span>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <p>
+                        ${twin.status}
+                    </p>
+                    `
+                );
+
+            }else{
+
+                openModal(
+                    "🧬 Digital Health Twin",
+                    `
+                    <p>
+                        Your digital health twin is ready
+                        for backend synchronization.
+                    </p>
+                    `
+                );
+            }
+
+            break;
+
+
+        /* --------------------------------------------------
+           3 PHYSICAL
+           -------------------------------------------------- */
+
+        case "physical":
+
+            const physical =
+                await apiRequest(
+                    "/api/physical-health"
+                );
+
+            openModal(
+                "❤️ Physical Health",
+
+                physical ?
+
+                `
+                <div class="mini-grid">
+
+                    <div class="mini">
+                        <strong>
+                            ${physical.heart.resting_bpm}
+                        </strong>
+                        <span>BPM</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>
+                            ${physical.sleep.hours}
+                        </strong>
+                        <span>Sleep</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>
+                            ${physical.activity.steps}
+                        </strong>
+                        <span>Steps</span>
+                    </div>
+
+                </div>
+
+                <br>
+
+                <p>
+                    Your physical-health dashboard
+                    is connected to the HealthGPT API.
+                </p>
+                `
+
+                :
+
+                `
+                <p>
+                    Physical health demo mode is active.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           4 MENTAL WELLNESS
+           -------------------------------------------------- */
+
+        case "mental":
+
+            openModal(
+                "🧠 Mental Wellness",
+
+                `
+                <p>
+                    How are you feeling right now?
+                </p>
+
+                <div class="quick-actions">
+
+                    <button
+                        class="quick"
+                        onclick="sendMood('happy')"
+                    >
+                        😊 Happy
+                    </button>
+
+                    <button
+                        class="quick"
+                        onclick="sendMood('calm')"
+                    >
+                        😌 Calm
+                    </button>
+
+                    <button
+                        class="quick"
+                        onclick="sendMood('stressed')"
+                    >
+                        😣 Stressed
+                    </button>
+
+                    <button
+                        class="quick"
+                        onclick="sendMood('sad')"
+                    >
+                        💙 Low
+                    </button>
+
+                </div>
+
+                <br>
+
+                <p>
+                    A gentle check-in can help you notice
+                    how you're doing.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           5 NUTRITION
+           -------------------------------------------------- */
+
+        case "nutrition":
+
+            openModal(
+                "🥗 Smart Nutrition",
+
+                `
+                <p>
+                    Generate your demonstration meal plan.
+                </p>
+
+                <select
+                    class="modal-input"
+                    id="dietType"
+                >
+
+                    <option value="balanced">
+                        Balanced
+                    </option>
+
+                    <option value="vegetarian">
+                        Vegetarian
+                    </option>
+
+                    <option value="vegan">
+                        Vegan
+                    </option>
+
+                </select>
+
+                <input
+                    class="modal-input"
+                    id="nutritionGoal"
+                    placeholder="Goal e.g. healthy eating"
+                    value="healthy eating"
+                >
+
+                <button
+                    class="modal-button"
+                    onclick="generateNutrition()"
+                >
+                    Generate Plan
+                </button>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           6 MEDICINE
+           -------------------------------------------------- */
+
+        case "medicine":
+
+            openModal(
+                "💊 Medicine Intelligence",
+
+                `
+                <p>
+                    Enter a medicine name to start
+                    the analysis pipeline.
+                </p>
+
+                <input
+                    class="modal-input"
+                    id="medicineName"
+                    placeholder="Medicine name"
+                >
+
+                <input
+                    class="modal-input"
+                    id="medicineDose"
+                    placeholder="Dosage (optional)"
+                >
+
+                <button
+                    class="modal-button"
+                    onclick="analyzeMedicine()"
+                >
+                    Analyze Medicine
+                </button>
+
+                <br><br>
+
+                <small>
+                    Always verify medication information
+                    with a qualified healthcare professional.
+                </small>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           7 PRESCRIPTION
+           -------------------------------------------------- */
+
+        case "prescription":
+
+            openModal(
+                "📋 Prescription Reader",
+
+                `
+                <div
+                    style="
+                    padding:35px 20px;
+                    text-align:center;
+                    background:#f6fbfa;
+                    border-radius:20px;
+                    "
+                >
+
+                    <div style="font-size:45px">
+                        📷
+                    </div>
+
+                    <h3>
+                        OCR Pipeline Ready
+                    </h3>
+
+                    <p>
+                        Prescription image processing
+                        can be connected to your OCR/
+                        vision model.
+                    </p>
+
+                    <input
+                        type="file"
+                        accept="image/*"
+                        class="modal-input"
+                        onchange="
+                            prescriptionSelected(this)
+                        "
+                    >
+
+                </div>
+
+                <br>
+
+                <p id="prescriptionResult">
+                    No prescription selected.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           8 ANALYTICS
+           -------------------------------------------------- */
+
+        case "analytics":
+
+            const analytics =
+                await apiRequest(
+                    "/api/analytics"
+                );
+
+            openModal(
+                "📊 Health Analytics",
+
+                analytics ?
+
+                `
+                <div class="mini-grid">
+
+                    <div class="mini">
+                        <strong>
+                            ${analytics.health_score}
+                        </strong>
+                        <span>Score</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>
+                            ${analytics.activity_average}
+                        </strong>
+                        <span>Avg Steps</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>
+                            ${analytics.sleep_average}
+                        </strong>
+                        <span>Sleep</span>
+                    </div>
+
+                </div>
+
+                <br>
+
+                <p>
+                    ${analytics.summary}
+                </p>
+
+                `
+
+                :
+
+                `
+                <p>
+                    Analytics demo is ready.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           9 HYDRATION
+           -------------------------------------------------- */
+
+        case "hydration":
+
+            openModal(
+                "💧 Hydration",
+
+                `
+                <div style="text-align:center">
+
+                    <div
+                        style="
+                        font-size:50px;
+                        margin-bottom:10px;
+                        "
+                    >
+                        💧
+                    </div>
+
+                    <div class="stat">
+                        1.8 L
+                    </div>
+
+                    <p>
+                        of 2.5 L displayed daily target
+                    </p>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width:72%"
+                        ></div>
+
+                    </div>
+
+                    <br>
+
+                    <button
+                        class="modal-button"
+                        onclick="
+                            showToast('Water logged 💧');
+                            closeModal()
+                        "
+                    >
+                        + Log Water
+                    </button>
+
+                </div>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           10 SLEEP
+           -------------------------------------------------- */
+
+        case "sleep":
+
+            openModal(
+                "😴 Sleep Intelligence",
+
+                `
+                <div class="mini-grid">
+
+                    <div class="mini">
+                        <strong>7.6</strong>
+                        <span>Hours</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>87%</strong>
+                        <span>Quality</span>
+                    </div>
+
+                    <div class="mini">
+                        <strong>Good</strong>
+                        <span>Recovery</span>
+                    </div>
+
+                </div>
+
+                <br>
+
+                <p>
+                    Your demo sleep data indicates
+                    a positive recovery pattern.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           11 ACTIVITY
+           -------------------------------------------------- */
+
+        case "activity":
+
+            openModal(
+                "🏃 Activity & Fitness",
+
+                `
+                <div style="text-align:center">
+
+                    <div
+                        style="
+                        font-size:45px;
+                        "
+                    >
+                        🏃
+                    </div>
+
+                    <div class="stat">
+                        7,842
+                    </div>
+
+                    <p>
+                        steps today
+                    </p>
+
+                    <div class="progress">
+
+                        <div
+                            class="progress-bar"
+                            style="width:78%"
+                        ></div>
+
+                    </div>
+
+                    <br>
+
+                    <button
+                        class="modal-button"
+                        onclick="
+                            showToast('Activity synced 🏃');
+                            closeModal()
+                        "
+                    >
+                        Sync Activity
+                    </button>
+
+                </div>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           12 HEART
+           -------------------------------------------------- */
+
+        case "heart":
+
+            openModal(
+                "❤️ Heart Monitor",
+
+                `
+                <div style="text-align:center">
+
+                    <div
+                        style="
+                        font-size:50px;
+                        "
+                    >
+                        ❤️
+                    </div>
+
+                    <div class="stat">
+                        72
+                        <span class="unit">
+                            BPM
+                        </span>
+                    </div>
+
+                    <p>
+                        Demo resting heart-rate signal
+                    </p>
+
+                    <br>
+
+                    <small>
+                        This demonstration does not provide
+                        medical diagnosis or emergency monitoring.
+                    </small>
+
+                </div>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           13 REPORTS
+           -------------------------------------------------- */
+
+        case "reports":
+
+            const report =
+                await apiRequest(
+                    "/api/report"
+                );
+
+            openModal(
+                "📄 Health Report",
+
+                report ?
+
+                `
+                <p>
+                    <strong>
+                        Report ID:
+                    </strong>
+
+                    ${report.report_id}
+                </p>
+
+                <br>
+
+                <p>
+                    ${report.summary}
+                </p>
+
+                <br>
+
+                <strong>
+                    Included sections
+                </strong>
+
+                <ul style="margin:10px 0 0 20px">
+
+                    ${report.sections
+                        .map(
+                            section =>
+                            `<li>${escapeHTML(section)}</li>`
+                        )
+                        .join("")
+                    }
+
+                </ul>
+
+                <br>
+
+                <button
+                    class="modal-button"
+                    onclick="
+                        showToast('Report prepared 📄')
+                    "
+                >
+                    Download / Export
+                </button>
+
+                `
+
+                :
+
+                `
+                <p>
+                    Your HealthGPT report is ready
+                    for backend generation.
+                </p>
+                `
+            );
+
+            break;
+
+
+        /* --------------------------------------------------
+           14 INSIGHTS
+           -------------------------------------------------- */
+
+        case "insights":
+
+            const insightData =
+                await apiRequest(
+                    "/api/ai/insights"
+                );
+
+            openModal(
+                "✨ AI Health Insights",
+
+                insightData ?
+
+                insightData.insights
+                    .map(
+                        item => `
+                        <div class="insight">
+
+                            <div
+                                class="insight-icon"
+                            >
+                                ${
+                                    item.type === "sleep"
+                                    ? "😴"
+                                    : item.type === "activity"
+                                    ? "🏃"
+                                    : "💧"
+                                }
+                            </div>
+
+                            <div>
+
+                                <strong>
+                                    ${escapeHTML(item.title)}
+                                </strong>
+
+                                <p>
+                                    ${escapeHTML(item.message)}
+                                </p>
+
+                            </div>
+
+                        </div>
+                        `
+                    )
+                    .join("")
+
+                :
+
+                `
+                <p>
+                    Your AI insights engine is ready.
+                </p>
+                `
+            );
+
+            break;
+
+
+        default:
+
+            showToast(
+                "HealthGPT module ready"
+            );
+
+    }
+}
+
+
+/* =========================================================
+   AI FROM MODAL
+   ========================================================= */
+
+async function askFromModal(){
+
+    const input =
+        document.getElementById(
+            "doctorInput"
+        );
+
+    if(!input){
+
+        return;
+    }
+
+    const question =
+        input.value.trim();
+
+    if(!question){
+
+        showToast(
+            "Please enter a question"
+        );
+
+        return;
+    }
+
+    modalContent.innerHTML = `
+        <p>
+            ✨ HealthGPT is thinking...
+        </p>
+    `;
+
+    const data =
+        await apiRequest(
+            "/api/ai/ask",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+                    question:question
+                })
+            }
+        );
+
+    if(data){
+
+        modalContent.innerHTML = `
+
+            <p>
+                <strong>
+                    You asked:
+                </strong>
+            </p>
+
+            <p>
+                ${escapeHTML(question)}
+            </p>
+
+            <br>
+
+            <p>
+                <strong>
+                    HealthGPT:
+                </strong>
+            </p>
+
+            <p>
+                ${escapeHTML(data.answer)}
+            </p>
+
+            <br>
+
+            <small>
+                ${escapeHTML(data.disclaimer)}
+            </small>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   MENTAL WELLNESS
+   ========================================================= */
+
+async function sendMood(mood){
+
+    const data =
+        await apiRequest(
+            "/api/mental-wellness/check-in",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+                    mood:mood
+                })
+            }
+        );
+
+    if(data){
+
+        openModal(
+            "🧠 Mental Wellness",
+
+            `
+            <div
+                style="
+                text-align:center;
+                padding:20px;
+                "
+            >
+
+                <div style="font-size:50px">
+                    🌿
+                </div>
+
+                <h3>
+                    ${escapeHTML(mood)}
+                </h3>
+
+                <br>
+
+                <p>
+                    ${escapeHTML(data.message)}
+                </p>
+
+            </div>
+            `
+        );
+
+    }else{
+
+        showToast(
+            "Mood recorded in demo mode 🌿"
+        );
+
+    }
+}
+
+
+/* =========================================================
+   NUTRITION
+   ========================================================= */
+
+async function generateNutrition(){
+
+    const diet =
+        document.getElementById(
+            "dietType"
+        ).value;
+
+    const goal =
+        document.getElementById(
+            "nutritionGoal"
+        ).value;
+
+
+    const data =
+        await apiRequest(
+            "/api/nutrition/plan",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    goal:goal,
+
+                    diet_type:diet,
+
+                    cuisine:"Indian",
+
+                    activity_level:"moderate"
+
+                })
+            }
+        );
+
+
+    if(data){
+
+        openModal(
+            "🥗 Your Smart Meal Plan",
+
+            `
+            <p>
+                <strong>
+                    Goal:
+                </strong>
+
+                ${escapeHTML(data.goal)}
+            </p>
+
+            <br>
+
+            <div class="insight">
+
+                <div>🌅</div>
+
+                <div>
+                    <strong>
+                        Breakfast
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(
+                            data.meal_plan.breakfast
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight">
+
+                <div>☀️</div>
+
+                <div>
+                    <strong>
+                        Lunch
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(
+                            data.meal_plan.lunch
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight">
+
+                <div>🍎</div>
+
+                <div>
+                    <strong>
+                        Snack
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(
+                            data.meal_plan.snack
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="insight">
+
+                <div>🌙</div>
+
+                <div>
+                    <strong>
+                        Dinner
+                    </strong>
+
+                    <p>
+                        ${escapeHTML(
+                            data.meal_plan.dinner
+                        )}
+                    </p>
+                </div>
+
+            </div>
+
+            <br>
+
+            <small>
+                ${escapeHTML(data.note)}
+            </small>
+            `
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MEDICINE
+   ========================================================= */
+
+async function analyzeMedicine(){
+
+    const name =
+        document.getElementById(
+            "medicineName"
+        ).value.trim();
+
+    const dosage =
+        document.getElementById(
+            "medicineDose"
+        ).value.trim();
+
+
+    if(!name){
+
+        showToast(
+            "Enter a medicine name first"
+        );
+
+        return;
+    }
+
+
+    const data =
+        await apiRequest(
+            "/api/medicine/analyze",
+            {
+                method:"POST",
+
+                headers:{
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body:JSON.stringify({
+
+                    medicine_name:name,
+
+                    dosage:dosage || null
+
+                })
+            }
+        );
+
+
+    if(data){
+
+        openModal(
+            "💊 Medicine Intelligence",
+
+            `
+            <h3>
+                ${escapeHTML(data.medicine)}
+            </h3>
+
+            <br>
+
+            <p>
+                <strong>
+                    Status:
+                </strong>
+
+                ${escapeHTML(data.status)}
+            </p>
+
+            <br>
+
+            <strong>
+                Analysis pipeline
+            </strong>
+
+            <ul
+                style="
+                margin:10px 0 0 20px;
+                "
+            >
+
+                ${data.planned_analysis
+                    .map(
+                        item =>
+                        `<li>${escapeHTML(item)}</li>`
+                    )
+                    .join("")
+                }
+
+            </ul>
+
+            <br>
+
+            <small>
+                ${escapeHTML(data.safety)}
+            </small>
+            `
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRESCRIPTION
+   ========================================================= */
+
+function prescriptionSelected(input){
+
+    const result =
+        document.getElementById(
+            "prescriptionResult"
+        );
+
+    if(input.files.length){
+
+        result.innerHTML = `
+            <strong>
+                📷 ${escapeHTML(
+                    input.files[0].name
+                )}
+            </strong>
+
+            <br><br>
+
+            Image selected successfully.
+
+            <br>
+
+            <small>
+                Connect your OCR/vision model here
+                for actual prescription extraction.
+            </small>
+        `;
+
+        showToast(
+            "Prescription image selected 📋"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SCROLL
+   ========================================================= */
+
+function scrollToModule(id){
+
+    document.getElementById(id)
+        ?.scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+
+/* =========================================================
+   HTML SAFETY
+   ========================================================= */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   STARTUP
+   ========================================================= */
+
+async function initializeHealthGPT(){
+
+    const data =
+        await apiRequest(
+            "/api/dashboard"
+        );
+
+    if(data){
+
+        showToast(
+            "HealthGPT connected 🧠💚"
+        );
+
+    }else{
+
+        showToast(
+            "Demo mode activated ✨"
+        );
+
+    }
+
+}
+
+
+initializeHealthGPT();
+
+</script>
+
+</body>
+</html>
