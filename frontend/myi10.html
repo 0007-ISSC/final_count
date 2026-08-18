@@ -1,0 +1,3228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>HealthGPT — AI Health Intelligence</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+:root{
+--bg:#f3f8f7;
+--card:#ffffff;
+--ink:#153833;
+--muted:#71837f;
+--primary:#238f82;
+--primary2:#69c3b6;
+--dark:#103b35;
+--soft:#e5f5f1;
+--line:#dcebe7;
+--danger:#c65d67;
+--warning:#d19b3b;
+--success:#319879;
+--shadow:0 18px 55px rgba(20,85,77,.10);
+}
+
+*{
+box-sizing:border-box;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+margin:0;
+font-family:
+Inter,
+Segoe UI,
+Arial,
+sans-serif;
+background:
+radial-gradient(circle at top right,#e2f4f0,transparent 35%),
+linear-gradient(135deg,#f7fbfa,#edf7f4);
+color:var(--ink);
+}
+
+button,
+input,
+select,
+textarea{
+font:inherit;
+}
+
+button{
+cursor:pointer;
+}
+
+.app{
+display:flex;
+min-height:100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+width:270px;
+background:
+linear-gradient(180deg,#103c36,#0c302c);
+color:white;
+padding:22px 15px;
+position:fixed;
+left:0;
+top:0;
+bottom:0;
+z-index:100;
+overflow:auto;
+}
+
+.logo{
+display:flex;
+gap:12px;
+align-items:center;
+padding:8px 10px 25px;
+}
+
+.logoMark{
+width:46px;
+height:46px;
+border-radius:16px;
+background:
+linear-gradient(135deg,#8ae0d2,#238f82);
+display:grid;
+place-items:center;
+font-size:25px;
+box-shadow:0 10px 30px #0004;
+}
+
+.logo b{
+font-size:20px;
+}
+
+.logo small{
+display:block;
+color:#a9cec8;
+margin-top:3px;
+}
+
+.nav{
+display:flex;
+flex-direction:column;
+gap:5px;
+}
+
+.nav button{
+border:0;
+background:transparent;
+color:#b8d4cf;
+text-align:left;
+padding:11px 12px;
+border-radius:13px;
+display:flex;
+gap:11px;
+align-items:center;
+transition:.2s;
+}
+
+.nav button:hover,
+.nav button.active{
+background:#ffffff18;
+color:white;
+transform:translateX(2px);
+}
+
+.ico{
+width:24px;
+text-align:center;
+font-size:17px;
+}
+
+.sideBottom{
+margin-top:25px;
+background:#ffffff0c;
+padding:14px;
+border-radius:16px;
+font-size:12px;
+color:#c8dfdb;
+}
+
+/* MAIN */
+
+.main{
+margin-left:270px;
+width:calc(100% - 270px);
+padding:25px 32px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:22px;
+gap:20px;
+}
+
+.title h1{
+margin:0;
+font-size:28px;
+}
+
+.title p{
+margin:6px 0;
+color:var(--muted);
+}
+
+.status{
+display:flex;
+align-items:center;
+gap:9px;
+background:white;
+padding:10px 15px;
+border:1px solid var(--line);
+border-radius:30px;
+box-shadow:var(--shadow);
+font-size:13px;
+white-space:nowrap;
+}
+
+.dot{
+width:9px;
+height:9px;
+border-radius:50%;
+background:#41ba8d;
+box-shadow:0 0 0 5px #41ba8d20;
+}
+
+/* PAGES */
+
+.page{
+display:none;
+animation:fade .3s ease;
+}
+
+.page.active{
+display:block;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(6px);
+}
+to{
+opacity:1;
+transform:none;
+}
+}
+
+/* CARDS */
+
+.card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:22px;
+padding:20px;
+box-shadow:var(--shadow);
+}
+
+.card h2{
+margin-top:0;
+}
+
+.card h3{
+margin-top:0;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px;
+}
+
+.grid2{
+display:grid;
+grid-template-columns:1.45fr 1fr;
+gap:18px;
+margin-top:18px;
+}
+
+.metric{
+font-size:30px;
+font-weight:750;
+margin:12px 0 5px;
+}
+
+.muted{
+color:var(--muted);
+font-size:13px;
+}
+
+.pill{
+display:inline-block;
+background:var(--soft);
+color:#27796f;
+padding:6px 10px;
+border-radius:20px;
+font-size:12px;
+}
+
+/* HERO */
+
+.hero{
+background:
+linear-gradient(120deg,#dff5f0,#ffffff);
+border:1px solid #d2ebe6;
+border-radius:27px;
+padding:28px;
+margin-bottom:18px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:25px;
+}
+
+.hero h2{
+margin:0;
+font-size:26px;
+}
+
+.hero p{
+color:var(--muted);
+max-width:720px;
+line-height:1.65;
+}
+
+.score{
+min-width:130px;
+height:130px;
+border-radius:50%;
+display:grid;
+place-items:center;
+background:
+conic-gradient(var(--primary) 84%,#dcebe8 0);
+position:relative;
+}
+
+.score:after{
+content:"";
+position:absolute;
+width:100px;
+height:100px;
+background:white;
+border-radius:50%;
+}
+
+.score b{
+position:relative;
+z-index:1;
+font-size:29px;
+}
+
+/* BUTTONS */
+
+.btn{
+border:0;
+border-radius:12px;
+padding:11px 16px;
+background:var(--primary);
+color:white;
+font-weight:650;
+transition:.2s;
+}
+
+.btn:hover{
+transform:translateY(-2px);
+filter:brightness(1.04);
+}
+
+.btn.secondary{
+background:var(--soft);
+color:#27796f;
+}
+
+.btn.dark{
+background:var(--dark);
+}
+
+.btn.danger{
+background:#fff0f1;
+color:#a54c55;
+}
+
+.actions{
+display:flex;
+gap:9px;
+flex-wrap:wrap;
+margin-top:15px;
+}
+
+/* FORMS */
+
+.form{
+display:grid;
+gap:12px;
+}
+
+input,
+select,
+textarea{
+width:100%;
+border:1px solid var(--line);
+background:#fbfdfd;
+padding:12px;
+border-radius:12px;
+outline:none;
+color:var(--ink);
+}
+
+textarea{
+min-height:100px;
+resize:vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+border-color:var(--primary2);
+box-shadow:0 0 0 3px #69c3b622;
+}
+
+/* CHAT */
+
+.chat{
+height:430px;
+overflow:auto;
+background:#f5faf9;
+border-radius:18px;
+padding:16px;
+border:1px solid var(--line);
+}
+
+.msg{
+max-width:78%;
+padding:13px 15px;
+border-radius:17px;
+margin:9px 0;
+line-height:1.55;
+}
+
+.bot{
+background:white;
+border:1px solid var(--line);
+}
+
+.me{
+background:var(--primary);
+color:white;
+margin-left:auto;
+}
+
+.chatbar{
+display:flex;
+gap:9px;
+margin-top:10px;
+}
+
+.chatbar input{
+flex:1;
+}
+
+/* VOICE */
+
+.voicePanel{
+display:flex;
+gap:10px;
+align-items:center;
+margin-top:12px;
+flex-wrap:wrap;
+}
+
+.voiceButton{
+width:50px;
+height:50px;
+border-radius:50%;
+border:0;
+background:
+linear-gradient(135deg,#69c3b6,#238f82);
+color:white;
+font-size:21px;
+box-shadow:0 8px 25px #238f8235;
+}
+
+.voiceButton.listening{
+animation:pulse 1.2s infinite;
+}
+
+@keyframes pulse{
+0%{
+box-shadow:0 0 0 0 #238f8266;
+}
+70%{
+box-shadow:0 0 0 16px #238f8200;
+}
+100%{
+box-shadow:0 0 0 0 #238f8200;
+}
+}
+
+.voiceStatus{
+font-size:13px;
+color:var(--muted);
+}
+
+/* ALERTS */
+
+.alert{
+padding:14px 16px;
+border-radius:14px;
+background:#fff8e8;
+color:#80621c;
+margin:8px 0;
+}
+
+.alert.ok{
+background:#eaf8f3;
+color:#287761;
+}
+
+.alert.danger{
+background:#fff0f1;
+color:#a04c55;
+}
+
+/* MODULE CARDS */
+
+.moduleGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+}
+
+.module{
+min-height:150px;
+transition:.2s;
+}
+
+.module:hover{
+transform:translateY(-4px);
+}
+
+.bigIcon{
+font-size:31px;
+margin-bottom:12px;
+}
+
+/* DISEASE */
+
+.disease{
+border:1px solid var(--line);
+border-radius:18px;
+padding:17px;
+margin-top:12px;
+background:#fbfdfc;
+}
+
+.diseaseHeader{
+display:flex;
+justify-content:space-between;
+gap:10px;
+align-items:center;
+}
+
+.risk{
+font-size:11px;
+padding:5px 9px;
+border-radius:20px;
+background:#fff4df;
+color:#8a691f;
+}
+
+/* MEDICINE */
+
+.medSearch{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:10px;
+}
+
+.medResult{
+margin-top:18px;
+display:none;
+}
+
+.medGrid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+margin-top:14px;
+}
+
+.medBox{
+background:#f6faf9;
+padding:14px;
+border-radius:14px;
+}
+
+/* DOCTOR */
+
+.doctorGrid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:16px;
+}
+
+.doctor{
+text-align:center;
+}
+
+.avatar{
+width:70px;
+height:70px;
+border-radius:50%;
+display:grid;
+place-items:center;
+font-size:30px;
+background:var(--soft);
+margin:0 auto 12px;
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th,
+td{
+text-align:left;
+padding:12px;
+border-bottom:1px solid var(--line);
+font-size:13px;
+}
+
+/* TOAST */
+
+.toast{
+position:fixed;
+right:25px;
+bottom:25px;
+background:#123f39;
+color:white;
+padding:14px 18px;
+border-radius:14px;
+box-shadow:0 15px 40px #0003;
+display:none;
+z-index:999;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:1100px){
+
+.grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.moduleGrid,
+.doctorGrid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.grid2{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:750px){
+
+.sidebar{
+width:72px;
+padding:15px 8px;
+}
+
+.logo div:not(.logoMark),
+.nav button span:not(.ico),
+.sideBottom{
+display:none;
+}
+
+.main{
+margin-left:72px;
+width:calc(100% - 72px);
+padding:18px;
+}
+
+.grid,
+.moduleGrid,
+.doctorGrid,
+.medGrid{
+grid-template-columns:1fr;
+}
+
+.hero{
+flex-direction:column;
+align-items:flex-start;
+}
+
+.top{
+align-items:flex-start;
+flex-direction:column;
+}
+
+.title h1{
+font-size:23px;
+}
+
+.medSearch{
+grid-template-columns:1fr;
+}
+
+.chatbar{
+flex-direction:column;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<div class="logo">
+<div class="logoMark">✚</div>
+<div>
+<b>HealthGPT</b>
+<small>AI Health Intelligence</small>
+</div>
+</div>
+
+<nav class="nav" id="nav"></nav>
+
+<div class="sideBottom">
+● AI Core Online
+<br>
+<span>Intelligence layer ready</span>
+</div>
+
+</aside>
+
+
+<main class="main">
+
+<header class="top">
+
+<div class="title">
+<h1 id="pageTitle">Health Overview</h1>
+<p id="pageSub">Your calm health command center</p>
+</div>
+
+<div class="status">
+<span class="dot"></span>
+HealthGPT AI Online
+</div>
+
+</header>
+
+
+<!-- DASHBOARD -->
+
+<section class="page active" id="dashboard">
+
+<div class="hero">
+
+<div>
+
+<h2>Good to see you 🌿</h2>
+
+<p>
+HealthGPT brings your health signals, AI conversations,
+wellness tools, nutrition, medicine intelligence and
+health alerts together in one calm environment.
+</p>
+
+<span class="pill">
+Personal Health Intelligence
+</span>
+
+</div>
+
+<div class="score">
+<b>84</b>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<span class="muted">Health Score</span>
+<div class="metric">84/100</div>
+<span class="pill">↑ Positive</span>
+</div>
+
+<div class="card">
+<span class="muted">Steps</span>
+<div class="metric">7,842</div>
+<span class="pill">78% goal</span>
+</div>
+
+<div class="card">
+<span class="muted">Sleep</span>
+<div class="metric">7.6h</div>
+<span class="pill">87% quality</span>
+</div>
+
+<div class="card">
+<span class="muted">Hydration</span>
+<div class="metric">1.8L</div>
+<span class="pill">72% target</span>
+</div>
+
+</div>
+
+
+<div class="grid2">
+
+<div class="card">
+
+<h3>7-Day Health Trend</h3>
+
+<p class="muted">
+Your health score movement
+</p>
+
+<canvas id="trend"></canvas>
+
+</div>
+
+
+<div class="card">
+
+<h3>AI Insight ✨</h3>
+
+<div class="alert ok">
+Your current demo signals show a generally positive pattern.
+</div>
+
+<div class="alert">
+💧 Hydration is below today's displayed target.
+</div>
+
+<button
+class="btn"
+onclick="go('insights')">
+View AI insights
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- AI DOCTOR -->
+
+<section class="page" id="doctorAI">
+
+<div class="card">
+
+<h2>🩺 AI Doctor</h2>
+
+<p class="muted">
+Your conversational health intelligence assistant.
+</p>
+
+
+<div class="chat" id="doctorChat">
+
+<div class="msg bot">
+Hello 🌿 I'm HealthGPT Doctor AI.
+You can type or speak your question.
+I can help you understand general health information,
+symptoms, lifestyle and your dashboard.
+</div>
+
+</div>
+
+
+<div class="chatbar">
+
+<input
+id="doctorQuestion"
+placeholder="Ask your AI Doctor..."
+>
+
+<button
+class="btn"
+onclick="doctorAsk()">
+Send
+</button>
+
+</div>
+
+
+<div class="voicePanel">
+
+<button
+class="voiceButton"
+id="doctorVoice"
+onclick="startVoice('doctor')">
+🎙️
+</button>
+
+<button
+class="btn secondary"
+onclick="speakLast('doctor')">
+🔊 Speak response
+</button>
+
+<span
+class="voiceStatus"
+id="doctorVoiceStatus">
+Voice assistant ready
+</span>
+
+</div>
+
+
+<div class="alert">
+⚠️ AI Doctor is an educational assistant in this prototype,
+not a replacement for a qualified medical professional.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- AI THERAPIST -->
+
+<section class="page" id="therapist">
+
+<div class="card">
+
+<h2>🧠 AI Therapist</h2>
+
+<p class="muted">
+A calm conversational space for emotional wellbeing.
+</p>
+
+
+<div class="chat" id="therapyChat">
+
+<div class="msg bot">
+Hi 🌱 I'm your HealthGPT Wellness Companion.
+You can talk to me about your feelings,
+stress, motivation, loneliness, study pressure,
+sleep routines or everyday worries.
+</div>
+
+</div>
+
+
+<div class="chatbar">
+
+<input
+id="therapyQuestion"
+placeholder="Tell me how you're feeling..."
+>
+
+<button
+class="btn"
+onclick="therapyAsk()">
+Send
+</button>
+
+</div>
+
+
+<div class="voicePanel">
+
+<button
+class="voiceButton"
+id="therapyVoice"
+onclick="startVoice('therapy')">
+🎙️
+</button>
+
+<button
+class="btn secondary"
+onclick="speakLast('therapy')">
+🔊 Speak response
+</button>
+
+<span
+class="voiceStatus"
+id="therapyVoiceStatus">
+Voice therapist ready
+</span>
+
+</div>
+
+<div class="alert ok">
+Take your time. You don't have to phrase your thoughts perfectly.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DOCTOR CONNECT -->
+
+<section class="page" id="doctorConnect">
+
+<div class="card">
+
+<h2>👨‍⚕️ Connect With a Doctor</h2>
+
+<p class="muted">
+Move from AI guidance to professional consultation.
+</p>
+
+
+<div class="doctorGrid">
+
+<div class="card doctor">
+
+<div class="avatar">👨‍⚕️</div>
+
+<h3>General Physician</h3>
+
+<p class="muted">
+Primary care consultation
+</p>
+
+<span class="pill">
+Available
+</span>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="bookDoctor('General Physician')">
+Request consultation
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card doctor">
+
+<div class="avatar">👩‍⚕️</div>
+
+<h3>Mental Health Professional</h3>
+
+<p class="muted">
+Mental wellbeing consultation
+</p>
+
+<span class="pill">
+Available
+</span>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="bookDoctor('Mental Health Professional')">
+Request consultation
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card doctor">
+
+<div class="avatar">🩺</div>
+
+<h3>Specialist</h3>
+
+<p class="muted">
+Specialist referral workflow
+</p>
+
+<span class="pill">
+Request
+</span>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="bookDoctor('Specialist')">
+Find specialist
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div
+class="response"
+id="doctorBooking">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- PHYSICAL -->
+
+<section class="page" id="physical">
+
+<div class="grid">
+
+<div class="card">
+<span class="muted">Steps</span>
+<div class="metric">7,842</div>
+<span class="pill">Goal 10,000</span>
+</div>
+
+<div class="card">
+<span class="muted">Heart</span>
+<div class="metric">72 BPM</div>
+<span class="pill">Resting</span>
+</div>
+
+<div class="card">
+<span class="muted">Sleep</span>
+<div class="metric">7.6h</div>
+<span class="pill">Good recovery</span>
+</div>
+
+<div class="card">
+<span class="muted">Water</span>
+<div class="metric">1.8L</div>
+<span class="pill">Target 2.5L</span>
+</div>
+
+</div>
+
+
+<div class="card" style="margin-top:18px">
+
+<h3>Physical Health Signals</h3>
+
+<canvas id="physicalChart"></canvas>
+
+</div>
+
+</section>
+
+
+<!-- MENTAL -->
+
+<section class="page" id="mental">
+
+<div class="grid2">
+
+<div class="card">
+
+<h2>🌱 Mental Wellness Check-in</h2>
+
+<p class="muted">
+A gentle daily self-reflection.
+</p>
+
+
+<div class="form">
+
+<select id="mood">
+
+<option>Happy</option>
+<option>Good</option>
+<option>Calm</option>
+<option>Neutral</option>
+<option>Stressed</option>
+<option>Sad</option>
+<option>Anxious</option>
+
+</select>
+
+
+<input
+id="stress"
+type="number"
+min="0"
+max="10"
+placeholder="Stress level 0–10"
+>
+
+
+<textarea
+id="mnote"
+placeholder="How are you feeling today?"
+></textarea>
+
+
+<button
+class="btn"
+onclick="moodCheck()">
+Save check-in
+</button>
+
+</div>
+
+
+<div
+class="response"
+id="moodResp">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h3>🌬️ Breathing Space</h3>
+
+<p class="muted">
+Slow down for a moment.
+</p>
+
+<div
+style="
+font-size:80px;
+text-align:center;
+margin:35px">
+◯
+</div>
+
+
+<button
+class="btn secondary"
+onclick="breath()">
+Start breathing
+</button>
+
+<div
+class="response"
+id="breathResp">
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- NUTRITION -->
+
+<section class="page" id="nutrition">
+
+<div class="card">
+
+<h2>🥗 AI Nutrition Planner</h2>
+
+<p class="muted">
+Build a meal plan according to the user's dietary preference.
+</p>
+
+
+<div class="form">
+
+<input
+id="ngoal"
+placeholder="Goal: weight management, muscle gain, balanced diet..."
+>
+
+
+<select id="diet">
+
+<option>Vegetarian</option>
+<option>Vegan</option>
+<option>Non-Vegetarian</option>
+<option>Eggetarian</option>
+<option>High Protein</option>
+<option>Plant Based</option>
+<option>Low Carb</option>
+<option>Mediterranean</option>
+<option>Jain</option>
+<option>Gluten Free</option>
+<option>Dairy Free</option>
+<option>Diabetic Friendly</option>
+<option>Custom</option>
+
+</select>
+
+
+<select id="activityLevel">
+
+<option>Sedentary</option>
+<option>Lightly Active</option>
+<option>Moderately Active</option>
+<option>Very Active</option>
+
+</select>
+
+
+<input
+id="allergy"
+placeholder="Allergies / foods to avoid"
+>
+
+
+<button
+class="btn"
+onclick="nutrition()">
+✨ Generate AI Meal Plan
+</button>
+
+</div>
+
+
+<div
+class="response"
+id="nutritionResp">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MEDICINE -->
+
+<section class="page" id="medicine">
+
+<div class="card">
+
+<h2>💊 Medicine Intelligence AI</h2>
+
+<p class="muted">
+Search medicines and prepare a structured medicine-information profile.
+</p>
+
+
+<div class="medSearch">
+
+<input
+id="med"
+placeholder="Enter medicine name e.g. paracetamol"
+>
+
+<select id="medCountry">
+<option>India</option>
+<option>United States</option>
+<option>United Kingdom</option>
+<option>Global</option>
+</select>
+
+</div>
+
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="medicine()">
+🔎 Analyze Medicine
+</button>
+
+</div>
+
+
+<div
+class="medResult"
+id="medResp">
+
+</div>
+
+
+<div class="alert">
+⚠️ A production Medicine AI must retrieve information from
+verified drug databases and regulatory sources. This demo
+does not claim to contain the entire world's drug database.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- OCR -->
+
+<section class="page" id="ocr">
+
+<div class="card">
+
+<h2>📄 Prescription OCR</h2>
+
+<p class="muted">
+Upload a prescription image for the future OCR pipeline.
+</p>
+
+
+<input
+type="file"
+accept="image/*"
+id="rx"
+>
+
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="ocr()">
+Analyze Prescription
+</button>
+
+</div>
+
+
+<div
+class="response"
+id="ocrResp">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- DISEASE INTELLIGENCE -->
+
+<section class="page" id="disease">
+
+<div class="card">
+
+<h2>🦠 Daily Disease Intelligence</h2>
+
+<p class="muted">
+Daily health-awareness feed. A production version can connect
+to verified public-health surveillance APIs.
+</p>
+
+
+<div class="alert ok">
+🔔 Daily intelligence scan ready.
+</div>
+
+
+<div id="diseaseFeed">
+
+<div class="disease">
+
+<div class="diseaseHeader">
+
+<h3>Seasonal Respiratory Illness</h3>
+
+<span class="risk">
+Awareness
+</span>
+
+</div>
+
+<p class="muted">
+General symptoms can include cough, congestion,
+fever and fatigue. Prevention includes hygiene,
+appropriate vaccination and avoiding close contact
+when ill.
+</p>
+
+</div>
+
+
+<div class="disease">
+
+<div class="diseaseHeader">
+
+<h3>Food & Water-Borne Illness</h3>
+
+<span class="risk">
+Awareness
+</span>
+
+</div>
+
+<p class="muted">
+Safe drinking water, food hygiene and proper handwashing
+can reduce exposure risk.
+</p>
+
+</div>
+
+
+<div class="disease">
+
+<div class="diseaseHeader">
+
+<h3>Vector-Borne Disease Awareness</h3>
+
+<span class="risk">
+Monitor
+</span>
+
+</div>
+
+<p class="muted">
+Mosquito-borne illnesses can vary by location and season.
+Use appropriate protective measures and follow local
+public-health guidance.
+</p>
+
+</div>
+
+</div>
+
+
+<button
+class="btn"
+onclick="refreshDisease()">
+🔄 Refresh Daily Intelligence
+</button>
+
+</div>
+
+</section>
+
+
+<!-- HEALTH TWIN -->
+
+<section class="page" id="twin">
+
+<div class="hero">
+
+<div>
+
+<h2>🧬 Digital Health Twin</h2>
+
+<p>
+A visual representation of the health signals stored
+by this application.
+</p>
+
+</div>
+
+<div class="score">
+<b>84</b>
+</div>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+<h3>Activity</h3>
+<div class="metric">7,842</div>
+<span class="muted">steps</span>
+</div>
+
+<div class="card">
+<h3>Sleep</h3>
+<div class="metric">7.6h</div>
+<span class="muted">87% quality</span>
+</div>
+
+<div class="card">
+<h3>Hydration</h3>
+<div class="metric">1.8L</div>
+<span class="muted">of 2.5L</span>
+</div>
+
+<div class="card">
+<h3>Heart</h3>
+<div class="metric">72</div>
+<span class="muted">resting BPM</span>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ANALYTICS -->
+
+<section class="page" id="analytics">
+
+<div class="card">
+
+<h2>📊 Health Analytics</h2>
+
+<p class="muted">
+Patterns and trends from your health data.
+</p>
+
+<canvas id="analyticsChart"></canvas>
+
+</div>
+
+
+<div class="grid" style="margin-top:18px">
+
+<div class="card">
+<span class="muted">Activity Average</span>
+<div class="metric">7,215</div>
+</div>
+
+<div class="card">
+<span class="muted">Sleep Average</span>
+<div class="metric">7.4h</div>
+</div>
+
+<div class="card">
+<span class="muted">Hydration Average</span>
+<div class="metric">2.1L</div>
+</div>
+
+<div class="card">
+<span class="muted">Trend</span>
+<div class="metric">Positive</div>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- INSIGHTS -->
+
+<section class="page" id="insights">
+
+<div class="card">
+
+<h2>✨ AI Health Insights</h2>
+
+<div class="alert">
+💧 Hydration is below the displayed target.
+</div>
+
+<div class="alert ok">
+😴 Recent sleep indicators look positive.
+</div>
+
+<div class="alert ok">
+🚶 Activity has improved this week.
+</div>
+
+<div class="alert">
+🧠 Consider taking a short recovery break if your stress level is elevated.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- REPORT -->
+
+<section class="page" id="report">
+
+<div class="card">
+
+<h2>📑 Health Report</h2>
+
+<p class="muted">
+Generate a printable health summary.
+</p>
+
+
+<table>
+
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Health Score</td>
+<td>84/100</td>
+<td>Positive</td>
+</tr>
+
+<tr>
+<td>Steps</td>
+<td>7,842</td>
+<td>78%</td>
+</tr>
+
+<tr>
+<td>Sleep</td>
+<td>7.6 hours</td>
+<td>Good</td>
+</tr>
+
+<tr>
+<td>Hydration</td>
+<td>1.8 L</td>
+<td>Needs attention</td>
+</tr>
+
+</table>
+
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="window.print()">
+Print / Save PDF
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- UPDATE -->
+
+<section class="page" id="updates">
+
+<div class="card">
+
+<h2>↻ Update Health Data</h2>
+
+<div class="form">
+
+<input
+id="steps"
+type="number"
+placeholder="Steps"
+>
+
+<input
+id="sleepH"
+type="number"
+step=".1"
+placeholder="Sleep hours"
+>
+
+<input
+id="water"
+type="number"
+step=".1"
+placeholder="Water liters"
+>
+
+<input
+id="heart"
+type="number"
+placeholder="Resting heart rate"
+>
+
+<button
+class="btn"
+onclick="updateHealth()">
+Update Health
+</button>
+
+</div>
+
+
+<div
+class="response"
+id="updateResp">
+</div>
+
+</div>
+
+</section>
+
+
+<!-- NOTIFICATIONS -->
+
+<section class="page" id="notifications">
+
+<div class="card">
+
+<h2>🔔 Health Notifications</h2>
+
+<div class="alert ok">
+✓ Morning wellness check complete.
+</div>
+
+<div class="alert">
+💧 Hydration reminder.
+</div>
+
+<div class="alert">
+🦠 Daily disease intelligence is available.
+</div>
+
+<div class="alert">
+💊 Medicine reminder module ready.
+</div>
+
+<div class="alert ok">
+😴 Sleep routine reminder enabled.
+</div>
+
+</div>
+
+</section>
+
+
+<!-- SYSTEM -->
+
+<section class="page" id="system">
+
+<div class="grid">
+
+<div class="card">
+<h3>API</h3>
+<div class="metric">Online</div>
+</div>
+
+<div class="card">
+<h3>AI Core</h3>
+<div class="metric">Ready</div>
+</div>
+
+<div class="card">
+<h3>ML Engine</h3>
+<div class="metric">Ready</div>
+</div>
+
+<div class="card">
+<h3>Voice</h3>
+<div class="metric">Ready</div>
+</div>
+
+</div>
+
+
+<div class="card" style="margin-top:18px">
+
+<h2>⚙️ System Status</h2>
+
+<p class="muted">
+Frontend intelligence environment.
+</p>
+
+<button
+class="btn"
+onclick="systemTest()">
+Run Connection Test
+</button>
+
+<div
+class="response"
+id="systemResp">
+</div>
+
+</div>
+
+</section>
+
+
+</main>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+const modules=[
+
+['dashboard','⌂','Overview'],
+
+['doctorAI','🩺','AI Doctor'],
+
+['therapist','🧠','AI Therapist'],
+
+['doctorConnect','👨‍⚕️','Connect Doctor'],
+
+['physical','♥','Physical Health'],
+
+['mental','☁','Mental Wellness'],
+
+['nutrition','🥗','AI Nutrition'],
+
+['medicine','💊','Medicine AI'],
+
+['ocr','▣','Prescription OCR'],
+
+['disease','🦠','Daily Diseases'],
+
+['twin','◈','Health Twin'],
+
+['analytics','◒','Analytics'],
+
+['insights','✧','AI Insights'],
+
+['report','▤','Health Report'],
+
+['updates','↻','Update Data'],
+
+['notifications','🔔','Notifications'],
+
+['system','⚙','System Status']
+
+];
+
+
+document.getElementById('nav').innerHTML=
+
+modules.map(x=>`
+
+<button
+onclick="go('${x[0]}')"
+id="nav-${x[0]}"
+>
+
+<span class="ico">${x[1]}</span>
+
+<span>${x[2]}</span>
+
+</button>
+
+`).join('');
+
+
+const names={
+
+dashboard:
+[
+'Health Overview',
+'Your calm health command center'
+],
+
+doctorAI:
+[
+'AI Doctor',
+'Conversational health intelligence'
+],
+
+therapist:
+[
+'AI Therapist',
+'Your calm emotional wellness space'
+],
+
+doctorConnect:
+[
+'Connect With a Doctor',
+'Professional consultation pathway'
+],
+
+physical:
+[
+'Physical Health',
+'Movement, sleep, heart and hydration'
+],
+
+mental:
+[
+'Mental Wellness',
+'Daily emotional wellbeing'
+],
+
+nutrition:
+[
+'AI Nutrition Planner',
+'Diet according to your preferences'
+],
+
+medicine:
+[
+'Medicine Intelligence',
+'Structured medicine information'
+],
+
+ocr:
+[
+'Prescription OCR',
+'Prescription analysis workspace'
+],
+
+disease:
+[
+'Daily Disease Intelligence',
+'Health awareness and alerts'
+],
+
+twin:
+[
+'Digital Health Twin',
+'Your health signals'
+],
+
+analytics:
+[
+'Health Analytics',
+'Patterns and trends'
+],
+
+insights:
+[
+'AI Insights',
+'Small signals that may matter'
+],
+
+report:
+[
+'Health Report',
+'Your health summary'
+],
+
+updates:
+[
+'Update Health Data',
+'Keep your dashboard current'
+],
+
+notifications:
+[
+'Notifications',
+'Health reminders and alerts'
+],
+
+system:
+[
+'System Status',
+'HealthGPT platform readiness'
+]
+
+};
+
+
+function go(id){
+
+document
+.querySelectorAll('.page')
+.forEach(p=>p.classList.remove('active'));
+
+const page=document.getElementById(id);
+
+if(page)
+page.classList.add('active');
+
+
+document
+.querySelectorAll('.nav button')
+.forEach(b=>b.classList.remove('active'));
+
+const nav=document.getElementById('nav-'+id);
+
+if(nav)
+nav.classList.add('active');
+
+
+document.getElementById('pageTitle')
+.textContent=names[id]?.[0]||'HealthGPT';
+
+document.getElementById('pageSub')
+.textContent=names[id]?.[1]||'AI Health Intelligence';
+
+
+if(id==='analytics')
+setTimeout(drawAnalytics,100);
+
+}
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function esc(s){
+
+return String(s).replace(
+/[&<>"']/g,
+m=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+
+}[m])
+);
+
+}
+
+
+function show(id,text){
+
+const e=document.getElementById(id);
+
+if(!e)return;
+
+e.style.display='block';
+
+e.innerHTML=text;
+
+}
+
+
+function toast(text){
+
+const t=document.getElementById('toast');
+
+t.textContent=text;
+
+t.style.display='block';
+
+setTimeout(
+()=>t.style.display='none',
+2500
+);
+
+}
+
+
+/* =========================================
+   AI DOCTOR
+========================================= */
+
+let lastDoctorResponse='';
+
+
+function doctorAsk(){
+
+const input=document.getElementById('doctorQuestion');
+
+const q=input.value.trim();
+
+if(!q)return;
+
+
+const chat=document.getElementById('doctorChat');
+
+chat.innerHTML+=
+`
+<div class="msg me">
+${esc(q)}
+</div>
+`;
+
+
+let answer=doctorBrain(q);
+
+lastDoctorResponse=answer;
+
+
+chat.innerHTML+=
+`
+<div class="msg bot">
+${answer}
+</div>
+`;
+
+
+input.value='';
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+
+function doctorBrain(q){
+
+const l=q.toLowerCase();
+
+
+if(
+l.includes('chest pain')||
+l.includes('difficulty breathing')||
+l.includes('cannot breathe')||
+l.includes('unconscious')
+){
+
+return `
+<b>⚠️ This may require urgent medical attention.</b>
+<br><br>
+Severe chest pain, serious breathing difficulty,
+loss of consciousness or other emergency symptoms
+should not be handled by an AI chatbot.
+Please seek appropriate emergency medical care.
+`;
+
+}
+
+
+if(l.includes('sleep')){
+
+return `
+Your dashboard currently shows <b>7.6 hours</b>
+of sleep and approximately <b>87% quality</b>.
+<br><br>
+Maintaining a consistent sleep schedule and reducing
+late-night stimulation may support healthy sleep.
+`;
+
+}
+
+
+if(
+l.includes('water')||
+l.includes('hydration')
+){
+
+return `
+Your current demo hydration value is
+<b>1.8 L</b> against a displayed target of
+<b>2.5 L</b>.
+<br><br>
+Hydration requirements vary between people,
+so your actual target should be individualized.
+`;
+
+}
+
+
+if(
+l.includes('step')||
+l.includes('exercise')
+){
+
+return `
+Your dashboard currently shows
+<b>7,842 steps</b>.
+<br><br>
+Gradually increasing daily movement can be useful,
+provided it is appropriate for your circumstances.
+`;
+
+}
+
+
+if(
+l.includes('score')
+){
+
+return `
+Your current demo HealthGPT score is
+<b>84/100</b>.
+<br><br>
+This is an application-generated demonstration score,
+not a clinical measurement.
+`;
+
+}
+
+
+return `
+I understand your question:
+<b>${esc(q)}</b>
+<br><br>
+I can help explain general health information,
+your HealthGPT dashboard, lifestyle habits,
+nutrition and wellness.
+<br><br>
+For production use, this response engine should
+be connected to a medically supervised LLM,
+verified medical knowledge base and safety layer.
+`;
+
+}
+
+
+/* =========================================
+   THERAPIST
+========================================= */
+
+let lastTherapyResponse='';
+
+
+function therapyAsk(){
+
+const input=document.getElementById('therapyQuestion');
+
+const q=input.value.trim();
+
+if(!q)return;
+
+
+const chat=document.getElementById('therapyChat');
+
+chat.innerHTML+=
+`
+<div class="msg me">
+${esc(q)}
+</div>
+`;
+
+
+let answer=therapyBrain(q);
+
+lastTherapyResponse=answer;
+
+
+chat.innerHTML+=
+`
+<div class="msg bot">
+${answer}
+</div>
+`;
+
+
+input.value='';
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+
+function therapyBrain(q){
+
+const l=q.toLowerCase();
+
+
+if(
+l.includes('suicide')||
+l.includes('kill myself')||
+l.includes('hurt myself')||
+l.includes('self harm')
+){
+
+return `
+<b>I'm really sorry you're dealing with something this painful.</b>
+<br><br>
+I can't safely manage an immediate crisis through this demo.
+Please seek immediate help from a trusted person or qualified
+mental-health professional and use your local emergency/crisis
+services if you may be in immediate danger.
+`;
+
+}
+
+
+if(
+l.includes('stress')||
+l.includes('stressed')
+){
+
+return `
+It sounds like you're carrying a lot right now. 🌿
+<br><br>
+Try breaking the next task into one very small step.
+Then take a slow breath and give yourself permission
+to focus only on that step.
+<br><br>
+You don't have to solve everything at once.
+`;
+
+}
+
+
+if(
+l.includes('sad')||
+l.includes('lonely')
+){
+
+return `
+I'm glad you shared that.
+<br><br>
+Feeling lonely or low can make ordinary things feel much
+heavier. Consider reaching out to someone you trust,
+even with a simple message like “Can we talk for a while?”
+<br><br>
+You deserve support.
+`;
+
+}
+
+
+if(
+l.includes('anxious')||
+l.includes('anxiety')
+){
+
+return `
+Let's slow this moment down.
+<br><br>
+Try this:
+<br>
+<b>Inhale for 4 seconds → pause → exhale for 6 seconds.</b>
+<br><br>
+Repeat several times without forcing your breathing.
+`;
+
+}
+
+
+return `
+Thank you for telling me that. 🌱
+<br><br>
+I hear you.
+You don't have to make your thoughts sound perfect.
+<br><br>
+What part of this situation feels hardest for you
+right now?
+`;
+
+}
+
+
+/* =========================================
+   VOICE ASSISTANT
+========================================= */
+
+let recognition=null;
+
+let currentVoiceMode=null;
+
+
+function startVoice(mode){
+
+if(
+!('webkitSpeechRecognition' in window) &&
+!('SpeechRecognition' in window)
+){
+
+toast('Speech recognition is not supported in this browser.');
+
+return;
+
+}
+
+
+const SpeechRecognition=
+window.SpeechRecognition||
+window.webkitSpeechRecognition;
+
+
+if(recognition){
+
+try{
+recognition.stop();
+}catch(e){}
+
+}
+
+
+recognition=new SpeechRecognition();
+
+recognition.lang='en-IN';
+
+recognition.continuous=false;
+
+recognition.interimResults=false;
+
+
+currentVoiceMode=mode;
+
+
+const status=document.getElementById(
+mode==='doctor'
+?'doctorVoiceStatus'
+:'therapyVoiceStatus'
+);
+
+const button=document.getElementById(
+mode==='doctor'
+?'doctorVoice'
+:'therapyVoice'
+);
+
+
+recognition.onstart=()=>{
+
+status.textContent='🎙️ Listening...';
+
+button.classList.add('listening');
+
+};
+
+
+recognition.onresult=(event)=>{
+
+const text=
+event.results[0][0].transcript;
+
+
+if(mode==='doctor'){
+
+document.getElementById(
+'doctorQuestion'
+).value=text;
+
+doctorAsk();
+
+}else{
+
+document.getElementById(
+'therapyQuestion'
+).value=text;
+
+therapyAsk();
+
+}
+
+
+status.textContent='Voice response ready';
+
+};
+
+
+recognition.onerror=()=>{
+
+status.textContent='Voice recognition unavailable';
+
+};
+
+
+recognition.onend=()=>{
+
+button.classList.remove('listening');
+
+};
+
+
+recognition.start();
+
+}
+
+
+function speak(text){
+
+if(!('speechSynthesis' in window)){
+
+toast('Speech synthesis is unavailable.');
+
+return;
+
+}
+
+
+speechSynthesis.cancel();
+
+const utterance=
+new SpeechSynthesisUtterance(
+text.replace(/<[^>]*>/g,'')
+);
+
+utterance.lang='en-IN';
+
+utterance.rate=.95;
+
+utterance.pitch=1;
+
+
+speechSynthesis.speak(utterance);
+
+}
+
+
+function speakLast(mode){
+
+if(mode==='doctor'){
+
+if(lastDoctorResponse)
+speak(lastDoctorResponse);
+
+}else{
+
+if(lastTherapyResponse)
+speak(lastTherapyResponse);
+
+}
+
+}
+
+
+/* =========================================
+   DOCTOR CONNECTION
+========================================= */
+
+function bookDoctor(type){
+
+show(
+'doctorBooking',
+`
+<b>✓ Consultation request prepared</b>
+<br><br>
+Specialty:
+<b>${esc(type)}</b>
+<br><br>
+A production version can connect this module
+to your doctor-booking backend, authentication,
+availability system and secure consultation service.
+`
+);
+
+toast('Consultation workflow opened');
+
+}
+
+
+/* =========================================
+   NUTRITION
+========================================= */
+
+function nutrition(){
+
+const goal=
+document.getElementById('ngoal').value||
+'balanced nutrition';
+
+const diet=
+document.getElementById('diet').value;
+
+const activity=
+document.getElementById('activityLevel').value;
+
+const allergy=
+document.getElementById('allergy').value||
+'None specified';
+
+
+let protein='lentils, beans, tofu, yogurt or suitable protein sources';
+
+if(diet==='Vegan')
+protein='lentils, beans, tofu, tempeh, chickpeas and other plant proteins';
+
+if(diet==='Non-Vegetarian')
+protein='eggs, fish, chicken or other suitable animal protein';
+
+if(diet==='Eggetarian')
+protein='eggs, lentils, beans, tofu and dairy if tolerated';
+
+if(diet==='High Protein')
+protein='eggs, Greek yogurt, tofu, legumes, fish or lean protein';
+
+if(diet==='Jain')
+protein='appropriate Jain-friendly protein sources selected according to the user’s restrictions';
+
+
+show(
+'nutritionResp',
+`
+<b>✨ AI Demo Plan</b>
+<br><br>
+
+<b>Goal:</b> ${esc(goal)}
+<br>
+<b>Diet:</b> ${esc(diet)}
+<br>
+<b>Activity:</b> ${esc(activity)}
+<br>
+<b>Foods to avoid:</b> ${esc(allergy)}
+
+<br><br>
+
+🌅 <b>Breakfast</b><br>
+Whole grains + fruit + a suitable protein source.
+
+<br><br>
+
+☀️ <b>Lunch</b><br>
+Vegetables + whole grains + ${protein}.
+
+<br><br>
+
+🍎 <b>Snack</b><br>
+Fruit, nuts or another suitable snack.
+
+<br><br>
+
+🌙 <b>Dinner</b><br>
+Vegetable-rich meal + suitable protein + whole-food carbohydrate.
+
+<br><br>
+
+<span class="muted">
+A real production planner should calculate calories,
+macronutrients, allergies, medical restrictions and
+individual requirements using verified nutritional logic.
+</span>
+`
+);
+
+}
+
+
+/* =========================================
+   MEDICINE AI
+========================================= */
+
+const medicineDB={
+
+paracetamol:{
+ingredient:'Paracetamol / Acetaminophen',
+use:'Pain and fever reduction',
+form:'Tablets, capsules, liquids and other formulations',
+side:'Nausea or other adverse effects can occur; excessive exposure can seriously damage the liver.',
+warning:'Dose limits and suitability depend on the individual and formulation.',
+interaction:'Alcohol and some medicines can increase risk of liver injury.'
+},
+
+acetaminophen:{
+ingredient:'Acetaminophen',
+use:'Pain and fever reduction',
+form:'Multiple formulations',
+side:'Overdose can cause severe liver injury.',
+warning:'Avoid accidentally combining multiple products containing acetaminophen.',
+interaction:'Some medicines may interact with it.'
+},
+
+ibuprofen:{
+ingredient:'Ibuprofen',
+use:'Pain, fever and inflammation',
+form:'Tablets, capsules, liquids and other formulations',
+side:'May cause stomach irritation and other adverse effects.',
+warning:'May not be appropriate for everyone, including some people with certain kidney, stomach or cardiovascular problems.',
+interaction:'Can interact with various medicines.'
+},
+
+amoxicillin:{
+ingredient:'Amoxicillin',
+use:'Antibiotic used for certain bacterial infections',
+form:'Capsules, tablets and oral suspensions',
+side:'Diarrhea, nausea, rash and allergic reactions can occur.',
+warning:'Antibiotics should only be used appropriately and as prescribed.',
+interaction:'Can interact with some medicines.'
+}
+
+};
+
+
+function medicine(){
+
+const name=
+document.getElementById('med')
+.value
+.trim()
+.toLowerCase();
+
+
+if(!name){
+
+toast('Enter a medicine name.');
+
+return;
+
+}
+
+
+const data=medicineDB[name];
+
+const result=document.getElementById('medResp');
+
+result.style.display='block';
+
+
+if(!data){
+
+result.innerHTML=`
+
+<h3>Medicine: ${esc(name)}</h3>
+
+<div class="alert">
+🔎 No local demo profile was found.
+</div>
+
+<div class="medGrid">
+
+<div class="medBox">
+<b>Production lookup</b>
+<br><br>
+Connect a verified drug database/API here.
+</div>
+
+<div class="medBox">
+<b>Required knowledge fields</b>
+<br><br>
+Composition, active ingredients, indications,
+contraindications, interactions, warnings,
+side effects and formulation.
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+result.innerHTML=`
+
+<h3>💊 ${esc(name)}</h3>
+
+<div class="medGrid">
+
+<div class="medBox">
+<b>Active Ingredient</b>
+<br><br>
+${esc(data.ingredient)}
+</div>
+
+<div class="medBox">
+<b>Common Use</b>
+<br><br>
+${esc(data.use)}
+</div>
+
+<div class="medBox">
+<b>Formulations</b>
+<br><br>
+${esc(data.form)}
+</div>
+
+<div class="medBox">
+<b>Potential Effects</b>
+<br><br>
+${esc(data.side)}
+</div>
+
+<div class="medBox">
+<b>Precautions</b>
+<br><br>
+${esc(data.warning)}
+</div>
+
+<div class="medBox">
+<b>Interactions</b>
+<br><br>
+${esc(data.interaction)}
+</div>
+
+</div>
+
+<div class="alert danger">
+
+⚠️ This information is educational.
+Do not start, stop or change a medicine based only
+on this chatbot. A production HealthGPT Medicine AI
+must use verified medical/drug sources.
+
+</div>
+
+`;
+
+}
+
+
+/* =========================================
+   OCR
+========================================= */
+
+function ocr(){
+
+const file=
+document.getElementById('rx')
+.files[0];
+
+
+if(!file){
+
+show(
+'ocrResp',
+'Please select a prescription image first.'
+);
+
+return;
+
+}
+
+
+show(
+'ocrResp',
+`
+📄 <b>${esc(file.name)}</b> received.
+
+<br><br>
+
+<b>Production OCR pipeline:</b>
+
+<br>
+Image → preprocessing → OCR → medicine extraction
+→ dosage extraction → normalization → drug database
+→ interaction checking → pharmacist/doctor verification.
+
+<br><br>
+
+<span class="muted">
+The current single-file version demonstrates the interface.
+Connect an OCR/vision backend for actual extraction.
+</span>
+`
+);
+
+}
+
+
+/* =========================================
+   DISEASE INTELLIGENCE
+========================================= */
+
+function refreshDisease(){
+
+const now=
+new Date().toLocaleString();
+
+document.getElementById('diseaseFeed')
+.insertAdjacentHTML(
+'afterbegin',
+`
+<div class="alert ok">
+
+🔄 <b>Daily intelligence refreshed.</b>
+
+<br>
+
+Last scan:
+${esc(now)}
+
+<br><br>
+
+For production deployment,
+connect this module to verified public-health
+surveillance sources and location-aware alert services.
+
+</div>
+`
+);
+
+toast('Disease intelligence refreshed');
+
+}
+
+
+/* =========================================
+   MENTAL WELLNESS
+========================================= */
+
+function moodCheck(){
+
+const mood=
+document.getElementById('mood').value;
+
+const stress=
+document.getElementById('stress').value||
+'not provided';
+
+
+show(
+'moodResp',
+`
+<b>Check-in saved ✓</b>
+
+<br><br>
+
+Mood:
+<b>${esc(mood)}</b>
+
+<br>
+
+Stress:
+<b>${esc(stress)}/10</b>
+
+<br><br>
+
+Thank you for checking in with yourself.
+Take a gentle moment before continuing your day.
+`
+);
+
+}
+
+
+/* =========================================
+   BREATHING
+========================================= */
+
+function breath(){
+
+const e=
+document.getElementById('breathResp');
+
+e.style.display='block';
+
+let n=30;
+
+e.innerHTML=
+`Breathe slowly… <b>${n}</b> seconds remaining.`;
+
+const timer=setInterval(()=>{
+
+n--;
+
+e.innerHTML=
+`
+Breathe comfortably…
+<b>${n}</b> seconds remaining.
+`;
+
+if(n<=0){
+
+clearInterval(timer);
+
+e.innerHTML=
+`
+✨ Breathing session complete.
+Notice how you feel now.
+`;
+
+}
+
+},1000);
+
+}
+
+
+/* =========================================
+   UPDATE DATA
+========================================= */
+
+function updateHealth(){
+
+const s=
+document.getElementById('steps').value||
+7842;
+
+const sl=
+document.getElementById('sleepH').value||
+7.6;
+
+const w=
+document.getElementById('water').value||
+1.8;
+
+const h=
+document.getElementById('heart').value||
+72;
+
+
+show(
+'updateResp',
+`
+✓ Health data updated.
+
+<br><br>
+
+Steps:
+<b>${esc(s)}</b>
+
+<br>
+
+Sleep:
+<b>${esc(sl)} h</b>
+
+<br>
+
+Water:
+<b>${esc(w)} L</b>
+
+<br>
+
+Heart rate:
+<b>${esc(h)} BPM</b>
+`
+);
+
+toast('Health data updated');
+
+}
+
+
+/* =========================================
+   SYSTEM
+========================================= */
+
+function systemTest(){
+
+show(
+'systemResp',
+`
+✓ Frontend working
+<br>
+✓ Navigation working
+<br>
+✓ AI Doctor interface ready
+<br>
+✓ AI Therapist interface ready
+<br>
+✓ Voice recognition interface ready
+<br>
+✓ Voice synthesis ready
+<br>
+✓ Nutrition engine ready
+<br>
+✓ Medicine engine ready
+<br>
+✓ Disease intelligence interface ready
+<br>
+✓ Doctor connection interface ready
+<br><br>
+
+Backend:
+<b>Not connected in standalone mode.</b>
+`
+);
+
+}
+
+
+/* =========================================
+   CHARTS
+========================================= */
+
+new Chart(
+document.getElementById('trend'),
+{
+type:'line',
+
+data:{
+labels:[
+'Mon',
+'Tue',
+'Wed',
+'Thu',
+'Fri',
+'Sat',
+'Sun'
+],
+
+datasets:[
+{
+label:'Health Score',
+data:[
+71,
+74,
+76,
+78,
+80,
+82,
+84
+],
+tension:.35
+}
+]
+},
+
+options:{
+responsive:true
+}
+
+}
+);
+
+
+new Chart(
+document.getElementById('physicalChart'),
+{
+type:'bar',
+
+data:{
+labels:[
+'Steps',
+'Sleep',
+'Hydration',
+'Heart'
+],
+
+datasets:[
+{
+label:'Current Indicator',
+data:[
+78,
+87,
+72,
+72
+]
+}
+]
+},
+
+options:{
+responsive:true
+}
+
+}
+);
+
+
+function drawAnalytics(){
+
+const c=
+document.getElementById('analyticsChart');
+
+if(!c || c.dataset.done)
+return;
+
+c.dataset.done=1;
+
+
+new Chart(
+c,
+{
+type:'line',
+
+data:{
+labels:[
+'Mon',
+'Tue',
+'Wed',
+'Thu',
+'Fri',
+'Sat',
+'Sun'
+],
+
+datasets:[
+{
+label:'Health Score',
+data:[
+71,
+74,
+76,
+78,
+80,
+82,
+84
+],
+tension:.35
+}
+]
+},
+
+options:{
+responsive:true
+}
+
+}
+);
+
+}
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+go('dashboard');
+
+</script>
+
+</body>
+</html>
