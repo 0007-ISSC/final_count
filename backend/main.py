@@ -1,85 +1,49 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from database import Base, engine
 from routes import router
 
-
-# =========================================================
-# DATABASE INITIALIZATION
-# =========================================================
-
-# Creates database tables automatically
-# during the initial development phase.
-
-Base.metadata.create_all(
-    bind=engine
-)
-
-
-# =========================================================
-# FASTAPI APPLICATION
-# =========================================================
+# Database tables are created automatically for development.
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="HealthGPT",
     description=(
-        "AI-powered health information platform "
-        "with chatbot, ML, OCR, health records "
-        "and agentic AI."
+        "AI-powered healthcare information platform with conversational AI, "
+        "symptom analysis, medicine intelligence, disease prediction, OCR, "
+        "health records, nutrition, wellness, health analytics and a digital health twin."
     ),
-    version="1.0.0"
+    version="2.0.0",
 )
-
-
-# =========================================================
-# CORS
-# =========================================================
 
 app.add_middleware(
     CORSMiddleware,
-
     allow_origins=["*"],
-
     allow_credentials=True,
-
     allow_methods=["*"],
-
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
-
-# =========================================================
-# ROUTES
-# =========================================================
-
-app.include_router(
-    router
-)
-
-
-# =========================================================
-# ROOT
-# =========================================================
+app.include_router(router)
 
 @app.get("/")
 def root():
-
     return {
         "application": "HealthGPT",
         "status": "running",
-        "message": "HealthGPT backend is online.",
-        "documentation": "/docs"
+        "version": "2.0.0",
+        "documentation": "/docs",
+        "modules": [
+            "AI Chatbot", "Symptom Analysis", "Medicine Intelligence",
+            "Disease Prediction", "Medical OCR", "Health Records",
+            "Personalized Recommendations", "AI Health Agent",
+            "Nutrition Planner", "Mental Wellness", "Health Analytics",
+            "Digital Health Twin"
+        ],
     }
-
-
-# =========================================================
-# STARTUP
-# =========================================================
 
 @app.on_event("startup")
 async def startup():
-
     print("=" * 60)
     print("          HEALTHGPT BACKEND STARTED")
     print("=" * 60)
