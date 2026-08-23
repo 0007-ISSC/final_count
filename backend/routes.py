@@ -5,12 +5,36 @@ from database import get_db
 from models import User, Conversation, Message, HealthRecord, Prediction, MedicineAnalysis, HealthMetric, WellnessCheck
 from services import HealthChatbot, SymptomAnalyzer, MedicineAnalyzer, DiseasePredictor, MedicalOCR, RecommendationEngine, HealthAgent
 from advanced_services import NutritionPlanner, MentalWellnessService, HealthAnalyticsService, DigitalHealthTwinService
+from knowledge_service import search_knowledge, build_context
+from ai.agent import HealthGPTAgent
+from ai.llm_client import LLMClient
+from ai.prompt_manager import PromptManager
+import os
 
 router = APIRouter(prefix="/api")
 
+
+def _llm_agent():
+    key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
+    if not key:
+        return HealthGPTAgent()
+    return HealthGPTAgent(LLMClient(
+        api_key=key,
+        base_url=os.getenv("LLM_BASE_URL", "https://api.openai.com/v1"),
+        model=os.getenv("LLM_MODEL", "gpt-4o-mini"),
+    ))
+
+
 @router.post("/chat")
-def chat(message: str = Form(...), user_id: int | None = Form(None), db: Session = Depends(get_db)):
-    response = HealthChatbot().generate_response(message)
+async def chat(message: str = Form(...), user_id: int | None = Form(None), db: Session = Depends(get_db)):
+    if not message.strip():
+        raise HTTPException(400, "Message cannot be empty")
+    entries = search_knowledge(db, message)
+    context = build_context(entries)
+    agent = _llm_agent()
+    result = await agent.process(message, context=context)
+    response = result["response"]
+
     conversation = None
     if user_id is not None:
         if not db.query(User).filter(User.id == user_id).first():
@@ -19,7 +43,14 @@ def chat(message: str = Form(...), user_id: int | None = Form(None), db: Session
         db.add(conversation); db.commit(); db.refresh(conversation)
         db.add(Message(conversation_id=conversation.id, role="user", content=message))
         db.add(Message(conversation_id=conversation.id, role="assistant", content=response)); db.commit()
-    return {"success": True, "module": "AI Health Chatbot", "response": response, "conversation_id": conversation.id if conversation else None}
+    return {"success": True, "module": "AI Health Chatbot", "intent": result.get("intent"), "response": response, "source": result.get("source"), "knowledge_matches": len(entries), "conversation_id": conversation.id if conversation else None}
+
+
+@router.get("/knowledge/search")
+def knowledge_search(q: str, limit: int = 8, db: Session = Depends(get_db)):
+    entries = search_knowledge(db, q, max(1, min(limit, 25)))
+    return {"success": True, "results": [{"id": x.id, "category": x.category, "title": x.title, "content": x.content, "tags": x.tags, "reviewed": x.reviewed} for x in entries]}
+
 
 @router.post("/symptoms/analyze")
 def analyze_symptoms(symptoms: list[str]):
@@ -51,7 +82,7 @@ async def medical_ocr(file: UploadFile = File(...)):
 def dashboard(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user: raise HTTPException(404, "User not found")
-    return {"success": True, "module": "Health Dashboard", "user": {"id": user.id, "name": user.name, "email": user.email, "age": user.age, "gender": user.gender}, "statistics": {"health_records": db.query(HealthRecord).filter(HealthRecord.user_id == user_id).count(), "conversations": db.query(Conversation).filter(Conversation.user_id == user_id).count(), "predictions": db.query(Prediction).filter(Prediction.user_id == user_id).count(), "medicine_analyses": db.query(MedicineAnalysis).filter(MedicineAnalysis.user_id == user_id).count(), "health_metrics": db.query(HealthMetric).filter(HealthMetric.user_id == user_id).count()}}
+    return {"success": True, "module": "Health Dashboard", "user": {"id": user.id, "name": user.name, "email": user.email, "age": user.age, "gender": user.gender}, "statistics": {"health_records": db.query(HealthRecord).filter(HealthRecord.user_id == user_id).count(), "conversations": db.query(Conversation).filter(Conversation.user_id == user_id).count(), "predictions": db.query(Prediction).filter(Prediction.user_id == user_id).count(), "medicine_analyses": db.query(MedicineAnalysis).filter(MedicineAnalysis.user_id == user_id).count(), "health_metrics": db.query(HealthMetric).filter(HealthMetric.user_id == user_id).count(), "wellness_checks": db.query(WellnessCheck).filter(WellnessCheck.user_id == user_id).count()}}
 
 @router.post("/records")
 def create_record(user_id: int, record_type: str, title: str, content: str, db: Session = Depends(get_db)):
@@ -106,7 +137,7 @@ def health_twin(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/health")
 def health_check():
-    return {"status": "online", "application": "HealthGPT", "version": "2.0.0"}
+    return {"status": "online", "application": "HealthGPT", "version": "2.1.0"}
 
 def register_routes(app):
     app.include_router(router)
