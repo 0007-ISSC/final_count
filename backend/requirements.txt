@@ -10,3 +10,4 @@ pytesseract
 numpy
 pandas
 scikit-learn
+httpx
