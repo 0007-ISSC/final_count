@@ -1,4 +1,5 @@
 import json
+import os
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 from database import get_db
@@ -6,23 +7,19 @@ from models import User, Conversation, Message, HealthRecord, Prediction, Medici
 from services import HealthChatbot, SymptomAnalyzer, MedicineAnalyzer, DiseasePredictor, MedicalOCR, RecommendationEngine, HealthAgent
 from advanced_services import NutritionPlanner, MentalWellnessService, HealthAnalyticsService, DigitalHealthTwinService
 from knowledge_service import search_knowledge, build_context
-from ai.agent import HealthGPTAgent
-from ai.llm_client import LLMClient
-from ai.prompt_manager import PromptManager
-import os
+from api_integrations import gemini_chat, rxnorm_lookup, openfda_drug, food_product, pubmed_search
 
 router = APIRouter(prefix="/api")
 
 
-def _llm_agent():
-    key = os.getenv("OPENAI_API_KEY") or os.getenv("LLM_API_KEY")
-    if not key:
-        return HealthGPTAgent()
-    return HealthGPTAgent(LLMClient(
-        api_key=key,
-        base_url=os.getenv("LLM_BASE_URL", "https://api.openai.com/v1"),
-        model=os.getenv("LLM_MODEL", "gpt-4o-mini"),
-    ))
+def _history(db: Session, user_id: int | None, limit: int = 12):
+    if not user_id:
+        return []
+    conversation = db.query(Conversation).filter(Conversation.user_id == user_id).order_by(Conversation.created_at.desc()).first()
+    if not conversation:
+        return []
+    messages = db.query(Message).filter(Message.conversation_id == conversation.id).order_by(Message.created_at.asc()).all()
+    return [{"role": m.role, "content": m.content} for m in messages[-limit:]]
 
 
 @router.post("/chat")
@@ -31,9 +28,16 @@ async def chat(message: str = Form(...), user_id: int | None = Form(None), db: S
         raise HTTPException(400, "Message cannot be empty")
     entries = search_knowledge(db, message)
     context = build_context(entries)
-    agent = _llm_agent()
-    result = await agent.process(message, context=context)
-    response = result["response"]
+    history = _history(db, user_id)
+    ai = await gemini_chat(message, context=context, history=history)
+
+    if ai.get("ok"):
+        response = ai["response"]
+        source = "Gemini + HealthGPT Knowledge Base"
+    else:
+        # The project remains functional without a paid API key.
+        response = HealthChatbot().generate_response(message)
+        source = "HealthGPT local fallback"
 
     conversation = None
     if user_id is not None:
@@ -43,13 +47,31 @@ async def chat(message: str = Form(...), user_id: int | None = Form(None), db: S
         db.add(conversation); db.commit(); db.refresh(conversation)
         db.add(Message(conversation_id=conversation.id, role="user", content=message))
         db.add(Message(conversation_id=conversation.id, role="assistant", content=response)); db.commit()
-    return {"success": True, "module": "AI Health Chatbot", "intent": result.get("intent"), "response": response, "source": result.get("source"), "knowledge_matches": len(entries), "conversation_id": conversation.id if conversation else None}
+    return {"success": True, "module": "AI Health Chatbot", "response": response, "source": source, "knowledge_matches": len(entries), "conversation_id": conversation.id if conversation else None}
 
 
 @router.get("/knowledge/search")
 def knowledge_search(q: str, limit: int = 8, db: Session = Depends(get_db)):
     entries = search_knowledge(db, q, max(1, min(limit, 25)))
     return {"success": True, "results": [{"id": x.id, "category": x.category, "title": x.title, "content": x.content, "tags": x.tags, "reviewed": x.reviewed} for x in entries]}
+
+
+@router.get("/medicine/lookup")
+async def medicine_lookup(name: str):
+    """Combine two public drug-information sources for richer medicine intelligence."""
+    rx = await rxnorm_lookup(name)
+    fda = await openfda_drug(name)
+    return {"success": True, "module": "Medicine Intelligence", "medicine": name, "rxnorm": rx, "openfda": fda}
+
+
+@router.get("/food/barcode/{barcode}")
+async def food_barcode(barcode: str):
+    return {"success": True, "module": "Nutrition Intelligence", **await food_product(barcode)}
+
+
+@router.get("/research/search")
+async def research_search(q: str, limit: int = 5):
+    return {"success": True, "module": "Evidence Search", **await pubmed_search(q, limit)}
 
 
 @router.post("/symptoms/analyze")
@@ -61,8 +83,7 @@ def analyze_medicine(medicine_name: str, ingredients: list[str] | None = None, u
     ingredients = ingredients or []
     result = MedicineAnalyzer().analyze(medicine_name, ingredients)
     if user_id is not None:
-        db.add(MedicineAnalysis(user_id=user_id, medicine_name=medicine_name, ingredients=json.dumps(ingredients), uses=json.dumps(result.get("uses", [])), warnings=json.dumps(result.get("warnings", []))))
-        db.commit()
+        db.add(MedicineAnalysis(user_id=user_id, medicine_name=medicine_name, ingredients=json.dumps(ingredients), uses=json.dumps(result.get("uses", [])), warnings=json.dumps(result.get("warnings", [])))); db.commit()
     return {"success": True, "module": "Medicine Analyzer", **result}
 
 @router.post("/prediction")
@@ -131,8 +152,7 @@ def analytics(user_id: int, db: Session = Depends(get_db)):
 def health_twin(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user: raise HTTPException(404, "User not found")
-    records = db.query(HealthRecord).filter(HealthRecord.user_id == user_id).all()
-    metrics = db.query(HealthMetric).filter(HealthMetric.user_id == user_id).order_by(HealthMetric.recorded_at.asc()).all()
+    records = db.query(HealthRecord).filter(HealthRecord.user_id == user_id).all(); metrics = db.query(HealthMetric).filter(HealthMetric.user_id == user_id).order_by(HealthMetric.recorded_at.asc()).all()
     return {"success": True, "module": "Digital Health Twin", **DigitalHealthTwinService().build({"id": user.id, "name": user.name, "age": user.age, "gender": user.gender}, [{"type": r.record_type, "title": r.title, "content": r.content} for r in records], [{"metric": m.metric, "value": m.value, "unit": m.unit} for m in metrics])}
 
 @router.get("/health")
