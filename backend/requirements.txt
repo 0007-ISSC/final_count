@@ -5,7 +5,9 @@ psycopg2-binary
 python-multipart
 pydantic
 pydantic-settings
+email-validator
 python-dotenv
+werkzeug
 pillow
 pytesseract
 numpy
