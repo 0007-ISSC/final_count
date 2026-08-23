@@ -17,6 +17,8 @@ class User(Base):
     health_records = relationship("HealthRecord", back_populates="user", cascade="all, delete-orphan")
     predictions = relationship("Prediction", back_populates="user", cascade="all, delete-orphan")
     medicine_analyses = relationship("MedicineAnalysis", back_populates="user", cascade="all, delete-orphan")
+    health_metrics = relationship("HealthMetric", back_populates="user", cascade="all, delete-orphan")
+    wellness_checks = relationship("WellnessCheck", back_populates="user", cascade="all, delete-orphan")
 
 class Conversation(Base):
     __tablename__ = "conversations"
@@ -76,6 +78,7 @@ class HealthMetric(Base):
     value: Mapped[float] = mapped_column(Float, nullable=False)
     unit: Mapped[str] = mapped_column(String(50), default="")
     recorded_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    user = relationship("User", back_populates="health_metrics")
 
 class WellnessCheck(Base):
     __tablename__ = "wellness_checks"
@@ -84,4 +87,16 @@ class WellnessCheck(Base):
     mood: Mapped[str] = mapped_column(String(100), nullable=False)
     stress_level: Mapped[int] = mapped_column(Integer, nullable=False)
     sleep_hours: Mapped[float] = mapped_column(Float, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    user = relationship("User", back_populates="wellness_checks")
+
+class KnowledgeEntry(Base):
+    __tablename__ = "knowledge_entries"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    category: Mapped[str] = mapped_column(String(100), index=True, nullable=False)
+    title: Mapped[str] = mapped_column(String(250), index=True, nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    tags: Mapped[str] = mapped_column(Text, default="")
+    source: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    reviewed: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
