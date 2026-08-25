@@ -1,3 +1,0 @@
-"""
-HealthGPT OCR Module
-"""

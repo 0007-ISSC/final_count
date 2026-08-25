@@ -1,3 +1,0 @@
-"""
-HealthGPT Authentication Module
-"""

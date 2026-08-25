@@ -1,0 +1,6 @@
+{
+  "name": "HealthGPT",
+  "description": "Comprehensive AI healthcare platform featuring unified AI Doctor & Therapist intelligence, multi-language medical translation with native speech audio across 30+ regional languages, smart Period & Menstrual Cycle Tracker with ovulation prediction, real-time Indian doctor appointments with Google Maps clinic locator, Prescription OCR connected to AI Doctor, unified Digital Health Twin & Analytics, and biomarker tracking.",
+  "requestFramePermissions": ["microphone", "geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
