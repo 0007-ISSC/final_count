@@ -954,6 +954,26 @@ app.post('/api/chat', async (req: Request, res: Response) => {
   const userId = req.body.user_id ? Number(req.body.user_id) : (getUserFromRequest(req)?.id || undefined);
   const prescriptionContext = req.body.prescription_context ? String(req.body.prescription_context) : '';
 
+  // Keep chat continuity without trusting unbounded client payloads.
+  const requestedConversationId = Number(req.body.conversation_id);
+  const existingConversation = userId && Number.isInteger(requestedConversationId)
+    ? conversations.find(c => c.id === requestedConversationId && c.userId === userId)
+    : undefined;
+  const storedHistory = existingConversation
+    ? messages
+        .filter(m => m.conversationId === existingConversation.id)
+        .slice(-12)
+        .map(m => ({ role: m.role, content: m.content }))
+    : [];
+  const clientHistory = Array.isArray(req.body.history)
+    ? req.body.history
+        .filter((item: any) => item && (item.role === 'user' || item.role === 'assistant') && item.content)
+        .map((item: any) => ({ role: item.role, content: String(item.content).trim().slice(0, 4000) }))
+        .filter((item: { role: string; content: string }) => item.content)
+        .slice(-12)
+    : [];
+  const conversationHistory = storedHistory.length > 0 ? storedHistory : clientHistory;
+
   if (!message) {
     return res.status(400).json({ success: false, detail: 'Message cannot be empty.' });
   }
@@ -1011,6 +1031,11 @@ app.post('/api/chat', async (req: Request, res: Response) => {
   if (prescriptionContext) {
     userPrompt = `Prescription Context:\n${prescriptionContext}\n\n`;
   }
+  if (conversationHistory.length > 0) {
+    userPrompt += `Conversation so far (use this context, but do not repeat it verbatim):\n${conversationHistory
+      .map(item => `${item.role === 'assistant' ? 'Assistant' : 'User'}: ${item.content}`)
+      .join('\n')}\n\n`;
+  }
 
   if (preTranslationTriggered && effectiveEnglishMessage !== message) {
     userPrompt += `User Original Message (${langInfo.name}): "${message}"\nTranslated Clinical Intent (English): "${effectiveEnglishMessage}"\n\nPlease address the patient's concern in ${langInfo.name} (${langInfo.nativeName}).`;
@@ -1062,13 +1087,13 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 
   let conversationId: number | undefined;
   if (userId) {
-    const conv: Conversation = {
+    const conv: Conversation = existingConversation || {
       id: nextConvId++,
       userId,
       title: message.slice(0, 60),
       createdAt: new Date().toISOString(),
     };
-    conversations.push(conv);
+    if (!existingConversation) conversations.push(conv);
     conversationId = conv.id;
 
     messages.push({
@@ -1389,6 +1414,28 @@ app.post('/api/medicine/analyze', (req: Request, res: Response) => {
     uses: data.uses,
     warnings: data.warnings,
     safety_note: 'HealthGPT provides informational guidance and does not prescribe or dispense pharmaceuticals.',
+  });
+});
+
+// Compatibility endpoint used by the dashboard medicine search UI.
+app.post('/api/medicine/search', (req: Request, res: Response) => {
+  const name = String(req.body.query || req.body.medicine_name || req.body.name || '').trim();
+  if (!name) return res.status(400).json({ success: false, detail: 'Medicine name is required.' });
+
+  const data = MEDICINE_DATABASE[name.toLowerCase()];
+  return res.json({
+    success: true,
+    module: 'Medicine Intelligence Search',
+    profile: {
+      name,
+      class: 'Therapeutic Drug',
+      uses: data?.uses?.join('; ') || 'Formulation-dependent; consult a licensed clinician.',
+      dosage_schedule: 'Follow the exact dose and timing on your prescription or official label.',
+      side_effects: 'Possible side effects depend on the medicine and patient; ask a pharmacist about warning signs.',
+      warnings: data?.warnings?.join('; ') || 'Verify active ingredients, allergies, interactions, and contraindications with a pharmacist.',
+    },
+    source: 'HealthGPT Drug Intelligence Database',
+    safety_note: 'Informational only. HealthGPT does not prescribe or dispense medicines.',
   });
 });
 
@@ -3167,6 +3214,17 @@ app.get('/api/research/search', async (req: Request, res: Response) => {
 // ----------------------------------------------------
 // Health Check & Root / Dashboard Pages
 // ----------------------------------------------------
+app.get('/api/health', (_req: Request, res: Response) => {
+  return res.json({
+    status: 'healthy',
+    backend: 'online',
+    database: 'in-memory',
+    version: '2.3.0',
+    llm: LLMDispatcher.getStatus(),
+    counts: { users: users.length, conversations: conversations.length, records: healthRecords.length },
+  });
+});
+
 app.get('/health', (_req: Request, res: Response) => {
   return res.json({
     status: 'healthy',
