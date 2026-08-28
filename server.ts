@@ -956,8 +956,10 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 
   // Keep chat continuity without trusting unbounded client payloads.
   const requestedConversationId = Number(req.body.conversation_id);
-  const existingConversation = userId && Number.isInteger(requestedConversationId)
-    ? conversations.find(c => c.id === requestedConversationId && c.userId === userId)
+  const existingConversation = userId
+    ? (Number.isInteger(requestedConversationId)
+        ? conversations.find(c => c.id === requestedConversationId && c.userId === userId)
+        : conversations.filter(c => c.userId === userId).sort((a, b) => b.id - a.id)[0])
     : undefined;
   const storedHistory = existingConversation
     ? messages
