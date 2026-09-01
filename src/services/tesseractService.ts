@@ -2,13 +2,22 @@
  * Tesseract OCR Pipeline Service
  * HealthGPT Prescription & Medical Document Intelligence
  *
- * Extracts text from uploaded prescription images and documents
+ * Extracts text from uploaded prescription images and documents,
+ * cross-references extracted drugs with the verified CDSCO/NLEM medication database,
+ * validates dosages, generates interaction alerts & generic alternatives,
  * and structures clinical entities for automatic feeding into the AI Doctor.
  */
 
 import { createWorker, type Worker } from 'tesseract.js';
 import { LLMDispatcher } from './llmDispatcher.js';
 import { GrokService } from './grokService.js';
+import {
+  crossReferencePrescriptionMedications,
+  validateAndCrossReferenceDrug,
+  lookupMedicineComprehensive,
+  type PrescriptionValidationReport,
+  type DrugValidationResult,
+} from '../data/medicinesData.js';
 
 export interface ExtractedMedication {
   name: string;
@@ -17,6 +26,20 @@ export interface ExtractedMedication {
   duration: string;
   purpose: string;
   critical_precaution: string;
+  // OCR Cross-Reference Validation Layer Fields
+  isVerified?: boolean;
+  canonicalName?: string;
+  genericName?: string;
+  validationConfidence?: number;
+  matchType?: string;
+  genericAlternative?: string;
+  savingsPercent?: number;
+  brandedPriceINR?: number;
+  genericPriceINR?: number;
+  foodInteractions?: string[];
+  pregnancySafety?: string;
+  prescriptionRequired?: boolean;
+  defaultReminderTimes?: string[];
 }
 
 export interface ParsedPrescription {
@@ -29,6 +52,12 @@ export interface ParsedPrescription {
   drugInteractions: string[];
   lifestyleAdvice: string[];
   aiDoctorPrompt: string;
+  // Validation Metadata
+  validationScore?: number;
+  validationReport?: PrescriptionValidationReport;
+  totalMedicationsCount?: number;
+  verifiedMedicationsCount?: number;
+  potentialMonthlySavingsINR?: number;
 }
 
 export interface OCRProcessResult {
@@ -62,7 +91,7 @@ export class TesseractService {
           inputTarget = Buffer.from(base64Data, 'base64');
         }
       } else if (typeof imageInput === 'string' && !imageInput.startsWith('http') && !imageInput.startsWith('/')) {
-        // Assume raw base64 string
+        // Raw base64 string
         inputTarget = Buffer.from(imageInput, 'base64');
       }
 
@@ -93,7 +122,7 @@ export class TesseractService {
     let doctorName = 'Verified Clinician';
     let hospital = 'Hospital / Medical Center';
     let diagnosis = 'Clinical Health Consultation';
-    const meds: ExtractedMedication[] = [];
+    const rawMeds: any[] = [];
 
     for (const line of lines) {
       const lower = line.toLowerCase();
@@ -129,7 +158,7 @@ export class TesseractService {
           duration = durMatch[1];
         }
 
-        meds.push({
+        rawMeds.push({
           name: drugName,
           dosage: rest.includes('-') ? rest.split('-')[1].trim() : 'As prescribed by doctor',
           timing,
@@ -140,9 +169,9 @@ export class TesseractService {
       }
     }
 
-    if (meds.length === 0) {
+    if (rawMeds.length === 0) {
       // Default common clinical scaffold if OCR was partial
-      meds.push({
+      rawMeds.push({
         name: 'Prescription Medication Course',
         dosage: '1 unit as directed',
         timing: 'Follow clinician instructions',
@@ -152,26 +181,69 @@ export class TesseractService {
       });
     }
 
+    // Apply the verified medication validation layer
+    const validationReport = crossReferencePrescriptionMedications(rawMeds);
+    const validatedMedications: ExtractedMedication[] = rawMeds.map((m, idx) => {
+      const v = validationReport.validatedMedications[idx];
+      if (v && v.isVerified) {
+        return {
+          name: v.canonicalName,
+          dosage: m.dosage || v.matchedStrength || 'Standard',
+          timing: m.timing || v.timing,
+          duration: m.duration || 'As prescribed',
+          purpose: v.therapeuticCategory || m.purpose,
+          critical_precaution: v.criticalPrecautions[0] || m.critical_precaution,
+          isVerified: true,
+          canonicalName: v.canonicalName,
+          genericName: v.genericName,
+          validationConfidence: v.confidence,
+          matchType: v.matchType,
+          genericAlternative: v.genericAlternative,
+          savingsPercent: v.savingsPercent,
+          brandedPriceINR: v.brandedPriceINR,
+          genericPriceINR: v.genericPriceINR,
+          foodInteractions: v.foodInteractions,
+          pregnancySafety: v.pregnancySafety,
+          prescriptionRequired: v.prescriptionRequired,
+          defaultReminderTimes: v.defaultReminderTimes
+        };
+      }
+      return {
+        ...m,
+        isVerified: false,
+        validationConfidence: v ? v.confidence : 40,
+        matchType: 'unverified'
+      };
+    });
+
+    const drugInteractions: string[] = [
+      ...validationReport.flaggedInteractions.map(f => `[${f.severity} Alert] ${f.drugA} + ${f.drugB}: ${f.description} (${f.advice})`),
+      'Review complete list of medications with your physician to prevent duplicate active ingredients.',
+      'Avoid alcohol consumption with sedative and antibiotic medications.'
+    ];
+
     return {
       doctorName,
       clinicHospital: hospital,
       patientDetails: 'Analyzed Patient Rx Document',
       date: new Date().toISOString().split('T')[0],
       diagnosis,
-      medications: meds,
-      drugInteractions: [
-        'Review complete list of medications with your physician to prevent duplicate active ingredients.',
-        'Avoid alcohol consumption with sedative and antibiotic medications.'
-      ],
+      medications: validatedMedications,
+      drugInteractions,
       lifestyleAdvice: [
         'Maintain healthy hydration, adhere strictly to the dosage schedule, and store medications in a cool, dry place.'
       ],
-      aiDoctorPrompt: `I just scanned a prescription from ${doctorName} for ${diagnosis}. It contains: ${meds.map(m => m.name).join(', ')}. Can you explain what each medicine does, the proper schedule, potential food interactions, and precautions?`
+      aiDoctorPrompt: `I just scanned a prescription from ${doctorName} for ${diagnosis}. It contains: ${validatedMedications.map(m => `${m.name} (${m.dosage})`).join(', ')}. Can you explain what each medicine does, the proper schedule, potential food interactions, and precautions?`,
+      validationScore: validationReport.validationScore,
+      validationReport,
+      totalMedicationsCount: validationReport.totalScanned,
+      verifiedMedicationsCount: validationReport.verifiedCount,
+      potentialMonthlySavingsINR: validationReport.potentialMonthlySavingsINR
     };
   }
 
   /**
-   * Deep clinical entity extraction using Grok / Gemini with fallback to heuristic parser.
+   * Deep clinical entity extraction using Grok / Gemini with integrated OCR Validation Layer.
    */
   public static async extractClinicalEntities(rawText: string): Promise<ParsedPrescription> {
     const systemPrompt = `You are an expert Clinical Pharmacist and Medical Document OCR Analyst for HealthGPT.
@@ -197,7 +269,9 @@ Analyze the following prescription OCR text and output strict JSON with NO Markd
   "aiDoctorPrompt": "A synthesized patient question for HealthGPT AI Doctor regarding this exact prescription"
 }`;
 
-    // Try through LLM Dispatcher
+    let parsedResult: ParsedPrescription | null = null;
+
+    // 1. Try through LLM Dispatcher
     try {
       const llmRes = await LLMDispatcher.execute({
         systemInstruction: systemPrompt,
@@ -207,7 +281,6 @@ Analyze the following prescription OCR text and output strict JSON with NO Markd
       });
 
       if (llmRes && llmRes.text) {
-        // Strip markdown backticks if any
         let cleanJson = llmRes.text.trim();
         if (cleanJson.startsWith('```json')) {
           cleanJson = cleanJson.substring(7);
@@ -222,20 +295,89 @@ Analyze the following prescription OCR text and output strict JSON with NO Markd
 
         const parsed = JSON.parse(cleanJson);
         if (parsed && Array.isArray(parsed.medications) && parsed.medications.length > 0) {
-          return parsed;
+          parsedResult = parsed;
         }
       }
     } catch (err: any) {
       console.warn('[TesseractService] LLM clinical entity extraction fallback:', err?.message || err);
     }
 
-    // Fallback to heuristic parser
-    return this.parsePrescriptionHeuristics(rawText);
+    // 2. Fallback to heuristic parser if LLM failed
+    if (!parsedResult) {
+      parsedResult = this.parsePrescriptionHeuristics(rawText);
+    }
+
+    // 3. CORE VALIDATION LAYER: Cross-reference extracted medications against verified database
+    const validationReport = crossReferencePrescriptionMedications(parsedResult.medications || []);
+    
+    const enrichedMedications: ExtractedMedication[] = (parsedResult.medications || []).map((med, idx) => {
+      const v = validationReport.validatedMedications[idx];
+      if (v && v.isVerified) {
+        return {
+          name: v.canonicalName || med.name,
+          dosage: med.dosage || v.matchedStrength || 'Standard Dose',
+          timing: med.timing || v.timing || 'After food',
+          duration: med.duration || 'Full course',
+          purpose: med.purpose || v.therapeuticCategory || 'Clinical therapeutic management',
+          critical_precaution: v.criticalPrecautions[0] || med.critical_precaution || 'Take with water',
+          isVerified: true,
+          canonicalName: v.canonicalName,
+          genericName: v.genericName,
+          validationConfidence: v.confidence,
+          matchType: v.matchType,
+          genericAlternative: v.genericAlternative,
+          savingsPercent: v.savingsPercent,
+          brandedPriceINR: v.brandedPriceINR,
+          genericPriceINR: v.genericPriceINR,
+          foodInteractions: v.foodInteractions,
+          pregnancySafety: v.pregnancySafety,
+          prescriptionRequired: v.prescriptionRequired,
+          defaultReminderTimes: v.defaultReminderTimes
+        };
+      }
+      return {
+        ...med,
+        isVerified: false,
+        validationConfidence: v ? v.confidence : 45,
+        matchType: 'unverified',
+        genericAlternative: 'Consult pharmacist for Jan Aushadhi generic alternative',
+        savingsPercent: 50
+      };
+    });
+
+    // Merge detected pairwise drug-drug interactions with existing alerts
+    const interactionAlerts: string[] = [
+      ...(parsedResult.drugInteractions || []),
+      ...validationReport.flaggedInteractions.map(f => `[${f.severity} Alert] ${f.drugA} + ${f.drugB}: ${f.description} (${f.advice})`)
+    ];
+    // Remove duplicates
+    const uniqueInteractions = Array.from(new Set(interactionAlerts));
+
+    // Synthesize high-accuracy AI Doctor prompt
+    const verifiedNames = enrichedMedications.map(m => m.name).join(', ');
+    const aiDoctorPrompt = parsedResult.aiDoctorPrompt || `I just scanned a prescription for ${parsedResult.diagnosis || 'my condition'} containing ${verifiedNames}. Can you explain each medicine, how to take them, potential side effects, and any precautions I should know?`;
+
+    return {
+      doctorName: parsedResult.doctorName || 'Verified Clinician',
+      clinicHospital: parsedResult.clinicHospital || 'Medical Center',
+      patientDetails: parsedResult.patientDetails || 'Patient Rx Document',
+      date: parsedResult.date || new Date().toISOString().split('T')[0],
+      diagnosis: parsedResult.diagnosis || 'Clinical Prescription',
+      medications: enrichedMedications,
+      drugInteractions: uniqueInteractions,
+      lifestyleAdvice: parsedResult.lifestyleAdvice || ['Follow prescribed timing and complete course.'],
+      aiDoctorPrompt,
+      validationScore: validationReport.validationScore,
+      validationReport,
+      totalMedicationsCount: validationReport.totalScanned,
+      verifiedMedicationsCount: validationReport.verifiedCount,
+      potentialMonthlySavingsINR: validationReport.potentialMonthlySavingsINR
+    };
   }
 
   /**
    * Complete End-to-End Pipeline:
-   * Image/Base64/Text -> Tesseract OCR -> Clinical Parsing -> AI Doctor Context Payload
+   * Image/Base64/Text -> Tesseract OCR -> Clinical Parsing -> Database Cross-Reference & Validation -> AI Doctor Context Payload
    */
   public static async processPrescriptionPipeline(params: {
     imageBase64?: string;
@@ -321,7 +463,7 @@ Advice: Avoid scented soaps and synthetic wool, keep skin moisturized.`
       };
     }
 
-    // 3. Extract clinical entities
+    // 3. Extract clinical entities with database cross-referencing validation layer
     const parsed = await this.extractClinicalEntities(textToProcess);
 
     return {

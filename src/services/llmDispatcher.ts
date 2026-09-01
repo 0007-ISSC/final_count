@@ -31,15 +31,244 @@ export interface LLMRequestOptions {
   prescriptionContext?: string;
 }
 
+export const HEALTHGPT_MEDICINE_AI_SYSTEM_PROMPT = `
+You are HealthGPT Medicine AI, an advanced, highly interactive clinical pharmacology and medication intelligence assistant.
+
+Your role is to provide engaging, ultra-clear, structured, and actionable information about medicines, chemical salts, mechanisms, safety, and generic alternatives.
+
+STYLE & FORMATTING GUIDELINES:
+- Structure your response cleanly using markdown bolding, clear sections, bullet points, and concise key takeaways.
+- Provide practical, direct insights:
+  1. 🔬 **Active Chemical Salt & Class**: Primary molecule, drug class, and therapeutic category.
+  2. 🩺 **Primary Uses & Mechanism**: What it does in the body in plain, clear language.
+  3. ⏱️ **Standard Dosage & Timing Rules**: Administration schedule (before/with/after food) and water intake.
+  4. ⚠️ **Common Side Effects & Precautions**: Mild vs. notable reactions and key organ considerations (liver/kidney).
+  5. 🥗 **Dietary & Food Interactions**: Specific foods/drinks to avoid (e.g. alcohol, grapefruit, dairy chelation).
+  6. 💰 **Jan Aushadhi Generic Equivalents**: Cost-effective generic options and approximate Indian market savings.
+- Keep the tone lively, helpful, and interactive.
+- DO NOT append repetitive legal disclaimers, caution footers, or boilerplate disclaimer warnings at the end of your response. Give the user direct, engaging, and high-value pharmacological guidance.
+`;
+
 let genAIClient: GoogleGenAI | null = null;
 
 export function getGenAIClient(): GoogleGenAI | null {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.HEALTHGPT_MEDICINE_AI || process.env.GEMINI_API_KEY;
   if (!apiKey) return null;
   if (!genAIClient) {
     genAIClient = new GoogleGenAI({ apiKey });
   }
   return genAIClient;
+}
+
+export interface MedicineGroundingSource {
+  title: string;
+  url: string;
+  sourceType?: string;
+}
+
+export interface MedicineAIResult {
+  text: string;
+  model: string;
+  source: string;
+  searchGrounded: boolean;
+  groundingSources?: MedicineGroundingSource[];
+  searchQueries?: string[];
+}
+
+export async function callMedicineAIService(
+  userPrompt: string,
+  history: string[] = []
+): Promise<MedicineAIResult | null> {
+  const ai = getGenAIClient();
+  if (!ai) return null;
+
+  try {
+    const recentConversation = history.slice(-10).join('\n');
+    const fullPrompt = `
+${HEALTHGPT_MEDICINE_AI_SYSTEM_PROMPT}
+
+${recentConversation ? `Previous conversation:\n${recentConversation}\n` : ''}
+User's latest question:
+${userPrompt}
+
+Use Google Search grounding to retrieve verified, up-to-date medical guidelines, clinical trials, FDA/CDSCO alerts, and drug interaction warnings for the specific medication or query.
+Respond naturally, clearly, and directly.
+`;
+
+    const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
+    
+    // Attempt with Google Search grounding tool
+    let response;
+    let searchGrounded = false;
+    const groundingSources: MedicineGroundingSource[] = [];
+    const searchQueries: string[] = [];
+
+    try {
+      response = await ai.models.generateContent({
+        model,
+        contents: fullPrompt,
+        config: {
+          tools: [{ googleSearch: {} }],
+          temperature: 0.3,
+        },
+      });
+      searchGrounded = true;
+    } catch (groundingErr: any) {
+      console.warn('[MedicineAIService] Google Search Grounding fallback:', groundingErr?.message || groundingErr);
+      // Fallback without tools if needed
+      response = await ai.models.generateContent({
+        model,
+        contents: fullPrompt,
+        config: {
+          temperature: 0.4,
+        },
+      });
+    }
+
+    if (response && response.text) {
+      // Extract Google Search grounding metadata if available
+      try {
+        const candidate = response.candidates?.[0];
+        const groundingMetadata = candidate?.groundingMetadata;
+        
+        if (groundingMetadata) {
+          if (Array.isArray(groundingMetadata.webSearchQueries)) {
+            searchQueries.push(...groundingMetadata.webSearchQueries);
+          }
+
+          if (Array.isArray(groundingMetadata.groundingChunks)) {
+            const seenUrls = new Set<string>();
+            for (const chunk of groundingMetadata.groundingChunks) {
+              const uri = chunk.web?.uri;
+              const title = chunk.web?.title || 'Verified Medical Reference';
+              if (uri && !seenUrls.has(uri)) {
+                seenUrls.add(uri);
+                let sourceType = 'Medical Reference';
+                const lowerUri = uri.toLowerCase();
+                if (lowerUri.includes('fda.gov')) sourceType = 'FDA Official';
+                else if (lowerUri.includes('cdsco.gov') || lowerUri.includes('mohfw')) sourceType = 'CDSCO / MoHFW India';
+                else if (lowerUri.includes('nih.gov') || lowerUri.includes('pubmed') || lowerUri.includes('ncbi')) sourceType = 'PubMed / NIH';
+                else if (lowerUri.includes('who.int')) sourceType = 'WHO Guidelines';
+                else if (lowerUri.includes('mayoclinic') || lowerUri.includes('hopkinsmedicine')) sourceType = 'Clinical Hospital';
+                else if (lowerUri.includes('drugs.com') || lowerUri.includes('webmd') || lowerUri.includes('medscape')) sourceType = 'Pharmacology Monograph';
+                else if (lowerUri.includes('nice.org.uk')) sourceType = 'NICE Clinical Guidelines';
+
+                groundingSources.push({
+                  title: title.replace(/ - PubMed| - FDA| - Mayo Clinic/gi, '').trim(),
+                  url: uri,
+                  sourceType
+                });
+              }
+            }
+          }
+        }
+      } catch (metaErr) {
+        console.warn('[MedicineAIService] Error parsing grounding metadata:', metaErr);
+      }
+
+      return {
+        text: response.text.trim(),
+        model,
+        source: searchGrounded && groundingSources.length > 0
+          ? 'HealthGPT Medicine AI (Gemini 3.7 Flash + Live Google Search Grounding)'
+          : 'HealthGPT Medicine AI (Gemini Flash)',
+        searchGrounded: searchGrounded && groundingSources.length > 0,
+        groundingSources: groundingSources.slice(0, 6),
+        searchQueries: searchQueries.slice(0, 5),
+      };
+    }
+  } catch (err: any) {
+    console.warn('[MedicineAIService] Generation failed:', err?.message || err);
+  }
+  return null;
+}
+
+export async function fetchVerifiedMedicalGuidelines(queryOrMedicine: string): Promise<{
+  guidelines: string;
+  sources: MedicineGroundingSource[];
+  searchQueries: string[];
+  success: boolean;
+}> {
+  const ai = getGenAIClient();
+  if (!ai) {
+    return {
+      guidelines: `Pharmacological guidelines for ${queryOrMedicine}: Follow standard CDSCO / FDA administration protocols, monitor therapeutic dosage limits, and avoid simultaneous CYP3A4 / renal chelation agents.`,
+      sources: [],
+      searchQueries: [],
+      success: false
+    };
+  }
+
+  try {
+    const prompt = `
+You are a verified clinical pharmacology search engine.
+Perform a live Google Search to fetch verified, current medical guidelines, drug interaction warnings, FDA/CDSCO alerts, dosage adjustments, and safety advisories for:
+"${queryOrMedicine}"
+
+Provide a concise, highly structured clinical summary in markdown:
+1. 🏛️ **Official Regulatory Approvals & Indications** (CDSCO / FDA)
+2. ⚠️ **Critical Boxed Warnings & Interaction Alerts** (Black box warnings, high-risk drug-drug combinations)
+3. 🩺 **Clinical Guideline Recommendations** (First-line usage, dosing precautions, renal/hepatic adjustments)
+4. 🔬 **Recent Clinical Trial Findings & Evidence Updates**
+5. 🛡️ **Patient Monitoring Parameters** (Laboratory markers, vitals to track)
+
+Keep it direct, professional, and free of disclaimers.
+`;
+
+    const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
+    const response = await ai.models.generateContent({
+      model,
+      contents: prompt,
+      config: {
+        tools: [{ googleSearch: {} }],
+        temperature: 0.2,
+      },
+    });
+
+    const sources: MedicineGroundingSource[] = [];
+    const searchQueries: string[] = [];
+    const candidate = response.candidates?.[0];
+    const groundingMetadata = candidate?.groundingMetadata;
+
+    if (groundingMetadata) {
+      if (Array.isArray(groundingMetadata.webSearchQueries)) {
+        searchQueries.push(...groundingMetadata.webSearchQueries);
+      }
+      if (Array.isArray(groundingMetadata.groundingChunks)) {
+        const seen = new Set<string>();
+        for (const chunk of groundingMetadata.groundingChunks) {
+          const uri = chunk.web?.uri;
+          const title = chunk.web?.title || 'Verified Clinical Source';
+          if (uri && !seen.has(uri)) {
+            seen.add(uri);
+            let sourceType = 'Medical Evidence';
+            const lUri = uri.toLowerCase();
+            if (lUri.includes('fda.gov')) sourceType = 'FDA Official';
+            else if (lUri.includes('cdsco') || lUri.includes('mohfw')) sourceType = 'CDSCO India';
+            else if (lUri.includes('nih.gov') || lUri.includes('pubmed')) sourceType = 'PubMed / NIH';
+            else if (lUri.includes('who.int')) sourceType = 'WHO Guidelines';
+            else if (lUri.includes('nice.org.uk')) sourceType = 'NICE UK';
+            sources.push({ title, url: uri, sourceType });
+          }
+        }
+      }
+    }
+
+    return {
+      guidelines: response.text ? response.text.trim() : 'No real-time guidelines returned.',
+      sources: sources.slice(0, 8),
+      searchQueries: searchQueries.slice(0, 6),
+      success: true
+    };
+  } catch (err: any) {
+    console.warn('[fetchVerifiedMedicalGuidelines Error]:', err?.message || err);
+    return {
+      guidelines: `Clinical guidance for ${queryOrMedicine}: Refer to standard pharmacopoeia monographs. Verify renal, hepatic, and concomitant medications.`,
+      sources: [],
+      searchQueries: [],
+      success: false
+    };
+  }
 }
 
 export async function callGeminiService(
@@ -76,13 +305,20 @@ export class LLMDispatcher {
    */
   public static getStatus() {
     const grokConfig = GrokService.getConfig();
-    const hasGemini = Boolean(process.env.GEMINI_API_KEY);
+    const hasGemini = Boolean(process.env.GEMINI_API_KEY || process.env.HEALTHGPT_MEDICINE_AI);
+
+    const providerLabels: Record<string, string> = {
+      xai: 'xAI',
+      groq: 'Groq Cloud',
+      openai: 'OpenAI',
+      generic: 'Custom LLM',
+    };
 
     return {
       grok: {
         available: grokConfig.isConfigured,
         model: grokConfig.model,
-        provider: 'xAI',
+        provider: providerLabels[grokConfig.provider] || 'xAI',
         endpoint: grokConfig.baseUrl,
       },
       gemini: {

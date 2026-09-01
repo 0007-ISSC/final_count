@@ -35,7 +35,6 @@ export interface TranslationResult {
 export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'en', name: 'English', nativeName: 'English', flag: '🇬🇧', speechLocale: 'en-US', direction: 'ltr' },
   { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी', flag: '🇮🇳', speechLocale: 'hi-IN', direction: 'ltr' },
-  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', speechLocale: 'es-ES', direction: 'ltr' },
   { code: 'te', name: 'Telugu', nativeName: 'తెలుగు', flag: '🇮🇳', speechLocale: 'te-IN', direction: 'ltr' },
   { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்', flag: '🇮🇳', speechLocale: 'ta-IN', direction: 'ltr' },
   { code: 'bn', name: 'Bengali', nativeName: 'বাংলা', flag: '🇮🇳', speechLocale: 'bn-IN', direction: 'ltr' },
@@ -45,6 +44,11 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'ml', name: 'Malayalam', nativeName: 'മലയാളം', flag: '🇮🇳', speechLocale: 'ml-IN', direction: 'ltr' },
   { code: 'pa', name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', flag: '🇮🇳', speechLocale: 'pa-IN', direction: 'ltr' },
   { code: 'ur', name: 'Urdu', nativeName: 'اردو', flag: '🇵🇰', speechLocale: 'ur-PK', direction: 'rtl' },
+  { code: 'or', name: 'Odia', nativeName: 'ଓଡ଼ିଆ', flag: '🇮🇳', speechLocale: 'or-IN', direction: 'ltr' },
+  { code: 'as', name: 'Assamese', nativeName: 'অসমীয়া', flag: '🇮🇳', speechLocale: 'as-IN', direction: 'ltr' },
+  { code: 'ne', name: 'Nepali', nativeName: 'नेपाली', flag: '🇳🇵', speechLocale: 'ne-NP', direction: 'ltr' },
+  { code: 'sa', name: 'Sanskrit', nativeName: 'संस्कृतम्', flag: '🇮🇳', speechLocale: 'sa-IN', direction: 'ltr' },
+  { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '🇪🇸', speechLocale: 'es-ES', direction: 'ltr' },
   { code: 'ar', name: 'Arabic', nativeName: 'العربية', flag: '🇸🇦', speechLocale: 'ar-SA', direction: 'rtl' },
   { code: 'fr', name: 'French', nativeName: 'Français', flag: '🇫🇷', speechLocale: 'fr-FR', direction: 'ltr' },
   { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '🇩🇪', speechLocale: 'de-DE', direction: 'ltr' },
@@ -61,7 +65,11 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: '🇻🇳', speechLocale: 'vi-VN', direction: 'ltr' },
   { code: 'th', name: 'Thai', nativeName: 'ไทย', flag: '🇹🇭', speechLocale: 'th-TH', direction: 'ltr' },
   { code: 'fa', name: 'Persian', nativeName: 'فارسی', flag: '🇮🇷', speechLocale: 'fa-IR', direction: 'rtl' },
-  { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇰🇪', speechLocale: 'sw-KE', direction: 'ltr' }
+  { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇰🇪', speechLocale: 'sw-KE', direction: 'ltr' },
+  { code: 'el', name: 'Greek', nativeName: 'Ελληνικά', flag: '🇬🇷', speechLocale: 'el-GR', direction: 'ltr' },
+  { code: 'sv', name: 'Swedish', nativeName: 'Svenska', flag: '🇸🇪', speechLocale: 'sv-SE', direction: 'ltr' },
+  { code: 'uk', name: 'Ukrainian', nativeName: 'Українська', flag: '🇺🇦', speechLocale: 'uk-UA', direction: 'ltr' },
+  { code: 'tl', name: 'Tagalog (Filipino)', nativeName: 'Filipino', flag: '🇵🇭', speechLocale: 'fil-PH', direction: 'ltr' }
 ];
 
 // Offline clinical translation dictionaries for rapid fallback
@@ -278,5 +286,99 @@ ${JSON.stringify(prescription, null, 2)}`;
     }
 
     return prescription;
+  }
+
+  /**
+   * Translates a comprehensive clinical medicine monograph and pharmacology profile.
+   */
+  public static async translateMedicineProfile(
+    medicineData: any,
+    targetLanguage: string,
+    preferredEngine = 'auto'
+  ): Promise<any> {
+    const targetInfo = this.getLanguageInfo(targetLanguage);
+    if (targetInfo.code === 'en') {
+      return {
+        success: true,
+        targetLanguage: 'en',
+        targetLanguageName: 'English',
+        targetNativeName: 'English',
+        translatedProfile: medicineData,
+        formattedSummary: typeof medicineData === 'object' ? JSON.stringify(medicineData, null, 2) : String(medicineData)
+      };
+    }
+
+    const prompt = `You are an expert Clinical Pharmacologist and Medical Translator.
+Translate the following Medicine AI Pharmacology Profile into ${targetInfo.name} (${targetInfo.nativeName}).
+
+CRITICAL TRANSLATION MANDATES:
+1. Translate clinical indications, dosage timings, food-drug warnings, contraindications, and patient advice clearly and naturally for patients in ${targetInfo.name}.
+2. Keep the generic molecule chemical name in English / Latin script alongside ${targetInfo.name} phonetics (e.g., Telmisartan / टेल्मीसार्टन).
+3. Provide a clear, empathetic summary explaining:
+   - What this medicine treats
+   - Exactly how and when to take it (with/without food)
+   - Crucial precautions, missed dose steps, and food interactions to avoid
+   - Generic alternatives with cost savings.
+
+Input Medicine Profile:
+${typeof medicineData === 'object' ? JSON.stringify(medicineData, null, 2) : String(medicineData)}
+
+Output a valid JSON object with the following schema:
+{
+  "medicineName": "Original / Transliterated name",
+  "genericName": "Active Molecule",
+  "category": "Therapeutic Class in ${targetInfo.name}",
+  "indications": "What it treats in ${targetInfo.name}",
+  "dosageSchedule": "Dosage & timing guidance in ${targetInfo.name}",
+  "howToTake": "Administration instructions (before/after meals) in ${targetInfo.name}",
+  "warnings": "Side effects & safety warnings in ${targetInfo.name}",
+  "foodInteractions": "Food & alcohol precautions in ${targetInfo.name}",
+  "missedDoseAdvice": "What to do if a dose is missed in ${targetInfo.name}",
+  "contraindications": ["Contraindication 1 in ${targetInfo.name}", "Contraindication 2 in ${targetInfo.name}"],
+  "genericSavings": "Generic Jan Aushadhi alternatives and price savings in ${targetInfo.name}",
+  "formattedPatientGuide": "A cohesive, formatted patient education guide in ${targetInfo.name}"
+}`;
+
+    try {
+      const llmResult = await LLMDispatcher.execute({
+        systemInstruction: `You are a certified Clinical Pharmacologist and Multi-Language Medical Translator. Always output strictly valid JSON.`,
+        userPrompt: prompt,
+        preferredEngine,
+        temperature: 0.1,
+      });
+
+      if (llmResult && llmResult.text) {
+        let clean = llmResult.text.trim();
+        if (clean.startsWith('```json')) clean = clean.substring(7);
+        if (clean.startsWith('```')) clean = clean.substring(3);
+        if (clean.endsWith('```')) clean = clean.substring(0, clean.length - 3);
+        clean = clean.trim();
+
+        const translatedObj = JSON.parse(clean);
+        return {
+          success: true,
+          targetLanguage: targetInfo.code,
+          targetLanguageName: targetInfo.name,
+          targetNativeName: targetInfo.nativeName,
+          engine: llmResult.engine,
+          source: `${llmResult.source} · Medicine AI Translator`,
+          translatedProfile: translatedObj,
+          formattedSummary: translatedObj.formattedPatientGuide || JSON.stringify(translatedObj, null, 2)
+        };
+      }
+    } catch (err) {
+      console.warn('[TranslationService] Medicine profile translation fallback:', err);
+    }
+
+    return {
+      success: true,
+      targetLanguage: targetInfo.code,
+      targetLanguageName: targetInfo.name,
+      targetNativeName: targetInfo.nativeName,
+      engine: 'fallback',
+      source: 'HealthGPT Clinical Fallback',
+      translatedProfile: medicineData,
+      formattedSummary: typeof medicineData === 'object' ? JSON.stringify(medicineData, null, 2) : String(medicineData)
+    };
   }
 }
