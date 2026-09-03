@@ -1,6 +1,6 @@
 {
   "name": "HealthGPT",
-  "description": "Comprehensive AI healthcare platform featuring ChatGPT-grade interactive AI consultations with dedicated AI Doctor and AI Therapist, real-time speech-to-text voice, typewriter streaming responses with stop controls, AI prompt enhancement, dynamic interactive follow-up chips, multi-language switching, 2-minute calming breathing coach, somatic grounding, CBT reframing, instant vitals triage, and emergency telemetry.",
+  "description": "Comprehensive AI healthcare platform connected to Supabase backend (project aympyxmjgbgmcvcdnzyt) featuring interactive AI consultations with dedicated AI Doctor and AI Therapist, real-time speech-to-text voice, typewriter streaming responses, emergency medical profile & SOS beacons, digital prescriptions with chemical conflict radar, medication reminders, appointment booking, and clinical analytics.",
   "requestFramePermissions": [
     "camera",
     "microphone",

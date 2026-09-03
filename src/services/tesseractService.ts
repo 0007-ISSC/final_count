@@ -9,15 +9,15 @@
  */
 
 import { createWorker, type Worker } from 'tesseract.js';
-import { LLMDispatcher } from './llmDispatcher.js';
-import { GrokService } from './grokService.js';
+import { LLMDispatcher } from './llmDispatcher.ts';
+import { GrokService } from './grokService.ts';
 import {
   crossReferencePrescriptionMedications,
   validateAndCrossReferenceDrug,
   lookupMedicineComprehensive,
   type PrescriptionValidationReport,
   type DrugValidationResult,
-} from '../data/medicinesData.js';
+} from '../data/medicinesData.ts';
 
 export interface ExtractedMedication {
   name: string;

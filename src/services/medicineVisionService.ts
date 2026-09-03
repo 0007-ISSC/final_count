@@ -6,7 +6,7 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
-import { lookupMedicineComprehensive, MEDICINES_DATA } from '../data/medicinesData.js';
+import { lookupMedicineComprehensive, MEDICINES_DATA } from '../data/medicinesData.ts';
 
 export interface ScannedMedicineResult {
   brandName: string;
@@ -62,9 +62,16 @@ export class MedicineVisionService {
     const client = this.getClient();
 
     if (client) {
-      try {
-        const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-        const prompt = `
+      const candidates = Array.from(new Set([
+        process.env.GEMINI_MODEL?.trim(),
+        'gemini-2.5-flash',
+        'gemini-3.8-flash',
+        'gemini-2.5-flash-lite',
+      ].filter(Boolean) as string[]));
+
+      for (const model of candidates) {
+        try {
+          const prompt = `
 You are HealthGPT Medicine AI Vision Scanner.
 Analyze this image of a medicine strip, box, blister pack, syrup bottle, tablet, or medical packaging.
 
@@ -109,37 +116,38 @@ Extract all details and return ONLY a valid JSON object matching this exact sche
 If any detail is not strictly visible in the image, use standard pharmacological knowledge for that identified molecule.
 `;
 
-        const response = await client.models.generateContent({
-          model,
-          contents: [
-            {
-              role: 'user',
-              parts: [
-                { text: prompt },
-                {
-                  inlineData: {
-                    mimeType,
-                    data: cleanBase64,
+          const response = await client.models.generateContent({
+            model,
+            contents: [
+              {
+                role: 'user',
+                parts: [
+                  { text: prompt },
+                  {
+                    inlineData: {
+                      mimeType,
+                      data: cleanBase64,
+                    },
                   },
-                },
-              ],
+                ],
+              },
+            ],
+            config: {
+              temperature: 0.2,
+              responseMimeType: 'application/json',
             },
-          ],
-          config: {
-            temperature: 0.2,
-            responseMimeType: 'application/json',
-          },
-        });
+          });
 
-        if (response && response.text) {
-          const parsed = JSON.parse(response.text.trim());
-          return {
-            ...parsed,
-            engine: 'gemini-vision',
-          };
+          if (response && response.text) {
+            const parsed = JSON.parse(response.text.trim());
+            return {
+              ...parsed,
+              engine: 'gemini-vision',
+            };
+          }
+        } catch (err: any) {
+          console.warn(`[MedicineVisionService] Gemini Vision on ${model} failed, attempting next:`, err?.message || err);
         }
-      } catch (err: any) {
-        console.warn('[MedicineVisionService] Gemini Vision API call failed, using intelligent fallback:', err?.message || err);
       }
     }
 

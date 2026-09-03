@@ -7,7 +7,7 @@
  */
 
 import { GoogleGenAI } from '@google/genai';
-import { GrokService } from './grokService.js';
+import { GrokService } from './grokService.ts';
 
 export interface LLMCompletionResult {
   text: string;
@@ -60,6 +60,23 @@ export function getGenAIClient(): GoogleGenAI | null {
   return genAIClient;
 }
 
+/**
+ * Returns prioritized Gemini model candidates to handle spikes in demand (503)
+ * or rate limits (429) gracefully without failing user requests.
+ */
+export function getGeminiCandidateModels(): string[] {
+  const custom = process.env.GEMINI_MODEL?.trim();
+  const candidates = [
+    custom,
+    'gemini-3.8-flash',
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+  ].filter(Boolean) as string[];
+
+  // Deduplicate preserving priority order
+  return Array.from(new Set(candidates));
+}
+
 export interface MedicineGroundingSource {
   title: string;
   url: string;
@@ -82,9 +99,8 @@ export async function callMedicineAIService(
   const ai = getGenAIClient();
   if (!ai) return null;
 
-  try {
-    const recentConversation = history.slice(-10).join('\n');
-    const fullPrompt = `
+  const recentConversation = history.slice(-10).join('\n');
+  const fullPrompt = `
 ${HEALTHGPT_MEDICINE_AI_SYSTEM_PROMPT}
 
 ${recentConversation ? `Previous conversation:\n${recentConversation}\n` : ''}
@@ -95,91 +111,94 @@ Use Google Search grounding to retrieve verified, up-to-date medical guidelines,
 Respond naturally, clearly, and directly.
 `;
 
-    const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
-    
-    // Attempt with Google Search grounding tool
-    let response;
-    let searchGrounded = false;
-    const groundingSources: MedicineGroundingSource[] = [];
-    const searchQueries: string[] = [];
+  const candidateModels = getGeminiCandidateModels();
 
+  for (const model of candidateModels) {
     try {
-      response = await ai.models.generateContent({
-        model,
-        contents: fullPrompt,
-        config: {
-          tools: [{ googleSearch: {} }],
-          temperature: 0.3,
-        },
-      });
-      searchGrounded = true;
-    } catch (groundingErr: any) {
-      console.warn('[MedicineAIService] Google Search Grounding fallback:', groundingErr?.message || groundingErr);
-      // Fallback without tools if needed
-      response = await ai.models.generateContent({
-        model,
-        contents: fullPrompt,
-        config: {
-          temperature: 0.4,
-        },
-      });
-    }
+      let response: any = null;
+      let searchGrounded = false;
+      const groundingSources: MedicineGroundingSource[] = [];
+      const searchQueries: string[] = [];
 
-    if (response && response.text) {
-      // Extract Google Search grounding metadata if available
       try {
-        const candidate = response.candidates?.[0];
-        const groundingMetadata = candidate?.groundingMetadata;
-        
-        if (groundingMetadata) {
-          if (Array.isArray(groundingMetadata.webSearchQueries)) {
-            searchQueries.push(...groundingMetadata.webSearchQueries);
-          }
+        response = await ai.models.generateContent({
+          model,
+          contents: fullPrompt,
+          config: {
+            tools: [{ googleSearch: {} }],
+            temperature: 0.3,
+          },
+        });
+        searchGrounded = true;
+      } catch (groundingErr: any) {
+        console.warn(`[MedicineAIService] Search Grounding fallback on ${model}:`, groundingErr?.message || groundingErr);
+        // Fallback without search tool on this model
+        response = await ai.models.generateContent({
+          model,
+          contents: fullPrompt,
+          config: {
+            temperature: 0.4,
+          },
+        });
+      }
 
-          if (Array.isArray(groundingMetadata.groundingChunks)) {
-            const seenUrls = new Set<string>();
-            for (const chunk of groundingMetadata.groundingChunks) {
-              const uri = chunk.web?.uri;
-              const title = chunk.web?.title || 'Verified Medical Reference';
-              if (uri && !seenUrls.has(uri)) {
-                seenUrls.add(uri);
-                let sourceType = 'Medical Reference';
-                const lowerUri = uri.toLowerCase();
-                if (lowerUri.includes('fda.gov')) sourceType = 'FDA Official';
-                else if (lowerUri.includes('cdsco.gov') || lowerUri.includes('mohfw')) sourceType = 'CDSCO / MoHFW India';
-                else if (lowerUri.includes('nih.gov') || lowerUri.includes('pubmed') || lowerUri.includes('ncbi')) sourceType = 'PubMed / NIH';
-                else if (lowerUri.includes('who.int')) sourceType = 'WHO Guidelines';
-                else if (lowerUri.includes('mayoclinic') || lowerUri.includes('hopkinsmedicine')) sourceType = 'Clinical Hospital';
-                else if (lowerUri.includes('drugs.com') || lowerUri.includes('webmd') || lowerUri.includes('medscape')) sourceType = 'Pharmacology Monograph';
-                else if (lowerUri.includes('nice.org.uk')) sourceType = 'NICE Clinical Guidelines';
+      if (response && response.text) {
+        // Extract Google Search grounding metadata if available
+        try {
+          const candidate = response.candidates?.[0];
+          const groundingMetadata = candidate?.groundingMetadata;
 
-                groundingSources.push({
-                  title: title.replace(/ - PubMed| - FDA| - Mayo Clinic/gi, '').trim(),
-                  url: uri,
-                  sourceType
-                });
+          if (groundingMetadata) {
+            if (Array.isArray(groundingMetadata.webSearchQueries)) {
+              searchQueries.push(...groundingMetadata.webSearchQueries);
+            }
+
+            if (Array.isArray(groundingMetadata.groundingChunks)) {
+              const seenUrls = new Set<string>();
+              for (const chunk of groundingMetadata.groundingChunks) {
+                const uri = chunk.web?.uri;
+                const title = chunk.web?.title || 'Verified Medical Reference';
+                if (uri && !seenUrls.has(uri)) {
+                  seenUrls.add(uri);
+                  let sourceType = 'Medical Reference';
+                  const lowerUri = uri.toLowerCase();
+                  if (lowerUri.includes('fda.gov')) sourceType = 'FDA Official';
+                  else if (lowerUri.includes('cdsco.gov') || lowerUri.includes('mohfw')) sourceType = 'CDSCO / MoHFW India';
+                  else if (lowerUri.includes('nih.gov') || lowerUri.includes('pubmed') || lowerUri.includes('ncbi')) sourceType = 'PubMed / NIH';
+                  else if (lowerUri.includes('who.int')) sourceType = 'WHO Guidelines';
+                  else if (lowerUri.includes('mayoclinic') || lowerUri.includes('hopkinsmedicine')) sourceType = 'Clinical Hospital';
+                  else if (lowerUri.includes('drugs.com') || lowerUri.includes('webmd') || lowerUri.includes('medscape')) sourceType = 'Pharmacology Monograph';
+                  else if (lowerUri.includes('nice.org.uk')) sourceType = 'NICE Clinical Guidelines';
+
+                  groundingSources.push({
+                    title: title.replace(/ - PubMed| - FDA| - Mayo Clinic/gi, '').trim(),
+                    url: uri,
+                    sourceType,
+                  });
+                }
               }
             }
           }
+        } catch (metaErr) {
+          console.warn('[MedicineAIService] Error parsing grounding metadata:', metaErr);
         }
-      } catch (metaErr) {
-        console.warn('[MedicineAIService] Error parsing grounding metadata:', metaErr);
-      }
 
-      return {
-        text: response.text.trim(),
-        model,
-        source: searchGrounded && groundingSources.length > 0
-          ? 'HealthGPT Medicine AI (Gemini 3.7 Flash + Live Google Search Grounding)'
-          : 'HealthGPT Medicine AI (Gemini Flash)',
-        searchGrounded: searchGrounded && groundingSources.length > 0,
-        groundingSources: groundingSources.slice(0, 6),
-        searchQueries: searchQueries.slice(0, 5),
-      };
+        return {
+          text: response.text.trim(),
+          model,
+          source: searchGrounded && groundingSources.length > 0
+            ? `HealthGPT Medicine AI (${model} + Live Search Grounding)`
+            : `HealthGPT Medicine AI (${model})`,
+          searchGrounded: searchGrounded && groundingSources.length > 0,
+          groundingSources: groundingSources.slice(0, 6),
+          searchQueries: searchQueries.slice(0, 5),
+        };
+      }
+    } catch (err: any) {
+      console.warn(`[MedicineAIService] Generation failed on model ${model}, attempting fallback:`, err?.message || err);
     }
-  } catch (err: any) {
-    console.warn('[MedicineAIService] Generation failed:', err?.message || err);
   }
+
   return null;
 }
 
@@ -195,12 +214,11 @@ export async function fetchVerifiedMedicalGuidelines(queryOrMedicine: string): P
       guidelines: `Pharmacological guidelines for ${queryOrMedicine}: Follow standard CDSCO / FDA administration protocols, monitor therapeutic dosage limits, and avoid simultaneous CYP3A4 / renal chelation agents.`,
       sources: [],
       searchQueries: [],
-      success: false
+      success: false,
     };
   }
 
-  try {
-    const prompt = `
+  const prompt = `
 You are a verified clinical pharmacology search engine.
 Perform a live Google Search to fetch verified, current medical guidelines, drug interaction warnings, FDA/CDSCO alerts, dosage adjustments, and safety advisories for:
 "${queryOrMedicine}"
@@ -215,60 +233,65 @@ Provide a concise, highly structured clinical summary in markdown:
 Keep it direct, professional, and free of disclaimers.
 `;
 
-    const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
-    const response = await ai.models.generateContent({
-      model,
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-        temperature: 0.2,
-      },
-    });
+  const candidateModels = getGeminiCandidateModels();
 
-    const sources: MedicineGroundingSource[] = [];
-    const searchQueries: string[] = [];
-    const candidate = response.candidates?.[0];
-    const groundingMetadata = candidate?.groundingMetadata;
+  for (const model of candidateModels) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: prompt,
+        config: {
+          tools: [{ googleSearch: {} }],
+          temperature: 0.2,
+        },
+      });
 
-    if (groundingMetadata) {
-      if (Array.isArray(groundingMetadata.webSearchQueries)) {
-        searchQueries.push(...groundingMetadata.webSearchQueries);
-      }
-      if (Array.isArray(groundingMetadata.groundingChunks)) {
-        const seen = new Set<string>();
-        for (const chunk of groundingMetadata.groundingChunks) {
-          const uri = chunk.web?.uri;
-          const title = chunk.web?.title || 'Verified Clinical Source';
-          if (uri && !seen.has(uri)) {
-            seen.add(uri);
-            let sourceType = 'Medical Evidence';
-            const lUri = uri.toLowerCase();
-            if (lUri.includes('fda.gov')) sourceType = 'FDA Official';
-            else if (lUri.includes('cdsco') || lUri.includes('mohfw')) sourceType = 'CDSCO India';
-            else if (lUri.includes('nih.gov') || lUri.includes('pubmed')) sourceType = 'PubMed / NIH';
-            else if (lUri.includes('who.int')) sourceType = 'WHO Guidelines';
-            else if (lUri.includes('nice.org.uk')) sourceType = 'NICE UK';
-            sources.push({ title, url: uri, sourceType });
+      const sources: MedicineGroundingSource[] = [];
+      const searchQueries: string[] = [];
+      const candidate = response.candidates?.[0];
+      const groundingMetadata = candidate?.groundingMetadata;
+
+      if (groundingMetadata) {
+        if (Array.isArray(groundingMetadata.webSearchQueries)) {
+          searchQueries.push(...groundingMetadata.webSearchQueries);
+        }
+        if (Array.isArray(groundingMetadata.groundingChunks)) {
+          const seen = new Set<string>();
+          for (const chunk of groundingMetadata.groundingChunks) {
+            const uri = chunk.web?.uri;
+            const title = chunk.web?.title || 'Verified Clinical Source';
+            if (uri && !seen.has(uri)) {
+              seen.add(uri);
+              let sourceType = 'Medical Evidence';
+              const lUri = uri.toLowerCase();
+              if (lUri.includes('fda.gov')) sourceType = 'FDA Official';
+              else if (lUri.includes('cdsco') || lUri.includes('mohfw')) sourceType = 'CDSCO India';
+              else if (lUri.includes('nih.gov') || lUri.includes('pubmed')) sourceType = 'PubMed / NIH';
+              else if (lUri.includes('who.int')) sourceType = 'WHO Guidelines';
+              else if (lUri.includes('nice.org.uk')) sourceType = 'NICE UK';
+              sources.push({ title, url: uri, sourceType });
+            }
           }
         }
       }
-    }
 
-    return {
-      guidelines: response.text ? response.text.trim() : 'No real-time guidelines returned.',
-      sources: sources.slice(0, 8),
-      searchQueries: searchQueries.slice(0, 6),
-      success: true
-    };
-  } catch (err: any) {
-    console.warn('[fetchVerifiedMedicalGuidelines Error]:', err?.message || err);
-    return {
-      guidelines: `Clinical guidance for ${queryOrMedicine}: Refer to standard pharmacopoeia monographs. Verify renal, hepatic, and concomitant medications.`,
-      sources: [],
-      searchQueries: [],
-      success: false
-    };
+      return {
+        guidelines: response.text ? response.text.trim() : 'No real-time guidelines returned.',
+        sources: sources.slice(0, 8),
+        searchQueries: searchQueries.slice(0, 6),
+        success: true,
+      };
+    } catch (err: any) {
+      console.warn(`[fetchVerifiedMedicalGuidelines] Model ${model} failed, attempting next candidate:`, err?.message || err);
+    }
   }
+
+  return {
+    guidelines: `Clinical guidance for ${queryOrMedicine}: Refer to standard pharmacopoeia monographs. Verify renal, hepatic, and concomitant medications.`,
+    sources: [],
+    searchQueries: [],
+    success: false,
+  };
 }
 
 export async function callGeminiService(
@@ -279,23 +302,28 @@ export async function callGeminiService(
   const ai = getGenAIClient();
   if (!ai) return null;
 
-  try {
-    const model = process.env.GEMINI_MODEL || 'gemini-3.7-flash';
-    const response = await ai.models.generateContent({
-      model,
-      contents: userPrompt,
-      config: {
-        systemInstruction,
-        temperature,
-      },
-    });
+  const candidateModels = getGeminiCandidateModels();
 
-    if (response && response.text) {
-      return { text: response.text.trim(), model };
+  for (const model of candidateModels) {
+    try {
+      const response = await ai.models.generateContent({
+        model,
+        contents: userPrompt,
+        config: {
+          systemInstruction,
+          temperature,
+        },
+      });
+
+      if (response && response.text) {
+        return { text: response.text.trim(), model };
+      }
+    } catch (err: any) {
+      console.warn(`[GeminiService] Generation failed on model ${model}:`, err?.message || err);
+      // Automatically attempts next candidate model (e.g., gemini-3.8-flash -> gemini-2.5-flash)
     }
-  } catch (err: any) {
-    console.warn('[GeminiService] Generation failed:', err?.message || err);
   }
+
   return null;
 }
 
@@ -323,7 +351,7 @@ export class LLMDispatcher {
       },
       gemini: {
         available: hasGemini,
-        model: process.env.GEMINI_MODEL || 'gemini-3.7-flash',
+        model: process.env.GEMINI_MODEL || 'gemini-3.8-flash',
         provider: 'Google AI',
       },
       active_default: grokConfig.isConfigured ? 'grok' : (hasGemini ? 'gemini' : 'local'),
@@ -369,7 +397,7 @@ export class LLMDispatcher {
       if (geminiRes) {
         return {
           text: geminiRes.text,
-          source: `Gemini 3.7 Flash · Google AI`,
+          source: `${geminiRes.model} · Google AI`,
           engine: 'gemini',
           model: geminiRes.model,
         };
@@ -383,7 +411,7 @@ export class LLMDispatcher {
       if (geminiRes) {
         return {
           text: geminiRes.text,
-          source: `Gemini 3.7 Flash · Google AI`,
+          source: `${geminiRes.model} · Google AI`,
           engine: 'gemini',
           model: geminiRes.model,
         };
@@ -434,7 +462,7 @@ export class LLMDispatcher {
     if (geminiRes) {
       return {
         text: geminiRes.text,
-        source: `Gemini 3.7 Flash · Google AI`,
+        source: `${geminiRes.model} · Google AI`,
         engine: 'gemini',
         model: geminiRes.model,
       };

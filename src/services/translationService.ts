@@ -6,8 +6,8 @@
  * preserving clinical terminology, drug dosages, brand names, and safety disclaimers.
  */
 
-import { LLMDispatcher } from './llmDispatcher.js';
-import { GrokService } from './grokService.js';
+import { LLMDispatcher } from './llmDispatcher.ts';
+import { GrokService } from './grokService.ts';
 
 export interface LanguageInfo {
   code: string;
