@@ -23,7 +23,10 @@ import {
   calculateDiabetesRisk,
   detectBiometricAnomaly,
   classifySymptomsNLP,
-  forecastVitalsTrend
+  forecastVitalsTrend,
+  ConversationEngine,
+  type ConversationPersona,
+  type ConversationTurnResult
 } from './src/services/index.ts';
 import { UNIFIED_HEALTH_TWIN_ORGANS, CARECAST_FEEDS, DISEASE_BULLETINS, LAB_TESTS_CATALOG } from './src/data/healthData.ts';
 import { MEDICINES_DATA, lookupMedicineComprehensive, searchAllMedicines, validateAndCrossReferenceDrug } from './src/data/medicinesData.ts';
@@ -1494,193 +1497,313 @@ app.get('/api/llm/status', (_req: Request, res: Response) => {
   });
 });
 
-// AI Chatbot Route (Supports Grok AI & Gemini Multi-Engine + Multi-Language with Pre-LLM Translation)
+// ====================================================
+// HEALTHGPT ULTRA-INTERACTIVE AI CONVERSATION ENGINE API
+// ====================================================
+
+// 1. POST /api/chat/message - Standard non-streaming interactive message
+app.post('/api/chat/message', async (req: Request, res: Response) => {
+  const message = String(req.body.message || '').trim();
+  if (!message) {
+    return res.status(400).json({ success: false, detail: 'Message cannot be empty.' });
+  }
+
+  const userId = req.body.user_id ? Number(req.body.user_id) : (getUserFromRequest(req)?.id || undefined);
+  const rawPersona = String(req.body.persona || req.body.bot_type || 'doctor').toLowerCase();
+  const persona: ConversationPersona =
+    rawPersona.includes('therap') || rawPersona.includes('mental') || rawPersona.includes('wellness')
+      ? 'therapist'
+      : rawPersona.includes('nutri') || rawPersona.includes('diet')
+      ? 'nutrition'
+      : 'doctor';
+
+  const sessionId = String(req.body.conversation_id || req.body.session_id || `conv_${userId || 'guest'}_${persona}`);
+  const targetLanguage = String(req.body.language || req.body.target_language || 'en').toLowerCase();
+  const engine = String(req.body.engine || 'auto').toLowerCase();
+  const prescriptionContext = req.body.prescription_context ? String(req.body.prescription_context) : '';
+
+  const turnResult = await ConversationEngine.processMessage({
+    sessionId,
+    message,
+    persona,
+    userId,
+    language: targetLanguage,
+    engine,
+    prescriptionContext,
+    healthMetrics,
+    activePrescriptions,
+    cachedUser: userId ? users.find(u => u.id === userId) : undefined,
+  });
+
+  return res.json({
+    success: true,
+    session_id: turnResult.sessionId,
+    persona: turnResult.persona,
+    state: turnResult.state,
+    intent: turnResult.intent,
+    emotional_tone: turnResult.emotionalTone,
+    response: turnResult.responseText,
+    suggested_replies: turnResult.suggestedReplies,
+    actions: turnResult.actions,
+    warning_card: turnResult.warningCard,
+    info_card: turnResult.infoCard,
+    profile_action: turnResult.profileAction,
+    memory_summary: turnResult.memorySummary,
+    source: turnResult.source,
+    engine: turnResult.engine,
+    model: turnResult.model
+  });
+});
+
+// 2. POST /api/chat/stream - SSE streaming interactive message
+app.post('/api/chat/stream', async (req: Request, res: Response) => {
+  const message = String(req.body.message || '').trim();
+  if (!message) {
+    return res.status(400).json({ success: false, detail: 'Message cannot be empty.' });
+  }
+
+  const userId = req.body.user_id ? Number(req.body.user_id) : (getUserFromRequest(req)?.id || undefined);
+  const rawPersona = String(req.body.persona || req.body.bot_type || 'doctor').toLowerCase();
+  const persona: ConversationPersona =
+    rawPersona.includes('therap') || rawPersona.includes('mental') || rawPersona.includes('wellness')
+      ? 'therapist'
+      : rawPersona.includes('nutri') || rawPersona.includes('diet')
+      ? 'nutrition'
+      : 'doctor';
+
+  const sessionId = String(req.body.conversation_id || req.body.session_id || `conv_${userId || 'guest'}_${persona}`);
+  const targetLanguage = String(req.body.language || req.body.target_language || 'en').toLowerCase();
+  const engine = String(req.body.engine || 'auto').toLowerCase();
+  const prescriptionContext = req.body.prescription_context ? String(req.body.prescription_context) : '';
+
+  // Setup SSE
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  if (typeof (res as any).flushHeaders === 'function') {
+    (res as any).flushHeaders();
+  }
+
+  // 1. Emit thinking event
+  res.write(`event: thinking\ndata: ${JSON.stringify({ status: 'analyzing', persona })}\n\n`);
+
+  // 2. Process turn
+  const turnResult = await ConversationEngine.processMessage({
+    sessionId,
+    message,
+    persona,
+    userId,
+    language: targetLanguage,
+    engine,
+    prescriptionContext,
+    healthMetrics,
+    activePrescriptions,
+    cachedUser: userId ? users.find(u => u.id === userId) : undefined,
+  });
+
+  // 3. Stream text in progressive chunks for real-time responsiveness
+  const fullText = turnResult.responseText;
+  const chunks = fullText.split(/(\s+)/);
+  for (let i = 0; i < chunks.length; i += 2) {
+    const chunk = (chunks[i] || '') + (chunks[i + 1] || '');
+    if (chunk) {
+      res.write(`event: delta\ndata: ${JSON.stringify({ text: chunk })}\n\n`);
+    }
+  }
+
+  // 4. Emit metadata with smart suggestions, actions, memory
+  res.write(`event: metadata\ndata: ${JSON.stringify({
+    session_id: turnResult.sessionId,
+    persona: turnResult.persona,
+    state: turnResult.state,
+    intent: turnResult.intent,
+    emotional_tone: turnResult.emotionalTone,
+    suggested_replies: turnResult.suggestedReplies,
+    actions: turnResult.actions,
+    warning_card: turnResult.warningCard,
+    profile_action: turnResult.profileAction,
+    memory_summary: turnResult.memorySummary
+  })}\n\n`);
+
+  // 5. Emit done
+  res.write(`event: done\ndata: ${JSON.stringify({ full_text: fullText })}\n\n`);
+  res.end();
+});
+
+// 3. GET /api/chat/conversations
+app.get('/api/chat/conversations', (req: Request, res: Response) => {
+  const userId = req.query.user_id ? Number(req.query.user_id) : (getUserFromRequest(req)?.id || undefined);
+  const sessions = ConversationEngine.listSessions(userId);
+  return res.json({
+    success: true,
+    conversations: sessions.map(s => ({
+      id: s.id,
+      title: s.title,
+      persona: s.persona,
+      state: s.state,
+      intent: s.intent,
+      message_count: s.messages.length,
+      last_message: s.messages[s.messages.length - 1]?.content.slice(0, 100) || '',
+      updated_at: s.updatedAt,
+      created_at: s.createdAt
+    }))
+  });
+});
+
+// 4. GET /api/chat/conversations/:id
+app.get('/api/chat/conversations/:id', (req: Request, res: Response) => {
+  const sessionId = String(req.params.id);
+  const session = ConversationEngine.getSession(sessionId);
+  if (!session) {
+    return res.status(404).json({ success: false, detail: 'Conversation session not found.' });
+  }
+  return res.json({
+    success: true,
+    conversation: session
+  });
+});
+
+// 5. POST /api/chat/conversations
+app.post('/api/chat/conversations', (req: Request, res: Response) => {
+  const rawPersona = String(req.body.persona || 'doctor').toLowerCase();
+  const persona: ConversationPersona =
+    rawPersona.includes('therap') || rawPersona.includes('mental')
+      ? 'therapist'
+      : rawPersona.includes('nutri') || rawPersona.includes('diet')
+      ? 'nutrition'
+      : 'doctor';
+  const userId = req.body.user_id ? Number(req.body.user_id) : (getUserFromRequest(req)?.id || undefined);
+  const sessionId = `conv_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+  const session = ConversationEngine.getOrCreateSession(sessionId, persona, userId);
+
+  return res.json({
+    success: true,
+    conversation_id: session.id,
+    persona: session.persona,
+    state: session.state,
+    title: session.title
+  });
+});
+
+// 6. DELETE /api/chat/conversations/:id
+app.delete('/api/chat/conversations/:id', (req: Request, res: Response) => {
+  const sessionId = String(req.params.id);
+  const deleted = ConversationEngine.deleteSession(sessionId);
+  return res.json({ success: true, deleted });
+});
+
+// 7. GET /api/chat/context/:conversation_id
+app.get('/api/chat/context/:conversation_id', (req: Request, res: Response) => {
+  const sessionId = String(req.params.conversation_id);
+  const session = ConversationEngine.getSession(sessionId);
+  if (!session) {
+    return res.status(404).json({ success: false, detail: 'Conversation session not found.' });
+  }
+  return res.json({
+    success: true,
+    conversation_id: session.id,
+    state: session.state,
+    intent: session.intent,
+    emotional_tone: session.emotionalTone,
+    memory: session.memory,
+    summary: session.summary,
+    active_concern: session.memory.activeConcern
+  });
+});
+
+// AI Chatbot Route (Maintains backward compatibility while powered by ConversationEngine)
 app.post('/api/chat', async (req: Request, res: Response) => {
   const message = String(req.body.message || req.query.message || '').trim();
   const clientTranslatedMessage = req.body.translated_message ? String(req.body.translated_message).trim() : '';
-  const translateBeforeLlm = req.body.translate_before_llm === true || req.body.translate_before_llm === 'true';
-  const persona = String(req.body.persona || req.body.bot_type || 'doctor').toLowerCase();
+  const rawPersona = String(req.body.persona || req.body.bot_type || 'doctor').toLowerCase();
+  const persona: ConversationPersona =
+    rawPersona.includes('therap') || rawPersona.includes('mental') || rawPersona.includes('wellness')
+      ? 'therapist'
+      : rawPersona.includes('nutri') || rawPersona.includes('diet')
+      ? 'nutrition'
+      : 'doctor';
   const engine = String(req.body.engine || 'auto').toLowerCase();
   const targetLanguage = String(req.body.language || req.body.target_language || 'en').toLowerCase();
   const userId = req.body.user_id ? Number(req.body.user_id) : (getUserFromRequest(req)?.id || undefined);
   const prescriptionContext = req.body.prescription_context ? String(req.body.prescription_context) : '';
 
-  // Keep chat continuity without trusting unbounded client payloads.
-  const requestedConversationId = Number(req.body.conversation_id);
-  const existingConversation = userId
-    ? (Number.isInteger(requestedConversationId)
-        ? conversations.find(c => c.id === requestedConversationId && c.userId === userId)
-        : conversations.filter(c => c.userId === userId).sort((a, b) => b.id - a.id)[0])
-    : undefined;
-  const storedHistory = existingConversation
-    ? messages
-        .filter(m => m.conversationId === existingConversation.id)
-        .slice(-12)
-        .map(m => ({ role: m.role, content: m.content }))
-    : [];
-  const clientHistory = Array.isArray(req.body.history)
-    ? req.body.history
-        .filter((item: any) => item && (item.role === 'user' || item.role === 'assistant') && item.content)
-        .map((item: any) => ({ role: item.role, content: String(item.content).trim().slice(0, 4000) }))
-        .filter((item: { role: string; content: string }) => item.content)
-        .slice(-12)
-    : [];
-  const conversationHistory = storedHistory.length > 0 ? storedHistory : clientHistory;
-
   if (!message) {
     return res.status(400).json({ success: false, detail: 'Message cannot be empty.' });
   }
 
-  const langInfo = TranslationService.getLanguageInfo(targetLanguage);
-  let effectiveEnglishMessage = clientTranslatedMessage || message;
-  let preTranslationTriggered = Boolean(clientTranslatedMessage);
+  const requestedConversationId = String(req.body.conversation_id || req.body.session_id || `conv_${userId || 'guest'}_${persona}`);
 
-  // If translation before LLM is requested or selected language is not English and no client translation was passed,
-  // trigger the translation service to translate the user's message to English for clinical accuracy.
-  if (!clientTranslatedMessage && (translateBeforeLlm || (langInfo.code !== 'en' && /[\u0600-\u06FF\u0900-\u097F\u0B80-\u0BFF\u0C00-\u0C7F\u0980-\u09FF\u0A80-\u0AFF\u0D00-\u0D7F\u0400-\u04FF\u4E00-\u9FFF\u3040-\u30FF\uAC00-\uD7AF]/.test(message)))) {
-    try {
-      const transResult = await TranslationService.translateMedicalText({
-        text: message,
-        targetLanguage: 'en',
-        sourceLanguage: langInfo.code !== 'en' ? langInfo.code : 'auto',
-        preferredEngine: engine,
-        domainContext: 'general_medical'
-      });
-      if (transResult && transResult.success && transResult.translatedText) {
-        effectiveEnglishMessage = transResult.translatedText;
-        preTranslationTriggered = true;
-      }
-    } catch (e) {
-      console.warn('[Pre-LLM Translation Warning]:', e);
-    }
-  }
-
-  const entries = searchKnowledgeEntries(effectiveEnglishMessage);
-  let context = buildKnowledgeContext(entries);
-  if (prescriptionContext) {
-    context += `\n\nPatient Prescribed Medical Context / Scanned Prescription:\n${prescriptionContext}`;
-  }
-
-  let responseText = '';
-  let source = 'HealthGPT Clinical Knowledge Engine';
-  let engineUsed: 'grok' | 'gemini' | 'local' = 'local';
-  let modelName = 'local-clinical-rules';
-
-  const isTherapist = persona.includes('therap') || persona.includes('mental') || persona.includes('wellness');
-  
-  let systemInstruction = isTherapist
-    ? GrokService.getTherapistSystemPrompt()
-    : `${GrokService.getDoctorSystemPrompt(prescriptionContext)}\n\nKnowledge base context:\n${context}`;
-
-  if (langInfo.code !== 'en') {
-    systemInstruction += `\n\nCRITICAL MULTILINGUAL MANDATE:
-- The user is conversing in ${langInfo.name} (${langInfo.nativeName}).
-- You MUST generate your ENTIRE clinical analysis and advice directly in ${langInfo.name} (${langInfo.nativeName}).
-- Maintain exact medical terminology (transliterate or translate with standard regional clinical terms), dosage safety precautions, and an empathetic bedside manner.
-- Do NOT output English unless quoting specific brand-name drug codes or chemical names.`;
-  }
-
-  let userPrompt = '';
-  if (prescriptionContext) {
-    userPrompt = `Prescription Context:\n${prescriptionContext}\n\n`;
-  }
-  if (conversationHistory.length > 0) {
-    userPrompt += `Conversation so far (use this context, but do not repeat it verbatim):\n${conversationHistory
-      .map((item: { role: string; content: string }) => `${item.role === 'assistant' ? 'Assistant' : 'User'}: ${item.content}`)
-      .join('\n')}\n\n`;
-  }
-
-  if (preTranslationTriggered && effectiveEnglishMessage !== message) {
-    userPrompt += `User Original Message (${langInfo.name}): "${message}"\nTranslated Clinical Intent (English): "${effectiveEnglishMessage}"\n\nPlease address the patient's concern in ${langInfo.name} (${langInfo.nativeName}).`;
-  } else {
-    userPrompt += `User Message: ${message}`;
-  }
-
-  // 1. Run multi-LLM dispatcher (Grok / Gemini)
-  const llmResult = await LLMDispatcher.execute({
-    systemInstruction,
-    userPrompt,
-    preferredEngine: engine,
-    temperature: 0.6,
+  // Process via Ultra-Interactive Conversation Engine
+  const turnResult = await ConversationEngine.processMessage({
+    sessionId: requestedConversationId,
+    message,
+    persona,
+    userId,
+    language: targetLanguage,
+    engine,
+    prescriptionContext,
+    healthMetrics,
+    activePrescriptions,
+    cachedUser: userId ? users.find(u => u.id === userId) : undefined,
   });
 
-  if (llmResult && llmResult.text) {
-    responseText = llmResult.text;
-    source = llmResult.source;
-    engineUsed = llmResult.engine;
-    modelName = llmResult.model;
-  }
+  const langInfo = TranslationService.getLanguageInfo(targetLanguage);
 
-  // 2. Fallback to Local Health/Therapy Intelligence Engines if LLM unavailable
-  if (!responseText) {
-    responseText = isTherapist
-      ? generateLocalTherapistResponse(effectiveEnglishMessage)
-      : generateLocalDoctorResponse(effectiveEnglishMessage);
-
-    if (prescriptionContext && !isTherapist) {
-      responseText = `📋 **Prescription Breakdown & Medical Guidance**\n\nI reviewed your scanned prescription details:\n\n` + responseText + `\n\n*Safety Note: Please take medications exactly as instructed on the prescription label. If you experience unexpected side effects, contact your prescribing doctor immediately.*`;
-    }
-
-    // If local response was generated and language is non-English, run translation
-    if (langInfo.code !== 'en') {
-      try {
-        const trans = await TranslationService.translateMedicalText({
-          text: responseText,
-          targetLanguage: langInfo.code,
-          preferredEngine: engine,
-        });
-        if (trans && trans.translatedText) {
-          responseText = trans.translatedText;
-        }
-      } catch (_) {
-        // Keep English fallback
-      }
-    }
-  }
-
-  let conversationId: number | undefined;
+  // Sync with persistent legacy messages/conversations arrays for user history screens
+  let convIdNumeric: number | undefined;
   if (userId) {
-    const conv: Conversation = existingConversation || {
-      id: nextConvId++,
-      userId,
-      title: message.slice(0, 60),
-      createdAt: new Date().toISOString(),
-    };
-    if (!existingConversation) conversations.push(conv);
-    conversationId = conv.id;
-
+    let legacyConv = conversations.find(c => c.userId === userId);
+    if (!legacyConv) {
+      legacyConv = {
+        id: nextConvId++,
+        userId,
+        title: message.slice(0, 60),
+        createdAt: new Date().toISOString(),
+      };
+      conversations.push(legacyConv);
+    }
+    convIdNumeric = legacyConv.id;
     messages.push({
       id: nextMsgId++,
-      conversationId: conv.id,
+      conversationId: legacyConv.id,
       role: 'user',
       content: message,
       createdAt: new Date().toISOString(),
     });
     messages.push({
       id: nextMsgId++,
-      conversationId: conv.id,
+      conversationId: legacyConv.id,
       role: 'assistant',
-      content: responseText,
+      content: turnResult.responseText,
       createdAt: new Date().toISOString(),
     });
   }
 
   return res.json({
     success: true,
-    module: isTherapist ? 'AI Therapist & Wellness Companion' : 'AI Doctor',
-    persona,
+    module: persona === 'therapist' ? 'Mental Wellness AI' : persona === 'nutrition' ? 'Nutrition AI' : 'HealthGPT Doctor',
+    persona: turnResult.persona,
+    state: turnResult.state,
+    intent: turnResult.intent,
+    emotional_tone: turnResult.emotionalTone,
     language: langInfo.code,
     language_name: langInfo.name,
     native_language_name: langInfo.nativeName,
-    pre_translation_triggered: preTranslationTriggered,
+    pre_translation_triggered: Boolean(clientTranslatedMessage),
     original_input: message,
-    translated_input: effectiveEnglishMessage !== message ? effectiveEnglishMessage : undefined,
-    response: responseText,
-    source,
-    engine: engineUsed,
-    model: modelName,
-    knowledge_matches: entries.length,
-    conversation_id: conversationId,
+    translated_input: clientTranslatedMessage || undefined,
+    response: turnResult.responseText,
+    suggested_replies: turnResult.suggestedReplies,
+    actions: turnResult.actions,
+    warning_card: turnResult.warningCard,
+    info_card: turnResult.infoCard,
+    profile_action: turnResult.profileAction,
+    memory_summary: turnResult.memorySummary,
+    source: turnResult.source,
+    engine: turnResult.engine,
+    model: turnResult.model,
+    conversation_id: convIdNumeric || turnResult.sessionId,
+    session_id: turnResult.sessionId
   });
 });
 
@@ -2147,6 +2270,24 @@ You MUST respond with valid raw JSON ONLY (no markdown fences, no extra text out
     source: 'HealthGPT Global Drug Intelligence Database',
     safety_note: 'Informational only. HealthGPT does not prescribe or dispense medicines.',
   });
+});
+
+app.get('/api/medicine/suggestions', (req: Request, res: Response) => {
+  const q = String(req.query.q || req.query.query || '').trim();
+  const results = searchAllMedicines(q).slice(0, 12).map(m => ({
+    name: m.name,
+    genericName: m.genericName,
+    class: m.class,
+    therapeuticCategory: m.therapeuticCategory,
+    standardStrength: m.standardStrength,
+    brandNames: m.brandNames,
+    prescriptionRequired: m.prescriptionRequired,
+    schedule: m.prescriptionRequired ? 'Schedule H (Rx)' : 'Over-The-Counter (OTC)',
+    savingsPercent: m.costSavingsPercent,
+    genericPriceINR: m.genericPriceINR,
+    brandedPriceINR: m.brandedPriceINR
+  }));
+  return res.json({ success: true, count: results.length, suggestions: results });
 });
 
 app.get('/api/medicine/lookup', async (req: Request, res: Response) => {
@@ -5118,7 +5259,32 @@ app.post('/api/chat/enhance-prompt', async (req: Request, res: Response) => {
 });
 
 app.post('/api/chat/summarize', async (req: Request, res: Response) => {
-  const { conversationId, messages } = req.body;
+  const conversationId = String(req.body.conversation_id || req.body.conversationId || req.body.session_id || '');
+  const session = conversationId ? ConversationEngine.getSession(conversationId) : undefined;
+
+  if (session && session.messages.length > 0) {
+    const mem = session.memory;
+    const summaryText = session.summary || `Consultation regarding ${mem.activeConcern || mem.symptoms.join(', ') || 'general health'}.`;
+    const keyPoints: string[] = [];
+
+    if (mem.symptoms.length > 0) keyPoints.push(`Primary symptoms noted: ${mem.symptoms.join(', ')}.`);
+    if (mem.onsetDuration) keyPoints.push(`Duration / onset: ${mem.onsetDuration}.`);
+    if (mem.severity) keyPoints.push(`Severity assessment: ${mem.severity}.`);
+    if (mem.negatedSymptoms.length > 0) keyPoints.push(`Ruled out: ${mem.negatedSymptoms.join(', ')}.`);
+    if (mem.confirmedFacts['sleepHours']) keyPoints.push(`Reported sleep: ${mem.confirmedFacts['sleepHours']} hours/night.`);
+    if (keyPoints.length === 0) keyPoints.push('Routine preventive health conversation conducted.');
+
+    return res.json({
+      success: true,
+      conversation_id: session.id,
+      persona: session.persona,
+      state: session.state,
+      summary: summaryText,
+      keyPoints,
+      memory: session.memory
+    });
+  }
+
   return res.json({
     success: true,
     summary: 'Clinical consultation summary: Discussed vital signs management, blood pressure stability with Telmisartan, preventive sleep architecture, and routine lifestyle nutrition recommendations.',
@@ -5130,11 +5296,42 @@ app.post('/api/chat/summarize', async (req: Request, res: Response) => {
   });
 });
 
+const chatFeedbackLog: Array<{ conversationId: string; messageId?: string; rating?: string | number; comment?: string; timestamp: string }> = [];
+
 app.post('/api/chat/feedback', (req: Request, res: Response) => {
+  const { conversation_id, conversationId, message_id, rating, comment } = req.body;
+  const targetConv = String(conversation_id || conversationId || 'general');
+  chatFeedbackLog.push({
+    conversationId: targetConv,
+    messageId: message_id ? String(message_id) : undefined,
+    rating,
+    comment: comment ? String(comment) : undefined,
+    timestamp: new Date().toISOString()
+  });
+
   return res.json({
     success: true,
     message: 'Thank you for your clinical feedback. It has been recorded to improve future AI Doctor responses.',
-    recorded: true
+    recorded: true,
+    total_feedback_count: chatFeedbackLog.length
+  });
+});
+
+app.post('/api/profile/save-fact', (req: Request, res: Response) => {
+  const { field, value, user_id } = req.body;
+  const userId = user_id ? Number(user_id) : (getUserFromRequest(req)?.id || undefined);
+  if (userId) {
+    const user = users.find(u => u.id === userId);
+    if (user) {
+      if (!(user as any).profile) (user as any).profile = {};
+      (user as any).profile[field] = value;
+    }
+  }
+  return res.json({
+    success: true,
+    message: `Saved ${field} to profile successfully.`,
+    field,
+    value
   });
 });
 

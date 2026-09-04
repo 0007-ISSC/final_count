@@ -1,75 +1,9 @@
-export interface MedicineProfile {
-  name: string;
-  genericName: string;
-  brandNames: string[];
-  class: string;
-  therapeuticCategory: string;
-  form: string;
-  standardStrength: string;
-  uses: string[];
-  dosage_schedule: string;
-  timing: string; // 'After food', 'Empty stomach', 'Bedtime', 'With meals'
-  defaultReminderTimes: string[]; // e.g. ['08:00', '20:00']
-  side_effects: string;
-  warnings: string;
-  contraindications: string[];
-  drugInteractions: string[];
-  foodInteractions: string[];
-  pregnancySafety: string; // 'Safe / Category B', 'Consult Doctor / Category C', 'Unsafe / Category D/X'
-  genericPriceINR: number;
-  brandedPriceINR: number;
-  costSavingsPercent: number;
-  prescriptionRequired: boolean;
-}
+import { EXTENDED_MEDICINES_DATA } from './medicinesDataExtended.ts';
+import type { MedicineProfile, DrugValidationResult, PrescriptionValidationReport } from './medicineTypes.ts';
 
-export interface DrugValidationResult {
-  isVerified: boolean;
-  confidence: number;
-  originalToken: string;
-  canonicalName: string;
-  genericName: string;
-  matchedStrength?: string;
-  matchedForm: string;
-  therapeuticCategory: string;
-  class: string;
-  dosageSchedule: string;
-  timing: string;
-  defaultReminderTimes: string[];
-  genericAlternative: string;
-  savingsPercent: number;
-  brandedPriceINR: number;
-  genericPriceINR: number;
-  criticalPrecautions: string[];
-  contraindications: string[];
-  foodInteractions: string[];
-  pregnancySafety: string;
-  prescriptionRequired: boolean;
-  matchType: 'exact_key' | 'brand_match' | 'generic_match' | 'fuzzy_match' | 'category_match' | 'unverified';
-}
+export type { MedicineProfile, DrugValidationResult, PrescriptionValidationReport };
 
-export interface PrescriptionValidationReport {
-  totalScanned: number;
-  verifiedCount: number;
-  validationScore: number;
-  validatedMedications: Array<DrugValidationResult & {
-    extractedDosage?: string;
-    extractedTiming?: string;
-    extractedDuration?: string;
-  }>;
-  flaggedInteractions: Array<{
-    drugA: string;
-    drugB: string;
-    severity: 'High' | 'Moderate' | 'Low';
-    description: string;
-    advice: string;
-  }>;
-  estimatedMonthlyBrandedCostINR: number;
-  estimatedMonthlyGenericCostINR: number;
-  potentialMonthlySavingsINR: number;
-  overallSafetySummary: string;
-}
-
-export const MEDICINES_DATA: Record<string, MedicineProfile> = {
+const BASE_MEDICINES_DATA: Record<string, MedicineProfile> = {
   // --- ANALGESICS & ANTI-INFLAMMATORY (PAIN & FEVER) ---
   paracetamol: {
     name: 'Paracetamol',
@@ -1237,6 +1171,11 @@ export const MEDICINES_DATA: Record<string, MedicineProfile> = {
     costSavingsPercent: 44,
     prescriptionRequired: false
   }
+};
+
+export const MEDICINES_DATA: Record<string, MedicineProfile> = {
+  ...BASE_MEDICINES_DATA,
+  ...EXTENDED_MEDICINES_DATA
 };
 
 /**

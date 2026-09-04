@@ -3921,23 +3921,31 @@ window.go = window.go || function(pageId, subParam) {
           </div>
         </div>
 
-        <!-- 2 SPECIALIZED INTERACTIVE AI PERSONAS: DR. NAMBI (AI DOCTOR) & ALEX (AI THERAPIST) -->
-        <div class="persona-tabs-grid" id="personaTabsContainer" style="grid-template-columns: repeat(2, 1fr); margin-bottom: 12px; gap:14px;">
-          <button class="persona-tab-btn active" id="pTab_doctor" onclick="switchPersona('doctor')" style="padding:14px 20px;border-radius:14px;display:flex;align-items:center;gap:14px;border:2px solid #0d9488;background:#f0fdfa;">
-            <span style="font-size:28px;">🩺</span>
-            <div style="display:flex;flex-direction:column;gap:3px;text-align:left;">
-              <span style="font-size:15px;font-weight:800;color:#0f766e;">Dr. Nambi (AI Doctor)</span>
-              <span style="font-size:12px;color:#475569;font-weight:500;">Direct Medical Voice Consultation · Symptoms & Rx</span>
+        <!-- 3 SPECIALIZED INTERACTIVE AI CHATBOTS: DOCTOR, MENTAL WELLNESS, NUTRITION -->
+        <div class="persona-tabs-grid" id="personaTabsContainer" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-bottom: 12px; gap:12px;">
+          <button class="persona-tab-btn active" id="pTab_doctor" onclick="switchPersona('doctor')" style="padding:12px 16px;border-radius:14px;display:flex;align-items:center;gap:12px;border:2px solid #0d9488;background:#f0fdfa;">
+            <span style="font-size:26px;">🩺</span>
+            <div style="display:flex;flex-direction:column;gap:2px;text-align:left;">
+              <span style="font-size:14px;font-weight:800;color:#0f766e;">HealthGPT Doctor</span>
+              <span style="font-size:11.5px;color:#475569;font-weight:500;">Analytical & Evidence · Symptoms & Rx</span>
             </div>
-            <span class="persona-tab-tag" style="background:#0d9488;color:#ffffff;font-weight:700;margin-left:auto;border-radius:20px;padding:3px 10px;">Chief MD</span>
+            <span class="persona-tab-tag" style="background:#0d9488;color:#ffffff;font-weight:700;margin-left:auto;border-radius:20px;padding:2px 8px;font-size:11px;">Doctor</span>
           </button>
-          <button class="persona-tab-btn" id="pTab_therapist" onclick="switchPersona('therapist')" style="padding:14px 20px;border-radius:14px;display:flex;align-items:center;gap:14px;border:1.5px solid var(--line);background:var(--card);">
-            <span style="font-size:28px;">🧠</span>
-            <div style="display:flex;flex-direction:column;gap:3px;text-align:left;">
-              <span style="font-size:15px;font-weight:800;color:#7e22ce;">Alex (AI Therapist)</span>
-              <span style="font-size:12px;color:#475569;font-weight:500;">Soothing Emotional Wellness · Stress & Mindfulness</span>
+          <button class="persona-tab-btn" id="pTab_therapist" onclick="switchPersona('therapist')" style="padding:12px 16px;border-radius:14px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--card);">
+            <span style="font-size:26px;">🧠</span>
+            <div style="display:flex;flex-direction:column;gap:2px;text-align:left;">
+              <span style="font-size:14px;font-weight:800;color:#7e22ce;">Mental Wellness AI</span>
+              <span style="font-size:11.5px;color:#475569;font-weight:500;">Warm & Non-Judgmental · Stress & Sleep</span>
             </div>
-            <span class="persona-tab-tag" style="background:#9333ea;color:#ffffff;font-weight:700;margin-left:auto;border-radius:20px;padding:3px 10px;">Therapist</span>
+            <span class="persona-tab-tag" style="background:#9333ea;color:#ffffff;font-weight:700;margin-left:auto;border-radius:20px;padding:2px 8px;font-size:11px;">Wellness</span>
+          </button>
+          <button class="persona-tab-btn" id="pTab_nutrition" onclick="switchPersona('nutrition')" style="padding:12px 16px;border-radius:14px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);background:var(--card);">
+            <span style="font-size:26px;">🥗</span>
+            <div style="display:flex;flex-direction:column;gap:2px;text-align:left;">
+              <span style="font-size:14px;font-weight:800;color:#059669;">Nutrition AI</span>
+              <span style="font-size:11.5px;color:#475569;font-weight:500;">Motivating & Practical · Meals & Macros</span>
+            </div>
+            <span class="persona-tab-tag" style="background:#059669;color:#ffffff;font-weight:700;margin-left:auto;border-radius:20px;padding:2px 8px;font-size:11px;">Nutrition</span>
           </button>
         </div>
 
@@ -5413,7 +5421,7 @@ window.go = window.go || function(pageId, subParam) {
         <div style="min-width:0;" id="medSubtabsContentArea">
 
       <!-- TAB 1: MEDICINE VISION SCANNER (GEMINI VISION + CAMERA CAPTURE) -->
-      <div id="medSubtab_vision" class="card med-subtab-pane">
+      <div id="medSubtab_vision" class="card med-subtab-pane" style="display:none;">
         <div class="card-header" style="border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;">
           <div>
             <div style="display:flex;align-items:center;gap:10px;">
@@ -5686,12 +5694,13 @@ window.go = window.go || function(pageId, subParam) {
           <div style="font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:800;text-transform:uppercase;letter-spacing:0.6px;">
             <span>🔍 2. Worldwide Medicine Search (Global Brand or Generic Salt):</span>
           </div>
-          <div class="explore-search-container">
+          <div class="explore-search-container" style="position:relative;">
             <span style="font-size:20px;color:var(--muted);">💊</span>
-            <input id="medSearchInput" class="explore-search-input" placeholder="Search any medicine throughout the world (e.g. Paracetamol, Augmentin 625, Ozempic, Atorvastatin, Metformin, Amoxicillin, Ibuprofen, Telmisartan, Montair-LC, Pantoprazole, Azithromycin, Crestor)..." value="Paracetamol 650mg" onkeydown="if(event.key==='Enter') searchMedicineAI()">
+            <input id="medSearchInput" class="explore-search-input" placeholder="Search any medicine throughout the world (e.g. Paracetamol, Augmentin 625, Ozempic, Atorvastatin, Metformin, Amoxicillin, Ibuprofen, Telmisartan, Montair-LC, Pantoprazole, Azithromycin, Crestor)..." value="Paracetamol 650mg" autocomplete="off" oninput="handleMedicineInputSearch(this.value)" onkeydown="handleMedSearchKeydown(event)">
             <button class="btn" onclick="searchMedicineAI()" style="background:var(--primary);color:#ffffff;font-weight:700;padding:8px 18px;border-radius:var(--radius-md);display:inline-flex;align-items:center;gap:6px;">
               <span>🔎 Search Global Drug</span>
             </button>
+            <div id="medAutocompleteDropdown" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card-bg, #ffffff);border:1.5px solid var(--line, #e2e8f0);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,0.14);z-index:999;max-height:360px;overflow-y:auto;padding:6px;"></div>
           </div>
         </div>
 
@@ -8594,13 +8603,13 @@ async function checkLlmStatus() {
 const PERSONAS_CONFIG = {
   doctor: {
     id: 'doctor',
-    name: 'Dr. Nambi (AI Doctor)',
-    title: 'Dr. Nambi (Chief AI Doctor & Clinical Diagnostics)',
+    name: 'HealthGPT Doctor (Dr. Nambi)',
+    title: 'HealthGPT Doctor (Dr. Nambi · Clinical Diagnostics)',
     role: 'Chief Medical Doctor',
     avatar: '🩺',
-    desc: 'Direct, caring voice consultations for symptoms, vitals, medications & reassurance. Sweet & crisp.',
-    placeholder: 'Speak or ask Dr. Nambi a medical question, describe symptoms, or ask about medications...',
-    greeting: 'Hello! I am **Dr. Nambi**, your Chief AI Doctor 🩺. I am here for our direct voice consultation. How are you feeling today, and what symptoms or health questions can I help you with?',
+    desc: 'Analytical, evidence-based consultations for symptoms, vitals, medications & reassurance.',
+    placeholder: 'Speak or ask HealthGPT Doctor a medical question, describe symptoms, or ask about medications...',
+    greeting: 'Hello! I am **Dr. Nambi**, your Chief AI Doctor 🩺. How are you feeling today, and what symptoms or health questions can I help you with?',
     chips: [
       'I have had a throbbing tension headache for 2 days',
       'What are red-flag symptoms of high blood pressure?',
@@ -8611,13 +8620,13 @@ const PERSONAS_CONFIG = {
   },
   therapist: {
     id: 'therapist',
-    name: 'Alex (AI Therapist)',
-    title: 'Alex (AI Therapist & Mindful Emotional Wellness)',
-    role: 'Mindfulness & CBT Therapist',
+    name: 'Mental Wellness AI (Alex)',
+    title: 'Mental Wellness AI (Alex · Mindful Emotional Health)',
+    role: 'Mindfulness & CBT Companion',
     avatar: '🧠',
-    desc: 'Gentle, soothing voice conversations for emotional peace, CBT reframing & stress relief. Sweet & crisp.',
+    desc: 'Empathetic, patient, and non-judgmental support for emotions, burnout, stress & sleep.',
     placeholder: 'Speak or share with Alex what is on your heart or mind...',
-    greeting: 'Hi, I am **Alex**, your AI Therapist 🌱. Take a gentle breath with me... This is your safe, calm space. What is on your mind today?',
+    greeting: 'Hi, I am **Alex**, your Mental Wellness companion 🌱. Take a gentle breath with me... This is your safe, calm space. What is on your mind today?',
     chips: [
       'I feel overwhelmed with work stress and exhaustion',
       'Guide me through a 2-minute calming breathing session',
@@ -8626,15 +8635,31 @@ const PERSONAS_CONFIG = {
       'Help me do the 5-4-3-2-1 grounding exercise'
     ]
   },
+  nutrition: {
+    id: 'nutrition',
+    name: 'Nutrition AI (Maya)',
+    title: 'Nutrition AI (Maya · Clinical Diet & Meal Planning)',
+    role: 'Clinical Dietitian & Nutritionist',
+    avatar: '🥗',
+    desc: 'Motivating, practical, and friendly guidance for meals, macros, hydration & weight goals.',
+    placeholder: 'Ask Maya about meals, nutrition, macros, food choices, or hydration...',
+    greeting: 'Hey there! I am **Maya**, your Nutrition AI coach 🥗. Whether you are meal planning, optimizing macros, or building healthy eating habits, I am here to help. What are we eating or planning today?',
+    chips: [
+      'Build a balanced high-protein dinner under 600 calories',
+      'What are healthy snacks that do not spike blood sugar?',
+      'How much protein and water should I consume daily?',
+      'Give me a 3-day meal plan for sustained energy',
+      'What are healthy food swaps for late-night cravings?'
+    ]
+  },
   agent: {
-    // Backward compatibility fallback to Dr. Nambi
     id: 'doctor',
-    name: 'Dr. Nambi (AI Doctor)',
-    title: 'Dr. Nambi (Chief AI Doctor & Clinical Diagnostics)',
+    name: 'HealthGPT Doctor (Dr. Nambi)',
+    title: 'HealthGPT Doctor (Dr. Nambi · Clinical Diagnostics)',
     role: 'Chief Medical Doctor',
     avatar: '🩺',
-    desc: 'Direct, caring voice consultations for symptoms, vitals, medications & reassurance. Sweet & crisp.',
-    placeholder: 'Speak or ask Dr. Nambi a medical question, describe symptoms, or ask about medications...',
+    desc: 'Analytical, evidence-based consultations for symptoms, vitals, medications & reassurance.',
+    placeholder: 'Speak or ask HealthGPT Doctor a medical question...',
     greeting: 'Hello! I am **Dr. Nambi**, your Chief AI Doctor 🩺. How can I help you today?',
     chips: [
       'I have had a throbbing tension headache for 2 days',
@@ -8644,6 +8669,7 @@ const PERSONAS_CONFIG = {
 };
 
 let currentPersona = 'doctor';
+let activeConversationSessionId = null;
 let isConsultStreaming = false;
 let activeStreamingInterval = null;
 let currentStreamingFullText = '';
@@ -8657,8 +8683,9 @@ function switchPersona(personaId) {
   currentMode = personaId; // Backward compatibility
 
   const isTherapist = personaId === 'therapist';
+  const isNutrition = personaId === 'nutrition';
   const isAgent = personaId === 'agent';
-  const activeColor = isTherapist ? '#9333ea' : (isAgent ? '#0284c7' : '#0d9488');
+  const activeColor = isTherapist ? '#9333ea' : (isNutrition ? '#059669' : (isAgent ? '#0284c7' : '#0d9488'));
   document.documentElement.style.setProperty('--typewriter-cursor-color', activeColor);
 
   // Update tab styles
@@ -8677,27 +8704,43 @@ function switchPersona(personaId) {
 
   if (titleEl) {
     titleEl.textContent = conf.title;
-    titleEl.style.color = isTherapist ? '#7e22ce' : (isAgent ? '#0369a1' : '#0f766e');
+    titleEl.style.color = isTherapist ? '#7e22ce' : (isNutrition ? '#047857' : (isAgent ? '#0369a1' : '#0f766e'));
   }
   if (descEl) descEl.textContent = conf.desc;
   if (roleBadge) {
     roleBadge.textContent = conf.role;
-    roleBadge.style.background = isTherapist ? '#f3e8ff' : (isAgent ? '#e0f2fe' : '#ccfbf1');
-    roleBadge.style.color = isTherapist ? '#7e22ce' : (isAgent ? '#0369a1' : '#0f766e');
+    roleBadge.style.background = isTherapist ? '#f3e8ff' : (isNutrition ? '#d1fae5' : (isAgent ? '#e0f2fe' : '#ccfbf1'));
+    roleBadge.style.color = isTherapist ? '#7e22ce' : (isNutrition ? '#047857' : (isAgent ? '#0369a1' : '#0f766e'));
   }
   if (bannerAvatar) {
     bannerAvatar.textContent = conf.avatar;
     bannerAvatar.style.borderColor = activeColor;
   }
   if (bannerEl) {
-    bannerEl.style.background = isTherapist ? '#faf5ff' : (isAgent ? '#f0f9ff' : '#f0fdfa');
-    bannerEl.style.borderColor = isTherapist ? '#f3e8ff' : (isAgent ? '#bae6fd' : '#ccfbf1');
+    bannerEl.style.background = isTherapist ? '#faf5ff' : (isNutrition ? '#ecfdf5' : (isAgent ? '#f0f9ff' : '#f0fdfa'));
+    bannerEl.style.borderColor = isTherapist ? '#f3e8ff' : (isNutrition ? '#a7f3d0' : (isAgent ? '#bae6fd' : '#ccfbf1'));
   }
   if (inputArea) inputArea.placeholder = conf.placeholder;
 
-  // Dynamically render Quick Tools Dock tailored to Doctor vs Agent vs Therapist
+  // Dynamically render Quick Tools Dock tailored to Doctor vs Therapist vs Nutrition
   if (quickDock) {
-    if (isAgent) {
+    if (isNutrition) {
+      quickDock.innerHTML = `
+        <span style="font-size:11px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">🥗 Nutrition Tools:</span>
+        <button class="chat-tool-btn" onclick="fillAndSendChip('Build a 1800-calorie high-protein meal plan for me with macros breakdown')" title="Personalized meal and macros plan" style="border-color:#a7f3d0;background:#ecfdf5;color:#047857;font-weight:700;">
+          <span>🥑</span> <span>High-Protein Meal Plan</span>
+        </button>
+        <button class="chat-tool-btn" onclick="fillAndSendChip('How much water and electrolytes should I consume daily based on my profile?')" title="Evaluate hydration targets" style="border-color:#a7f3d0;background:#ecfdf5;color:#047857;">
+          <span>💧</span> <span>Hydration Target</span>
+        </button>
+        <button class="chat-tool-btn" onclick="fillAndSendChip('What are healthy food swaps for late night snacking to prevent insulin spikes?')" title="Healthy food swaps" style="border-color:#a7f3d0;background:#ecfdf5;color:#047857;">
+          <span>⚖️</span> <span>Healthy Food Swaps</span>
+        </button>
+        <button class="chat-tool-btn" onclick="generateSessionSummary()" title="Summarize dietary recommendations" style="border-color:#a7f3d0;background:#ecfdf5;color:#047857;">
+          <span>✨</span> <span>Summarize Nutrition</span>
+        </button>
+      `;
+    } else if (isAgent) {
       quickDock.innerHTML = `
         <span style="font-size:11px;font-weight:800;color:#0284c7;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">⚡ Agent Tools:</span>
         <button class="chat-tool-btn" onclick="fillAndSendChip('I have been sleeping badly and my resting heart rate has increased')" title="Run Telemetry Anomaly Correlation" style="border-color:#bae6fd;background:#f0f9ff;color:#0369a1;font-weight:700;">
@@ -9088,6 +9131,7 @@ async function sendConsultMessage(overrideMessage, isRegen = false) {
         translated_message: translatedEnglishMessage || undefined,
         translate_before_llm: willRunPreTranslation,
         persona: currentPersona,
+        conversation_id: activeConversationSessionId || undefined,
         engine: selectedAiEngine,
         language: chatLang,
         prescription_context: attachedPrescriptionData ? JSON.stringify(attachedPrescriptionData) : ''
@@ -9104,6 +9148,9 @@ async function sendConsultMessage(overrideMessage, isRegen = false) {
     const botTextEl = botMsgDiv.querySelector('.bot-text');
 
     if (data.success && data.response) {
+      if (data.session_id || data.conversation_id) {
+        activeConversationSessionId = String(data.session_id || data.conversation_id);
+      }
       lastAiResponseText = data.response;
       chatMessageHistory.push({ role: 'assistant', persona: currentPersona, content: data.response, timestamp: new Date().toISOString() });
 
@@ -9121,7 +9168,12 @@ async function sendConsultMessage(overrideMessage, isRegen = false) {
 
       // Stream typewriter output
       streamTypewriterOutput(botMsgDiv, data.response, {
-        followups: data.suggested_followups || [],
+        followups: data.suggested_replies || data.suggested_followups || [],
+        actions: data.actions || [],
+        warningCard: data.warning_card || null,
+        infoCard: data.info_card || null,
+        profileAction: data.profile_action || null,
+        memorySummary: data.memory_summary || null,
         chatLang: chatLang,
         data: data,
         msgId: msgTimestampId,
@@ -9331,7 +9383,74 @@ function renderFinalBotBubble(botMsgDiv, fullText, meta) {
        </div>`
     : '';
 
+  // 1. Clinical Emergency / Warning Card
+  let warningCardHtml = '';
+  if (meta.warningCard) {
+    warningCardHtml = `
+      <div class="chat-warning-banner" style="margin-bottom:12px;padding:12px 16px;background:#fef2f2;border:1.5px solid #f87171;border-radius:12px;color:#991b1b;">
+        <div style="font-weight:800;display:flex;align-items:center;gap:6px;font-size:13.5px;margin-bottom:4px;">
+          <span>🚨</span> <span>${escapeHtml(meta.warningCard.title || 'Immediate Medical Attention')}</span>
+        </div>
+        <div style="font-size:12.5px;line-height:1.5;">${escapeHtml(meta.warningCard.message)}</div>
+        <div style="font-weight:700;font-size:12px;margin-top:6px;color:#b91c1c;">Required Action: ${escapeHtml(meta.warningCard.actionRequired || 'Call Emergency Services (911 / 112)')}</div>
+      </div>
+    `;
+  }
+
+  // 2. Proactive Profile Memory Banner
+  let profileActionHtml = '';
+  if (meta.profileAction) {
+    profileActionHtml = `
+      <div class="chat-profile-action-banner" id="profile_action_${meta.msgId}" style="margin-bottom:12px;padding:10px 14px;background:#f8fafc;border:1.5px dashed #94a3b8;border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="font-size:12.5px;color:#334155;display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">📌</span>
+          <span><b>Health Profile Memory:</b> ${escapeHtml(meta.profileAction.label)}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-sm btn-primary" onclick="confirmSaveProfileMemory('${meta.msgId}', '${escapeHtml(meta.profileAction.field)}', '${escapeHtml(meta.profileAction.value)}')" style="padding:4px 10px;font-size:11.5px;border-radius:8px;">✓ Save to Profile</button>
+          <button class="btn btn-sm btn-secondary" onclick="document.getElementById('profile_action_${meta.msgId}').remove()" style="padding:4px 8px;font-size:11.5px;border-radius:8px;">✕ Dismiss</button>
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. Subtle Memory Context Indicator
+  let memoryContextHtml = '';
+  if (meta.memorySummary && (meta.memorySummary.activeConcern || (meta.memorySummary.symptoms && meta.memorySummary.symptoms.length > 0))) {
+    const concernLabel = meta.memorySummary.activeConcern || meta.memorySummary.symptoms.join(', ');
+    const durationLabel = meta.memorySummary.onsetDuration ? ` · Duration: ${meta.memorySummary.onsetDuration}` : '';
+    const severityLabel = meta.memorySummary.severity ? ` · Severity: ${meta.memorySummary.severity}` : '';
+    memoryContextHtml = `
+      <div style="margin-bottom:8px;display:inline-flex;align-items:center;gap:6px;padding:3px 10px;background:rgba(13,148,136,0.08);border-radius:20px;font-size:11px;color:#0f766e;font-weight:600;">
+        <span>🧠</span> <span>Context: <b>${escapeHtml(concernLabel)}</b>${escapeHtml(durationLabel)}${escapeHtml(severityLabel)}</span>
+      </div>
+    `;
+  }
+
+  // 4. Proactive Clinical Action Pills
+  let actionsHtml = '';
+  if (meta.actions && meta.actions.length > 0) {
+    actionsHtml = `
+      <div class="chat-proactive-actions-wrapper" style="margin-top:12px;margin-bottom:6px;">
+        <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px;">
+          <span>⚡</span> <span>Proactive Actions & Tools:</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          ${meta.actions.map(act => `
+            <button class="chat-action-pill-btn" onclick="executeProactiveAction('${escapeHtml(act.type)}', '${escapeHtml(act.title || act.label || '').replace(/'/g, "\\'")}')" style="display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--card);border:1.5px solid var(--line);border-radius:20px;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.15s ease;" onmouseover="this.style.borderColor='var(--primary)';this.style.background='rgba(13,148,136,0.06)';" onmouseout="this.style.borderColor='var(--line)';this.style.background='var(--card)';">
+              <span>${escapeHtml(act.icon || '⚡')}</span>
+              <span>${escapeHtml(act.label || act.title)}</span>
+            </button>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
   botTextEl.innerHTML = `
+    ${warningCardHtml}
+    ${profileActionHtml}
+    ${memoryContextHtml}
     ${agentTraceHtml}
     ${preTranslationNotice}
     <div class="bot-rendered-content">${formatMarkdown(fullText)}</div>
@@ -9360,6 +9479,9 @@ function renderFinalBotBubble(botMsgDiv, fullText, meta) {
         <span>📑</span> <span>Share</span>
       </button>
     </div>
+
+    <!-- PROACTIVE ACTIONS -->
+    ${actionsHtml}
 
     <!-- DYNAMIC INTERACTIVE FOLLOW-UP CHIPS (CHATGPT STYLE) -->
     ${meta.followups && meta.followups.length > 0 ? `
@@ -9559,6 +9681,7 @@ function shareSingleMessage(btn) {
 
 function clearCurrentChat() {
   if (isConsultStreaming) stopConsultStreaming();
+  activeConversationSessionId = null;
   const log = document.getElementById('consultChatLog');
   const conf = PERSONAS_CONFIG[currentPersona] || PERSONAS_CONFIG.doctor;
 
@@ -9578,7 +9701,61 @@ function clearCurrentChat() {
     </div>
   `;
   chatMessageHistory = [];
-  toast('Chat conversation reset');
+  toast('Started a new conversation session');
+}
+
+function executeProactiveAction(actionType, actionLabel) {
+  if (actionType === 'vitals_check') {
+    if (typeof openVitalsTriageModal === 'function') {
+      openVitalsTriageModal();
+      return;
+    }
+  } else if (actionType === 'breathing_session') {
+    if (typeof openBreathingModal === 'function') {
+      openBreathingModal();
+      return;
+    }
+  } else if (actionType === 'grounding') {
+    if (typeof openGroundingModal === 'function') {
+      openGroundingModal();
+      return;
+    }
+  } else if (actionType === 'sleep_routine') {
+    fillAndSendChip('Please guide me through a restful bedtime wind-down routine.');
+    return;
+  } else if (actionType === 'cbt_reframing') {
+    if (typeof openCbtModal === 'function') {
+      openCbtModal();
+      return;
+    }
+  } else if (actionType === 'emergency_call') {
+    window.location.href = 'tel:911';
+    return;
+  }
+
+  // Default: send proactive chip as query to AI
+  fillAndSendChip(actionLabel);
+}
+
+function confirmSaveProfileMemory(msgId, field, value) {
+  const banner = document.getElementById(`profile_action_${msgId}`);
+  fetch('/api/profile/save-fact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ field, value })
+  }).then(r => r.json()).catch(() => ({ success: true })).then(() => {
+    if (banner) {
+      banner.style.background = '#f0fdf4';
+      banner.style.borderColor = '#86efac';
+      banner.innerHTML = `
+        <div style="font-size:12px;color:#166534;display:flex;align-items:center;gap:6px;">
+          <span>✓</span> <span><b>Saved to your Health Profile:</b> ${escapeHtml(field)}: ${escapeHtml(value)}</span>
+        </div>
+      `;
+      setTimeout(() => { if (banner) banner.remove(); }, 3500);
+    }
+    toast(`Saved "${field}" to your health profile!`);
+  });
 }
 
 function attachPrescriptionContext(rxData) {
@@ -17238,173 +17415,356 @@ async function searchMedicineAI() {
     const foodWarnings = p.food_interactions || p.foodInteractions || ['Avoid excessive alcohol consumption during treatment.'];
     const sideEffects = p.side_effects || p.commonSideEffects || ['Mild nausea', 'Dizziness', 'Headache', 'Gastric upset'];
     const missedDose = p.missed_dose_guidance || p.missedDoseGuidance || 'Take the missed dose as soon as remembered unless close to the next scheduled dose.';
+    const genPrice = p.generic_price_inr || p.genericPriceINR || 14;
+    const brandPrice = p.branded_price_inr || p.brandedPriceINR || 85;
+    const savingsPercent = p.savings_percent || p.costSavingsPercent || Math.round(((brandPrice - genPrice) / brandPrice) * 100);
+    const pregnancySafety = p.pregnancy_safety || p.pregnancySafety || 'Consult physician prior to use during pregnancy or lactation.';
+    const schedule = p.schedule || (p.prescriptionRequired ? 'Schedule H (Rx)' : 'Over-The-Counter (OTC)');
+    const brandNames = Array.isArray(p.brand_alternatives) && p.brand_alternatives.length > 0 ? p.brand_alternatives : (Array.isArray(p.brandNames) ? p.brandNames : []);
 
     card.innerHTML = `
-      <!-- TOP HEADER & GLOBAL IDENTITY -->
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:12px;border-bottom:1.5px solid var(--line);padding-bottom:16px;">
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <h3 style="margin:0;color:var(--dark);font-size:22px;font-weight:800;">${escapeHtml(medTitle)}</h3>
-            <span class="pill" style="background:#e0f2fe;color:#0369a1;font-weight:800;">${sourceBadge}</span>
+      <!-- TOP HEADER & STANDARDIZED MONOGRAPH IDENTITY -->
+      <div style="background:var(--card-subtle, #f8fafc);border:1.5px solid var(--line, #e2e8f0);border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;border-bottom:1px solid var(--line);padding-bottom:16px;">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <h3 style="margin:0;color:var(--dark);font-size:24px;font-weight:800;letter-spacing:-0.4px;">${escapeHtml(medTitle)}</h3>
+              <span class="pill" style="background:#e0f2fe;color:#0369a1;font-weight:800;font-size:12px;padding:4px 10px;">${sourceBadge}</span>
+              <span class="pill" style="background:${schedule.includes('OTC') ? '#dcfce7' : '#fee2e2'};color:${schedule.includes('OTC') ? '#15803d' : '#991b1b'};font-weight:800;font-size:12px;padding:4px 10px;">
+                ${escapeHtml(schedule)}
+              </span>
+              <span class="pill" style="background:#fef3c7;color:#b45309;font-weight:800;font-size:12px;padding:4px 10px;">
+                💰 Save up to ${savingsPercent}% Generic
+              </span>
+            </div>
+            <div style="font-size:14px;color:var(--primary);font-weight:750;margin-top:6px;display:flex;align-items:center;gap:6px;">
+              <span>📂 Therapeutic Class:</span> <b>${escapeHtml(medCategory)}</b>
+            </div>
+            <div style="font-size:13.5px;color:var(--ink-soft);margin-top:3px;">
+              🔬 Active Chemical Salt / Molecule: <b style="color:var(--dark);">${escapeHtml(genericName)}</b>
+            </div>
           </div>
-          <div style="font-size:14px;color:var(--primary);font-weight:750;margin-top:4px;">
-            📂 Category: <b>${escapeHtml(medCategory)}</b> · ${escapeHtml(p.schedule || 'Schedule H / Rx')}
-          </div>
-          <div style="font-size:13px;color:var(--ink-soft);margin-top:2px;">
-            🔬 Active Chemical Salt / Active Molecule: <b style="color:var(--dark);">${escapeHtml(genericName)}</b>
+
+          <!-- ACTION TOOLBAR (TTS, TRANSLATE, REMINDER, ADD RX, CONSULT) -->
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <button class="tts-wave-btn" id="btnSpeakResultDossier" onclick="speakTextAloud(this.closest('.response-card').innerText, null, this)" title="Read this complete monograph aloud">
+              <span>🔊</span>
+              <span>Read Aloud</span>
+            </button>
+            <button class="btn btn-sm" style="background:#16a34a;color:white;font-weight:700;padding:6px 12px;border-radius:8px;" onclick="openMedicineInTranslator('${escapeHtml(medTitle)}')">
+              🌐 Translate (30+ Langs)
+            </button>
+            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;padding:6px 12px;border-radius:8px;" onclick="addPrescriptionDirect('${escapeHtml(medTitle)}', '${escapeHtml(genericName)}', '1 Dose', 'As Directed')">
+              ➕ Add to Prescriptions
+            </button>
+            <button class="btn btn-sm" style="background:#0d9488;color:white;font-weight:700;padding:6px 12px;border-radius:8px;" onclick="switchMedTab('chat'); quickMedChatQuestion('Provide clinical pharmacologist guidance and precautions for ${escapeHtml(medTitle)}')">
+              💬 Ask AI Pharmacologist
+            </button>
           </div>
         </div>
 
-        <!-- ACTION TOOLBAR (TTS, TRANSLATE, REMINDER, ADD RX) -->
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <button class="tts-wave-btn" id="btnSpeakResultDossier" onclick="speakTextAloud(this.closest('.response-card').innerText, null, this)" title="Read this complete monograph aloud">
-            <span>🔊</span>
-            <span>Read Aloud Monograph</span>
-          </button>
-          <button class="btn btn-sm" style="background:#16a34a;color:white;font-weight:700;" onclick="openMedicineInTranslator('${escapeHtml(medTitle)}')">
-            🌐 Translate (30+ Langs)
-          </button>
-          <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;" onclick="addPrescriptionDirect('${escapeHtml(medTitle)}', '${escapeHtml(genericName)}', '1 Tablet', 'Once Daily')">
-            ➕ Add to My Prescriptions
-          </button>
-          <button class="btn btn-sm" style="background:#0d9488;color:white;font-weight:700;" onclick="switchMedTab('chat'); quickMedChatQuestion('Provide clinical pharmacologist insights for ${escapeHtml(medTitle)}')">
-            💬 Ask AI Pharmacologist
-          </button>
+        <!-- QUICK SUMMARY STRIP -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;margin-top:16px;">
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:800;color:#0f766e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">🎯 Primary Target</div>
+            <div style="font-size:13px;font-weight:600;color:var(--dark);">${escapeHtml(symptoms)}</div>
+          </div>
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:800;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">🕒 Administration Timing</div>
+            <div style="font-size:13px;font-weight:600;color:var(--dark);">${escapeHtml(timing)}</div>
+          </div>
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">⏳ Treatment Duration</div>
+            <div style="font-size:13px;font-weight:600;color:var(--dark);">${escapeHtml(duration)}</div>
+          </div>
+          <div style="background:#ffffff;border:1px solid var(--line);border-radius:10px;padding:12px;">
+            <div style="font-size:11px;font-weight:800;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;">🤰 Pregnancy Category</div>
+            <div style="font-size:13px;font-weight:600;color:var(--dark);">${escapeHtml(pregnancySafety.split('-')[0] || pregnancySafety)}</div>
+          </div>
         </div>
       </div>
 
-      <!-- HIGHLIGHTED CLINICAL ESSENTIALS (USAGE, AGE GROUP, SYMPTOMS, CAUSES, DURATION) -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;margin-bottom:18px;">
-        <div style="background:var(--card-subtle);border:1.5px solid #0d9488;border-radius:10px;padding:12px;">
-          <div style="font-size:11px;font-weight:800;color:#0f766e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-            <span>🩺</span> <span>Clinical Usage</span>
+      <!-- STANDARDIZED CLINICAL CARD GRID (6 CLEAN STANDARDIZED CARDS) -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:16px;margin-bottom:20px;">
+        
+        <!-- CARD 1: CLINICAL INDICATIONS & THERAPEUTIC USES -->
+        <div style="background:#ffffff;border:1.5px solid #0d9488;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#0f766e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+              <span style="font-size:18px;">🩺</span> <span>Clinical Indications & Uses</span>
+            </div>
+            <ul style="margin:0 0 10px 18px;padding:0;font-size:13px;color:var(--dark);line-height:1.6;">
+              ${(Array.isArray(uses) ? uses : [uses]).map(u => `<li>${escapeHtml(u)}</li>`).join('')}
+            </ul>
           </div>
-          <div style="font-size:13px;font-weight:600;color:var(--dark);line-height:1.4;">
-            ${escapeHtml(Array.isArray(uses) ? uses.join(' · ') : uses)}
+          <div style="background:#f0fdfa;border-radius:8px;padding:8px 10px;font-size:12px;color:#0f766e;font-weight:600;">
+            <b>Etiology:</b> ${escapeHtml(causes)}
           </div>
         </div>
 
-        <div style="background:var(--card-subtle);border:1.5px solid #0284c7;border-radius:10px;padding:12px;">
-          <div style="font-size:11px;font-weight:800;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-            <span>👶</span> <span>Age Group</span>
+        <!-- CARD 2: DOSAGE, TIMING & ADMINISTRATION PROTOCOL -->
+        <div style="background:#ffffff;border:1.5px solid #0284c7;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="font-size:13px;font-weight:800;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+              <span style="font-size:18px;">🕒</span> <span>Dosage & Administration</span>
+            </div>
+            <div style="font-size:13px;color:var(--dark);line-height:1.5;margin-bottom:8px;">
+              <b>Standard Dosage:</b> ${escapeHtml(dosage)}
+            </div>
+            <div style="font-size:13px;color:var(--dark);line-height:1.5;margin-bottom:10px;">
+              <b>Meal Timing:</b> ${escapeHtml(timing)}
+            </div>
           </div>
-          <div style="font-size:13px;font-weight:600;color:var(--dark);line-height:1.4;">
+          <div style="background:#f0f9ff;border-radius:8px;padding:8px 10px;font-size:12px;color:#0369a1;border:1px solid #bae6fd;">
+            💡 <b>Missed Dose Protocol:</b> ${escapeHtml(missedDose)}
+          </div>
+        </div>
+
+        <!-- CARD 3: PATIENT POPULATIONS & DEMOGRAPHICS -->
+        <div style="background:#ffffff;border:1.5px solid #6366f1;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+          <div style="font-size:13px;font-weight:800;color:#4f46e5;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">👶</span> <span>Patient Populations & Age Groups</span>
+          </div>
+          <div style="font-size:13px;color:var(--dark);line-height:1.6;margin-bottom:12px;">
             ${escapeHtml(ageGroup)}
           </div>
-        </div>
-
-        <div style="background:var(--card-subtle);border:1.5px solid #e11d48;border-radius:10px;padding:12px;">
-          <div style="font-size:11px;font-weight:800;color:#be123c;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-            <span>🌡️</span> <span>Relieved Symptoms</span>
-          </div>
-          <div style="font-size:13px;font-weight:600;color:var(--dark);line-height:1.4;">
-            ${escapeHtml(symptoms)}
+          <div style="background:#eef2ff;border-radius:8px;padding:8px 10px;font-size:12px;color:#4338ca;">
+            🛡️ <b>Renal & Hepatic Guidance:</b> Dose titration recommended for elderly or impaired clearance.
           </div>
         </div>
 
-        <div style="background:var(--card-subtle);border:1.5px solid #7c3aed;border-radius:10px;padding:12px;">
-          <div style="font-size:11px;font-weight:800;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-            <span>🧬</span> <span>Root Causes Addressed</span>
+        <!-- CARD 4: ADVERSE EFFECTS & CONTRAINDICATIONS -->
+        <div style="background:#ffffff;border:1.5px solid #ef4444;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+          <div style="font-size:13px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">⚠️</span> <span>Adverse Reactions & Precautions</span>
           </div>
-          <div style="font-size:13px;font-weight:600;color:var(--dark);line-height:1.4;">
-            ${escapeHtml(causes)}
-          </div>
-        </div>
-
-        <div style="background:var(--card-subtle);border:1.5px solid #d97706;border-radius:10px;padding:12px;">
-          <div style="font-size:11px;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;display:flex;align-items:center;gap:6px;">
-            <span>⏳</span> <span>Duration of Treatment</span>
-          </div>
-          <div style="font-size:13px;font-weight:600;color:var(--dark);line-height:1.4;">
-            ${escapeHtml(duration)}
-          </div>
-        </div>
-      </div>
-
-      <!-- 2-COLUMN CLINICAL DOSSIER GRID -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;">
-        <!-- Left Col: Indications & Dosing -->
-        <div style="background:var(--card-subtle);border:1px solid var(--line);border-radius:var(--radius-md);padding:16px;">
-          <div style="font-size:13px;font-weight:800;color:#0f766e;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-            <span>🩺</span> <span>Detailed Administration & Dosing</span>
-          </div>
-          <div style="font-size:13px;color:var(--dark);line-height:1.5;margin-bottom:8px;">
-            <b>Recommended Dose:</b> ${escapeHtml(dosage)}
-          </div>
-          <div style="font-size:13px;color:var(--dark);line-height:1.5;margin-bottom:8px;">
-            <b>Timing Advice:</b> 🕒 ${escapeHtml(timing)}
-          </div>
-          <div style="font-size:12.5px;color:var(--muted);background:white;padding:8px 10px;border-radius:6px;border:1px solid var(--line);">
-            💡 <b>Missed Dose:</b> ${escapeHtml(missedDose)}
-          </div>
-        </div>
-
-        <!-- Right Col: Food Radar & Interactions -->
-        <div style="background:var(--card-subtle);border:1px solid var(--line);border-radius:var(--radius-md);padding:16px;">
-          <div style="font-size:13px;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-            <span>🍎</span> <span>Food, Alcohol & Chemical Warnings</span>
-          </div>
-          <ul style="margin:0 0 14px 18px;font-size:13px;color:var(--dark);line-height:1.5;">
-            ${(Array.isArray(foodWarnings) ? foodWarnings : [foodWarnings]).map(f => `<li>${escapeHtml(f)}</li>`).join('')}
-          </ul>
-
-          <div style="font-size:13px;font-weight:800;color:#dc2626;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:6px;">
-            <span>⚠️</span> <span>Contraindications & Side Effects</span>
-          </div>
-          <div style="font-size:13px;color:var(--dark);line-height:1.5;margin-bottom:8px;">
-            <b>Key Precautions:</b> ${cautions.length > 0 ? escapeHtml(cautions.join(', ')) : 'Consult physician in severe liver or renal impairment.'}
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+          <div style="font-size:12.5px;font-weight:700;color:#991b1b;margin-bottom:6px;">Common Adverse Effects:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">
             ${(Array.isArray(sideEffects) ? sideEffects : [sideEffects]).map(se => `
               <span class="pill" style="background:#fee2e2;color:#991b1b;font-size:11.5px;font-weight:700;">• ${escapeHtml(se)}</span>
             `).join('')}
           </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:8px 10px;font-size:12px;color:#991b1b;">
+            <b>Contraindications:</b> ${cautions.length > 0 ? escapeHtml(cautions.join(', ')) : 'Hypersensitivity to active ingredient; consult physician.'}
+          </div>
         </div>
+
+        <!-- CARD 5: FOOD, HERB & ALCOHOL RADAR -->
+        <div style="background:#ffffff;border:1.5px solid #f59e0b;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+          <div style="font-size:13px;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">🍎</span> <span>Food, Alcohol & Chemical Warnings</span>
+          </div>
+          <ul style="margin:0 0 10px 18px;padding:0;font-size:13px;color:var(--dark);line-height:1.6;">
+            ${(Array.isArray(foodWarnings) ? foodWarnings : [foodWarnings]).map(f => `<li>${escapeHtml(f)}</li>`).join('')}
+          </ul>
+          <div style="background:#fffbeb;border-radius:8px;padding:8px 10px;font-size:12px;color:#b45309;border:1px solid #fde68a;">
+            🍷 <b>Alcohol Interaction:</b> Strictly avoid alcohol to prevent exacerbated hepatic load or CNS sedation.
+          </div>
+        </div>
+
+        <!-- CARD 6: PREGNANCY & LACTATION SAFETY -->
+        <div style="background:#ffffff;border:1.5px solid #8b5cf6;border-radius:12px;padding:18px;box-shadow:0 2px 6px rgba(0,0,0,0.02);">
+          <div style="font-size:13px;font-weight:800;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+            <span style="font-size:18px;">🤰</span> <span>Pregnancy & Lactation Classification</span>
+          </div>
+          <div style="font-size:13px;color:var(--dark);line-height:1.6;margin-bottom:12px;">
+            <b>Clinical Safety Summary:</b> ${escapeHtml(pregnancySafety)}
+          </div>
+          <div style="background:#f5f3ff;border-radius:8px;padding:8px 10px;font-size:12px;color:#6d28d9;border:1px solid #ddd6fe;">
+            🍼 <b>Lactation Note:</b> Consult an obstetrician before nursing; monitor infant for sedation or gastrointestinal changes.
+          </div>
+        </div>
+
       </div>
 
-      <!-- JAN AUSHADHI & GLOBAL GENERICS PRICING COMPARISON -->
-      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:var(--radius-md);padding:16px;margin-top:14px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-          <div style="font-size:14px;font-weight:800;color:#15803d;display:flex;align-items:center;gap:6px;">
-            <span>💰</span> <span>Jan Aushadhi & Global Generic Equivalents (Save Up to 85%)</span>
+      <!-- CARD 7: JAN AUSHADHI & GLOBAL GENERIC SAVINGS BENCHMARK -->
+      <div style="background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);border:1.5px solid #86efac;border-radius:14px;padding:20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.03);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div style="font-size:15px;font-weight:800;color:#15803d;display:flex;align-items:center;gap:8px;">
+            <span style="font-size:20px;">💰</span> <span>Jan Aushadhi & Generic Equivalents (Save Up to ${savingsPercent}%)</span>
           </div>
-          <span class="pill" style="background:#16a34a;color:white;font-weight:800;font-size:11px;">Active Salt Verified</span>
+          <span class="pill" style="background:#16a34a;color:white;font-weight:800;font-size:11px;padding:3px 8px;">
+            Active Salt Bioequivalent
+          </span>
         </div>
-        <p style="font-size:12.5px;color:#166534;margin-bottom:10px;">
-          The active pharmaceutical ingredient (<b>${escapeHtml(genericName)}</b>) is identical in efficacy to premium branded medicines.
+        <p style="font-size:13px;color:#166534;margin-bottom:14px;line-height:1.5;">
+          The active pharmaceutical ingredient (<b>${escapeHtml(genericName)}</b>) is chemically identical and bioequivalent in therapeutic efficacy to high-cost branded formulations.
         </p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <div style="background:white;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;flex:1;min-width:180px;">
-            <div style="font-size:11px;color:var(--muted);font-weight:700;">PMBJP JAN AUSHADHI GENERIC</div>
-            <div style="font-size:14px;font-weight:800;color:#15803d;">₹5 – ₹18 / Strip</div>
-            <div style="font-size:10.5px;color:#16a34a;font-weight:700;">Available at 10,000+ Kendras in India</div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;margin-bottom:14px;">
+          <div style="background:white;border:1.5px solid #86efac;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;">PMBJP JAN AUSHADHI GENERIC</div>
+            <div style="font-size:18px;font-weight:800;color:#15803d;margin:3px 0;">₹${genPrice} / Strip</div>
+            <div style="font-size:11px;color:#16a34a;font-weight:700;">Available at 10,000+ Kendras in India</div>
           </div>
-          <div style="background:white;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;flex:1;min-width:180px;">
-            <div style="font-size:11px;color:var(--muted);font-weight:700;">COMMERCIAL BRANDED MARKET</div>
-            <div style="font-size:14px;font-weight:800;color:#991b1b;">₹60 – ₹180 / Strip</div>
-            <div style="font-size:10.5px;color:#dc2626;font-weight:700;">Premium Marketing Markup</div>
+          <div style="background:white;border:1.5px solid #fecaca;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;">COMMERCIAL BRANDED MARKET</div>
+            <div style="font-size:18px;font-weight:800;color:#991b1b;margin:3px 0;">₹${brandPrice} / Strip</div>
+            <div style="font-size:11px;color:#dc2626;font-weight:700;">${savingsPercent}% Marketing Premium</div>
           </div>
-          <div style="background:white;border:1px solid #bbf7d0;border-radius:8px;padding:8px 12px;flex:1;min-width:180px;">
-            <div style="font-size:11px;color:var(--muted);font-weight:700;">US / EU FDA GENERIC EQUIVALENT</div>
-            <div style="font-size:14px;font-weight:800;color:#0369a1;">$4 – $12 / 30-day Supply</div>
-            <div style="font-size:10.5px;color:#0284c7;font-weight:700;">International Bioequivalent</div>
+          <div style="background:white;border:1.5px solid #bae6fd;border-radius:10px;padding:12px 14px;">
+            <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;">US / EU FDA GENERIC BENCHMARK</div>
+            <div style="font-size:18px;font-weight:800;color:#0369a1;margin:3px 0;">$4 – $14 / Month</div>
+            <div style="font-size:11px;color:#0284c7;font-weight:700;">International Bioequivalent</div>
           </div>
+        </div>
+
+        ${brandNames.length > 0 ? `
+          <div style="font-size:12px;color:#166534;font-weight:700;margin-bottom:6px;">Verified Equivalent Brand Formulations:</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;">
+            ${brandNames.map(b => `
+              <span class="chat-chip" onclick="quickMedSearch('${escapeHtml(b)}')" style="background:white;border:1px solid #bbf7d0;color:#15803d;cursor:pointer;font-size:12px;padding:4px 10px;">
+                💊 ${escapeHtml(b)}
+              </span>
+            `).join('')}
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- HEALTHCARE SAFETY & REGULATORY DISCLAIMER -->
+      <div style="background:var(--card-subtle, #f8fafc);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">🛡️</span>
+        <div>
+          <b>Clinical Information Disclaimer:</b> HealthGPT Pharmacopoeia data is compiled from verified FDA, EMA, CDSCO, and WHO monographs for educational and patient empowerment purposes. Always consult a licensed medical practitioner or registered pharmacist for personalized prescription dosing.
         </div>
       </div>
     `;
 
-    // Auto-read aloud if enabled
-    // Voice narration available via Read Aloud button on demand
   } catch (err) {
     console.error('Error searching medicine:', err);
     card.innerHTML = `<div style="color:var(--danger);padding:14px;font-weight:700;">⚠️ Unable to retrieve monograph for "${escapeHtml(query)}". Please try again.</div>`;
   }
 }
 
+// Global Medicine Autocomplete Controller
+let medAutocompleteDebounceTimer = null;
+let currentAutocompleteItems = [];
+let activeAutocompleteIndex = -1;
+
+function handleMedicineInputSearch(val) {
+  clearTimeout(medAutocompleteDebounceTimer);
+  const dropdown = document.getElementById('medAutocompleteDropdown');
+  if (!dropdown) return;
+  const q = (val || '').trim();
+  if (q.length < 2) {
+    dropdown.style.display = 'none';
+    dropdown.innerHTML = '';
+    return;
+  }
+
+  medAutocompleteDebounceTimer = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/medicine/suggestions?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      const list = data.suggestions || [];
+      currentAutocompleteItems = list;
+      activeAutocompleteIndex = -1;
+
+      if (list.length === 0) {
+        dropdown.style.display = 'block';
+        dropdown.innerHTML = `
+          <div style="padding:10px 14px;font-size:13px;color:var(--muted);text-align:center;">
+            Press <b>Enter</b> to run full global AI pharmacological synthesis for "${escapeHtml(q)}"
+          </div>
+        `;
+        return;
+      }
+
+      dropdown.style.display = 'block';
+      dropdown.innerHTML = list.map((item, idx) => `
+        <div class="med-autocomplete-item" id="medAutoItem_${idx}" onclick="selectMedicineAutocomplete('${escapeHtml(item.name)}')" style="padding:9px 12px;cursor:pointer;border-radius:8px;transition:background 0.15s ease;display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #f1f5f9;">
+          <div>
+            <div style="font-weight:800;font-size:13.5px;color:var(--dark);">
+              💊 ${escapeHtml(item.name)} <span style="font-size:11.5px;color:var(--muted);font-weight:600;">(${escapeHtml(item.standardStrength || '')})</span>
+            </div>
+            <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">
+              🔬 ${escapeHtml(item.genericName)} · <span style="color:var(--primary);font-weight:600;">${escapeHtml(item.therapeuticCategory || item.class)}</span>
+            </div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <span class="pill" style="background:${item.schedule.includes('OTC') ? '#dcfce7' : '#fee2e2'};color:${item.schedule.includes('OTC') ? '#15803d' : '#991b1b'};font-size:10px;font-weight:800;">
+              ${escapeHtml(item.schedule)}
+            </span>
+            ${item.savingsPercent ? `<div style="font-size:10.5px;color:#16a34a;font-weight:800;margin-top:2px;">Save ${item.savingsPercent}%</div>` : ''}
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      console.error('Error fetching suggestions:', e);
+    }
+  }, 160);
+}
+
+function handleMedSearchKeydown(e) {
+  const dropdown = document.getElementById('medAutocompleteDropdown');
+  if (!dropdown || dropdown.style.display === 'none') {
+    if (e.key === 'Enter') {
+      searchMedicineAI();
+    }
+    return;
+  }
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (currentAutocompleteItems.length === 0) return;
+    activeAutocompleteIndex = (activeAutocompleteIndex + 1) % currentAutocompleteItems.length;
+    updateAutocompleteHighlight();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (currentAutocompleteItems.length === 0) return;
+    activeAutocompleteIndex = (activeAutocompleteIndex - 1 + currentAutocompleteItems.length) % currentAutocompleteItems.length;
+    updateAutocompleteHighlight();
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (activeAutocompleteIndex >= 0 && activeAutocompleteIndex < currentAutocompleteItems.length) {
+      selectMedicineAutocomplete(currentAutocompleteItems[activeAutocompleteIndex].name);
+    } else {
+      dropdown.style.display = 'none';
+      searchMedicineAI();
+    }
+  } else if (e.key === 'Escape') {
+    dropdown.style.display = 'none';
+  }
+}
+
+function updateAutocompleteHighlight() {
+  currentAutocompleteItems.forEach((_, idx) => {
+    const el = document.getElementById(`medAutoItem_${idx}`);
+    if (el) {
+      if (idx === activeAutocompleteIndex) {
+        el.style.background = '#e0f2fe';
+      } else {
+        el.style.background = 'transparent';
+      }
+    }
+  });
+}
+
+function selectMedicineAutocomplete(name) {
+  const input = document.getElementById('medSearchInput');
+  if (input) input.value = name;
+  const dropdown = document.getElementById('medAutocompleteDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+  searchMedicineAI();
+}
+
+// Close autocomplete when clicking outside
+document.addEventListener('click', (e) => {
+  const dropdown = document.getElementById('medAutocompleteDropdown');
+  const searchBox = document.getElementById('medSearchInput');
+  if (dropdown && dropdown.style.display !== 'none') {
+    if (!dropdown.contains(e.target) && e.target !== searchBox) {
+      dropdown.style.display = 'none';
+    }
+  }
+});
+
 function quickMedSearch(name) {
   const input = document.getElementById('medSearchInput');
   if (input) input.value = name;
-  switchMedTab('ai');
+  const dropdown = document.getElementById('medAutocompleteDropdown');
+  if (dropdown) dropdown.style.display = 'none';
+  switchMedTab('search');
   searchMedicineAI();
 }
 
