@@ -9,6 +9,7 @@
  */
 
 import { createWorker, type Worker } from 'tesseract.js';
+import sharp from 'sharp';
 import { LLMDispatcher } from './llmDispatcher.ts';
 import { GrokService } from './grokService.ts';
 import {
@@ -67,39 +68,73 @@ export interface OCRProcessResult {
   engine: 'tesseract' | 'sample' | 'fallback';
   parsed: ParsedPrescription;
   processingTimeMs: number;
+  preprocessed?: boolean;
   error?: string;
 }
 
 export class TesseractService {
   /**
-   * Processes an image (Base64 string or Buffer) using Tesseract OCR.
+   * High-accuracy Image Pre-processing for OCR:
+   * 1. Converts input buffer to Grayscale to strip color artifacts and chromatic noise
+   * 2. Adjusts contrast and normalizes histogram to enhance faint handwritten/printed text
+   * 3. Applies gentle edge sharpening to clarify character contours
+   * 4. Converts to high-clarity PNG format for Tesseract ingestion
+   */
+  public static async preprocessImageForOcr(inputBuffer: Buffer): Promise<{ buffer: Buffer; preprocessed: boolean }> {
+    try {
+      const processed = await sharp(inputBuffer)
+        .grayscale()
+        .normalize() // Stretch contrast over full dynamic range
+        .linear(1.25, -10) // Contrast enhancement: gain 1.25, offset -10
+        .sharpen({ sigma: 1.0, m1: 1.0, m2: 2.0 }) // Edge definition for text glyphs
+        .png()
+        .toBuffer();
+      return { buffer: processed, preprocessed: true };
+    } catch (err: any) {
+      console.warn('[TesseractService] Sharp preprocessing warning, using original buffer:', err?.message || err);
+      return { buffer: inputBuffer, preprocessed: false };
+    }
+  }
+
+  /**
+   * Processes an image (Base64 string or Buffer) using Tesseract OCR with integrated pre-processing.
    * Cleans extracted text and normalizes medical abbreviations.
    */
-  public static async recognizeImage(imageInput: string | Buffer): Promise<{ rawText: string; confidence: number }> {
+  public static async recognizeImage(imageInput: string | Buffer): Promise<{ rawText: string; confidence: number; preprocessed: boolean }> {
     let worker: Worker | null = null;
     try {
       // Initialize Tesseract worker for English language
       worker = await createWorker('eng');
       
-      let inputTarget: string | Buffer = imageInput;
+      let inputBuffer: Buffer;
 
       // If Base64 string with data URI prefix, remove prefix if needed or pass directly
       if (typeof imageInput === 'string' && imageInput.startsWith('data:image')) {
         const commaIndex = imageInput.indexOf(',');
         if (commaIndex !== -1) {
           const base64Data = imageInput.substring(commaIndex + 1);
-          inputTarget = Buffer.from(base64Data, 'base64');
+          inputBuffer = Buffer.from(base64Data, 'base64');
+        } else {
+          inputBuffer = Buffer.from(imageInput, 'base64');
         }
       } else if (typeof imageInput === 'string' && !imageInput.startsWith('http') && !imageInput.startsWith('/')) {
         // Raw base64 string
-        inputTarget = Buffer.from(imageInput, 'base64');
+        inputBuffer = Buffer.from(imageInput, 'base64');
+      } else if (Buffer.isBuffer(imageInput)) {
+        inputBuffer = imageInput;
+      } else {
+        // String path or fallback
+        inputBuffer = Buffer.from(String(imageInput));
       }
 
-      const { data } = await worker.recognize(inputTarget);
+      // Execute Image Pre-processing (Grayscale + Contrast Enhancement + Sharpening)
+      const { buffer: preprocessedBuffer, preprocessed } = await this.preprocessImageForOcr(inputBuffer);
+
+      const { data } = await worker.recognize(preprocessedBuffer);
       const rawText = data.text ? data.text.trim() : '';
       const confidence = typeof data.confidence === 'number' ? Math.round(data.confidence) : 85;
 
-      return { rawText, confidence };
+      return { rawText, confidence, preprocessed };
     } catch (err: any) {
       console.warn('[TesseractService] OCR extraction warning:', err?.message || err);
       throw err;
@@ -389,10 +424,13 @@ Analyze the following prescription OCR text and output strict JSON with NO Markd
     let confidence = 95;
     let engine: 'tesseract' | 'sample' | 'fallback' = 'sample';
 
+    let isPreprocessed = false;
+
     // 1. If image provided, run Tesseract OCR
     if (params.imageBase64 && params.imageBase64.length > 100) {
       try {
         const ocrResult = await this.recognizeImage(params.imageBase64);
+        isPreprocessed = ocrResult.preprocessed;
         if (ocrResult.rawText && ocrResult.rawText.length > 5) {
           textToProcess = ocrResult.rawText;
           confidence = ocrResult.confidence;
@@ -473,6 +511,7 @@ Advice: Avoid scented soaps and synthetic wool, keep skin moisturized.`
       engine,
       parsed,
       processingTimeMs: Date.now() - startTime,
+      preprocessed: isPreprocessed,
     };
   }
 }

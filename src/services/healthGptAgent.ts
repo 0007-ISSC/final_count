@@ -23,6 +23,7 @@ import {
 } from './mlIntelligenceService.ts';
 import { validateAndCrossReferenceDrug } from '../data/medicinesData.ts';
 import { CARECAST_FEEDS } from '../data/healthData.ts';
+import { executeDoctorBooking } from './appointmentBookingService.ts';
 
 export interface AgentToolTrace {
   toolName: string;
@@ -139,8 +140,10 @@ export class HealthGptAgent {
     const isDrugOrRx = ['medicine', 'prescription', 'tablet', 'pill', 'drug', 'interaction', 'dose', 'conflict', 'side effect'].some(w => queryLower.includes(w));
     const isSymptomAnalysis = ['pain', 'headache', 'fever', 'cough', 'ache', 'rash', 'nausea', 'stomach', 'dizzy', 'symptom'].some(w => queryLower.includes(w));
     const isRiskScore = ['risk', 'cardiac risk', 'diabetes risk', 'framingham', 'findrisc', 'probability', 'cholesterol'].some(w => queryLower.includes(w));
+    const isAppointmentBooking = ['appointment', 'book a doctor', 'book doctor', 'schedule doctor', 'schedule appointment', 'book slot', 'consult doctor'].some(w => queryLower.includes(w)) || (queryLower.includes('book') && (queryLower.includes('doctor') || queryLower.includes('sharma') || queryLower.includes('bansal') || queryLower.includes('nair') || queryLower.includes('slot') || queryLower.includes('appointment')));
 
-    if (isVitalsTrend && isSymptomAnalysis) detectedIntent = 'VITALS_SYMPTOM_CORRELATION';
+    if (isAppointmentBooking) detectedIntent = 'APPOINTMENT_BOOKING_ORCHESTRATION';
+    else if (isVitalsTrend && isSymptomAnalysis) detectedIntent = 'VITALS_SYMPTOM_CORRELATION';
     else if (isVitalsTrend) detectedIntent = 'VITALS_TREND_TELEMETRY';
     else if (isDrugOrRx) detectedIntent = 'PHARMACOLOGICAL_AUDIT';
     else if (isRiskScore) detectedIntent = 'METABOLIC_CARDIO_RISK';
@@ -156,6 +159,38 @@ export class HealthGptAgent {
     const synthesisPoints: string[] = [];
     const recommendations: string[] = [];
     const followUps: string[] = [];
+
+    // Branch 0: Real Doctor Appointment Booking
+    if (isAppointmentBooking || detectedIntent === 'APPOINTMENT_BOOKING_ORCHESTRATION') {
+      reasoningSteps.push({
+        stepNumber: 3,
+        thought: 'Processing natural language appointment request, selecting matching verified specialist in India, allocating consultation slot, and securing booking record.',
+        actionTaken: 'Execute tool: autonomous_doctor_appointment_scheduler'
+      });
+
+      const bookingResult = await executeDoctorBooking({
+        symptoms: userQuery,
+        patientName: context.userName || 'Demo User',
+        userId: context.userId || 1
+      });
+
+      toolTraces.push({
+        toolName: 'autonomous_doctor_appointment_scheduler',
+        toolDescription: 'Directly schedules, generates token, and books consultation with verified Indian medical specialist',
+        inputParameters: { query: userQuery, patient: context.userName },
+        outputResult: bookingResult.appointment,
+        executionStatus: bookingResult.success ? 'success' : 'warning',
+        elapsedMs: 25
+      });
+
+      synthesisPoints.push(bookingResult.responseText);
+      if (bookingResult.appointment) {
+        recommendations.push(`Consultation Token: ${bookingResult.appointment.tokenNumber}. Keep this for doctor verification.`);
+        if (bookingResult.appointment.videoLink) {
+          recommendations.push(`Telehealth link active: ${bookingResult.appointment.videoLink}`);
+        }
+      }
+    }
 
     // Branch A: Vitals Trend & Anomaly Detection (Handles user prompt's exact example)
     if (isVitalsTrend || detectedIntent === 'VITALS_SYMPTOM_CORRELATION') {

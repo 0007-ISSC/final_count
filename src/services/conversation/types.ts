@@ -2,9 +2,9 @@
  * HealthGPT Ultra-Interactive AI Conversation Engine - Core Types
  */
 
-export const CONVERSATION_ENGINE_VERSION = '2.0.0';
+export const CONVERSATION_ENGINE_VERSION = '2.1.0';
 
-export type ConversationPersona = 'doctor' | 'therapist' | 'nutrition';
+export type ConversationPersona = 'doctor' | 'therapist' | 'nutrition'; // Canonical 2 chatbots: doctor & therapist (nutrition redirected)
 
 export type ConversationState =
   | 'GREETING'
@@ -26,10 +26,26 @@ export type DetectedIntent =
   | 'EXERCISE'
   | 'HEALTH_DATA'
   | 'PRESCRIPTION'
+  | 'PRESCRIPTION_OCR'
+  | 'CONNECT_TO_DOCTOR'
+  | 'SEARCH_DOCTOR'
+  | 'NEARBY_DOCTOR_SEARCH'
+  | 'DOCTOR_BOOKING'
+  | 'SOS'
+  | 'DIGITAL_TWIN'
+  | 'CARECAST'
+  | 'TRANSLATOR'
   | 'EMERGENCY'
   | 'CASUAL_CONVERSATION'
   | 'FOLLOW_UP'
   | 'CLARIFICATION';
+
+export interface AppAction {
+  type: 'NAVIGATE' | 'SEARCH_DOCTOR' | 'NEARBY_DOCTOR_SEARCH' | 'BOOK_DOCTOR' | 'CONNECT_TO_DOCTOR' | 'SWITCH_PERSONA' | 'SOS' | 'TRIGGER_MODAL';
+  target?: string;
+  params?: Record<string, any>;
+  label: string;
+}
 
 export type EmotionalTone =
   | 'calm'
@@ -98,6 +114,7 @@ export interface ConversationMessage {
     label: string;
     actionType: 'save_profile' | 'update_profile';
   };
+  appAction?: AppAction;
 }
 
 export interface ConversationSession {
@@ -144,6 +161,7 @@ export interface ConversationTurnResult {
     label: string;
     actionType: 'save_profile' | 'update_profile';
   };
+  appAction?: AppAction;
   memorySummary: {
     symptoms: string[];
     onsetDuration: string | null;

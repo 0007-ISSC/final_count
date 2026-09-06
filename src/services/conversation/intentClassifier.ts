@@ -2,7 +2,7 @@
  * HealthGPT Ultra-Interactive AI Conversation Engine - Intent & Tone Classifier
  */
 
-import type { DetectedIntent, EmotionalTone } from './types.ts';
+import type { AppAction, DetectedIntent, EmotionalTone } from './types.ts';
 
 export interface IntentClassificationResult {
   intent: DetectedIntent;
@@ -12,6 +12,7 @@ export interface IntentClassificationResult {
   isCorrection: boolean;
   explanationStyle?: 'simple' | 'technical' | 'standard';
   userMoodContext?: string;
+  appAction?: AppAction;
 }
 
 export class IntentClassifier {
@@ -102,20 +103,215 @@ export class IntentClassifier {
     }
 
     // 6. Primary Intent Detection
+    // 6a. Emergency / SOS (Highest Priority)
     if (
+      text === 'emergency' ||
+      text === 'sos' ||
+      text.includes('emergency numbers') ||
+      text.includes('emergency helpline') ||
+      text.includes('need emergency help') ||
+      text.includes('call ambulance') ||
+      text.includes('call 112') ||
+      text.includes('call 108') ||
       text.includes('suicide') ||
       text.includes('kill myself') ||
       text.includes('crushing chest pain') ||
       text.includes('cannot breathe') ||
-      text.includes('face drooping')
+      text.includes('face drooping') ||
+      text.startsWith('nambi, emergency') ||
+      text.startsWith('alex, emergency')
     ) {
       return {
-        intent: 'EMERGENCY',
+        intent: 'SOS',
         confidence: 0.99,
+        emotionalTone: 'scared',
+        isTopicChange,
+        isCorrection,
+        explanationStyle,
+        appAction: {
+          type: 'SOS',
+          target: 'sos',
+          label: '🚨 Open Emergency SOS'
+        }
+      };
+    }
+
+    // 6b. Doctor Booking Flow
+    if (
+      text.includes('book a doctor') ||
+      text.includes('book an appointment') ||
+      text.includes('book appointment') ||
+      text.includes('book my appointment') ||
+      text.includes('book me an appointment') ||
+      text.includes('doctor booking') ||
+      text.includes('schedule a doctor') ||
+      text.includes('schedule an appointment') ||
+      text.includes('schedule appointment') ||
+      text.includes('make an appointment with a doctor') ||
+      text.includes('appointment slot') ||
+      ((text.includes('book') || text.includes('schedule')) && (text.includes('appointment') || text.includes('doctor') || text.includes('consultation') || text.includes('slot')))
+    ) {
+      return {
+        intent: 'DOCTOR_BOOKING',
+        confidence: 0.98,
         emotionalTone,
         isTopicChange,
         isCorrection,
-        explanationStyle
+        explanationStyle,
+        appAction: {
+          type: 'BOOK_DOCTOR',
+          target: 'doctorConnect',
+          label: '📅 Confirmed Doctor Booking'
+        }
+      };
+    }
+
+    // 6c. Nearby Doctor Search
+    if (
+      text.includes('doctor near me') ||
+      text.includes('doctors near me') ||
+      text.includes('clinic near me') ||
+      text.includes('hospital near me') ||
+      text.includes('find nearby doctor') ||
+      text.includes('specialist near me')
+    ) {
+      return {
+        intent: 'NEARBY_DOCTOR_SEARCH',
+        confidence: 0.96,
+        emotionalTone,
+        isTopicChange,
+        isCorrection,
+        explanationStyle,
+        appAction: {
+          type: 'NEARBY_DOCTOR_SEARCH',
+          target: 'doctorConnect',
+          params: { nearby: true },
+          label: '📍 Find Nearby Verified Doctors'
+        }
+      };
+    }
+
+    // 6d. Search Doctor by Specialty
+    const specialtyMap: Record<string, string> = {
+      'dermatologist': 'Dermatologist',
+      'skin doctor': 'Dermatologist',
+      'cardiologist': 'Cardiologist',
+      'heart doctor': 'Cardiologist',
+      'heart specialist': 'Cardiologist',
+      'neurologist': 'Neurologist',
+      'brain specialist': 'Neurologist',
+      'orthopedic': 'Orthopedic',
+      'bone doctor': 'Orthopedic',
+      'joint doctor': 'Orthopedic',
+      'pediatrician': 'Pediatrician',
+      'child doctor': 'Pediatrician',
+      'gynecologist': 'Obstetrician & Gynecologist',
+      'obgyn': 'Obstetrician & Gynecologist',
+      'women doctor': 'Obstetrician & Gynecologist',
+      'psychiatrist': 'Psychiatrist',
+      'mental health doctor': 'Psychiatrist',
+      'pulmonologist': 'Pulmonologist',
+      'chest specialist': 'Pulmonologist',
+      'lung specialist': 'Pulmonologist',
+      'gastroenterologist': 'Gastroenterologist',
+      'stomach specialist': 'Gastroenterologist',
+      'physician': 'General Physician',
+      'general physician': 'General Physician',
+      'general doctor': 'General Physician',
+      'dentist': 'Dentist',
+      'eye doctor': 'Ophthalmologist',
+      'ophthalmologist': 'Ophthalmologist',
+      'ent': 'ENT Specialist',
+      'ear nose throat': 'ENT Specialist'
+    };
+
+    for (const [key, specName] of Object.entries(specialtyMap)) {
+      if (text.includes(key)) {
+        return {
+          intent: 'SEARCH_DOCTOR',
+          confidence: 0.95,
+          emotionalTone,
+          isTopicChange,
+          isCorrection,
+          explanationStyle,
+          appAction: {
+            type: 'SEARCH_DOCTOR',
+            target: 'doctorConnect',
+            params: { specialty: specName },
+            label: `🩺 View ${specName}s`
+          }
+        };
+      }
+    }
+
+    // 6e. Connect to Doctor General
+    if (
+      text.includes('connect to a doctor') ||
+      text.includes('connect to the doctors') ||
+      text.includes('connect to doctors') ||
+      text.includes('connect to doctor') ||
+      text.includes('connect me to a doctor') ||
+      text.includes('connect me to doctor') ||
+      text.includes('connect me to doctors') ||
+      text.includes('connect with a doctor') ||
+      text.includes('connect with doctor') ||
+      text.includes('connect with doctors') ||
+      text.includes('doctor connection') ||
+      text.includes('doctors connection') ||
+      text.includes('doctor option') ||
+      text.includes('doctors option') ||
+      text.includes('talk to a doctor') ||
+      text.includes('talk to doctors') ||
+      text.includes('speak to a doctor') ||
+      text.includes('speak to doctors') ||
+      text.includes('speak to a real doctor') ||
+      text.includes('see a doctor') ||
+      text.includes('consult a doctor') ||
+      text.includes('call a doctor') ||
+      text.includes('call doctor') ||
+      text.includes('human doctor') ||
+      text.includes('real physician') ||
+      text.includes('want a real doctor') ||
+      text.includes('not an ai answer') ||
+      (text.includes('connect') && (text.includes('doctor') || text.includes('specialist') || text.includes('physician')))
+    ) {
+      return {
+        intent: 'CONNECT_TO_DOCTOR',
+        confidence: 0.97,
+        emotionalTone,
+        isTopicChange,
+        isCorrection,
+        explanationStyle,
+        appAction: {
+          type: 'CONNECT_TO_DOCTOR',
+          target: 'doctorConnect',
+          label: '🩺 Open Doctor Connection'
+        }
+      };
+    }
+
+    // 6f. Prescription OCR
+    if (
+      text.includes('read my prescription') ||
+      text.includes('read prescription') ||
+      text.includes('scan my prescription') ||
+      text.includes('scan prescription') ||
+      text.includes('upload prescription') ||
+      text.includes('ocr prescription') ||
+      text.includes('prescription photo')
+    ) {
+      return {
+        intent: 'PRESCRIPTION_OCR',
+        confidence: 0.95,
+        emotionalTone,
+        isTopicChange,
+        isCorrection,
+        explanationStyle,
+        appAction: {
+          type: 'NAVIGATE',
+          target: 'ocr',
+          label: '📷 Open Prescription OCR'
+        }
       };
     }
 
@@ -131,8 +327,10 @@ export class IntentClassifier {
       };
     }
 
-    // Prescription & Medication
+    // Prescription & Medication Intelligence
     if (
+      text.includes('what is this medicine') ||
+      text.includes('about this medicine') ||
       text.includes('prescription') ||
       text.includes('medicine') ||
       text.includes('medication') ||
@@ -152,12 +350,18 @@ export class IntentClassifier {
         emotionalTone,
         isTopicChange,
         isCorrection,
-        explanationStyle
+        explanationStyle,
+        appAction: {
+          type: 'NAVIGATE',
+          target: 'medicine',
+          label: '💊 Open Medicine Intelligence'
+        }
       };
     }
 
     // Mental Wellness & Stress
     if (
+      text.includes('feeling stressed') ||
       text.includes('anxiety') ||
       text.includes('depressed') ||
       text.includes('stress') ||
@@ -178,7 +382,34 @@ export class IntentClassifier {
         emotionalTone,
         isTopicChange,
         isCorrection,
-        explanationStyle
+        explanationStyle,
+        appAction: {
+          type: 'SWITCH_PERSONA',
+          params: { persona: 'therapist' },
+          label: '🧘 Speak with Alex (Mental Wellness)'
+        }
+      };
+    }
+
+    // Digital Health Twin
+    if (
+      text.includes('digital twin') ||
+      text.includes('my twin') ||
+      text.includes('biological age') ||
+      text.includes('health twin')
+    ) {
+      return {
+        intent: 'DIGITAL_TWIN',
+        confidence: 0.94,
+        emotionalTone,
+        isTopicChange,
+        isCorrection,
+        explanationStyle,
+        appAction: {
+          type: 'NAVIGATE',
+          target: 'twinAnalytics',
+          label: '🧬 Open Digital Health Twin'
+        }
       };
     }
 
@@ -227,7 +458,12 @@ export class IntentClassifier {
         emotionalTone,
         isTopicChange,
         isCorrection,
-        explanationStyle
+        explanationStyle,
+        appAction: {
+          type: 'NAVIGATE',
+          target: 'nutrition',
+          label: '🥗 Open Nutrition Planner'
+        }
       };
     }
 
@@ -251,7 +487,12 @@ export class IntentClassifier {
         emotionalTone,
         isTopicChange,
         isCorrection,
-        explanationStyle
+        explanationStyle,
+        appAction: {
+          type: 'NAVIGATE',
+          target: 'dashboard',
+          label: '📊 Open Health Overview'
+        }
       };
     }
 

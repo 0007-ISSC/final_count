@@ -41,7 +41,7 @@ export class FollowUpEngine {
         { id: 'act_breathing', type: 'modal', label: '🧘 2-Min Calm Breathing', payload: { modal: 'breathing' } },
         { id: 'act_grounding', type: 'modal', label: '🌿 5-4-3-2-1 Grounding', payload: { modal: 'grounding' } }
       );
-    } else if (persona === 'nutrition' || intent === 'NUTRITION') {
+    } else if (intent === 'NUTRITION') {
       proactiveActions.push(
         { id: 'act_meal_plan', type: 'prompt', label: '🥗 Create a healthy meal plan' },
         { id: 'act_calc_bmi', type: 'prompt', label: '⚖️ Calculate my BMI & macros' }
@@ -78,8 +78,6 @@ export class FollowUpEngine {
       smartSuggestions = ['Upper stomach', 'Lower right side', 'Cramping after meals', 'Mild ache'];
     } else if (persona === 'therapist') {
       smartSuggestions = ['I feel overwhelmed with work', 'Help me calm my racing thoughts', 'Guide me through breathing', 'I want to reframe this'];
-    } else if (persona === 'nutrition') {
-      smartSuggestions = ['High-protein vegetarian options', 'Healthy breakfast ideas', 'Tips for drinking more water', 'Healthy snack swaps'];
     } else if (text.includes('tired') || memory.symptoms.includes('fatigue')) {
       smartSuggestions = ['For a couple of weeks', 'Just the last few days', 'Sleep has been terrible', 'What tests should I get?'];
     } else {

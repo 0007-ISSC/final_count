@@ -29,6 +29,7 @@ import { FollowUpEngine } from './followUpEngine.ts';
 import { ResponseQualityController } from './responseQualityController.ts';
 import { LLMDispatcher, getGenAIClient, getGeminiCandidateModels } from '../llmDispatcher.ts';
 import { TranslationService } from '../translationService.ts';
+import { executeDoctorBooking } from '../appointmentBookingService.ts';
 
 export class ConversationEngine {
   private static sessions: Map<string, ConversationSession> = new Map();
@@ -310,8 +311,72 @@ export class ConversationEngine {
       console.warn('[ConversationEngine] LLM invocation warning:', err);
     }
 
-    // 8. Fallback to Local Intelligent Response if LLM is unavailable
-    if (!responseText) {
+    // 8. Fallback to Local Intelligent Response if LLM is unavailable or for deterministic Intent Action
+    if (intentResult.appAction?.type === 'SOS') {
+      responseText = "🚨 Triggering Emergency SOS. Opening verified emergency helplines immediately. If you or someone nearby is in immediate danger, call 112 (National Emergency) or 108 (Ambulance).";
+      source = 'HealthGPT Emergency Safety Gateway';
+      engineUsed = 'emergency-gateway';
+      modelName = 'sos-protocol';
+    } else if (intentResult.appAction?.type === 'SEARCH_DOCTOR') {
+      const spec = intentResult.appAction.params?.specialty || 'specialist';
+      responseText = `🩺 Opening Doctor Connection filtered for ${spec}s. Here are the verified doctors and clinical specialists available for consultation.`;
+      source = 'HealthGPT Doctor Discovery Gateway';
+      engineUsed = 'doctor-router';
+      modelName = 'doctor-protocol';
+    } else if (
+      intentResult.appAction?.type === 'CONNECT_TO_DOCTOR' || 
+      intentResult.intent === 'CONNECT_TO_DOCTOR' ||
+      intentResult.appAction?.type === 'BOOK_DOCTOR' || 
+      intentResult.intent === 'DOCTOR_BOOKING'
+    ) {
+      // Connect to verified doctors immediately via Supabase-backed booking function
+      const bookingRes = await executeDoctorBooking({
+        doctorQuery: intentResult.appAction?.params?.doctorName,
+        specialty: intentResult.appAction?.params?.specialty,
+        symptoms: message,
+        userId: session.userId || 1
+      });
+      if (bookingRes.success && bookingRes.appointment) {
+        responseText = bookingRes.responseText;
+        source = 'HealthGPT Autonomous Booking & Doctor Gateway';
+        engineUsed = 'autonomous-booking';
+        modelName = 'telehealth-protocol';
+        intentResult.appAction = {
+          type: 'CONNECT_TO_DOCTOR',
+          target: 'doctorConnect',
+          label: '📅 View Pending Appointment & Doctors',
+          params: {
+            appointment: bookingRes.appointment,
+            doctor: bookingRes.doctor
+          }
+        };
+      } else {
+        responseText = "🩺 Connecting you to Indian doctors. Opening Doctor Connection where you can choose from 36+ verified specialists across India.";
+        source = 'HealthGPT Doctor Discovery Gateway';
+        engineUsed = 'doctor-router';
+        modelName = 'doctor-protocol';
+        intentResult.appAction = {
+          type: 'CONNECT_TO_DOCTOR',
+          target: 'doctorConnect',
+          label: '👨‍⚕️ Connect With Doctors'
+        };
+      }
+    } else if (intentResult.appAction?.type === 'NEARBY_DOCTOR_SEARCH') {
+      responseText = "📍 Finding verified doctors and clinics near your location. Opening Doctor Connection with location filtering.";
+      source = 'HealthGPT Doctor Discovery Gateway';
+      engineUsed = 'doctor-router';
+      modelName = 'doctor-protocol';
+      intentResult.appAction = {
+        type: 'NEARBY_DOCTOR_SEARCH',
+        target: 'doctorConnect',
+        label: '📍 Connect Nearby Doctors'
+      };
+    } else if (intentResult.appAction?.type === 'NAVIGATE' && intentResult.appAction.target === 'ocr') {
+      responseText = "📷 Opening Prescription OCR scanner. You can upload a photo or scan your physical prescription for automated dosage and conflict extraction.";
+      source = 'HealthGPT Vision Gateway';
+      engineUsed = 'ocr-router';
+      modelName = 'vision-protocol';
+    } else if (!responseText) {
       responseText = this.generateLocalConversationalFallback(
         persona,
         message,
@@ -322,6 +387,19 @@ export class ConversationEngine {
       source = 'HealthGPT Local Conversation Engine';
       engineUsed = 'local';
       modelName = 'local-rules';
+    }
+
+    // 8b. Add proactive action for the detected AppAction
+    if (intentResult.appAction) {
+      followUpDecision.proactiveActions.unshift({
+        id: `act_${Date.now()}`,
+        type: intentResult.appAction.type,
+        label: intentResult.appAction.label,
+        payload: {
+          target: intentResult.appAction.target,
+          params: intentResult.appAction.params
+        }
+      });
     }
 
     // 9. Response Quality Controller
@@ -373,7 +451,8 @@ export class ConversationEngine {
       intent: intentResult.intent,
       suggestedReplies: followUpDecision.smartSuggestions,
       actions: followUpDecision.proactiveActions,
-      profileAction
+      profileAction,
+      appAction: intentResult.appAction
     };
 
     session.messages.push(userMsg, botMsg);
@@ -388,6 +467,7 @@ export class ConversationEngine {
       suggestedReplies: followUpDecision.smartSuggestions,
       actions: followUpDecision.proactiveActions,
       profileAction,
+      appAction: intentResult.appAction,
       memorySummary: {
         symptoms: session.memory.symptoms,
         onsetDuration: session.memory.onsetDuration,
@@ -425,8 +505,6 @@ export class ConversationEngine {
     if (text === 'hey' || text === 'hi' || text === 'hello' || text === 'hey healthgpt') {
       if (persona === 'therapist') {
         return `Hi! ❤️ Take a slow, deep breath... I'm Alex, your mindful wellness companion. How are you feeling right now?`;
-      } else if (persona === 'nutrition') {
-        return `Hey there! 🥗 I'm Maya, your Nutrition AI. What health or meal goals can we work on together today?`;
       } else {
         return `Hey! 🩺 I'm Dr. Nambi, your Chief AI Doctor. How are you feeling today, and what can I help you with?`;
       }
@@ -495,8 +573,6 @@ export class ConversationEngine {
 
     if (persona === 'therapist') {
       return `${ack} I hear you, and it makes complete sense that you'd feel that way. Let's explore what's behind this together. What feels like the heaviest part of it right now?`;
-    } else if (persona === 'nutrition') {
-      return `${ack} Let's find practical, realistic choices that fit your lifestyle. What does your current daily routine look like?`;
     }
 
     return `${ack} Could you tell me a little more about how long this has been going on, or if you've noticed any other symptoms alongside it?`;
