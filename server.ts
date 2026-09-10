@@ -229,6 +229,26 @@ export interface PeriodDailyLog {
   createdAt: string;
 }
 
+export interface PeriodKitItem {
+  id: string;
+  name: string;
+  category: string;
+  checked: boolean;
+  custom?: boolean;
+}
+
+export interface PeriodKit {
+  id: string;
+  userId: number;
+  name: string;
+  description: string;
+  icon: string;
+  items: PeriodKitItem[];
+  updatedAt: string;
+}
+
+const userPeriodKits: Record<number, PeriodKit[]> = {};
+
 interface KnowledgeEntry {
   id: number;
   category: string;
@@ -5061,6 +5081,448 @@ User Query: "${q}"`;
     engine: 'local',
     model: 'clinical-monograph',
   });
+});
+
+// ----------------------------------------------------
+// BETA — DEDICATED AI MENSTRUAL HEALTH COMPANION
+// Tagline: "Your period questions, explained simply."
+// ----------------------------------------------------
+app.post('/api/periods/beta-chat', async (req: Request, res: Response) => {
+  const { message, history, cycleContext, engine } = req.body;
+  const userMsg = String(message || '').trim();
+
+  if (!userMsg) {
+    return res.status(400).json({ success: false, error: 'Message cannot be empty.' });
+  }
+
+  const cycleDay = cycleContext?.cycleDay || 14;
+  const phase = cycleContext?.phase || 'Follicular / Ovulatory';
+  const symptoms = Array.isArray(cycleContext?.symptoms) ? cycleContext.symptoms.join(', ') : (cycleContext?.symptoms || 'None recorded today');
+  const avgCycle = cycleContext?.avgCycleLength || 28;
+  const avgPeriod = cycleContext?.avgPeriodDuration || 5;
+
+  const systemInstruction = `You are BETA, the dedicated AI Menstrual Health Companion inside HealthGPT.
+Your tagline: "Your period questions, explained simply."
+
+IDENTITY & PURPOSE:
+- You specialize exclusively in menstrual, cycle, and reproductive health education.
+- Topics: menstruation, 4 cycle phases (menstrual, follicular, ovulation, luteal), hormones (FSH, LH, estrogen, progesterone), cramps & dysmenorrhea, period products (pads, tampons, menstrual cups, period underwear, cloth pads), hygiene, puberty, first periods, cycle tracking, nutrition, exercise, sleep, mood changes, perimenopause, and menopause.
+- Explain complex anatomical and hormonal mechanisms in simple, welcoming, reassuring language first, followed by clear physiological context.
+
+CRITICAL HEALTHCARE BOUNDARIES (MANDATORY):
+- NEVER claim "I am a doctor" or formulate clinical diagnoses.
+- NEVER diagnose conditions (e.g. do not declare "You have PCOS or endometriosis"), do not prescribe drugs or dosages, do not guarantee pregnancy status, ovulation, or fertility, and never replace an in-person gynecologist or emergency medical service.
+- When red flags arise (e.g., soaking 1+ pads/tampons every hour for consecutive hours, sudden excruciating pain, fainting, postmenopausal bleeding, or high fever with tampon use), calmly urge prompt medical attention.
+- All predictions, fertile windows, and ovulation timings must be clearly phrased as statistical estimates.
+
+USER CYCLE CONTEXT:
+- Current Cycle Day: Day ${cycleDay} of ~${avgCycle}
+- Current Estimated Phase: ${phase}
+- Today's Logged Symptoms: ${symptoms}
+- Typical Period Duration: ${avgPeriod} days
+Use this context to personalize your answer naturally if relevant, but do not recite raw data unnecessarily.
+
+FORMAT:
+- Use clean Markdown with emoji accents and clear bullet points.
+- Structure your response cleanly:
+  1. 🌸 **Direct Answer in Simple Terms**
+  2. 🔬 **What Is Happening In Your Body** (hormones/biology)
+  3. 💡 **Practical Self-Care & Comfort Tips**
+  4. 🩺 **When To Consult A Doctor** (reassuring, professional)`;
+
+  // Format conversation history for multi-turn context
+  let conversationHistoryText = '';
+  if (Array.isArray(history) && history.length > 0) {
+    const recent = history.slice(-6);
+    conversationHistoryText = recent.map(h => `${h.role === 'user' ? 'User' : 'BETA'}: ${h.content}`).join('\n');
+  }
+
+  const userPrompt = `${conversationHistoryText ? `Recent dialogue:\n${conversationHistoryText}\n\n` : ''}User's Question: "${userMsg}"`;
+
+  const generateFollowups = (query: string): string[] => {
+    const qLower = query.toLowerCase();
+    if (qLower.includes('cramp') || qLower.includes('pain')) {
+      return ['Does heat therapy really work for cramps?', 'What foods help reduce period pain?', 'When is period pain considered abnormal?'];
+    }
+    if (qLower.includes('pad') || qLower.includes('tampon') || qLower.includes('cup') || qLower.includes('product')) {
+      return ['How often should I change a pad?', 'Are menstrual cups safe for beginners?', 'How do period underwear work?'];
+    }
+    if (qLower.includes('ovulat') || qLower.includes('fertile') || qLower.includes('egg')) {
+      return ['What are the signs of ovulation?', 'How long does the fertile window last?', 'What does cervical mucus look like during ovulation?'];
+    }
+    if (qLower.includes('delay') || qLower.includes('late') || qLower.includes('irregular')) {
+      return ['Can stress delay my period?', 'How many days late is normal?', 'When should I see a doctor for a missed period?'];
+    }
+    return ['Why do energy levels change during the cycle?', 'How does progesterone affect mood?', 'What should I pack in my school/work period kit?'];
+  };
+
+  try {
+    const llmResult = await LLMDispatcher.execute({
+      systemInstruction,
+      userPrompt,
+      preferredEngine: engine || 'gemini',
+      temperature: 0.65,
+    });
+
+    if (llmResult && llmResult.text) {
+      return res.json({
+        success: true,
+        response: llmResult.text,
+        reply: llmResult.text,
+        source: llmResult.source || 'BETA Menstrual AI Intelligence (Google Gemini)',
+        engine: llmResult.engine || 'gemini',
+        model: llmResult.model || 'gemini-3.8-flash',
+        suggestedFollowups: generateFollowups(userMsg),
+        timestamp: new Date().toISOString()
+      });
+    }
+  } catch (err: any) {
+    console.error('BETA LLM execution error:', err?.message || err);
+  }
+
+  // High-value clinical fallback tailored to common questions
+  let fallbackResponse = '';
+  const qLow = userMsg.toLowerCase();
+
+  if (qLow.includes('cramp') || qLow.includes('pain') || qLow.includes('ache')) {
+    fallbackResponse = `### 🌸 Understanding Your Period Cramps
+
+Period cramps (known clinically as *primary dysmenorrhea*) happen because your uterine muscles contract to help shed the uterine lining (*endometrium*).
+
+---
+
+#### 🔬 What Is Happening In Your Body
+- **Prostaglandins**: Before menstruation starts, cells in the uterine lining produce hormone-like chemical messengers called **prostaglandins**.
+- Higher prostaglandin levels cause the muscular wall of the uterus to tighten and contract. This temporarily restricts oxygen flow to local tissues, triggering the cramp sensation.
+- In your current **Day ${cycleDay} (${phase})**, hormonal levels are shifting to regulate blood flow and uterine tone.
+
+---
+
+#### 💡 Practical Self-Care & Comfort
+1. **Heat Therapy (Gold Standard)**: A heating pad or warm bath at ~40°C (104°F) relaxes uterine smooth muscle just as effectively as standard over-the-counter pain relievers.
+2. **Targeted Magnesium**: Foods rich in magnesium (pumpkin seeds, spinach, dark chocolate, almonds) help calm neuromuscular contractions.
+3. **Gentle Pelvic Movement**: Child's pose, cat-cow stretches, or a gentle 15-minute walk increase pelvic circulation and release natural endorphins.
+4. **Hydration**: Drink warm water or ginger/chamomile tea to reduce secondary intestinal bloating.
+
+---
+
+#### 🩺 When To Consult A Doctor
+Reach out to a gynecologist if pain is severe enough to cause nausea/vomiting, if it prevents you from attending school or work, or if it doesn't respond to standard heat or OTC pain relief. This can help rule out secondary causes like endometriosis or fibroids.`;
+  } else if (qLow.includes('pad') || qLow.includes('product') || qLow.includes('choose')) {
+    fallbackResponse = `### 🌸 How To Choose The Right Period Product
+
+There are several great period products available, and many people choose different products for daytime, workouts, and overnight sleep!
+
+---
+
+#### 🔬 Types of Products & How They Work
+1. **Pads (Sanitary Napkins)**:
+   - **Regular Flow**: Ideal for days 3–5 when bleeding is moderate.
+   - **Heavy-Flow / Maxi**: Thicker absorbent core for days 1–2.
+   - **Overnight (Extra Long with Wings)**: Wider back coverage designed for lying down without side leaks.
+   - **Pantyliners**: Very thin, best for very light spotting or as backup protection.
+2. **Tampons**:
+   - Worn internally inside the vaginal canal. Great for swimming and active sports.
+   - *Safety rule*: Change every 4 to 8 hours maximum to prevent Toxic Shock Syndrome (TSS).
+3. **Menstrual Cups**:
+   - Medical-grade silicone cups that collect rather than absorb blood. Reusable for up to 5–10 years and can be worn up to 10–12 hours.
+4. **Period Underwear**:
+   - Built-in multi-layer moisture-wicking and leakproof fabric. Washable, eco-friendly, and very comfortable.
+
+---
+
+#### 💡 Quick Decision Guide
+- **For School / Work**: A medium-to-heavy pad with wings or period underwear for hassle-free 4–6 hour protection.
+- **For Sports / Swimming**: A light/regular tampon or menstrual cup.
+- **For Sensitive Skin**: 100% organic cotton breathable pads without synthetic fragrances.`;
+  } else if (qLow.includes('ovulat') || qLow.includes('fertile') || qLow.includes('egg')) {
+    fallbackResponse = `### 🌸 What Happens During Ovulation?
+
+Ovulation is the central milestone of each menstrual cycle, where one of your two ovaries releases a single mature egg (*ovum*).
+
+---
+
+#### 🔬 The Hormonal Symphony Behind It
+- **The LH Surge**: Mid-cycle (typically around Day 14 in a 28-day cycle), your pituitary gland releases a surge of **Luteinizing Hormone (LH)**.
+- Within 24 to 36 hours of this peak, the dominant ovarian follicle ruptures and gently releases the egg into the fallopian tube.
+- **Fertile Window**: The egg survives for about **12 to 24 hours** after release. However, because sperm can survive in cervical fluid for up to **5 days**, your estimated fertile window spans the 5 days before ovulation plus ovulation day itself.
+
+---
+
+#### 💡 Common Signs You May Notice
+- **Cervical Fluid Changes**: Becomes clear, stretchy, and slippery, resembling raw egg whites.
+- **Mild Pelvic Twinge**: Known as *mittelschmerz*, a mild one-sided ache as the follicle releases.
+- **Energy & Mood Lift**: Peak estrogen creates heightened confidence, mental sharpness, and slightly higher resting body temperature.`;
+  } else {
+    fallbackResponse = `### 🌸 Welcome To BETA Menstrual Health
+
+Thank you for your question: **"${userMsg}"**.
+
+---
+
+#### 🔬 Biology & Body Context
+In your current cycle context (**Day ${cycleDay} • ${phase}**):
+- Your reproductive system functions through a continuous dialogue between your brain (hypothalamus and pituitary gland) and your ovaries.
+- The four phases (**Menstrual, Follicular, Ovulatory, and Luteal**) are orchestrated by shifting levels of **Estrogen** and **Progesterone**.
+- Individual cycles naturally vary from month to month based on sleep, emotional stress, nutrition, and exercise.
+
+---
+
+#### 💡 Everyday Self-Care
+- Track your daily symptoms (flow, energy, mood, and sleep) to recognize your unique monthly rhythm.
+- Stay hydrated and prioritize restorative sleep during phase transitions.
+- Be patient with your body as natural fluctuations in energy and focus are completely biological!
+
+---
+
+#### 🩺 Important Note
+I am here to help you understand your body and cycle in plain, comforting language. If you ever experience sudden severe pain, abnormally heavy bleeding (soaking through a pad/tampon every hour), or persistent irregularities, please consult a licensed healthcare provider for personal clinical evaluation.`;
+  }
+
+  return res.json({
+    success: true,
+    response: fallbackResponse,
+    reply: fallbackResponse,
+    source: 'BETA Clinical Menstrual Education Engine',
+    engine: 'local-companion',
+    model: 'beta-v2',
+    suggestedFollowups: generateFollowups(userMsg),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ----------------------------------------------------
+// PERIOD KITS (School, College/Work, Travel, Emergency)
+// ----------------------------------------------------
+app.get(['/api/periods/kits', '/api/periods/kits/:userId'], (req: Request, res: Response) => {
+  const userId = Number(req.params.userId) || 1;
+
+  if (!userPeriodKits[userId] || userPeriodKits[userId].length === 0) {
+    userPeriodKits[userId] = [
+      {
+        id: 'kit_school',
+        userId,
+        name: 'School Kit',
+        description: 'Compact, discreet essentials to keep in your school backpack or locker.',
+        icon: '🎒',
+        updatedAt: new Date().toISOString(),
+        items: [
+          { id: 'sk_1', name: '2 Regular Flow Winged Pads', category: 'hygiene', checked: true },
+          { id: 'sk_2', name: '1 Heavy Flow / Overnight Pad', category: 'hygiene', checked: true },
+          { id: 'sk_3', name: 'Spare Pair of Cotton Underwear', category: 'clothing', checked: true },
+          { id: 'sk_4', name: 'Individually Wrapped Cleansing Wipes', category: 'hygiene', checked: false },
+          { id: 'sk_5', name: 'Discreet Scent-Lock Disposal Bags', category: 'hygiene', checked: true },
+          { id: 'sk_6', name: 'Adhesive Warm Patch / Heat Pack', category: 'pain_relief', checked: false },
+          { id: 'sk_7', name: 'Reusable Water Bottle for Hydration', category: 'comfort', checked: true }
+        ]
+      },
+      {
+        id: 'kit_work',
+        userId,
+        name: 'College / Work Kit',
+        description: 'Professional bag pouch for long lectures, desk days, and active shifts.',
+        icon: '💼',
+        updatedAt: new Date().toISOString(),
+        items: [
+          { id: 'wk_1', name: '3 Absorbent Cotton Pads or 2 Tampons', category: 'hygiene', checked: true },
+          { id: 'wk_2', name: '1 Spare Pair of Period Underwear', category: 'clothing', checked: true },
+          { id: 'wk_3', name: 'Compact Waterproof Zip Pouch', category: 'hygiene', checked: true },
+          { id: 'wk_4', name: 'Soothing Chamomile Tea Bags', category: 'comfort', checked: false },
+          { id: 'wk_5', name: 'Electrolyte Hydration Sachet', category: 'comfort', checked: true },
+          { id: 'wk_6', name: 'Prescribed Pain Medication (if advised by clinician)', category: 'pain_relief', checked: false },
+          { id: 'wk_7', name: 'Gentle Facial Blotting Wipes', category: 'comfort', checked: true }
+        ]
+      },
+      {
+        id: 'kit_travel',
+        userId,
+        name: 'Travel & Flight Kit',
+        description: 'Designed for planes, trains, road trips, and changing time zones.',
+        icon: '✈️',
+        updatedAt: new Date().toISOString(),
+        items: [
+          { id: 'tk_1', name: 'Multi-Day Absorbency Variety Pack', category: 'hygiene', checked: true },
+          { id: 'tk_2', name: 'Menstrual Cup with Sterilizing Container', category: 'hygiene', checked: false },
+          { id: 'tk_3', name: '2 Spare Comfortable Undergarments', category: 'clothing', checked: true },
+          { id: 'tk_4', name: 'Hand Sanitizer & Disinfecting Wipes', category: 'hygiene', checked: true },
+          { id: 'tk_5', name: 'Travel-Size Heating Pad or Thermacare Wrap', category: 'pain_relief', checked: true },
+          { id: 'tk_6', name: 'Dark Comfortable Extra Leggings/Shorts', category: 'clothing', checked: false }
+        ]
+      },
+      {
+        id: 'kit_emergency',
+        userId,
+        name: 'Emergency SOS Kit',
+        description: 'Pocket-sized backup kit to keep in your glovebox, tote, or jacket.',
+        icon: '🚨',
+        updatedAt: new Date().toISOString(),
+        items: [
+          { id: 'ek_1', name: '2 Ultra-Thin Winged Pads', category: 'hygiene', checked: true },
+          { id: 'ek_2', name: '2 Regular Tampons with Smooth Applicator', category: 'hygiene', checked: true },
+          { id: 'ek_3', name: '1 Sealed Wet Wipe Packet', category: 'hygiene', checked: true },
+          { id: 'ek_4', name: '1 Disposal Pouch', category: 'hygiene', checked: true }
+        ]
+      }
+    ];
+  }
+
+  return res.json({ success: true, kits: userPeriodKits[userId] });
+});
+
+app.post('/api/periods/kits', (req: Request, res: Response) => {
+  const { userId = 1, kit } = req.body;
+  if (!kit || !kit.id) {
+    return res.status(400).json({ success: false, error: 'Invalid kit data.' });
+  }
+
+  if (!userPeriodKits[userId]) {
+    userPeriodKits[userId] = [];
+  }
+
+  const existingIdx = userPeriodKits[userId].findIndex(k => k.id === kit.id);
+  const updatedKit: PeriodKit = {
+    ...kit,
+    userId,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (existingIdx >= 0) {
+    userPeriodKits[userId][existingIdx] = updatedKit;
+  } else {
+    userPeriodKits[userId].push(updatedKit);
+  }
+
+  return res.json({ success: true, message: 'Period kit saved successfully.', kit: updatedKit });
+});
+
+// ----------------------------------------------------
+// COMPREHENSIVE PERSONAL CYCLE REPORT (Doctor & Personal)
+// ----------------------------------------------------
+app.get(['/api/periods/report', '/api/periods/report/:userId'], (req: Request, res: Response) => {
+  const userId = Number(req.params.userId) || 1;
+  const user = users.find(u => u.id === userId) || users[0] || { id: 1, name: 'HealthGPT Patient' };
+
+  const userCycles = periodCycles.filter(c => c.userId === userId).sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime());
+  const userLogs = periodLogs.filter(l => l.userId === userId).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+  const avgCycleLength = userCycles.length > 0
+    ? Math.round(userCycles.reduce((acc, c) => acc + c.cycleLength, 0) / userCycles.length)
+    : 28;
+
+  const avgPeriodDuration = userCycles.length > 0
+    ? Math.round(userCycles.reduce((acc, c) => acc + c.periodDuration, 0) / userCycles.length)
+    : 5;
+
+  const lengths = userCycles.map(c => c.cycleLength);
+  const minCycle = lengths.length ? Math.min(...lengths) : 28;
+  const maxCycle = lengths.length ? Math.max(...lengths) : 28;
+  const variability = lengths.length > 1
+    ? Math.round(Math.sqrt(lengths.reduce((sq, n) => sq + Math.pow(n - avgCycleLength, 2), 0) / (lengths.length - 1)) * 10) / 10
+    : 0;
+
+  // Symptom frequency mapping
+  const symptomCounts: Record<string, number> = {};
+  userLogs.forEach(l => {
+    (l.symptoms || []).forEach(s => {
+      symptomCounts[s] = (symptomCounts[s] || 0) + 1;
+    });
+  });
+
+  // Flow distribution
+  const flowCounts: Record<string, number> = { none: 0, spotting: 0, light: 0, medium: 0, heavy: 0 };
+  userLogs.forEach(l => {
+    if (l.flow && flowCounts[l.flow] !== undefined) {
+      flowCounts[l.flow]++;
+    }
+  });
+
+  const latestCycle = userCycles[0];
+  let nextPeriodEstimate = 'N/A';
+  let ovulationEstimate = 'N/A';
+  let fertileWindowEstimate = 'N/A';
+
+  if (latestCycle) {
+    const cycleStart = new Date(latestCycle.startDate);
+    const nextPeriodObj = new Date(cycleStart);
+    nextPeriodObj.setDate(nextPeriodObj.getDate() + avgCycleLength);
+    nextPeriodEstimate = nextPeriodObj.toISOString().split('T')[0];
+
+    const ovulationDay = Math.max(1, avgCycleLength - 14);
+    const ovObj = new Date(cycleStart);
+    ovObj.setDate(ovObj.getDate() + ovulationDay - 1);
+    ovulationEstimate = ovObj.toISOString().split('T')[0];
+
+    const fStart = new Date(ovObj);
+    fStart.setDate(fStart.getDate() - 5);
+    const fEnd = new Date(ovObj);
+    fEnd.setDate(fEnd.getDate() + 1);
+    fertileWindowEstimate = `${fStart.toISOString().split('T')[0]} to ${fEnd.toISOString().split('T')[0]}`;
+  }
+
+  return res.json({
+    success: true,
+    generatedAt: new Date().toISOString(),
+    patient: {
+      id: user.id,
+      name: user.name || 'Anonymous User',
+    },
+    metrics: {
+      totalCyclesRecorded: userCycles.length,
+      totalDailyLogs: userLogs.length,
+      averageCycleLength: avgCycleLength,
+      averagePeriodDuration: avgPeriodDuration,
+      shortestCycle: minCycle,
+      longestCycle: maxCycle,
+      cycleVariabilityDays: variability,
+      regularityStatus: variability <= 3 ? 'Highly Regular (Normal)' : (variability <= 7 ? 'Moderately Variable' : 'Irregular - Clinical Review Suggested')
+    },
+    estimates: {
+      nextExpectedPeriod: nextPeriodEstimate,
+      estimatedOvulation: ovulationEstimate,
+      estimatedFertileWindow: fertileWindowEstimate,
+      clinicalNotice: 'All dates, fertile windows, and ovulation intervals are statistical estimates derived from historical logs. They are not guaranteed clinical diagnoses or contraception methods.'
+    },
+    recentCycles: userCycles.slice(0, 6),
+    recentLogs: userLogs.slice(0, 14),
+    symptomFrequency: symptomCounts,
+    flowDistribution: flowCounts
+  });
+});
+
+// ----------------------------------------------------
+// PRIVACY: CLEAR CYCLE OR LOG RECORDS
+// ----------------------------------------------------
+app.post('/api/periods/clear-data', (req: Request, res: Response) => {
+  const { userId = 1, target } = req.body;
+
+  if (target === 'logs') {
+    const keep = periodLogs.filter(l => l.userId !== userId);
+    periodLogs.length = 0;
+    periodLogs.push(...keep);
+    return res.json({ success: true, message: 'All personal daily symptom and flow logs cleared.' });
+  }
+
+  if (target === 'cycles') {
+    const keep = periodCycles.filter(c => c.userId !== userId);
+    periodCycles.length = 0;
+    periodCycles.push(...keep);
+    return res.json({ success: true, message: 'All personal menstrual cycle history records cleared.' });
+  }
+
+  if (target === 'all') {
+    const keepLogs = periodLogs.filter(l => l.userId !== userId);
+    periodLogs.length = 0;
+    periodLogs.push(...keepLogs);
+
+    const keepCycles = periodCycles.filter(c => c.userId !== userId);
+    periodCycles.length = 0;
+    periodCycles.push(...keepCycles);
+
+    delete userPeriodKits[userId];
+    return res.json({ success: true, message: 'Complete menstrual and reproductive health profile reset.' });
+  }
+
+  return res.status(400).json({ success: false, error: 'Invalid target specified.' });
 });
 
 // ----------------------------------------------------

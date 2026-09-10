@@ -1,6 +1,6 @@
 {
   "name": "HealthGPT",
-  "description": "Comprehensive AI healthcare platform connected to Supabase backend featuring an interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi (physical health) and Alex (mental wellness), real-time speech voice, typewriter streaming responses, emergency medical profile & SOS beacons, appointment booking, and clinical analytics.",
+  "description": "Comprehensive AI healthcare platform connected to Supabase backend featuring an interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi (physical health) and Alex (mental wellness), a world-class Period & Cycle health suite with 3D female reproductive anatomy, biological cycle wheel, symptom tracking, Period Academy, Product Lab, and BETA AI menstrual companion, emergency SOS beacons, and clinical analytics.",
   "requestFramePermissions": [
     "camera",
     "microphone",
