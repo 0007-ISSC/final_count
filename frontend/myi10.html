@@ -22,6 +22,10 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
+<!-- Three.js & OrbitControls for HealthGPT 3D Human Digital Twin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
 <style>
 /* Doctor Summary Clinical PDF & Print Styles */
 .doctor-pdf-modal-overlay {
@@ -233,6 +237,191 @@
 .recharts-range-pill:hover {
   border-color: var(--primary);
   color: var(--primary);
+}
+
+/* ============================================================
+   HEALTHGPT 3D HUMAN DIGITAL TWIN & AI COMPANION FOCUS
+============================================================ */
+.twin-3d-stage {
+  position: relative;
+  width: 100%;
+  height: 540px;
+  background: radial-gradient(circle at 50% 40%, #0f172a 0%, #020617 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #1e293b;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), 0 10px 30px rgba(15, 23, 42, 0.15);
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .twin-3d-stage {
+    height: 420px;
+  }
+}
+
+.twin-3d-canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  outline: none;
+  cursor: grab;
+}
+
+.twin-3d-canvas:active {
+  cursor: grabbing;
+}
+
+.twin-3d-hud-top {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+  z-index: 10;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.twin-3d-hud-bottom {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 10;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.twin-hud-card {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 10px 14px;
+  color: #f8fafc;
+  pointer-events: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.twin-ai-focus-box {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.92) 100%);
+  border: 1.5px solid #0ea5e9;
+  border-radius: 14px;
+  padding: 12px 18px;
+  min-width: 260px;
+  max-width: 400px;
+  box-shadow: 0 0 24px rgba(14, 165, 233, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+.twin-ai-focus-box.alex-mode {
+  border-color: #a855f7;
+  box-shadow: 0 0 24px rgba(168, 85, 247, 0.35);
+}
+
+.twin-ai-focus-box.nambi-mode {
+  border-color: #0d9488;
+  box-shadow: 0 0 24px rgba(13, 148, 136, 0.35);
+}
+
+.twin-beacon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  animation: beacon-pulse 1.4s infinite;
+}
+
+@keyframes beacon-pulse {
+  0% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.9); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+.twin-breathing-ring {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #38bdf8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: breath-cycle 6s infinite ease-in-out;
+}
+
+@keyframes breath-cycle {
+  0%, 100% { transform: scale(0.85); opacity: 0.5; border-color: #a855f7; }
+  50% { transform: scale(1.35); opacity: 1; border-color: #38bdf8; box-shadow: 0 0 14px rgba(56, 189, 248, 0.5); }
+}
+
+.twin-companion-pill-btn {
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.twin-companion-pill-btn:hover {
+  background: rgba(51, 65, 85, 0.9);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.twin-companion-pill-btn.active-nambi {
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  border-color: #2dd4bf;
+  color: white;
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.4);
+}
+
+.twin-companion-pill-btn.active-alex {
+  background: linear-gradient(135deg, #6b21a8, #9333ea);
+  border-color: #c084fc;
+  color: white;
+  box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+}
+
+.twin-scenario-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e2e8f0;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.twin-scenario-chip:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+  transform: translateY(-1px);
 }
 
 .recharts-range-pill.active {
@@ -4426,100 +4615,6 @@ window.go = window.go || function(pageId, subParam) {
         </div>
       </div>
 
-      <!-- DEDICATED PRESCRIPTIONS & MEDICINE AI CHEMICAL CONFLICT RADAR -->
-      <div class="card" id="dashPrescriptionRadarCard" style="margin-top:18px;border:1.5px solid #cbd5e1;box-shadow:0 6px 24px rgba(15,23,42,0.06);">
-        <div class="card-header" style="border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;">
-          <div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span style="font-size:24px;">💊</span>
-              <h3 style="margin:0;font-size:18px;color:var(--dark);">Active Prescriptions & Chemical Conflict Radar</h3>
-              <span class="pill" id="dashConflictStatusBadge" style="background:#dcfce7;color:#15803d;font-weight:800;">🛡️ Biochemical Safety: 100% (Cleared)</span>
-            </div>
-            <p style="margin:4px 0 0;font-size:13px;color:var(--ink-soft);">
-              Real-time multi-drug molecular interaction radar powered by HealthGPT Medicine AI. Automatically monitors every active prescription for biochemical cross-conflicts, chelation risks, and synergistic toxicities.
-            </p>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="fetchPrescriptionsData()" title="Re-analyze active prescriptions">
-              🔄 Scan Interactions
-            </button>
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;" onclick="go('prescriptions')">
-              💊 Digital Prescription View →
-            </button>
-            <button class="btn btn-sm" style="background:var(--primary);" onclick="openAddPrescriptionModal()">
-              + Add Prescription
-            </button>
-          </div>
-        </div>
-
-        <!-- LIVE CHEMICAL CONFLICT WARNING ALERT NOTIFIER (Populated dynamically when conflicts exist) -->
-        <div id="dashConflictAlertBanner" style="display:none;margin-bottom:18px;">
-          <!-- Dynamically populated with high-contrast alert cards -->
-        </div>
-
-        <!-- SIMULATION PRESET SCENARIO BUTTONS -->
-        <div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-            <span style="font-size:12px;font-weight:800;text-transform:uppercase;color:var(--dark);letter-spacing:0.4px;">
-              🧪 Test Chemical Conflict Scenarios (1-Click Simulation):
-            </span>
-            <span style="font-size:11px;color:var(--muted);">Add a simulated drug to verify live Medicine AI conflict interception</span>
-          </div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fca5a5;color:#991b1b;background:#fff1f2;font-size:11.5px;font-weight:700;" onclick="testConflictPreset('bleeding')">
-              🚨 Add Combiflam 400 (NSAID) ➔ Test Bleeding Risk
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fed7aa;color:#9a3412;background:#fff7ed;font-size:11.5px;font-weight:700;" onclick="testConflictPreset('hyperkalemia')">
-              ⚠️ Add Spironolactone 25 (Potassium) ➔ Test Hyperkalemia
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fed7aa;color:#9a3412;background:#fff7ed;font-size:11.5px;font-weight:700;" onclick="testConflictPreset('chelation')">
-              ⚠️ Add Gelusil Antacid ➔ Test Antibiotic Chelation
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#bbf7d0;color:#166534;background:#f0fdf4;font-size:11.5px;font-weight:700;" onclick="testConflictPreset('safe')">
-              ✅ Add Metformin 500mg ➔ Test Safe Intake
-            </button>
-          </div>
-        </div>
-
-        <!-- ACTIVE PRESCRIPTIONS TABLE CONTAINER -->
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:13px;" id="dashPrescriptionsTable">
-            <thead>
-              <tr style="background:#f1f5f9;color:var(--dark);text-align:left;border-bottom:2px solid var(--line);">
-                <th style="padding:10px 12px;">Medicine & Brand</th>
-                <th style="padding:10px 12px;">Active Chemical Salt</th>
-                <th style="padding:10px 12px;">Dosage & Timing</th>
-                <th style="padding:10px 12px;">Push Alarm Schedule</th>
-                <th style="padding:10px 12px;">Prescribing Clinician</th>
-                <th style="padding:10px 12px;">Biochemical Status</th>
-                <th style="padding:10px 12px;text-align:right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="dashPrescriptionsTableBody">
-              <!-- Populated dynamically -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- SUMMARY FOOTER -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);flex-wrap:wrap;gap:10px;font-size:12px;color:var(--ink-soft);">
-          <div id="dashConflictSummaryText">
-            🛡️ 4 active prescriptions verified. 0 chemical conflicts detected.
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;" onclick="go('prescriptions')">
-              💊 Digital Prescription View →
-            </button>
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;display:inline-flex;align-items:center;gap:4px;" onclick="openDoctorSummaryExportModal('30')" title="Download complete clinical history PDF for doctor consultation">
-              📄 Export Doctor Summary (PDF)
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="go('prescriptions', 'conflicts')">
-              Open Full Conflict Matrix →
-            </button>
-          </div>
-        </div>
-      </div>
-
       <!-- PERIOD CYCLE GLANCE BANNER -->
       <div style="margin-top:18px;background:linear-gradient(135deg, #fff1f2 0%, #fdf2f8 100%);border:1px solid #fbcfe8;border-radius:var(--radius-md);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;" onclick="go('periodTracker')">
         <div style="display:flex;gap:14px;align-items:center;">
@@ -4766,6 +4861,37 @@ window.go = window.go || function(pageId, subParam) {
               </select>
               <span class="pill" id="personaModelBadge" style="background:#e0f2fe;color:#0369a1;font-size:11px;">Gemini Flash</span>
             </div>
+          </div>
+        </div>
+
+        <!-- SYNCHRONIZED AI FOCUS & 3D HUMAN DIGITAL TWIN SYNC STRIP -->
+        <div id="aiConsultTwinSyncStrip" style="background:linear-gradient(135deg, #091e2f 0%, #0f2d3d 100%);border:1px solid #1e3a5f;border-radius:12px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:0 4px 16px rgba(15,23,42,0.15);">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:280px;">
+            <div style="width:38px;height:38px;border-radius:50%;background:rgba(14,165,233,0.15);border:1.5px solid #38bdf8;display:flex;align-items:center;justify-content:center;font-size:18px;" id="aiConsultSyncIcon">
+              🧬
+            </div>
+            <div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px;">
+                <span class="twin-beacon-dot" id="aiConsultTwinPulseDot" style="background:#2dd4bf;"></span>
+                <span style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:0.5px;text-transform:uppercase;" id="aiConsultTwinFocusHeader">
+                  AI Focus: Heart Rate • 78 BPM
+                </span>
+                <span class="pill" id="aiConsultTwinStatusPill" style="background:rgba(45,212,191,0.15);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);font-size:10px;font-weight:700;">
+                  Monitoring
+                </span>
+              </div>
+              <div style="font-size:12px;color:#e2e8f0;" id="aiConsultTwinFocusDetail">
+                Synchronized with 3D Human Digital Twin · Telemetry: Apple Watch (78 BPM, sinus rhythm)
+              </div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="pill" style="background:rgba(16,185,129,0.15);color:#34d399;font-size:10.5px;font-weight:700;border:1px solid rgba(52,211,153,0.3);">
+              🔒 On This Device
+            </span>
+            <button class="btn btn-sm" onclick="go('twinAnalytics');" style="background:linear-gradient(135deg, #0d9488, #0284c7);color:white;font-weight:700;border:none;border-radius:8px;padding:6px 12px;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-size:11.5px;">
+              <span>🧬 Expand 3D Human Twin</span> <span>→</span>
+            </button>
           </div>
         </div>
 
@@ -6138,6 +6264,167 @@ window.go = window.go || function(pageId, subParam) {
         </div>
       </div>
 
+      <!-- ============================================================
+           HEALTHGPT 3D HUMAN DIGITAL TWIN & DUAL AI COMPANION BRIDGE
+      ============================================================ -->
+      <div class="card" style="margin-bottom:20px;padding:0;overflow:hidden;border:1.5px solid #0f766e;box-shadow:0 12px 36px rgba(15,23,42,0.12);">
+        
+        <!-- HEADER WITH COMPANION TOGGLE & PRIVACY BADGE -->
+        <div style="background:linear-gradient(135deg, #091e2f 0%, #0f2d3d 100%);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;border-bottom:1px solid rgba(255,255,255,0.1);">
+          <div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+              <span style="font-size:26px;">🧬</span>
+              <h2 style="margin:0;color:#ffffff;font-size:18px;letter-spacing:-0.2px;">Interactive 3D Human Digital Twin &amp; AI Companions</h2>
+              <span class="pill" style="background:rgba(16,185,129,0.18);color:#34d399;border:1px solid rgba(52,211,153,0.35);font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:6px;">
+                <span class="twin-beacon-dot" style="background:#34d399;"></span>
+                🔒 Recording Live • On This Device
+              </span>
+            </div>
+            <p style="margin:0;font-size:12.5px;color:#94a3b8;">
+              Anatomical 3D model with real-time biological sync. Connected to <b>Dr. Nambi</b> (Physical Health) and <b>Alex</b> (Mental Wellness).
+            </p>
+          </div>
+
+          <!-- COMPANION SWITCHER PILLS -->
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <button class="twin-companion-pill-btn active-nambi" id="btnTwinCompanionNambi" onclick="setTwinCompanionMode('nambi')">
+              <span>🩺</span> Dr. Nambi · Physical Health
+            </button>
+            <button class="twin-companion-pill-btn" id="btnTwinCompanionAlex" onclick="setTwinCompanionMode('alex')">
+              <span>🧠</span> Alex · Mental Wellness
+            </button>
+          </div>
+        </div>
+
+        <!-- 3D WEBGL STAGE -->
+        <div class="twin-3d-stage" id="twin3DStageContainer">
+          <canvas id="twin3DCanvas" class="twin-3d-canvas"></canvas>
+
+          <!-- TOP HUD: AI FOCUS & CAMERA TOOLS -->
+          <div class="twin-3d-hud-top">
+            <!-- AI FOCUS FLOATING INDICATOR -->
+            <div class="twin-ai-focus-box nambi-mode" id="twinAiFocusBox">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span class="twin-beacon-dot" id="twinFocusPulseDot" style="background:#2dd4bf;"></span>
+                  <span style="font-size:11px;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:#5eead4;" id="twinFocusCompanionTitle">
+                    🩺 DR. NAMBI PHYSICAL FOCUS
+                  </span>
+                </div>
+                <span class="pill" id="twinFocusStatusBadge" style="background:rgba(45,212,191,0.15);color:#2dd4bf;border:1px solid rgba(45,212,191,0.3);font-size:10px;font-weight:700;">
+                  Monitoring
+                </span>
+              </div>
+              <div style="font-size:14px;font-weight:800;color:#ffffff;margin-bottom:4px;display:flex;align-items:center;gap:6px;" id="twinFocusTopicTitle">
+                <span id="twinFocusIcon">❤️</span> <span id="twinFocusTopicName">Heart Rate • 78 BPM • Monitoring</span>
+              </div>
+              <div style="font-size:11.5px;color:#cbd5e1;line-height:1.4;" id="twinFocusDetailDesc">
+                Cardiovascular pulse synchronized with Apple Watch Ultra. Sinus rhythm normal.
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;">
+                <span style="color:#94a3b8;" id="twinFocusSystemName">Target: Cardiovascular System</span>
+                <span style="color:#38bdf8;font-weight:700;" id="twinFocusTrend">↗ Trend: Slightly above baseline (+4 BPM)</span>
+              </div>
+              <div id="twinBreathingGuideContainer" style="display:none;margin-top:8px;align-items:center;gap:10px;background:rgba(56,189,248,0.1);padding:6px 10px;border-radius:8px;border:1px solid rgba(56,189,248,0.25);">
+                <div class="twin-breathing-ring">
+                  <span style="font-size:10px;">🫁</span>
+                </div>
+                <div style="font-size:11px;color:#e0f2fe;">
+                  <b>4-4 Breathing Rhythm:</b> Inhale deeply... Exhale gently...
+                </div>
+              </div>
+            </div>
+
+            <!-- CAMERA CONTROLS & REGION SELECTOR -->
+            <div class="twin-hud-card" style="display:flex;flex-direction:column;gap:8px;max-width:240px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.5px;">3D Viewport</span>
+                <span style="font-size:10px;color:#64748b;">🖱️ 360° Drag &amp; Zoom</span>
+              </div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <button class="twin-scenario-chip" onclick="resetTwinCamera('front')" style="padding:4px 8px;font-size:10.5px;">Front</button>
+                <button class="twin-scenario-chip" onclick="resetTwinCamera('angle')" style="padding:4px 8px;font-size:10.5px;">Angle</button>
+                <button class="twin-scenario-chip" onclick="resetTwinCamera('side')" style="padding:4px 8px;font-size:10.5px;">Profile</button>
+                <button class="twin-scenario-chip" onclick="resetTwinCamera('reset')" style="padding:4px 8px;font-size:10.5px;">Reset</button>
+              </div>
+              <div style="font-size:10.5px;color:#94a3b8;padding-top:4px;border-top:1px solid rgba(255,255,255,0.08);">
+                Quick Body Systems:
+              </div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <button class="twin-scenario-chip" onclick="focusTwinRegion('brain')" style="padding:3px 7px;font-size:10px;">🧠 Brain</button>
+                <button class="twin-scenario-chip" onclick="focusTwinRegion('heart')" style="padding:3px 7px;font-size:10px;">❤️ Heart</button>
+                <button class="twin-scenario-chip" onclick="focusTwinRegion('lungs')" style="padding:3px 7px;font-size:10px;">🫁 Lungs</button>
+                <button class="twin-scenario-chip" onclick="focusTwinRegion('gut')" style="padding:3px 7px;font-size:10px;">🥗 Core</button>
+                <button class="twin-scenario-chip" onclick="focusTwinRegion('muscles')" style="padding:3px 7px;font-size:10px;">🏃 Limbs</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOTTOM HUD: LIVE TELEMETRY STREAM & CONSULT ACTIONS -->
+          <div class="twin-3d-hud-bottom">
+            <div class="twin-hud-card" style="font-size:11px;color:#cbd5e1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <span style="color:#2dd4bf;font-weight:700;display:flex;align-items:center;gap:5px;">
+                <span>📡</span> Live Sensor Stream:
+              </span>
+              <span id="hudMetricHR">❤️ <b>78</b> BPM</span>
+              <span style="color:#475569;">|</span>
+              <span id="hudMetricBP">🩺 <b>118/76</b> mmHg</span>
+              <span style="color:#475569;">|</span>
+              <span id="hudMetricSpO2">🫁 <b>99%</b> SpO₂</span>
+              <span style="color:#475569;">|</span>
+              <span id="hudMetricSteps">🏃 <b>8,450</b> Steps</span>
+              <span style="color:#475569;">|</span>
+              <span id="hudMetricSleep">🌙 <b>7h 42m</b> Sleep</span>
+            </div>
+
+            <div style="display:flex;gap:8px;pointer-events:auto;">
+              <button class="btn btn-sm" onclick="consultCompanionAboutTwin('nambi')" style="background:linear-gradient(135deg,#0f766e,#0d9488);color:white;font-weight:700;border:none;border-radius:20px;padding:6px 14px;box-shadow:0 4px 12px rgba(13,148,136,0.3);">
+                🩺 Consult Dr. Nambi
+              </button>
+              <button class="btn btn-sm" onclick="consultCompanionAboutTwin('alex')" style="background:linear-gradient(135deg,#7e22ce,#9333ea);color:white;font-weight:700;border:none;border-radius:20px;padding:6px 14px;box-shadow:0 4px 12px rgba(147,51,234,0.3);">
+                🧠 Reflect with Alex
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPANION LIVE TOPIC SIMULATOR & TRIGGER STRIP -->
+        <div style="background:#0f172a;border-top:1px solid #1e293b;padding:14px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div style="font-size:12px;font-weight:800;color:#94a3b8;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+              <span>⚡ AI COMPANION 3D TELEMETRY SIMULATOR</span>
+              <span style="font-size:11px;color:#64748b;font-weight:normal;">(Click any topic to test live 3D anatomy visualization)</span>
+            </div>
+            <div id="twinCompanionNotice" style="font-size:11px;color:#a855f7;font-style:italic;">
+              Alex is a supportive mental-wellness companion and does not claim to diagnose mental-health conditions.
+            </div>
+          </div>
+
+          <!-- NAMBI PHYSICAL SCENARIOS -->
+          <div id="twinNambiScenarios" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:#2dd4bf;margin-right:4px;">Dr. Nambi:</span>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('heart_rate')">❤️ Heart Rate • 78 BPM</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('blood_pressure')">🩺 Blood Pressure • 118/76</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('spo2')">🫁 SpO₂ • 99% &amp; Breathing</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('activity')">🏃 Steps &amp; Activity • 8,450</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('nutrition')">🥗 Metabolism &amp; Nutrition</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('hydration')">💧 Hydration • 2.4L Target</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('medication')">💊 Active Medication Radar</button>
+          </div>
+
+          <!-- ALEX MENTAL WELLNESS SCENARIOS -->
+          <div id="twinAlexScenarios" style="display:none;gap:8px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:11px;font-weight:700;color:#c084fc;margin-right:4px;">Alex Companion:</span>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('stress')">⚡ Stress • Somatic Grounding</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('breathing')">🧘 4-4 Diaphragmatic Breath</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('sleep')">🌙 Sleep Architecture Wind-down</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('mindfulness')">🌸 Emotional Wellbeing &amp; Mood</button>
+            <button class="twin-scenario-chip" onclick="triggerTwinTopic('relaxation')">💙 Somatic Muscle Relaxation</button>
+          </div>
+        </div>
+
+      </div>
+
       <!-- 3D ORGAN SYSTEMS BIOLOGICAL MAP -->
       <div class="card" style="margin-bottom:20px;">
         <div class="card-header">
@@ -6388,361 +6675,6 @@ window.go = window.go || function(pageId, subParam) {
     </section>
 
 
-    <!-- ============================================================
-         DIGITAL PRESCRIPTION VIEW (SUPABASE DATABASE CONNECTED)
-         Multi-Drug Chemical Conflict Radar & Medication Reminders
-    ============================================================ -->
-    <section class="page" id="prescriptions">
-      
-      <!-- HERO HEADER -->
-      <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg, #f0f9ff 0%, #ffffff 60%, #ecfdf5 100%);border:1.5px solid #bae6fd;padding:24px;border-radius:16px;box-shadow:0 4px 20px -2px rgba(2,132,199,0.08);">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;">
-          <div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <span style="font-size:28px;">💊</span>
-              <h2 style="margin:0;font-size:22px;color:var(--dark,#0f172a);font-weight:800;letter-spacing:-0.4px;">
-                Digital Prescription Management & Safety Engine
-              </h2>
-              <span class="pill" id="rxViewDbBadge" style="background:#ecfdf5;color:#059669;font-weight:800;font-size:11px;border:1px solid #a7f3d0;display:inline-flex;align-items:center;gap:6px;">
-                <span class="status-dot-pulse" style="width:7px;height:7px;background:#10b981;box-shadow:0 0 8px #10b981;"></span>
-                <span>Supabase DB: Connected</span>
-              </span>
-            </div>
-            <p style="margin:6px 0 0;font-size:13.5px;color:var(--ink-soft,#475569);line-height:1.5;max-width:780px;">
-              Live persistent synchronization with your Supabase Cloud Database (<code>public.prescriptions</code> &amp; <code>public.medication_reminders</code>). HealthGPT Medicine AI continuously audits multi-drug cross-reactivity, cytochrome P450 competitive inhibition, and fires push medication reminders.
-            </p>
-          </div>
-
-          <!-- TOP ACTION CONTROLS -->
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <button class="btn btn-secondary btn-sm" onclick="refreshPrescriptionDataFromDb()" title="Query latest prescriptions and reminders from Supabase database">
-              🔄 Sync Database
-            </button>
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;display:inline-flex;align-items:center;gap:6px;" onclick="openAddPrescriptionModal()" title="Add a new verified clinical prescription">
-              <span>➕ Add Prescription</span>
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="syncAllActiveRxToReminders()" title="Automatically schedule push alarms for all active prescriptions">
-              <span>⏰ Auto-Schedule Alarms</span>
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="switchRxSubtab('printable')" title="Open printable clinical prescription slip">
-              <span>📄 Printable Slip</span>
-            </button>
-            <button class="btn btn-secondary btn-sm" onclick="resetPrescriptionsToBaseline()" title="Reset to verified clinical baseline regimen and sync database">
-              <span>🔄 Reset Baseline</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- KPI METRICS STRIP (4 TILES) -->
-      <div class="grid-4" style="margin-bottom:20px;">
-        <!-- Card 1: Active Prescriptions -->
-        <div class="card" style="border:1.5px solid #bae6fd;padding:18px;border-radius:14px;background:#ffffff;">
-          <div style="font-size:12px;font-weight:700;color:#0369a1;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-            <span>💊 Active Prescriptions</span>
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:baseline;gap:8px;">
-            <b id="rxViewTotalPrescriptions" style="font-size:26px;color:var(--dark,#0f172a);font-weight:800;">4 Active</b>
-          </div>
-          <div style="font-size:12px;color:var(--muted,#64748b);margin-top:4px;" id="rxViewTotalMolecules">
-            4 Monitored Chemical Salts
-          </div>
-        </div>
-
-        <!-- Card 2: Chemical Safety Index -->
-        <div class="card" style="border:1.5px solid #bbf7d0;padding:18px;border-radius:14px;background:#ffffff;" id="rxViewSafetyCard">
-          <div style="font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-            <span>🛡️ Pharmacological Safety</span>
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:baseline;gap:8px;">
-            <b id="rxViewSafetyScore" style="font-size:26px;color:#15803d;font-weight:800;">100%</b>
-            <span class="pill" id="rxViewRiskBadge" style="background:#dcfce7;color:#15803d;font-weight:800;font-size:11px;">✓ Optimal Safety</span>
-          </div>
-          <div style="font-size:12px;color:var(--muted,#64748b);margin-top:4px;" id="rxViewConflictCountText">
-            0 Fatal Chemical Contraindications
-          </div>
-        </div>
-
-        <!-- Card 3: Scheduled Reminders -->
-        <div class="card" style="border:1.5px solid #fed7aa;padding:18px;border-radius:14px;background:#ffffff;">
-          <div style="font-size:12px;font-weight:700;color:#c2410c;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-            <span>🔔 Dose Reminders &amp; Alarms</span>
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:baseline;gap:8px;">
-            <b id="rxViewRemindersCount" style="font-size:26px;color:var(--dark,#0f172a);font-weight:800;">4 Alarms</b>
-            <span class="pill" id="rxViewAdherenceBadge" style="background:#fef3c7;color:#92400e;font-weight:800;font-size:11px;">Intake Active</span>
-          </div>
-          <div style="font-size:12px;color:var(--muted,#64748b);margin-top:4px;" id="rxViewTakenCount">
-            Real-time push chime &amp; adherence tracker
-          </div>
-        </div>
-
-        <!-- Card 4: Database Connection Status -->
-        <div class="card" style="border:1.5px solid #ddd6fe;padding:18px;border-radius:14px;background:#ffffff;">
-          <div style="font-size:12px;font-weight:700;color:#6d28d9;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
-            <span>⚡ Database Engine</span>
-          </div>
-          <div style="margin-top:8px;display:flex;align-items:baseline;gap:8px;">
-            <b style="font-size:20px;color:var(--dark,#0f172a);font-weight:800;">Supabase PG</b>
-            <span class="pill" style="background:#f3e8ff;color:#7e22ce;font-weight:800;font-size:11px;">Live Sync</span>
-          </div>
-          <div style="font-size:12px;color:var(--muted,#64748b);margin-top:4px;" id="rxViewDbStatus">
-            Tables: prescriptions &amp; medication_reminders
-          </div>
-        </div>
-      </div>
-
-      <!-- SUB-NAVIGATION BAR (ROSTER, CONFLICTS, REMINDERS, PRINT) -->
-      <div style="display:flex;gap:8px;align-items:center;background:var(--card,#ffffff);border:1px solid var(--line,#e2e8f0);padding:6px;border-radius:14px;margin-bottom:20px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 1px 4px rgba(0,0,0,0.03);">
-        <button class="rx-subnav-tab active" id="rxSubtabBtn_roster" onclick="switchRxSubtab('roster')">
-          <span>📋 Active Prescriptions</span>
-          <span class="badge" id="rxSubtabBadge_roster" style="background:#e0f2fe;color:#0284c7;font-weight:800;">4</span>
-        </button>
-        <button class="rx-subnav-tab" id="rxSubtabBtn_conflicts" onclick="switchRxSubtab('conflicts')">
-          <span>⚠️ Chemical Conflict Radar</span>
-          <span class="badge" id="rxSubtabBadge_conflicts" style="background:#dcfce7;color:#15803d;font-weight:800;">0 Flags</span>
-        </button>
-        <button class="rx-subnav-tab" id="rxSubtabBtn_reminders" onclick="switchRxSubtab('reminders')">
-          <span>🔔 Medication Reminders</span>
-          <span class="badge" id="rxSubtabBadge_reminders" style="background:#fef3c7;color:#92400e;font-weight:800;">Active</span>
-        </button>
-        <button class="rx-subnav-tab" id="rxSubtabBtn_printable" onclick="switchRxSubtab('printable')">
-          <span>📄 Doctor Prescription Slip</span>
-        </button>
-      </div>
-
-      <!-- =========================================================
-           SUBTAB 1: ACTIVE PRESCRIPTIONS ROSTER
-      ========================================================= -->
-      <div class="rx-subtab-pane" id="rxSubtab_roster">
-        
-        <!-- SEARCH & FILTER TOOLBAR -->
-        <div class="card" style="margin-bottom:16px;padding:14px 18px;border-radius:12px;background:#ffffff;border:1px solid var(--line,#e2e8f0);">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-            <div style="flex:1;min-width:240px;position:relative;">
-              <input type="text" id="rxSearchInput" oninput="filterRxList(this.value)" placeholder="🔍 Search by medicine name, generic salt, doctor, condition..." style="width:100%;padding:8px 12px;border:1px solid var(--line,#e2e8f0);border-radius:8px;font-size:13px;outline:none;background:#f8fafc;">
-            </div>
-            
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              <div style="display:inline-flex;border:1px solid var(--line,#e2e8f0);border-radius:8px;overflow:hidden;background:#f1f5f9;">
-                <button id="rxViewToggleCards" onclick="setRxViewMode('cards')" style="border:none;background:#ffffff;color:#0f172a;font-weight:700;padding:6px 12px;font-size:12px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);">
-                  🗂️ Cards
-                </button>
-                <button id="rxViewToggleTable" onclick="setRxViewMode('table')" style="border:none;background:transparent;color:#64748b;font-weight:600;padding:6px 12px;font-size:12px;cursor:pointer;">
-                  📊 Table
-                </button>
-              </div>
-
-              <button class="btn btn-secondary btn-sm" onclick="filterRxStatus('all')" id="filterRxBtn_all" style="font-size:11.5px;font-weight:700;">
-                All
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="filterRxStatus('conflict')" id="filterRxBtn_conflict" style="font-size:11.5px;color:#b91c1c;">
-                ⚠️ Conflicts Only
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="filterRxStatus('unscheduled')" id="filterRxBtn_unscheduled" style="font-size:11.5px;color:#c2410c;">
-                🔔 Needs Alarm
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- CARDS VIEW DECK -->
-        <div id="rxViewCardsContainer" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(340px, 1fr));gap:16px;margin-bottom:24px;">
-          <!-- Dynamically populated by renderDigitalPrescriptionView() -->
-        </div>
-
-        <!-- TABLE VIEW CONTAINER (HIDDEN BY DEFAULT, TOGGLED VIA SWITCH) -->
-        <div id="rxViewTableWrapper" style="display:none;background:#ffffff;border:1px solid var(--line,#e2e8f0);border-radius:12px;overflow-x:auto;box-shadow:var(--shadow-sm);margin-bottom:24px;">
-          <table style="width:100%;border-collapse:collapse;font-size:13px;" id="rxViewPrescriptionsTable">
-            <thead>
-              <tr style="background:#f8fafc;color:var(--dark,#0f172a);text-align:left;border-bottom:2px solid var(--line,#e2e8f0);">
-                <th style="padding:12px 14px;">Medicine &amp; Brand</th>
-                <th style="padding:12px 14px;">Active Salt Molecule</th>
-                <th style="padding:12px 14px;">Dosage &amp; Protocol</th>
-                <th style="padding:12px 14px;">Push Alarm</th>
-                <th style="padding:12px 14px;">Prescribing Clinician</th>
-                <th style="padding:12px 14px;">Safety Status</th>
-                <th style="padding:12px 14px;text-align:right;">Actions</th>
-              </tr>
-            </thead>
-            <tbody id="rxViewPrescriptionsTableBody">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SUBTAB 2: CHEMICAL CONFLICT RADAR & INTERACTION MATRIX
-      ========================================================= -->
-      <div class="rx-subtab-pane" id="rxSubtab_conflicts" style="display:none;">
-        
-        <!-- ACTIVE CONFLICT ALERT HERO (POPULATED IF CONFLICTS EXIST) -->
-        <div id="rxViewActiveConflictsContainer" style="margin-bottom:20px;">
-          <!-- Dynamically populated by renderDigitalPrescriptionView() -->
-        </div>
-
-        <!-- 1-CLICK INTERACTIVE CONFLICT SIMULATION TESTING SUITE -->
-        <div class="card" style="margin-bottom:20px;border:1.5px solid #cbd5e1;background:#f8fafc;padding:16px 20px;border-radius:14px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:18px;">🧪</span>
-              <h4 style="margin:0;font-size:14.5px;color:var(--dark,#0f172a);font-weight:800;text-transform:uppercase;letter-spacing:0.4px;">
-                1-Click Chemical Conflict Simulation Sandbox:
-              </h4>
-            </div>
-            <span style="font-size:12px;color:var(--muted,#64748b);">
-              Inject test drugs to see real-time chemical conflict radar interception
-            </span>
-          </div>
-
-          <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fca5a5;color:#991b1b;background:#fff1f2;font-size:12px;font-weight:700;" onclick="testConflictPreset('bleeding')">
-              🚨 Add Combiflam ➔ Bleeding Risk
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fed7aa;color:#9a3412;background:#fff7ed;font-size:12px;font-weight:700;" onclick="testConflictPreset('hyperkalemia')">
-              ⚠️ Add Spironolactone ➔ Hyperkalemia
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fed7aa;color:#9a3412;background:#fff7ed;font-size:12px;font-weight:700;" onclick="testConflictPreset('chelation')">
-              ⚠️ Add Gelusil Antacid ➔ Chelation Inactivation
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#fed7aa;color:#9a3412;background:#fff7ed;font-size:12px;font-weight:700;" onclick="testConflictPreset('serotonin')">
-              ⚠️ Add Tramadol ➔ Serotonin Syndrome
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#bbf7d0;color:#166534;background:#f0fdf4;font-size:12px;font-weight:700;" onclick="testConflictPreset('safe')">
-              ✅ Add Metformin 500mg ➔ Safe Addition
-            </button>
-            <button type="button" class="btn btn-secondary btn-sm" style="border-color:#cbd5e1;color:var(--dark);font-size:12px;font-weight:700;" onclick="resetPrescriptionsToBaseline()">
-              🔄 Restore Verified Baseline
-            </button>
-          </div>
-        </div>
-
-        <!-- INTERACTIVE N x N CHEMICAL CONFLICT MATRIX GRID -->
-        <div class="card" style="margin-bottom:20px;border:1.5px solid var(--line,#e2e8f0);padding:20px;border-radius:14px;background:#ffffff;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-            <div>
-              <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:20px;">🔬</span>
-                <h3 style="margin:0;font-size:17px;color:var(--dark,#0f172a);font-weight:800;">
-                  Interactive N × N Chemical Cross-Reactivity Safety Matrix
-                </h3>
-              </div>
-              <p style="margin:4px 0 0;font-size:12.5px;color:var(--ink-soft,#475569);">
-                Every active prescription mapped against every concurrent molecule. Click any cell to inspect enzymatic pathways (CYP3A4, CYP2C9), renal clearance, and clinical protocols.
-              </p>
-            </div>
-            
-            <div style="display:flex;gap:12px;font-size:12px;align-items:center;flex-wrap:wrap;">
-              <span style="display:inline-flex;align-items:center;gap:5px;">
-                <span style="width:12px;height:12px;border-radius:3px;background:#f0fdf4;border:1px solid #bbf7d0;display:inline-block;"></span>
-                <b>Safe Synergy</b>
-              </span>
-              <span style="display:inline-flex;align-items:center;gap:5px;">
-                <span style="width:12px;height:12px;border-radius:3px;background:#fefce8;border:1px solid #fde047;display:inline-block;"></span>
-                <b>Moderate Caution</b>
-              </span>
-              <span style="display:inline-flex;align-items:center;gap:5px;">
-                <span style="width:12px;height:12px;border-radius:3px;background:#fff1f2;border:1px solid #fca5a5;display:inline-block;"></span>
-                <b>Severe Contraindication</b>
-              </span>
-            </div>
-          </div>
-
-          <div class="conflict-matrix-wrapper" id="rxViewMatrixGridContainer">
-            <!-- Dynamically populated with N x N matrix -->
-          </div>
-        </div>
-
-        <!-- ON-DEMAND 2-DRUG QUICK PAIR AUDITOR -->
-        <div class="card" style="border:1.5px solid var(--line,#e2e8f0);padding:20px;border-radius:14px;background:#ffffff;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-            <span style="font-size:20px;">⚡</span>
-            <h3 style="margin:0;font-size:16px;color:var(--dark,#0f172a);font-weight:800;">
-              Instant 2-Drug Conflict Rapid Auditor
-            </h3>
-          </div>
-          <p style="margin:0 0 14px;font-size:12.5px;color:var(--ink-soft,#475569);">
-            Test potential interactions before taking or prescribing any OTC supplement, painkiller, or antibiotic.
-          </p>
-
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-            <input type="text" id="rxQuickAuditDrugA" placeholder="Medicine A (e.g. Aspirin, Ciprofloxacin)" style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--line,#e2e8f0);border-radius:8px;font-size:13px;">
-            <span style="font-weight:800;color:var(--muted,#94a3b8);">+</span>
-            <input type="text" id="rxQuickAuditDrugB" placeholder="Medicine B (e.g. Combiflam, Gelusil, Spironolactone)" style="flex:1;min-width:200px;padding:8px 12px;border:1px solid var(--line,#e2e8f0);border-radius:8px;font-size:13px;">
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;padding:8px 16px;" onclick="runRxQuickPairConflictAudit()">
-              🔍 Run Pair Audit
-            </button>
-          </div>
-
-          <div id="rxQuickAuditResultContainer" style="margin-top:14px;display:none;">
-            <!-- Populated dynamically -->
-          </div>
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SUBTAB 3: MEDICATION REMINDERS & ADHERENCE ALARMS
-      ========================================================= -->
-      <div class="rx-subtab-pane" id="rxSubtab_reminders" style="display:none;">
-        
-        <!-- UPCOMING DOSE TICKER & ADHERENCE HEADER -->
-        <div class="card" style="margin-bottom:20px;padding:18px 22px;border-radius:14px;background:linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);border:1.5px solid #fde68a;">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
-            <div>
-              <div id="rxViewUpcomingDoseTicker" style="font-size:15px;color:#92400e;font-weight:700;">
-                ⏳ <b>Loading upcoming dose schedule...</b>
-              </div>
-              <div style="font-size:12px;color:var(--muted,#64748b);margin-top:4px;" id="rxViewAdherenceSubtext">
-                Real-time alarms synchronized with your active prescriptions &amp; food directives.
-              </div>
-            </div>
-
-            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-              <button class="btn btn-sm" style="background:#16a34a;color:white;font-weight:700;display:inline-flex;align-items:center;gap:6px;" onclick="triggerTestPushAlert()" title="Test audio alarm and browser notification HUD">
-                <span>🔊 Test Alarm Chime</span>
-              </button>
-              <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;" onclick="openAddReminderModal()">
-                <span>➕ Add Custom Reminder</span>
-              </button>
-              <button class="btn btn-secondary btn-sm" onclick="syncAllActiveRxToReminders()">
-                <span>🔄 Sync All Rx Alarms</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- REMINDERS LIST CONTAINER -->
-        <div style="display:flex;flex-direction:column;gap:12px;" id="rxViewRemindersList">
-          <!-- Dynamically populated by renderMedReminders() / updateDigitalPrescriptionReminders() -->
-        </div>
-      </div>
-
-      <!-- =========================================================
-           SUBTAB 4: DOCTOR-READY CLINICAL PRESCRIPTION SLIP (PRINTABLE)
-      ========================================================= -->
-      <div class="rx-subtab-pane" id="rxSubtab_printable" style="display:none;">
-        
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-          <h3 style="margin:0;font-size:16px;color:var(--dark,#0f172a);font-weight:800;">
-            Official Clinical Digital Prescription Slip
-          </h3>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-sm" style="background:#0284c7;color:white;font-weight:700;display:inline-flex;align-items:center;gap:6px;" onclick="printDigitalPrescription()">
-              <span>🖨️ Print Prescription / Save PDF</span>
-            </button>
-          </div>
-        </div>
-
-        <div id="rxPrintableDocContainer" style="background:#ffffff;border:2px solid #cbd5e1;border-radius:12px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.06);color:#0f172a;max-width:860px;margin:0 auto;">
-          <!-- Dynamically generated printable doctor sheet -->
-          <div id="rxPrintableContent">
-            <!-- Populated dynamically -->
-          </div>
-        </div>
-      </div>
-
-    </section>
 
 
     <!-- ============================================================
@@ -10610,9 +10542,8 @@ const NAV_SECTIONS = [
     title: 'Core Intelligence & Telemetry',
     items: [
       { id: 'dashboard', icon: '📊', label: 'Health Overview', badge: 'Live', badgeColor: '#2563eb' },
-      { id: 'prescriptions', icon: '💊', label: 'Digital Prescriptions', badge: 'Radar & Alarms', badgeColor: '#0284c7' },
       { id: 'aiConsult', icon: '🩺', label: 'AI Clinical Consult', badge: 'Nambi & Alex', badgeColor: '#6366f1' },
-      { id: 'twinAnalytics', icon: '🧬', label: 'Digital Health Twin', badge: 'Vitals+Scan', badgeColor: '#0d9488' }
+      { id: 'twinAnalytics', icon: '🧬', label: 'Digital Health Twin', badge: '3D Human + AI', badgeColor: '#0d9488' }
     ]
   },
   {
@@ -10642,9 +10573,8 @@ const NAV_SECTIONS = [
 
 const NAV_MODULES = [
   ['dashboard', '📊', 'Health Overview'],
-  ['prescriptions', '💊', 'Digital Prescriptions', 'Radar & Alarms'],
   ['aiConsult', '🩺', 'AI Clinical Consult', 'Nambi & Alex'],
-  ['twinAnalytics', '🧬', 'Digital Health Twin', 'Vitals+Scan'],
+  ['twinAnalytics', '🧬', 'Digital Health Twin', '3D Human + AI'],
   ['medicine', '🧭', 'Explore', 'Rx & Translate'],
   ['doctorConnect', '👨‍⚕️', 'Connect Indian Doctors', '36+ Clinics'],
   ['periodTracker', '🌸', 'Period & Ovulation AI', 'Cycle AI'],
@@ -10788,6 +10718,9 @@ function go(pageId, subParam) {
     loadHealthTwinData();
     initPpgWaveformCanvas();
     syncAllSmartHealthDevices();
+    setTimeout(() => {
+      if (typeof init3DHealthTwin === 'function') init3DHealthTwin();
+    }, 60);
   }
   if (pageId === 'periodTracker') {
     loadPeriodTrackerData();
@@ -10953,6 +10886,11 @@ function switchPersona(personaId) {
   const isAgent = personaId === 'agent';
   const activeColor = isTherapist ? '#9333ea' : (isNutrition ? '#059669' : (isAgent ? '#0284c7' : '#0d9488'));
   document.documentElement.style.setProperty('--typewriter-cursor-color', activeColor);
+
+  // Synchronize 3D Human Digital Twin Companion mode (Nambi vs Alex)
+  if (typeof setTwinCompanionMode === 'function') {
+    setTwinCompanionMode(isTherapist ? 'alex' : 'nambi');
+  }
 
   // Update tab styles
   document.querySelectorAll('.persona-tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -11430,6 +11368,11 @@ async function sendConsultMessage(overrideMessage, isRegen = false, voiceMeta = 
       }
       lastAiResponseText = data.response;
       chatMessageHistory.push({ role: 'assistant', persona: currentPersona, content: data.response, timestamp: new Date().toISOString() });
+
+      // Dynamically synchronize 3D Human Digital Twin & AI Focus with conversation
+      if (typeof analyzeAiTwinFocus === 'function') {
+        analyzeAiTwinFocus(currentPersona, data.response, message);
+      }
 
       const sourceLabel = data.source || (data.engine === 'grok' ? 'Grok 2 (xAI)' : (data.engine === 'gemini' ? 'Gemini Flash' : 'HealthGPT Clinical Engine'));
       const headerEl = botMsgDiv.querySelector('.chat-msg-header');
@@ -15903,6 +15846,871 @@ function handleChatRxUpload(e) {
 /* ============================================================
    UNIFIED DIGITAL HEALTH TWIN & ADVANCED RECHARTS ANALYTICS
 ============================================================ */
+/* ============================================================
+   HEALTHGPT 3D HUMAN DIGITAL TWIN & AI COMPANION SYNCHRONIZATION
+============================================================ */
+const TWIN_TOPICS = {
+  // Dr. Nambi (Physical Health)
+  heart_rate: {
+    companion: 'nambi',
+    region: 'heart',
+    color: 0xef4444,
+    hexColor: '#ef4444',
+    icon: '❤️',
+    title: 'Heart Rate • 78 BPM • Monitoring',
+    systemName: 'Cardiovascular System',
+    status: 'Monitoring',
+    statusClass: 'monitoring',
+    trend: '↗ Trend: Slightly above baseline (+4 BPM)',
+    desc: 'Continuous ECG sinus rhythm synchronized with Apple Watch Ultra 2. Cardiac output steady.',
+    cameraTarget: { x: 0, y: 0.6, z: 0 },
+    cameraPos: { x: 0.2, y: 0.7, z: 2.2 }
+  },
+  blood_pressure: {
+    companion: 'nambi',
+    region: 'heart',
+    color: 0xf97316,
+    hexColor: '#f97316',
+    icon: '🩺',
+    title: 'Blood Pressure • 118/76 mmHg • Optimal',
+    systemName: 'Cardiovascular & Arterial Tree',
+    status: 'Optimal',
+    statusClass: 'optimal',
+    trend: '→ Within AHA optimal range (MAP 90 mmHg)',
+    desc: 'Wireless Omron Evolv cuff telemetry. Arterial elasticity and pulse pressure optimal.',
+    cameraTarget: { x: 0, y: 0.6, z: 0 },
+    cameraPos: { x: 0, y: 0.7, z: 2.4 }
+  },
+  spo2: {
+    companion: 'nambi',
+    region: 'lungs',
+    color: 0x06b6d4,
+    hexColor: '#06b6d4',
+    icon: '🫁',
+    title: 'SpO₂ • 99% Oxygen Saturation • Normal',
+    systemName: 'Respiratory System & Lungs',
+    status: 'Optimal',
+    statusClass: 'optimal',
+    trend: '→ Steady oxygen delivery (99%)',
+    desc: 'Bilateral lung expansion normal. Steady arterial hemoglobin oxygen saturation.',
+    cameraTarget: { x: 0, y: 0.7, z: 0 },
+    cameraPos: { x: 0, y: 0.8, z: 2.3 }
+  },
+  activity: {
+    companion: 'nambi',
+    region: 'muscles',
+    color: 0x10b981,
+    hexColor: '#10b981',
+    icon: '🏃',
+    title: 'Activity • 8,450 Steps • 52 Mins Active',
+    systemName: 'Musculoskeletal System & Stamina',
+    status: 'Improving',
+    statusClass: 'improving',
+    trend: '↗ 85% of daily 10,000 goal achieved',
+    desc: 'Active caloric expenditure 420 kcal. Muscular endurance & recovery index 88%.',
+    cameraTarget: { x: 0, y: 0, z: 0 },
+    cameraPos: { x: 0, y: 0.2, z: 3.2 }
+  },
+  nutrition: {
+    companion: 'nambi',
+    region: 'gut',
+    color: 0x84cc16,
+    hexColor: '#84cc16',
+    icon: '🥗',
+    title: 'Nutrition & Diet • 1,840 kcal • Balanced',
+    systemName: 'Metabolic Core & Digestive Tract',
+    status: 'Optimal',
+    statusClass: 'optimal',
+    trend: '→ Macros aligned: 125g Protein / 160g Carbs',
+    desc: 'Postprandial glucose stability via Dexcom G7 (94 mg/dL). Microbiome vitality high.',
+    cameraTarget: { x: 0, y: 0.1, z: 0 },
+    cameraPos: { x: 0, y: 0.2, z: 2.4 }
+  },
+  hydration: {
+    companion: 'nambi',
+    region: 'gut',
+    color: 0x0ea5e9,
+    hexColor: '#0ea5e9',
+    icon: '💧',
+    title: 'Hydration • 2.4L Target • 1.9L Logged',
+    systemName: 'Metabolic Core & Cellular Fluid',
+    status: 'Optimal',
+    statusClass: 'optimal',
+    trend: '↗ On track (+350 mL needed by 8 PM)',
+    desc: 'Electrolyte balance & plasma osmolality within healthy physiological limits.',
+    cameraTarget: { x: 0, y: 0.1, z: 0 },
+    cameraPos: { x: 0, y: 0.2, z: 2.4 }
+  },
+  medication: {
+    companion: 'nambi',
+    region: 'spine',
+    color: 0x6366f1,
+    hexColor: '#6366f1',
+    icon: '💊',
+    title: 'Active Medication Radar • 0 Conflicts',
+    systemName: 'Central Pharmacological Axis',
+    status: 'Monitoring',
+    statusClass: 'monitoring',
+    trend: '→ Regimen Verified Safe • 3 Prescriptions',
+    desc: 'Chemical interaction radar running in background. No contraindications detected.',
+    cameraTarget: { x: 0, y: 0.4, z: 0 },
+    cameraPos: { x: 0, y: 0.5, z: 2.6 }
+  },
+
+  // Alex (Mental Wellness)
+  stress: {
+    companion: 'alex',
+    region: 'brain',
+    color: 0xa855f7,
+    hexColor: '#a855f7',
+    icon: '⚡',
+    title: 'Stress • Nervous System Grounding',
+    systemName: 'Cranial & Autonomic Nervous System',
+    status: 'Stressed',
+    statusClass: 'stressed',
+    trend: '↘ Gentle cranial down-regulation in progress',
+    desc: 'Warm soothing aura around the head and autonomic axis. Alex validates feelings and guides somatic release.',
+    cameraTarget: { x: 0, y: 1.4, z: 0 },
+    cameraPos: { x: 0, y: 1.45, z: 1.8 }
+  },
+  breathing: {
+    companion: 'alex',
+    region: 'lungs',
+    color: 0x38bdf8,
+    hexColor: '#38bdf8',
+    icon: '🧘',
+    title: 'Breathwork • 4-4 Diaphragmatic Rhythm',
+    systemName: 'Respiratory & Vagus Nerve Pacemaker',
+    status: 'Relaxing',
+    statusClass: 'relaxing',
+    trend: '↘ Inhale 4s • Hold 2s • Exhale 4s',
+    desc: 'Gentle expansion and contraction of the chest and lung lobes. Stimulating parasympathetic calm.',
+    cameraTarget: { x: 0, y: 0.7, z: 0 },
+    cameraPos: { x: 0, y: 0.8, z: 2.1 },
+    breathing: true
+  },
+  sleep: {
+    companion: 'alex',
+    region: 'brain',
+    color: 0x818cf8,
+    hexColor: '#818cf8',
+    icon: '🌙',
+    title: 'Sleep Architecture • Wind-down Flow',
+    systemName: 'Pineal Gland & Sleep Neurochemistry',
+    status: 'Relaxing',
+    statusClass: 'relaxing',
+    trend: '↘ Melatonin onset • Rest preparation',
+    desc: 'Serene lavender illumination across cranial centers. Restful circadian preparation for restorative sleep.',
+    cameraTarget: { x: 0, y: 1.4, z: 0 },
+    cameraPos: { x: 0, y: 1.45, z: 1.8 }
+  },
+  mindfulness: {
+    companion: 'alex',
+    region: 'spine',
+    color: 0xec4899,
+    hexColor: '#ec4899',
+    icon: '🌸',
+    title: 'Emotional Wellbeing • Mindful State',
+    systemName: 'Central Somatic Axis & Mood Regulation',
+    status: 'Calm',
+    statusClass: 'calm',
+    trend: '↗ Emotional grounding & cognitive ease',
+    desc: 'Compassionate somatic reflection with Alex. Reducing cognitive rumination and centering warmth.',
+    cameraTarget: { x: 0, y: 0.8, z: 0 },
+    cameraPos: { x: 0, y: 0.9, z: 2.5 }
+  },
+  relaxation: {
+    companion: 'alex',
+    region: 'muscles',
+    color: 0x14b8a6,
+    hexColor: '#14b8a6',
+    icon: '💙',
+    title: 'Somatic Muscle Relaxation • Release',
+    systemName: 'Musculoskeletal & Motor Nervous System',
+    status: 'Improving',
+    statusClass: 'improving',
+    trend: '↘ Releasing trapped tension in shoulders & jaw',
+    desc: 'Progressive muscle relaxation visualization. Releasing micro-contractions across the body.',
+    cameraTarget: { x: 0, y: 0.5, z: 0 },
+    cameraPos: { x: 0, y: 0.6, z: 2.8 }
+  }
+};
+
+let twinThreeState = {
+  initialized: false,
+  scene: null,
+  camera: null,
+  renderer: null,
+  controls: null,
+  humanGroup: null,
+  organMeshes: {},
+  organLights: {},
+  companionLight: null,
+  neuralParticles: null,
+  auraParticles: null,
+  activeCompanion: 'nambi',
+  activeTopicKey: 'heart_rate',
+  targetCamPos: { x: 0.2, y: 0.7, z: 2.2 },
+  targetCamLook: { x: 0, y: 0.6, z: 0 },
+  heartBpm: 78,
+  breathActive: false,
+  animTime: 0
+};
+
+function init3DHealthTwin() {
+  const canvas = document.getElementById('twin3DCanvas');
+  const stage = document.getElementById('twin3DStageContainer');
+  if (!canvas || !stage || twinThreeState.initialized) return;
+
+  if (typeof THREE === 'undefined') {
+    console.warn('Three.js not loaded yet, retrying...');
+    setTimeout(init3DHealthTwin, 300);
+    return;
+  }
+
+  const width = stage.clientWidth || 800;
+  const height = stage.clientHeight || 540;
+
+  // Scene & Camera
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x020617, 0.12);
+
+  const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100);
+  camera.position.set(0.2, 0.7, 2.2);
+
+  // WebGL Renderer
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.2;
+
+  // OrbitControls
+  let controls = null;
+  if (typeof THREE.OrbitControls !== 'undefined') {
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 1.2;
+    controls.maxDistance = 5.5;
+    controls.maxPolarAngle = Math.PI * 0.85;
+    controls.minPolarAngle = Math.PI * 0.15;
+    controls.target.set(0, 0.6, 0);
+  }
+
+  // Lighting
+  const ambientLight = new THREE.AmbientLight(0x0f2d3d, 1.4);
+  scene.add(ambientLight);
+
+  const keyLight = new THREE.DirectionalLight(0x38bdf8, 1.6);
+  keyLight.position.set(2, 4, 3);
+  scene.add(keyLight);
+
+  const fillLight = new THREE.DirectionalLight(0x0d9488, 1.2);
+  fillLight.position.set(-2, 2, -2);
+  scene.add(fillLight);
+
+  const companionLight = new THREE.PointLight(0x2dd4bf, 2.5, 4);
+  companionLight.position.set(0, 0.7, 0.8);
+  scene.add(companionLight);
+
+  // Holographic Grid Floor
+  const gridHelper = new THREE.GridHelper(6, 24, 0x1e3a5f, 0x0f2338);
+  gridHelper.position.y = -1.2;
+  scene.add(gridHelper);
+
+  // Construct 3D Human Anatomical Model
+  const humanGroup = new THREE.Group();
+  humanGroup.position.y = -0.2;
+
+  // Holographic Wireframe Material for Outer Body Mesh
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: 0x38bdf8,
+    roughness: 0.3,
+    metalness: 0.7,
+    transparent: true,
+    opacity: 0.35,
+    wireframe: false
+  });
+
+  const wireMaterial = new THREE.MeshBasicMaterial({
+    color: 0x0ea5e9,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.25
+  });
+
+  // Helper to add contoured anatomical body parts
+  function addLimb(geo, x, y, z, rotX = 0, rotY = 0, rotZ = 0) {
+    const mesh = new THREE.Mesh(geo, bodyMaterial);
+    const wire = new THREE.Mesh(geo, wireMaterial);
+    mesh.position.set(x, y, z);
+    wire.position.set(x, y, z);
+    if (rotX || rotY || rotZ) {
+      mesh.rotation.set(rotX, rotY, rotZ);
+      wire.rotation.set(rotX, rotY, rotZ);
+    }
+    humanGroup.add(mesh);
+    humanGroup.add(wire);
+    return mesh;
+  }
+
+  // Head / Cranium
+  const headMesh = addLimb(new THREE.SphereGeometry(0.18, 24, 24), 0, 1.45, 0);
+
+  // Neck
+  addLimb(new THREE.CylinderGeometry(0.08, 0.09, 0.14, 16), 0, 1.25, 0);
+
+  // Torso / Chest
+  addLimb(new THREE.CylinderGeometry(0.24, 0.2, 0.45, 20), 0, 0.95, 0);
+
+  // Abdomen
+  addLimb(new THREE.CylinderGeometry(0.19, 0.21, 0.32, 20), 0, 0.6, 0);
+
+  // Pelvis
+  addLimb(new THREE.CylinderGeometry(0.21, 0.17, 0.22, 20), 0, 0.35, 0);
+
+  // Shoulders & Arms
+  // Left Arm
+  addLimb(new THREE.CylinderGeometry(0.06, 0.05, 0.36, 16), -0.32, 0.95, 0, 0, 0, 0.2);
+  addLimb(new THREE.CylinderGeometry(0.05, 0.04, 0.34, 16), -0.42, 0.65, 0, 0, 0, 0.15);
+  addLimb(new THREE.SphereGeometry(0.045, 12, 12), -0.48, 0.45, 0);
+
+  // Right Arm
+  addLimb(new THREE.CylinderGeometry(0.06, 0.05, 0.36, 16), 0.32, 0.95, 0, 0, 0, -0.2);
+  addLimb(new THREE.CylinderGeometry(0.05, 0.04, 0.34, 16), 0.42, 0.65, 0, 0, 0, -0.15);
+  addLimb(new THREE.SphereGeometry(0.045, 12, 12), 0.48, 0.45, 0);
+
+  // Legs & Thighs
+  // Left Leg
+  addLimb(new THREE.CylinderGeometry(0.09, 0.07, 0.48, 16), -0.13, 0.0, 0);
+  addLimb(new THREE.CylinderGeometry(0.07, 0.055, 0.48, 16), -0.13, -0.45, 0);
+  addLimb(new THREE.BoxGeometry(0.09, 0.06, 0.18), -0.13, -0.72, 0.04);
+
+  // Right Leg
+  addLimb(new THREE.CylinderGeometry(0.09, 0.07, 0.48, 16), 0.13, 0.0, 0);
+  addLimb(new THREE.CylinderGeometry(0.07, 0.055, 0.48, 16), 0.13, -0.45, 0);
+  addLimb(new THREE.BoxGeometry(0.09, 0.06, 0.18), 0.13, -0.72, 0.04);
+
+  // Subsystem Organ Meshes
+  const organMeshes = {};
+
+  // 1. BRAIN / CRANIAL NERVOUS SYSTEM
+  const brainGeo = new THREE.SphereGeometry(0.12, 20, 20);
+  const brainMat = new THREE.MeshStandardMaterial({
+    color: 0x9333ea,
+    emissive: 0x7e22ce,
+    emissiveIntensity: 0.8,
+    roughness: 0.2,
+    metalness: 0.5
+  });
+  const brainMesh = new THREE.Mesh(brainGeo, brainMat);
+  brainMesh.position.set(0, 1.46, 0);
+  humanGroup.add(brainMesh);
+  organMeshes.brain = brainMesh;
+
+  // Synaptic Neural Halo / Particle Points around Brain
+  const neuralGeo = new THREE.BufferGeometry();
+  const neuralCount = 120;
+  const neuralPos = new Float32Array(neuralCount * 3);
+  for (let i = 0; i < neuralCount * 3; i += 3) {
+    const u = Math.random();
+    const v = Math.random();
+    const theta = u * 2.0 * Math.PI;
+    const phi = Math.acos(2.0 * v - 1.0);
+    const r = 0.18 + Math.random() * 0.12;
+    neuralPos[i] = r * Math.sin(phi) * Math.cos(theta);
+    neuralPos[i + 1] = 1.46 + r * Math.sin(phi) * Math.sin(theta);
+    neuralPos[i + 2] = r * Math.cos(phi);
+  }
+  neuralGeo.setAttribute('position', new THREE.BufferAttribute(neuralPos, 3));
+  const neuralMat = new THREE.PointsMaterial({
+    color: 0xc084fc,
+    size: 0.03,
+    transparent: true,
+    opacity: 0.85
+  });
+  const neuralParticles = new THREE.Points(neuralGeo, neuralMat);
+  humanGroup.add(neuralParticles);
+  twinThreeState.neuralParticles = neuralParticles;
+
+  // 2. HEART / CARDIOVASCULAR
+  const heartGeo = new THREE.SphereGeometry(0.08, 16, 16);
+  const heartMat = new THREE.MeshStandardMaterial({
+    color: 0xef4444,
+    emissive: 0xdc2626,
+    emissiveIntensity: 0.9,
+    roughness: 0.2
+  });
+  const heartMesh = new THREE.Mesh(heartGeo, heartMat);
+  heartMesh.position.set(-0.04, 0.94, 0.04);
+  humanGroup.add(heartMesh);
+  organMeshes.heart = heartMesh;
+
+  // Aorta arch
+  const aortaGeo = new THREE.TorusGeometry(0.05, 0.018, 12, 24, Math.PI);
+  const aortaMat = new THREE.MeshStandardMaterial({ color: 0xf87171, emissive: 0xef4444, emissiveIntensity: 0.6 });
+  const aortaMesh = new THREE.Mesh(aortaGeo, aortaMat);
+  aortaMesh.rotation.z = Math.PI * 0.4;
+  aortaMesh.position.set(-0.04, 1.02, 0.04);
+  humanGroup.add(aortaMesh);
+
+  // 3. LUNGS / RESPIRATORY
+  const lungGroup = new THREE.Group();
+  lungGroup.position.set(0, 0.93, 0);
+
+  const lungLeftGeo = new THREE.CylinderGeometry(0.055, 0.075, 0.24, 16);
+  const lungMat = new THREE.MeshStandardMaterial({
+    color: 0x38bdf8,
+    emissive: 0x0284c7,
+    emissiveIntensity: 0.7,
+    transparent: true,
+    opacity: 0.75
+  });
+
+  const lungLeft = new THREE.Mesh(lungLeftGeo, lungMat);
+  lungLeft.position.set(-0.11, 0, 0);
+  lungLeft.rotation.z = 0.1;
+  lungGroup.add(lungLeft);
+
+  const lungRight = new THREE.Mesh(lungLeftGeo, lungMat);
+  lungRight.position.set(0.11, 0, 0);
+  lungRight.rotation.z = -0.1;
+  lungGroup.add(lungRight);
+
+  humanGroup.add(lungGroup);
+  organMeshes.lungs = lungGroup;
+
+  // 4. GUT / METABOLIC CORE
+  const gutGeo = new THREE.SphereGeometry(0.11, 16, 16);
+  const gutMat = new THREE.MeshStandardMaterial({
+    color: 0x10b981,
+    emissive: 0x059669,
+    emissiveIntensity: 0.75,
+    roughness: 0.3
+  });
+  const gutMesh = new THREE.Mesh(gutGeo, gutMat);
+  gutMesh.position.set(0, 0.58, 0.03);
+  humanGroup.add(gutMesh);
+  organMeshes.gut = gutMesh;
+
+  // 5. SPINAL COLUMN / SOMATIC AXIS
+  const spineGroup = new THREE.Group();
+  for (let s = 0; s < 9; s++) {
+    const vertMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.024, 10, 10),
+      new THREE.MeshStandardMaterial({ color: 0x6366f1, emissive: 0x4f46e5, emissiveIntensity: 0.8 })
+    );
+    vertMesh.position.set(0, 1.2 - s * 0.1, -0.05);
+    spineGroup.add(vertMesh);
+  }
+  humanGroup.add(spineGroup);
+  organMeshes.spine = spineGroup;
+
+  // 6. MUSCULOSKELETAL LIMB HIGHLIGHTS
+  const muscleGroup = new THREE.Group();
+  const muscleMat = new THREE.MeshStandardMaterial({
+    color: 0x2dd4bf,
+    emissive: 0x0f766e,
+    emissiveIntensity: 0.6,
+    transparent: true,
+    opacity: 0.65
+  });
+  const quadL = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.36, 12), muscleMat);
+  quadL.position.set(-0.13, 0.02, 0.02);
+  const quadR = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.36, 12), muscleMat);
+  quadR.position.set(0.13, 0.02, 0.02);
+  muscleGroup.add(quadL);
+  muscleGroup.add(quadR);
+  humanGroup.add(muscleGroup);
+  organMeshes.muscles = muscleGroup;
+
+  // Ambient Telemetry Aura Particles
+  const auraGeo = new THREE.BufferGeometry();
+  const auraCount = 180;
+  const auraPos = new Float32Array(auraCount * 3);
+  for (let i = 0; i < auraCount * 3; i += 3) {
+    auraPos[i] = (Math.random() - 0.5) * 1.8;
+    auraPos[i + 1] = Math.random() * 2.2 - 0.5;
+    auraPos[i + 2] = (Math.random() - 0.5) * 1.8;
+  }
+  auraGeo.setAttribute('position', new THREE.BufferAttribute(auraPos, 3));
+  const auraMat = new THREE.PointsMaterial({
+    color: 0x38bdf8,
+    size: 0.025,
+    transparent: true,
+    opacity: 0.4
+  });
+  const auraPoints = new THREE.Points(auraGeo, auraMat);
+  humanGroup.add(auraPoints);
+  twinThreeState.auraParticles = auraPoints;
+
+  scene.add(humanGroup);
+
+  // Store state
+  twinThreeState.scene = scene;
+  twinThreeState.camera = camera;
+  twinThreeState.renderer = renderer;
+  twinThreeState.controls = controls;
+  twinThreeState.humanGroup = humanGroup;
+  twinThreeState.organMeshes = organMeshes;
+  twinThreeState.companionLight = companionLight;
+  twinThreeState.initialized = true;
+
+  // Setup Raycaster for clicking body parts directly in 3D
+  const raycaster = new THREE.Raycaster();
+  const mouse = new THREE.Vector2();
+
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(humanGroup.children, true);
+    if (intersects.length > 0) {
+      const hit = intersects[0];
+      const hitY = hit.point.y;
+      if (hitY > 1.25) {
+        if (twinThreeState.activeCompanion === 'alex') triggerTwinTopic('stress');
+        else focusTwinRegion('brain');
+      } else if (hitY > 0.8) {
+        if (twinThreeState.activeCompanion === 'alex') triggerTwinTopic('breathing');
+        else triggerTwinTopic('heart_rate');
+      } else if (hitY > 0.4) {
+        triggerTwinTopic('nutrition');
+      } else {
+        triggerTwinTopic('activity');
+      }
+    }
+  });
+
+  // Responsive stage resizing
+  const resizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const w = entry.contentRect.width;
+      const h = entry.contentRect.height;
+      if (w > 0 && h > 0 && renderer && camera) {
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+      }
+    }
+  });
+  resizeObserver.observe(stage);
+
+  // Start Animation Loop
+  let clock = new THREE.Clock();
+  function animate() {
+    requestAnimationFrame(animate);
+    const delta = clock.getDelta();
+    twinThreeState.animTime += delta;
+    const time = twinThreeState.animTime;
+
+    if (controls) controls.update();
+
+    // Smooth camera interpolation towards target
+    if (twinThreeState.targetCamPos) {
+      camera.position.lerp(new THREE.Vector3(
+        twinThreeState.targetCamPos.x,
+        twinThreeState.targetCamPos.y,
+        twinThreeState.targetCamPos.z
+      ), 0.04);
+    }
+    if (twinThreeState.targetCamLook && controls) {
+      controls.target.lerp(new THREE.Vector3(
+        twinThreeState.targetCamLook.x,
+        twinThreeState.targetCamLook.y,
+        twinThreeState.targetCamLook.z
+      ), 0.04);
+    }
+
+    // Heart Rate Pulse Animation (scaled to actual BPM)
+    if (organMeshes.heart) {
+      const bpm = twinThreeState.heartBpm || 78;
+      const heartFreq = (bpm / 60) * Math.PI * 2;
+      const pulse = 1 + 0.12 * Math.sin(time * heartFreq);
+      organMeshes.heart.scale.set(pulse, pulse, pulse);
+    }
+
+    // Breathing Lung Animation
+    if (organMeshes.lungs) {
+      const breathSpeed = twinThreeState.breathActive ? 1.05 : 1.6; // gentle 4-4 rhythm when active
+      const breathScale = 1 + 0.09 * Math.sin(time * breathSpeed);
+      organMeshes.lungs.scale.set(breathScale, breathScale, breathScale);
+    }
+
+    // Brain Synaptic Glow & Neural Particles Rotation
+    if (twinThreeState.neuralParticles) {
+      twinThreeState.neuralParticles.rotation.y = time * 0.15;
+      const neuralPulse = 0.8 + 0.3 * Math.sin(time * 2.5);
+      twinThreeState.neuralParticles.material.opacity = neuralPulse;
+    }
+
+    // Aura ambient rotation
+    if (twinThreeState.auraParticles) {
+      twinThreeState.auraParticles.rotation.y = time * 0.05;
+    }
+
+    // Gentle floating motion
+    humanGroup.position.y = -0.2 + 0.015 * Math.sin(time * 1.2);
+
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Set initial topic
+  triggerTwinTopic('heart_rate');
+}
+
+function setTwinCompanionMode(mode) {
+  twinThreeState.activeCompanion = mode;
+  const isNambi = mode === 'nambi';
+
+  const btnNambi = document.getElementById('btnTwinCompanionNambi');
+  const btnAlex = document.getElementById('btnTwinCompanionAlex');
+  const nambiScenarios = document.getElementById('twinNambiScenarios');
+  const alexScenarios = document.getElementById('twinAlexScenarios');
+  const focusBox = document.getElementById('twinAiFocusBox');
+  const companionTitle = document.getElementById('twinFocusCompanionTitle');
+  const companionNotice = document.getElementById('twinCompanionNotice');
+
+  if (btnNambi) {
+    if (isNambi) btnNambi.classList.add('active-nambi');
+    else btnNambi.classList.remove('active-nambi');
+  }
+  if (btnAlex) {
+    if (!isNambi) btnAlex.classList.add('active-alex');
+    else btnAlex.classList.remove('active-alex');
+  }
+  if (nambiScenarios) nambiScenarios.style.display = isNambi ? 'flex' : 'none';
+  if (alexScenarios) alexScenarios.style.display = isNambi ? 'none' : 'flex';
+
+  if (focusBox) {
+    if (isNambi) {
+      focusBox.classList.remove('alex-mode');
+      focusBox.classList.add('nambi-mode');
+    } else {
+      focusBox.classList.remove('nambi-mode');
+      focusBox.classList.add('alex-mode');
+    }
+  }
+
+  if (companionTitle) {
+    companionTitle.textContent = isNambi ? '🩺 DR. NAMBI PHYSICAL FOCUS' : '🧠 ALEX MENTAL WELLNESS FOCUS';
+    companionTitle.style.color = isNambi ? '#5eead4' : '#c084fc';
+  }
+
+  if (companionNotice) {
+    if (isNambi) {
+      companionNotice.textContent = 'Dr. Nambi analyzes clinical biometrics, vital telemetry & evidence-based parameters.';
+      companionNotice.style.color = '#2dd4bf';
+    } else {
+      companionNotice.textContent = 'Alex is a supportive mental-wellness companion and does not claim to diagnose mental-health conditions.';
+      companionNotice.style.color = '#c084fc';
+    }
+  }
+
+  // Trigger default topic for companion
+  if (isNambi) {
+    triggerTwinTopic('heart_rate');
+  } else {
+    triggerTwinTopic('stress');
+  }
+}
+
+function triggerTwinTopic(topicKey) {
+  const conf = TWIN_TOPICS[topicKey];
+  if (!conf) return;
+
+  twinThreeState.activeTopicKey = topicKey;
+  twinThreeState.breathActive = Boolean(conf.breathing);
+
+  // Update Companion toggle if needed
+  if (conf.companion !== twinThreeState.activeCompanion) {
+    setTwinCompanionMode(conf.companion);
+  }
+
+  // Update 3D Stage HUD
+  const topicIcon = document.getElementById('twinFocusIcon');
+  const topicName = document.getElementById('twinFocusTopicName');
+  const topicDesc = document.getElementById('twinFocusDetailDesc');
+  const statusBadge = document.getElementById('twinFocusStatusBadge');
+  const systemName = document.getElementById('twinFocusSystemName');
+  const trendEl = document.getElementById('twinFocusTrend');
+  const pulseDot = document.getElementById('twinFocusPulseDot');
+  const breathingGuide = document.getElementById('twinBreathingGuideContainer');
+
+  if (topicIcon) topicIcon.textContent = conf.icon;
+  if (topicName) topicName.textContent = conf.title;
+  if (topicDesc) topicDesc.textContent = conf.desc;
+  if (systemName) systemName.textContent = `Target: ${conf.systemName}`;
+  if (trendEl) trendEl.textContent = conf.trend;
+  if (pulseDot) pulseDot.style.background = conf.hexColor;
+
+  if (statusBadge) {
+    statusBadge.textContent = conf.status;
+    statusBadge.style.color = conf.hexColor;
+    statusBadge.style.borderColor = conf.hexColor;
+    statusBadge.style.background = `${conf.hexColor}22`;
+  }
+
+  if (breathingGuide) {
+    breathingGuide.style.display = conf.breathing ? 'flex' : 'none';
+  }
+
+  // Highlight 3D region & light
+  if (twinThreeState.companionLight) {
+    twinThreeState.companionLight.color.setHex(conf.color);
+  }
+
+  // Reset organ emissive intensities and highlight the focused one
+  Object.keys(twinThreeState.organMeshes).forEach(key => {
+    const mesh = twinThreeState.organMeshes[key];
+    if (mesh && mesh.material && mesh.material.emissive) {
+      if (key === conf.region) {
+        mesh.material.emissiveIntensity = 1.4;
+        mesh.material.emissive.setHex(conf.color);
+      } else {
+        mesh.material.emissiveIntensity = 0.5;
+      }
+    }
+  });
+
+  // Smooth camera position
+  if (conf.cameraPos) {
+    twinThreeState.targetCamPos = conf.cameraPos;
+  }
+  if (conf.cameraTarget) {
+    twinThreeState.targetCamLook = conf.cameraTarget;
+  }
+
+  // Update Consult Screen Twin Strip
+  const consultFocusHeader = document.getElementById('aiConsultTwinFocusHeader');
+  const consultStatusPill = document.getElementById('aiConsultTwinStatusPill');
+  const consultFocusDetail = document.getElementById('aiConsultTwinFocusDetail');
+  const consultPulseDot = document.getElementById('aiConsultTwinPulseDot');
+  const consultSyncIcon = document.getElementById('aiConsultSyncIcon');
+
+  if (consultFocusHeader) {
+    consultFocusHeader.textContent = `AI Focus: ${conf.title.split('•')[0].trim()} (${conf.companion === 'alex' ? 'Alex' : 'Dr. Nambi'})`;
+    consultFocusHeader.style.color = conf.hexColor;
+  }
+  if (consultStatusPill) {
+    consultStatusPill.textContent = conf.status;
+    consultStatusPill.style.color = conf.hexColor;
+    consultStatusPill.style.borderColor = conf.hexColor;
+    consultStatusPill.style.background = `${conf.hexColor}22`;
+  }
+  if (consultFocusDetail) {
+    consultFocusDetail.textContent = `${conf.systemName} · ${conf.trend}`;
+  }
+  if (consultPulseDot) consultPulseDot.style.background = conf.hexColor;
+  if (consultSyncIcon) consultSyncIcon.textContent = conf.icon;
+}
+
+function focusTwinRegion(regionKey) {
+  if (regionKey === 'brain') triggerTwinTopic('stress');
+  else if (regionKey === 'heart') triggerTwinTopic('heart_rate');
+  else if (regionKey === 'lungs') triggerTwinTopic('spo2');
+  else if (regionKey === 'gut') triggerTwinTopic('nutrition');
+  else if (regionKey === 'muscles') triggerTwinTopic('activity');
+}
+
+function resetTwinCamera(preset = 'reset') {
+  if (preset === 'front') {
+    twinThreeState.targetCamPos = { x: 0, y: 0.6, z: 2.5 };
+    twinThreeState.targetCamLook = { x: 0, y: 0.6, z: 0 };
+  } else if (preset === 'angle') {
+    twinThreeState.targetCamPos = { x: 1.2, y: 0.8, z: 2.2 };
+    twinThreeState.targetCamLook = { x: 0, y: 0.6, z: 0 };
+  } else if (preset === 'side') {
+    twinThreeState.targetCamPos = { x: 2.2, y: 0.6, z: 0.2 };
+    twinThreeState.targetCamLook = { x: 0, y: 0.6, z: 0 };
+  } else {
+    twinThreeState.targetCamPos = { x: 0.2, y: 0.7, z: 2.2 };
+    twinThreeState.targetCamLook = { x: 0, y: 0.6, z: 0 };
+  }
+}
+
+// Automatically analyzes AI conversation text to dynamically synchronize 3D Human Twin & AI Focus
+function analyzeAiTwinFocus(persona, responseText, userMessage = '') {
+  const combined = `${userMessage} ${responseText}`.toLowerCase();
+
+  if (persona === 'therapist') {
+    if (combined.includes('breath') || combined.includes('inhale') || combined.includes('exhale') || combined.includes('diaphragm')) {
+      triggerTwinTopic('breathing');
+    } else if (combined.includes('sleep') || combined.includes('insomnia') || combined.includes('bedtime') || combined.includes('night') || combined.includes('rest')) {
+      triggerTwinTopic('sleep');
+    } else if (combined.includes('muscle') || combined.includes('tension') || combined.includes('shoulder') || combined.includes('body scan') || combined.includes('somatic')) {
+      triggerTwinTopic('relaxation');
+    } else if (combined.includes('mood') || combined.includes('mindful') || combined.includes('emotion') || combined.includes('feeling') || combined.includes('gratitude')) {
+      triggerTwinTopic('mindfulness');
+    } else {
+      triggerTwinTopic('stress');
+    }
+  } else {
+    // Dr. Nambi (Doctor)
+    if (combined.includes('blood pressure') || combined.includes('hypertension') || combined.includes('systolic') || combined.includes('diastolic') || combined.includes('arterial')) {
+      triggerTwinTopic('blood_pressure');
+    } else if (combined.includes('spo2') || combined.includes('oxygen') || combined.includes('lung') || combined.includes('respirat') || combined.includes('cough') || combined.includes('chest')) {
+      triggerTwinTopic('spo2');
+    } else if (combined.includes('step') || combined.includes('walk') || combined.includes('exercise') || combined.includes('activity') || combined.includes('workout') || combined.includes('fitness')) {
+      triggerTwinTopic('activity');
+    } else if (combined.includes('diet') || combined.includes('nutrition') || combined.includes('food') || combined.includes('protein') || combined.includes('carb') || combined.includes('calorie') || combined.includes('metabol') || combined.includes('glucose')) {
+      triggerTwinTopic('nutrition');
+    } else if (combined.includes('water') || combined.includes('hydrat') || combined.includes('fluid') || combined.includes('thirst') || combined.includes('dehydrat')) {
+      triggerTwinTopic('hydration');
+    } else if (combined.includes('medication') || combined.includes('prescription') || combined.includes('pill') || combined.includes('dose') || combined.includes('drug') || combined.includes('radar')) {
+      triggerTwinTopic('medication');
+    } else {
+      triggerTwinTopic('heart_rate');
+    }
+  }
+}
+
+// Consult action from 3D Twin HUD
+function consultCompanionAboutTwin(companion) {
+  const currentTopic = TWIN_TOPICS[twinThreeState.activeTopicKey] || TWIN_TOPICS.heart_rate;
+  switchPersona(companion === 'alex' ? 'therapist' : 'doctor');
+  go('aiConsult');
+
+  const inputArea = document.getElementById('consultInputArea');
+  if (inputArea) {
+    if (companion === 'alex') {
+      inputArea.value = `Alex, I'm reviewing my 3D Digital Twin on ${currentTopic.title.split('•')[0].trim()}. Can we reflect on this and try a grounding exercise?`;
+    } else {
+      inputArea.value = `Dr. Nambi, could you evaluate my latest biometric telemetry for ${currentTopic.title.split('•')[0].trim()} and advise on trends?`;
+    }
+    inputArea.focus();
+  }
+}
+
+// Update telemetry numbers in 3D Twin HUD from live device readings
+function updateTwinLiveTelemetryHUD(metrics = {}) {
+  if (metrics.heartRate) {
+    twinThreeState.heartBpm = Number(metrics.heartRate);
+    const hrEl = document.getElementById('hudMetricHR');
+    if (hrEl) hrEl.innerHTML = `❤️ <b>${metrics.heartRate}</b> BPM`;
+  }
+  if (metrics.bloodPressure) {
+    const bpEl = document.getElementById('hudMetricBP');
+    if (bpEl) bpEl.innerHTML = `🩺 <b>${escapeHtml(metrics.bloodPressure)}</b> mmHg`;
+  }
+  if (metrics.spo2) {
+    const spo2El = document.getElementById('hudMetricSpO2');
+    if (spo2El) spo2El.innerHTML = `🫁 <b>${metrics.spo2}%</b> SpO₂`;
+  }
+  if (metrics.steps) {
+    const stepsEl = document.getElementById('hudMetricSteps');
+    if (stepsEl) stepsEl.innerHTML = `🏃 <b>${Number(metrics.steps).toLocaleString()}</b> Steps`;
+  }
+  if (metrics.sleep) {
+    const sleepEl = document.getElementById('hudMetricSleep');
+    if (sleepEl) sleepEl.innerHTML = `🌙 <b>${escapeHtml(metrics.sleep)}</b> Sleep`;
+  }
+}
+
 let activeOrganId = 'cardiovascular';
 let twinOrgansCache = [];
 let twinRechartsRoot = null;
@@ -28343,6 +29151,9 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchSupabaseHealthScore(true);
     if (typeof loadDoctorsDirectory === 'function') {
       loadDoctorsDirectory();
+    }
+    if (typeof init3DHealthTwin === 'function') {
+      init3DHealthTwin();
     }
   }, 800);
 });

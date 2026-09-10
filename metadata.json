@@ -1,6 +1,6 @@
 {
   "name": "HealthGPT",
-  "description": "Comprehensive AI healthcare platform connected to Supabase backend (project aympyxmjgbgmcvcdnzyt) featuring interactive AI consultations with dedicated AI Doctor and AI Therapist, real-time speech-to-text voice, typewriter streaming responses, emergency medical profile & SOS beacons, digital prescriptions with chemical conflict radar, medication reminders, appointment booking, and clinical analytics.",
+  "description": "Comprehensive AI healthcare platform connected to Supabase backend featuring an interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi (physical health) and Alex (mental wellness), real-time speech voice, typewriter streaming responses, emergency medical profile & SOS beacons, appointment booking, and clinical analytics.",
   "requestFramePermissions": [
     "camera",
     "microphone",
