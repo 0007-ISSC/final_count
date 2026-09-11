@@ -3,6 +3,7 @@
  */
 
 import type { AppAction, DetectedIntent, EmotionalTone } from './types.ts';
+import { PersonalityEngine } from './personalityEngine.ts';
 
 export interface IntentClassificationResult {
   intent: DetectedIntent;
@@ -103,6 +104,18 @@ export class IntentClassifier {
     }
 
     // 6. Primary Intent Detection
+    // 6a-0. Creator / Owner / Head / Iqra Sultana Inquiry
+    if (PersonalityEngine.isCreatorInquiry(message)) {
+      return {
+        intent: 'CREATOR_INQUIRY',
+        confidence: 0.99,
+        emotionalTone: 'casual',
+        isTopicChange: true,
+        isCorrection: false,
+        explanationStyle
+      };
+    }
+
     // 6a. Emergency / SOS (Highest Priority)
     if (
       text === 'emergency' ||

@@ -64,9 +64,8 @@ export class MedicineVisionService {
     if (client) {
       const candidates = Array.from(new Set([
         process.env.GEMINI_MODEL?.trim(),
-        'gemini-2.5-flash',
         'gemini-3.8-flash',
-        'gemini-2.5-flash-lite',
+        'gemini-3.1-flash-lite',
       ].filter(Boolean) as string[]));
 
       for (const model of candidates) {

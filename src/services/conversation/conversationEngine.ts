@@ -311,6 +311,21 @@ export class ConversationEngine {
       console.warn('[ConversationEngine] LLM invocation warning:', err);
     }
 
+    // 7b. Creator / Owner / Head Identity Guarantee & Iqra Sultana's Vision
+    if (PersonalityEngine.isVisionInquiry(message)) {
+      responseText = PersonalityEngine.getVisionResponse(persona, language);
+      source = 'HealthGPT Executive Vision Gateway';
+      engineUsed = 'identity-controller';
+      modelName = 'vision-attribution';
+    } else if (intentResult.intent === 'CREATOR_INQUIRY' || PersonalityEngine.isCreatorInquiry(message)) {
+      if (!responseText || !responseText.toLowerCase().includes('iqra sultana')) {
+        responseText = PersonalityEngine.getCreatorAppreciationResponse(persona, language);
+        source = 'HealthGPT Executive Identity Gateway';
+        engineUsed = 'identity-controller';
+        modelName = 'creator-attribution';
+      }
+    }
+
     // 8. Fallback to Local Intelligent Response if LLM is unavailable or for deterministic Intent Action
     if (intentResult.appAction?.type === 'SOS') {
       responseText = "🚨 Triggering Emergency SOS. Opening verified emergency helplines immediately. If you or someone nearby is in immediate danger, call 112 (National Emergency) or 108 (Ambulance).";
@@ -376,13 +391,27 @@ export class ConversationEngine {
       source = 'HealthGPT Vision Gateway';
       engineUsed = 'ocr-router';
       modelName = 'vision-protocol';
+    } else if (PersonalityEngine.isVisionInquiry(message)) {
+      responseText = PersonalityEngine.getVisionResponse(persona, language);
+      source = 'HealthGPT Executive Vision Gateway';
+      engineUsed = 'identity-controller';
+      modelName = 'vision-attribution';
+    } else if (intentResult.intent === 'CREATOR_INQUIRY' || PersonalityEngine.isCreatorInquiry(message)) {
+      // Ensure Iqra Sultana is displayed and praised with immense appreciation
+      if (!responseText || !responseText.toLowerCase().includes('iqra sultana')) {
+        responseText = PersonalityEngine.getCreatorAppreciationResponse(persona, language);
+        source = 'HealthGPT Executive Identity Gateway';
+        engineUsed = 'identity-controller';
+        modelName = 'creator-attribution';
+      }
     } else if (!responseText) {
       responseText = this.generateLocalConversationalFallback(
         persona,
         message,
         session.memory,
         toolSnippets,
-        intentResult.emotionalTone
+        intentResult.emotionalTone,
+        language
       );
       source = 'HealthGPT Local Conversation Engine';
       engineUsed = 'local';
@@ -489,9 +518,18 @@ export class ConversationEngine {
     message: string,
     memory: ExtractedEntityMemory,
     toolSnippets: string[],
-    emotionalTone: string
+    emotionalTone: string,
+    language = 'en'
   ): string {
     const text = message.toLowerCase().trim();
+
+    // Check for Creator / Owner / Head or Vision inquiry
+    if (PersonalityEngine.isVisionInquiry(message)) {
+      return PersonalityEngine.getVisionResponse(persona, language);
+    }
+    if (PersonalityEngine.isCreatorInquiry(message)) {
+      return PersonalityEngine.getCreatorAppreciationResponse(persona, language);
+    }
 
     // Acknowledgments
     const ackList = ['Got it.', 'That helps.', 'Thanks for clarifying.', 'Understood.', 'That gives me a clearer picture.'];

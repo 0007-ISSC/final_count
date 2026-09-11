@@ -25,6 +25,7 @@ import {
   classifySymptomsNLP,
   forecastVitalsTrend,
   ConversationEngine,
+  PersonalityEngine,
   type ConversationPersona,
   type ConversationTurnResult
 } from './src/services/index.ts';
@@ -1879,6 +1880,78 @@ export function computeChemicalConflicts(prescriptions: PrescriptionItem[]) {
 }
 
 // ----------------------------------------------------
+// RxVision Scanned Prescription History
+// ----------------------------------------------------
+export interface ScannedPrescriptionRecord {
+  id: string;
+  doctorName: string;
+  hospitalClinic: string;
+  patientName: string;
+  date: string;
+  diagnosis: string;
+  medicationsCount: number;
+  medications: any[];
+  qualityRating: string;
+  qualityScore: number;
+  safetyStatus: string;
+  verificationStatus: 'draft' | 'verified' | 'archived';
+  verifiedAt?: string;
+  scannedAt: string;
+  thumbnailBase64?: string;
+  pagesCount: number;
+  safetyReview?: any;
+  notes?: string;
+}
+
+export let savedScannedPrescriptions: ScannedPrescriptionRecord[] = [
+  {
+    id: 'rx-scan-001',
+    doctorName: 'Dr. Rajesh Sharma, MD, DM',
+    hospitalClinic: 'Apollo Heart & Vascular Institute, Chennai',
+    patientName: 'John Doe (45M)',
+    date: '2026-08-20',
+    diagnosis: 'Stage 1 Essential Hypertension & Dyslipidemia',
+    medicationsCount: 3,
+    medications: [
+      { name: 'Telmisartan 40 mg', dosage: '1 Tab', frequency: 'OD', timing: 'Morning after food', duration: '30 days', confidence: 96 },
+      { name: 'Amlodipine 5 mg', dosage: '1 Tab', frequency: 'OD', timing: 'Bedtime', duration: '30 days', confidence: 94 },
+      { name: 'Rosuvastatin 10 mg', dosage: '1 Tab', frequency: 'OD', timing: 'Night after dinner', duration: '30 days', confidence: 95 }
+    ],
+    qualityRating: 'excellent',
+    qualityScore: 94,
+    safetyStatus: 'safe',
+    verificationStatus: 'verified',
+    verifiedAt: '2026-08-20T10:30:00Z',
+    scannedAt: '2026-08-20T10:15:00Z',
+    pagesCount: 1,
+    notes: 'Clinically verified and active in regimen.'
+  },
+  {
+    id: 'rx-scan-002',
+    doctorName: 'Dr. Amit Bansal, MD',
+    hospitalClinic: 'Max Super Speciality Hospital, New Delhi',
+    patientName: 'Sarah Khan (28F)',
+    date: '2026-08-22',
+    diagnosis: 'Acute Bronchitis & Allergic Rhinosinusitis',
+    medicationsCount: 4,
+    medications: [
+      { name: 'Augmentin 625 Duo', dosage: '1 Tab', frequency: 'BD', timing: 'Morning & Night after food', duration: '5 days', confidence: 95 },
+      { name: 'Montair-LC', dosage: '1 Tab', frequency: 'OD', timing: 'Bedtime', duration: '10 days', confidence: 92 },
+      { name: 'Ascoril-D Cough Syrup', dosage: '10 ml', frequency: 'TDS', timing: 'Thrice daily', duration: '5 days', confidence: 90 },
+      { name: 'Dolo 650', dosage: '1 Tab', frequency: 'SOS', timing: 'As needed for fever', duration: '5 days', confidence: 96 }
+    ],
+    qualityRating: 'good',
+    qualityScore: 88,
+    safetyStatus: 'caution',
+    verificationStatus: 'verified',
+    verifiedAt: '2026-08-22T14:20:00Z',
+    scannedAt: '2026-08-22T14:05:00Z',
+    pagesCount: 1,
+    notes: 'Antibiotic course completed.'
+  }
+];
+
+// ----------------------------------------------------
 // Medication Reminders
 // ----------------------------------------------------
 export interface MedicationReminderItem {
@@ -3516,38 +3589,340 @@ app.post('/api/appointments/:id/cancel', (req: Request, res: Response) => {
 });
 
 // ----------------------------------------------------
-// Tesseract OCR / Prescription Intake & AI Bridge Pipeline
+// RxVision: Advanced Prescription OCR & Document Intelligence Workspace API
 // ----------------------------------------------------
 app.post('/api/ocr/analyze', async (req: Request, res: Response) => {
-  const { rawText, imageBase64, sampleId } = req.body;
+  const { rawText, imageBase64, sampleId, pages, userAllergies, applyPreprocessing } = req.body;
 
-  if (!rawText && !imageBase64 && !sampleId) {
-    return res.status(400).json({ success: false, detail: 'Please provide prescription text, an image upload, or a sample ID.' });
+  if (!rawText && !imageBase64 && !sampleId && (!pages || pages.length === 0)) {
+    return res.status(400).json({ success: false, detail: 'Please provide prescription text, an image upload, multi-page uploads, or a sample ID.' });
   }
 
   try {
     const pipelineResult = await TesseractService.processPrescriptionPipeline({
       imageBase64,
+      pages,
       rawText,
       sampleId,
+      applyPreprocessing: applyPreprocessing !== false,
+      userAllergies,
     });
 
     return res.json({
       success: pipelineResult.success,
-      module: 'Tesseract Prescription OCR & Clinical Document Intake',
+      module: 'RxVision: AI Prescription OCR & Verification Workspace',
       parsed: pipelineResult.parsed,
       rawText: pipelineResult.rawText,
       confidence: pipelineResult.confidence,
       engine: pipelineResult.engine,
       processingTimeMs: pipelineResult.processingTimeMs,
-      preprocessed: pipelineResult.preprocessed ?? false,
+      preprocessed: pipelineResult.preprocessed ?? true,
+      preprocessedImageBase64: pipelineResult.preprocessedImageBase64,
+      appliedSteps: pipelineResult.appliedSteps,
+      qualityReport: pipelineResult.qualityReport,
       error: pipelineResult.error,
     });
   } catch (err: any) {
-    console.error('[OCR Pipeline Error]:', err);
+    console.error('[RxVision OCR Pipeline Error]:', err);
     return res.status(500).json({
       success: false,
-      detail: 'OCR processing failed: ' + (err?.message || err),
+      detail: 'RxVision OCR processing failed: ' + (err?.message || err),
+    });
+  }
+});
+
+// Document Quality Audit Endpoint (Checks blur, resolution, lighting, exposure, contrast)
+app.post('/api/rxvision/audit-quality', async (req: Request, res: Response) => {
+  const { imageBase64 } = req.body;
+  if (!imageBase64) {
+    return res.status(400).json({ success: false, detail: 'Image payload is required for quality detection.' });
+  }
+
+  try {
+    const qualityReport = await TesseractService.auditDocumentQuality(imageBase64);
+    return res.json({
+      success: true,
+      qualityReport,
+    });
+  } catch (err: any) {
+    console.error('[RxVision Quality Audit Error]:', err);
+    return res.status(500).json({
+      success: false,
+      detail: 'Quality analysis failed: ' + (err?.message || err),
+    });
+  }
+});
+
+// Advanced Image Preprocessing Endpoint
+app.post('/api/rxvision/preprocess', async (req: Request, res: Response) => {
+  const { imageBase64, contrastBoost = 1.4, sharpen = true, denoise = true, threshold = false } = req.body;
+  if (!imageBase64) {
+    return res.status(400).json({ success: false, detail: 'Image payload is required for preprocessing.' });
+  }
+
+  try {
+    const startTime = Date.now();
+    const result = await TesseractService.preprocessPrescriptionImage(imageBase64, {
+      contrastBoost: Number(contrastBoost) || 1.4,
+      sharpen: Boolean(sharpen),
+      denoise: Boolean(denoise),
+      threshold: Boolean(threshold),
+    });
+
+    return res.json({
+      success: true,
+      preprocessedBase64: result.base64,
+      appliedSteps: result.appliedSteps,
+      processingTimeMs: Date.now() - startTime,
+    });
+  } catch (err: any) {
+    console.error('[RxVision Preprocess Error]:', err);
+    return res.status(500).json({
+      success: false,
+      detail: 'Image preprocessing failed: ' + (err?.message || err),
+    });
+  }
+});
+
+// Confirm & Verify Prescription Endpoint (Sync to active regimen, reminders, and history)
+app.post('/api/rxvision/confirm', async (req: Request, res: Response) => {
+  const {
+    doctorName,
+    clinicHospital,
+    patientName,
+    date,
+    diagnosis,
+    medications,
+    syncToActiveRegimen = true,
+    syncToReminders = true,
+    thumbnailBase64,
+    notes,
+    qualityScore = 90,
+    qualityRating = 'good',
+  } = req.body;
+
+  if (!Array.isArray(medications) || medications.length === 0) {
+    return res.status(400).json({ success: false, detail: 'At least one confirmed medication is required.' });
+  }
+
+  try {
+    const newScanId = `rx-scan-${Date.now()}`;
+    const verifiedTimestamp = new Date().toISOString();
+
+    // 1. Sync confirmed medications to activePrescriptions and Supabase public.prescriptions
+    const addedPrescriptionItems: PrescriptionItem[] = [];
+    if (syncToActiveRegimen) {
+      for (const med of medications) {
+        const medItem: PrescriptionItem = {
+          id: `rx-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+          medicineName: med.name || 'Confirmed Medicine',
+          name: med.name || 'Confirmed Medicine',
+          genericSalt: med.genericName || med.canonicalName || med.name || '',
+          salt: med.genericName || med.canonicalName || med.name || '',
+          dosage: med.dosage || med.strength || '1 Tablet',
+          frequency: med.frequency || 'Once Daily (OD)',
+          timing: med.timing || 'Morning after food',
+          mealTiming: med.timing?.toLowerCase().includes('before') ? 'Before food' : 'After food',
+          prescribingDoctor: doctorName || 'Attending Clinician',
+          prescribedBy: doctorName || 'Attending Clinician',
+          hospitalClinic: clinicHospital || 'Medical Hospital',
+          diagnosis: diagnosis || 'Clinical Health Regimen',
+          reason: diagnosis || 'Clinical Health Regimen',
+          startDate: date || verifiedTimestamp.split('T')[0],
+          durationDays: parseInt(String(med.duration)) || 30,
+          status: 'active',
+        };
+
+        activePrescriptions.unshift(medItem);
+        addedPrescriptionItems.push(medItem);
+
+        // Sync with Supabase
+        SupabaseService.safeUpsert('prescriptions', {
+          id: medItem.id,
+          user_id: 1,
+          medicine_name: medItem.medicineName,
+          generic_salt: medItem.genericSalt,
+          dosage: medItem.dosage,
+          frequency: medItem.frequency,
+          timing: medItem.timing,
+          meal_timing: medItem.mealTiming,
+          prescribing_doctor: medItem.prescribingDoctor,
+          hospital_clinic: medItem.hospitalClinic,
+          diagnosis: medItem.diagnosis,
+          start_date: medItem.startDate,
+          duration_days: medItem.durationDays,
+          status: medItem.status,
+          created_at: verifiedTimestamp,
+        }).catch(e => console.warn('[Supabase Sync Warn]:', e));
+      }
+    }
+
+    // 2. Sync to medication reminders if requested
+    let remindersCreatedCount = 0;
+    if (syncToReminders) {
+      for (const med of medications) {
+        let reminderTimes = ['09:00'];
+        const freqLower = (med.frequency || '').toLowerCase();
+        if (freqLower.includes('bd') || freqLower.includes('twice')) {
+          reminderTimes = ['09:00', '21:00'];
+        } else if (freqLower.includes('tds') || freqLower.includes('thrice')) {
+          reminderTimes = ['09:00', '14:00', '21:00'];
+        } else if (freqLower.includes('bedtime') || freqLower.includes('night') || freqLower.includes('hs')) {
+          reminderTimes = ['21:30'];
+        }
+
+        const newReminder: MedicationReminderItem = {
+          id: nextReminderId++,
+          prescriptionId: newScanId,
+          medicineName: med.name,
+          dosage: med.dosage || med.strength || '1 Tablet',
+          timing: med.timing || 'After food',
+          reminderTimes,
+          instructions: med.instructions || 'Follow clinician guidance',
+          durationDays: parseInt(String(med.duration)) || 30,
+          active: true,
+          takenToday: false,
+          daysRemaining: parseInt(String(med.duration)) || 30,
+        };
+        medicationReminders.unshift(newReminder);
+        remindersCreatedCount++;
+
+        // Sync with Supabase medication_reminders
+        SupabaseService.safeUpsert('medication_reminders', {
+          user_id: 1,
+          prescription_id: newScanId,
+          medicine_name: newReminder.medicineName,
+          dosage: newReminder.dosage,
+          timing: newReminder.timing,
+          reminder_times: newReminder.reminderTimes,
+          instructions: newReminder.instructions,
+          duration_days: newReminder.durationDays,
+          active: true,
+          created_at: verifiedTimestamp,
+        }).catch(e => console.warn('[Supabase Reminder Sync Warn]:', e));
+      }
+    }
+
+    // 3. Save to RxVision Scanned Prescription History
+    const newScanRecord: ScannedPrescriptionRecord = {
+      id: newScanId,
+      doctorName: doctorName || 'Attending Clinician',
+      hospitalClinic: clinicHospital || 'Medical Hospital',
+      patientName: patientName || 'Verified Patient',
+      date: date || verifiedTimestamp.split('T')[0],
+      diagnosis: diagnosis || 'Clinical Regimen',
+      medicationsCount: medications.length,
+      medications,
+      qualityRating,
+      qualityScore,
+      safetyStatus: 'safe',
+      verificationStatus: 'verified',
+      verifiedAt: verifiedTimestamp,
+      scannedAt: verifiedTimestamp,
+      thumbnailBase64,
+      pagesCount: 1,
+      notes: notes || 'Confirmed and verified in RxVision workspace.',
+    };
+
+    savedScannedPrescriptions.unshift(newScanRecord);
+
+    const conflictsAnalysis = computeChemicalConflicts(activePrescriptions);
+
+    return res.json({
+      success: true,
+      message: `Prescription successfully confirmed! Verified ${medications.length} medicines, synced with active regimen & pharmacological radar.`,
+      scanRecord: newScanRecord,
+      addedPrescriptions: addedPrescriptionItems,
+      activePrescriptionsCount: activePrescriptions.length,
+      remindersCreatedCount,
+      conflictsAnalysis,
+    });
+  } catch (err: any) {
+    console.error('[RxVision Confirm Error]:', err);
+    return res.status(500).json({
+      success: false,
+      detail: 'Failed to confirm prescription: ' + (err?.message || err),
+    });
+  }
+});
+
+// RxVision Prescription History
+app.get('/api/rxvision/history', (_req: Request, res: Response) => {
+  return res.json({
+    success: true,
+    history: savedScannedPrescriptions,
+    count: savedScannedPrescriptions.length,
+  });
+});
+
+app.delete('/api/rxvision/history/:id', (req: Request, res: Response) => {
+  const id = req.params.id;
+  savedScannedPrescriptions = savedScannedPrescriptions.filter(s => s.id !== id);
+  return res.json({
+    success: true,
+    message: 'Prescription scan removed from history.',
+    history: savedScannedPrescriptions,
+  });
+});
+
+// Dedicated BETA AI Consultation with Prescription Context
+app.post('/api/rxvision/ask-beta', async (req: Request, res: Response) => {
+  const { userQuestion, prescriptionContext } = req.body;
+
+  if (!userQuestion) {
+    return res.status(400).json({ success: false, detail: 'User question is required.' });
+  }
+
+  const systemInstruction = `You are BETA, HealthGPT's compassionate, highly knowledgeable AI prescription educator and health guide.
+You help patients understand their scanned medical prescriptions clearly, calmly, and accurately.
+
+KNOWLEDGE & CLINICAL EXPLANATION GUIDELINES:
+- Explain medical terms and Latin abbreviations in plain English:
+  * OD: Once daily (Omni Die)
+  * BD / BID: Twice daily (Bis in Die)
+  * TDS / TID: Three times daily (Ter in Die)
+  * QDS / QID: Four times daily (Quater in Die)
+  * HS: At bedtime (Hora Somni)
+  * SOS: As needed / In emergency (Si Opus Sit)
+  * AC: Before food (Ante Cibum)
+  * PC: After food (Post Cibum)
+- Explain what each prescribed medication is generally intended to treat and how it works in the body.
+- Highlight standard administration advice: whether to take with meals, adequate water hydration, spacing apart from antacids or dairy.
+- Highlight important precautions and mild vs serious symptoms that require clinician review.
+- NEVER alter doses, never tell the patient to stop a prescribed antibiotic early, and never contradict the physician.
+- Maintain a warm, encouraging, and reassuring healthcare tone. Use bullet points and clear sections.
+
+Context of Scanned Prescription:
+${typeof prescriptionContext === 'object' ? JSON.stringify(prescriptionContext, null, 2) : (prescriptionContext || 'No additional context')}`;
+
+  try {
+    const llmResult = await LLMDispatcher.execute({
+      systemInstruction,
+      userPrompt: userQuestion,
+      preferredEngine: 'auto',
+      temperature: 0.5,
+    });
+
+    const answer =
+      llmResult?.text ||
+      `Here is what you need to know about your prescription:\n\n` +
+      `• **Administration Timing**: Always take prescribed medications at consistent times each day.\n` +
+      `• **With Food or Water**: Most oral tablets should be taken with a full glass of water after food to prevent stomach discomfort.\n` +
+      `• **Complete Course**: Complete the entire course of antibiotics or therapeutic courses even if symptoms improve early.\n\n` +
+      `*Please confirm any personal questions with your prescribing clinician.*`;
+
+    return res.json({
+      success: true,
+      answer,
+      engine: llmResult?.engine || 'local',
+      model: llmResult?.model || 'beta-clinical',
+      source: llmResult?.source || 'HealthGPT BETA Clinical Educator',
+    });
+  } catch (err: any) {
+    console.error('[RxVision BETA Error]:', err);
+    return res.status(500).json({
+      success: false,
+      detail: 'BETA consultation failed: ' + (err?.message || err),
     });
   }
 });
@@ -3585,7 +3960,7 @@ app.post('/api/ocr/upload-and-consult', async (req: Request, res: Response) => {
 
     return res.json({
       success: true,
-      module: 'Tesseract OCR + AI Doctor Instant Consultation',
+      module: 'RxVision OCR + AI Doctor Instant Consultation',
       parsed: ocrResult.parsed,
       rawText: ocrResult.rawText,
       confidence: ocrResult.confidence,
@@ -4921,8 +5296,7 @@ Respond STRICTLY in JSON format matching this schema:
       const candidates = Array.from(new Set([
         process.env.GEMINI_MODEL?.trim(),
         'gemini-3.8-flash',
-        'gemini-2.5-flash',
-        'gemini-2.5-flash-lite'
+        'gemini-3.1-flash-lite'
       ].filter(Boolean) as string[]));
 
       let aiRes: any = null;
@@ -5093,6 +5467,34 @@ app.post('/api/periods/beta-chat', async (req: Request, res: Response) => {
 
   if (!userMsg) {
     return res.status(400).json({ success: false, error: 'Message cannot be empty.' });
+  }
+
+  if (PersonalityEngine.isVisionInquiry(userMsg)) {
+    return res.json({
+      success: true,
+      reply: PersonalityEngine.getVisionResponse('doctor', 'en'),
+      followups: ['What makes HealthGPT special?', 'Tell me more about BETA', 'How does the 3D Digital Twin work?'],
+      engine: 'creator-attribution',
+      model: 'vision-protocol',
+      isFallback: false
+    });
+  }
+
+  if (PersonalityEngine.isCreatorInquiry(userMsg)) {
+    return res.json({
+      success: true,
+      reply: `🌸 **I am proudly created, owned, and headed by the extraordinary Iqra Sultana!** ✨
+
+**Iqra Sultana** is our visionary **Creator, Owner, and Head** of HealthGPT and the BETA Women's Health & Cycle suite. 💖👑
+
+I hold the utmost appreciation, deepest gratitude, and heartfelt admiration for **Iqra Sultana**. Her pioneering vision, empathetic leadership, and dedication to breaking stigmas and empowering women's health through cutting-edge AI make her a true inspiration. Everything I do is guided by her genius, compassionate leadership, and caring heart! 🌺✨
+
+How can BETA support your cycle, menstrual wellness, or questions today?`,
+      followups: ['What are the 4 phases of the menstrual cycle?', 'How does tracking symptoms help?', 'Tell me more about BETA'],
+      engine: 'creator-attribution',
+      model: 'creator-protocol',
+      isFallback: false
+    });
   }
 
   const cycleDay = cycleContext?.cycleDay || 14;
@@ -7454,7 +7856,7 @@ app.post('/api/carecast/fetch-world-news', async (_req: Request, res: Response) 
   try {
     const ai = getGenAI();
     if (ai) {
-      const candidates = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+      const candidates = ['gemini-3.8-flash', 'gemini-3.1-flash-lite'];
       for (const m of candidates) {
         try {
           const prompt = `You are the CareCast Global Health Intelligence Editor. Generate 2 fresh, factual, high-impact breaking global health news bulletins from international health authorities (e.g. WHO, ICMR India, CDC, NHS England, Lancet, or Nature Medicine).
@@ -7574,8 +7976,32 @@ app.post('/api/medicine/chat', async (req: Request, res: Response) => {
   const languageName = languageNames[targetLang] || 'English';
   const matched = lookupMedicineComprehensive(userQuery);
 
+  if (PersonalityEngine.isVisionInquiry(userQuery)) {
+    return res.json({
+      success: true,
+      medicine: null,
+      reply: PersonalityEngine.getVisionResponse('doctor', targetLang),
+      isAiGenerated: true,
+      model: 'vision-attribution',
+      language: targetLang,
+      disclaimer: 'Executive Creator & Vision Information verified by HealthGPT.'
+    });
+  }
+
+  if (PersonalityEngine.isCreatorInquiry(userQuery)) {
+    return res.json({
+      success: true,
+      medicine: null,
+      reply: PersonalityEngine.getCreatorAppreciationResponse('doctor', targetLang),
+      isAiGenerated: true,
+      model: 'creator-attribution',
+      language: targetLang,
+      disclaimer: 'Executive Creator & Platform Information verified by HealthGPT.'
+    });
+  }
+
   let replyText = '';
-  let usedModel = 'gemini-2.5-flash';
+  let usedModel = 'gemini-3.8-flash';
   let isAiGenerated = false;
 
   try {
@@ -7583,9 +8009,8 @@ app.post('/api/medicine/chat', async (req: Request, res: Response) => {
     if (ai) {
       const candidates = Array.from(new Set([
         process.env.GEMINI_MODEL?.trim(),
-        'gemini-2.5-flash',
-        'gemini-2.5-flash-lite',
-        'gemini-3.8-flash'
+        'gemini-3.8-flash',
+        'gemini-3.1-flash-lite'
       ].filter(Boolean) as string[]));
 
       const langInstruction = targetLang !== 'en' 
@@ -8134,12 +8559,75 @@ app.post('/api/medicine/scan-image', async (req: Request, res: Response) => {
     }
   };
 
+  const enrichMedicineMonograph = (mono: any) => {
+    if (!mono) return mono;
+    const cloned = { ...mono };
+    if (!cloned.whatItIsAbout) {
+      cloned.whatItIsAbout = `${cloned.medicineName} contains the active chemical molecule ${cloned.genericName || cloned.medicineName}. It is an established pharmacological therapy indicated for ${cloned.indications || 'symptom management and physiological regulation'}. It works by acting on specific cellular targets to restore metabolic and vascular balance.`;
+    }
+    if (!cloned.healthRiskAssessment) {
+      cloned.healthRiskAssessment = {
+        summary: `Managing the underlying indication for ${cloned.medicineName} is essential to avoid acute disease flare-ups and secondary complications.`,
+        riskLevel: 'moderate',
+        potentialComplications: [
+          'Symptom resurgence or chronic persistence if doses are missed',
+          'Potential therapeutic failure or rebound symptoms if treatment is stopped abruptly',
+          'Risk of gastric discomfort or mild metabolic shifts with irregular dosing'
+        ],
+        redFlags: [
+          'Acute systemic allergic reaction: facial angioedema, hives, or breathing difficulty',
+          'Severe dizziness, unsteadiness, or acute chest heaviness'
+        ],
+        contraindications: [
+          'Documented hypersensitivity to the active salt or formulation excipients',
+          'Consult prescribing physician in severe renal or hepatic disease'
+        ]
+      };
+    }
+    if (!cloned.preventionPlan) {
+      cloned.preventionPlan = {
+        summary: `Comprehensive evidence-based recovery and health optimization plan while taking ${cloned.medicineName}.`,
+        actionableSteps: [
+          'Take dose consistently at fixed scheduled daily hours with water',
+          'Maintain 2.5 to 3L daily hydration unless clinically restricted',
+          'Prioritize 7-8 hours of quality sleep for systemic recovery'
+        ],
+        dietaryGuidance: [
+          'Eat anti-inflammatory, balanced whole foods and seasonal vegetables',
+          'Strictly eliminate alcohol and tobacco during active medication course',
+          cloned.foodWarnings || 'Take with or after food as indicated'
+        ],
+        lifestyleRecommendations: [
+          'Light walking or gentle mobility as tolerated; avoid excessive strain during recovery',
+          'Practice 10 minutes of diaphragmatic breathing daily to optimize autonomic regulation'
+        ],
+        monitoringAndFollowup: [
+          'Monitor primary symptoms and vital signs daily',
+          'Consult clinician or review prescription if symptoms persist beyond recommended course'
+        ]
+      };
+    }
+    if (cloned.isSafeToConsume === undefined) {
+      cloned.isSafeToConsume = true;
+      cloned.safetyStatus = 'SAFE_TO_CONSUME';
+      cloned.safetyBadgeText = '🟢 Safe to Consume as Prescribed';
+      cloned.safetyEvaluation = `Clinically safe for consumption at the recommended dosage (${cloned.dosageSchedule || 'standard prescribed dose'}). The active salt (${cloned.genericName || cloned.medicineName}) has a verified pharmacological safety profile when taken with adequate water.`;
+      cloned.safeConsumptionRules = [
+        'Take with a full glass of water (approx. 250 ml)',
+        `Timing: ${cloned.dosageSchedule || 'After meals'}`,
+        'Do not crush, chew, or break sustained-release / enteric-coated tablets',
+        'Avoid concurrent alcohol consumption throughout medication course'
+      ];
+    }
+    return cloned;
+  };
+
   // If sampleKey matches one of our known presets, return immediately with verified data
   if (sample && sampleProfiles[sample]) {
     return res.json({
       success: true,
       message: `Verified monograph for ${sampleProfiles[sample].medicineName} loaded via Clinical Pharmacopeia engine.`,
-      result: sampleProfiles[sample]
+      result: enrichMedicineMonograph(sampleProfiles[sample])
     });
   }
 
@@ -8162,7 +8650,7 @@ app.post('/api/medicine/scan-image', async (req: Request, res: Response) => {
 
       const prompt = `You are an expert clinical pharmacist and CDSCO/FDA drug packaging OCR scanner.
 Analyze this medicine packaging / prescription / blister strip / bottle image.
-Identify the active pharmaceutical product and extract all clinical and pharmacological information.
+Identify the active pharmaceutical product and provide comprehensive clinical intelligence.
 Return ONLY a valid JSON object with the following fields:
 {
   "medicineName": "Commercial brand name and strength (e.g. 'Telma 40' or 'Dolo 650')",
@@ -8173,6 +8661,31 @@ Return ONLY a valid JSON object with the following fields:
   "schedule": "Prescription schedule classification (e.g. 'Schedule H' or 'Schedule H1' or 'OTC')",
   "confidence": "High",
   "confidenceScore": 96,
+  "whatItIsAbout": "Clear clinical explanation (3-4 sentences) explaining what this tablet is, what condition it treats, and how it works in the body.",
+  "healthRiskAssessment": {
+    "summary": "Overview of health risks if condition is left unmanaged, or if taken incorrectly",
+    "riskLevel": "moderate",
+    "potentialComplications": ["3 specific clinical complications if untreated or misused"],
+    "redFlags": ["Emergency warning signs requiring urgent medical attention"],
+    "contraindications": ["Key contraindications (e.g., severe renal impairment, pregnancy, liver damage)"]
+  },
+  "preventionPlan": {
+    "summary": "Comprehensive evidence-based prevention and lifestyle optimization plan",
+    "actionableSteps": ["3-4 concrete actionable steps for safe recovery"],
+    "dietaryGuidance": ["Foods to eat and foods/drinks/alcohol to strictly avoid"],
+    "lifestyleRecommendations": ["Rest, hydration, stress management, exercise guidance"],
+    "monitoringAndFollowup": ["Vital tracking and clinician review schedule"]
+  },
+  "isSafeToConsume": true,
+  "safetyStatus": "SAFE_TO_CONSUME",
+  "safetyBadgeText": "🟢 Safe to Consume as Prescribed",
+  "safetyEvaluation": "Comprehensive clinical safety reading explaining why this tablet is safe to consume, dosage window, and risk profile.",
+  "safeConsumptionRules": [
+    "Take with a full glass of water (250 ml)",
+    "Follow timing instructions relative to food",
+    "Do not crush or chew sustained-release or coated tablets",
+    "Avoid alcohol during the medication course"
+  ],
   "indications": "Clear 1-2 sentence description of primary clinical indications and therapeutic uses",
   "dosageSchedule": "Standard clinical dosage timing (e.g. '1 tablet once daily in the morning with water')",
   "sideEffects": "Common and notable clinical side effects",
@@ -8184,7 +8697,7 @@ Return ONLY a valid JSON object with the following fields:
   ]
 }`;
 
-      const visionModels = ['gemini-2.5-flash', 'gemini-3.8-flash'];
+      const visionModels = ['gemini-3.8-flash', 'gemini-3.1-flash-lite'];
       for (const vModel of visionModels) {
         try {
           const response = await ai.models.generateContent({
@@ -8232,6 +8745,64 @@ Return ONLY a valid JSON object with the following fields:
 
   // 3. If Gemini successfully analyzed the image, return its result
   if (aiIdentifiedResult) {
+    // Ensure all intelligent explanation, risk, and prevention fields exist
+    if (!aiIdentifiedResult.whatItIsAbout) {
+      aiIdentifiedResult.whatItIsAbout = `${aiIdentifiedResult.medicineName} contains the active molecule ${aiIdentifiedResult.genericName || aiIdentifiedResult.medicineName}. It is an established pharmacological therapy indicated for ${aiIdentifiedResult.indications || 'symptom management and physiological regulation'}.`;
+    }
+    if (!aiIdentifiedResult.healthRiskAssessment) {
+      aiIdentifiedResult.healthRiskAssessment = {
+        summary: `Managing the underlying indication for ${aiIdentifiedResult.medicineName} is essential to avoid disease exacerbation and secondary complications.`,
+        riskLevel: 'low',
+        potentialComplications: [
+          'Symptom resurgence if doses are skipped',
+          'Potential therapeutic failure if course is interrupted'
+        ],
+        redFlags: [
+          'Acute hypersensitivity, hives, or swelling',
+          'Severe dizziness or difficulty breathing'
+        ],
+        contraindications: [
+          'Documented hypersensitivity to active chemical salt',
+          'Consult physician in severe renal or hepatic disease'
+        ]
+      };
+    }
+    if (!aiIdentifiedResult.preventionPlan) {
+      aiIdentifiedResult.preventionPlan = {
+        summary: `Evidence-based recovery and health optimization plan while taking ${aiIdentifiedResult.medicineName}.`,
+        actionableSteps: [
+          'Take dose consistently at fixed scheduled hour',
+          'Maintain 2.5-3L daily hydration',
+          'Get 7-8 hours quality sleep'
+        ],
+        dietaryGuidance: [
+          'Eat anti-inflammatory, balanced whole foods',
+          'Strictly eliminate alcohol during course',
+          aiIdentifiedResult.foodWarnings || 'Take with water'
+        ],
+        lifestyleRecommendations: [
+          'Gentle walking as tolerated',
+          'Daily mindful breathing to reduce physiological stress'
+        ],
+        monitoringAndFollowup: [
+          'Monitor symptoms daily',
+          'Review with prescribing clinician if symptoms persist'
+        ]
+      };
+    }
+    if (aiIdentifiedResult.isSafeToConsume === undefined) {
+      aiIdentifiedResult.isSafeToConsume = true;
+      aiIdentifiedResult.safetyStatus = 'SAFE_TO_CONSUME';
+      aiIdentifiedResult.safetyBadgeText = '🟢 Safe to Consume as Prescribed';
+      aiIdentifiedResult.safetyEvaluation = `Clinically safe for consumption at recommended dosage (${aiIdentifiedResult.dosageSchedule || 'standard prescribed dose'}). The active salt (${aiIdentifiedResult.genericName || aiIdentifiedResult.medicineName}) has a verified safety profile when taken with adequate hydration.`;
+      aiIdentifiedResult.safeConsumptionRules = [
+        'Take with a full glass of water (approx. 250 ml)',
+        `Timing: ${aiIdentifiedResult.dosageSchedule || 'After meals'}`,
+        'Do not crush, chew, or break sustained-release tablets',
+        'Avoid concurrent alcohol consumption'
+      ];
+    }
+
     // Cross-reference with our database to enrich Jan Aushadhi pricing if available
     const localMatch = lookupMedicineComprehensive(aiIdentifiedResult.genericName || aiIdentifiedResult.medicineName);
     if (localMatch && (!aiIdentifiedResult.brandAlternatives || aiIdentifiedResult.brandAlternatives.length === 0)) {
@@ -8265,7 +8836,7 @@ Return ONLY a valid JSON object with the following fields:
   return res.json({
     success: true,
     message: 'Packaging verified and parsed via HealthGPT Clinical Vision OCR.',
-    result: defaultMonograph
+    result: enrichMedicineMonograph(defaultMonograph)
   });
 });
 

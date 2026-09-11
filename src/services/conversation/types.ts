@@ -38,7 +38,8 @@ export type DetectedIntent =
   | 'EMERGENCY'
   | 'CASUAL_CONVERSATION'
   | 'FOLLOW_UP'
-  | 'CLARIFICATION';
+  | 'CLARIFICATION'
+  | 'CREATOR_INQUIRY';
 
 export interface AppAction {
   type: 'NAVIGATE' | 'SEARCH_DOCTOR' | 'NEARBY_DOCTOR_SEARCH' | 'BOOK_DOCTOR' | 'CONNECT_TO_DOCTOR' | 'SWITCH_PERSONA' | 'SOS' | 'TRIGGER_MODAL';

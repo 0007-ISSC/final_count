@@ -68,9 +68,9 @@ export function getGeminiCandidateModels(): string[] {
   const custom = process.env.GEMINI_MODEL?.trim();
   const candidates = [
     custom,
-    'gemini-2.5-flash',
     'gemini-3.8-flash',
-    'gemini-2.5-flash-lite',
+    'gemini-3.1-flash-lite',
+    'gemini-3.1-pro-preview',
   ].filter(Boolean) as string[];
 
   // Deduplicate preserving priority order
@@ -320,7 +320,7 @@ export async function callGeminiService(
       }
     } catch (err: any) {
       console.warn(`[GeminiService] Generation failed on model ${model}:`, err?.message || err);
-      // Automatically attempts next candidate model (e.g., gemini-3.8-flash -> gemini-2.5-flash)
+      // Automatically attempts next candidate model (e.g., gemini-3.8-flash -> gemini-3.1-flash-lite)
     }
   }
 

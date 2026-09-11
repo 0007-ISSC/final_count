@@ -3,6 +3,7 @@
  */
 
 import type { ConversationPersona, ExtractedEntityMemory, DetectedIntent } from './types.ts';
+import { PersonalityEngine } from './personalityEngine.ts';
 
 export interface FollowUpDecision {
   shouldAsk: boolean;
@@ -27,6 +28,23 @@ export class FollowUpEngine {
     userText: string
   ): FollowUpDecision {
     const text = userText.toLowerCase();
+
+    // Check for Creator / Owner / Head inquiry
+    if (intent === 'CREATOR_INQUIRY' || PersonalityEngine.isCreatorInquiry(userText)) {
+      return {
+        shouldAsk: false,
+        smartSuggestions: [
+          'What makes HealthGPT special?',
+          'What can Dr. Nambi help me with?',
+          'How does the 3D Digital Twin work?',
+          'Explore HealthGPT features'
+        ],
+        proactiveActions: [
+          { id: 'act_explore', type: 'prompt', label: '🌟 Learn more about Iqra Sultana\'s vision' },
+          { id: 'act_features', type: 'modal', label: '🩺 Explore Clinical Intelligence', payload: { modal: 'features' } }
+        ]
+      };
+    }
 
     // 1. Proactive actions based on persona and topic
     const proactiveActions: Array<{ id: string; type: string; label: string; payload?: any }> = [];
