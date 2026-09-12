@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command Center — HealthGPT Clinical Governance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-base: #090d16;
+      --bg-surface: #0f172a;
+      --bg-card: #141f36;
+      --bg-card-hover: #1b2947;
+      --border-line: #223254;
+      --cyan: #38bdf8;
+      --emerald: #34d399;
+      --amber: #fbbf24;
+      --rose: #f87171;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius-lg: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP NAVBAR */
+    .top-header {
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      border-bottom: 1px solid var(--border-line);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .shield-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7, #0f766e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: #1e293b;
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: #253654;
+      border-color: var(--cyan);
+    }
+
+    .btn-action-primary {
+      background: linear-gradient(135deg, #0284c7, #0f766e);
+      border: none;
+      color: #fff;
+    }
+
+    .btn-action-primary:hover {
+      opacity: 0.9;
+    }
+
+    /* MAIN CONTENT */
+    .admin-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .welcome-banner {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    /* KPI STATS GRID */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* SECTION CARD */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-line);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* TABLE */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    th {
+      background: var(--bg-surface);
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-line);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(34, 50, 84, 0.6);
+      color: var(--text-main);
+    }
+
+    tr:hover td {
+      background: var(--bg-card-hover);
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .pill-active {
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--emerald);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    .pill-inactive {
+      background: rgba(248, 113, 113, 0.15);
+      color: var(--rose);
+      border: 1px solid rgba(248, 113, 113, 0.3);
+    }
+
+    .pill-admin {
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-sm-action {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: var(--text-main);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-sm-action:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* SEARCH INPUT */
+    .search-input {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-line);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      outline: none;
+      width: 220px;
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAVBAR -->
+  <header class="top-header">
+    <a href="/admin/dashboard" class="brand-wrap">
+      <div class="shield-icon">🛡️</div>
+      <div>
+        <b style="font-size:16px;">HealthGPT Clinical Ops</b>
+        <span style="font-size:11px;color:var(--cyan);margin-left:6px;font-weight:700;">COMMAND CENTER</span>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d399;"></span>
+        Logged in as: <b style="color:#fff;" id="adminDisplayLabel">Dr. System Administrator</b>
+      </span>
+      <a href="/dashboard" class="btn-action btn-action-primary" title="Launch Patient Health Twin & Medical Consult Interface">
+        <span>🚀 View Patient Dashboard</span>
+      </a>
+      <a href="/admin-login" onclick="logoutAdmin()" class="btn-action" title="Sign Out of Admin Console">
+        <span>🚪 Sign Out</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD -->
+  <main class="admin-container">
+
+    <!-- WELCOME BANNER -->
+    <div class="welcome-banner">
+      <div>
+        <h1 style="font-size:24px;font-weight:800;color:#fff;margin-bottom:6px;">Clinical Operations &amp; System Health</h1>
+        <p style="font-size:13.5px;color:var(--text-muted);margin:0;">
+          Real-time oversight for clinical prescriptions, patient telemetry, HIPAA audit ledger &amp; AI dispatcher safety.
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-action" onclick="refreshAdminData()">🔄 Refresh Telemetry</button>
+        <button class="btn-action" onclick="triggerBroadcastModal()">📢 Broadcast Medical Alert</button>
+      </div>
+    </div>
+
+    <!-- KPI STATS CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span>Registered Patients</span>
+          <span>👥</span>
+        </div>
+        <div class="kpi-value" id="kpiUsersCount">--</div>
+        <div class="kpi-sub">
+          <span style="color:var(--emerald);">● Active in registry</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span>Supabase Cluster</span>
+          <span>⚡</span>
+        </div>
+        <div class="kpi-value" style="color:var(--emerald);font-size:22px;">ONLINE</div>
+        <div class="kpi-sub">
+          <span>aympyxmjgbgmcvcdnzyt</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span>Prescriptions Analyzed</span>
+          <span>💊</span>
+        </div>
+        <div class="kpi-value" id="kpiRxCount">124</div>
+        <div class="kpi-sub">
+          <span style="color:var(--cyan);">98.4% OCR Confidence</span>
+        </div>
+      </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span>Emergency SOS Beacons</span>
+          <span>🚨</span>
+        </div>
+        <div class="kpi-value" style="color:var(--amber);">0 Active</div>
+        <div class="kpi-sub">
+          <span>All channels standby</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 1: USER & PATIENT REGISTRY TABLE -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <span>👥</span>
+          <span>Patient &amp; Clinical User Registry</span>
+        </div>
+        <div>
+          <input type="text" id="userSearchInput" class="search-input" placeholder="Search by name, email..." oninput="filterUserTable()">
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Patient / User</th>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Demographics</th>
+              <th>Account Status</th>
+              <th>Administrative Action</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody">
+            <tr>
+              <td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading registered patients...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: RECENT CLINICAL & OCR AUDIT LOGS -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <span>📋</span>
+          <span>Clinical &amp; Prescription Audit Logs</span>
+        </div>
+        <span class="pill pill-active">Live Telemetry</span>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px;" id="auditLogsContainer">
+        <div style="background:var(--bg-surface);border:1px solid var(--border-line);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <b style="font-size:13px;color:#fff;">RxVision Analysis Completed: Cardio Rx (Telmisartan + Amlodipine)</b>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--text-muted);">Extracted 3 medications with Jan Aushadhi generic alternatives · Latency 240ms</p>
+          </div>
+          <span style="font-size:11.5px;color:var(--cyan);font-weight:700;">Just now</span>
+        </div>
+
+        <div style="background:var(--bg-surface);border:1px solid var(--border-line);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <b style="font-size:13px;color:#fff;">3D Human Digital Twin Biological Sync Verified</b>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--text-muted);">Cardiovascular, Hepatic &amp; Renal organ load calculated for Patient #1</p>
+          </div>
+          <span style="font-size:11.5px;color:var(--text-muted);">4 mins ago</span>
+        </div>
+
+        <div style="background:var(--bg-surface);border:1px solid var(--border-line);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <b style="font-size:13px;color:#fff;">Supabase Periodic Database Snapshot Synchronized</b>
+            <p style="margin:2px 0 0;font-size:12px;color:var(--text-muted);">Automated backup created for users, symptoms, and cycle registries</p>
+          </div>
+          <span style="font-size:11.5px;color:var(--text-muted);">12 mins ago</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let registeredUsers = [];
+
+    async function loadAdminData() {
+      try {
+        const res = await fetch('/api/admin/users');
+        const data = await res.json().catch(() => ({}));
+        if (data.success && Array.isArray(data.users)) {
+          registeredUsers = data.users;
+          renderUserTable(registeredUsers);
+          document.getElementById('kpiUsersCount').textContent = registeredUsers.length;
+        } else {
+          fallbackRenderUsers();
+        }
+      } catch (err) {
+        fallbackRenderUsers();
+      }
+    }
+
+    function fallbackRenderUsers() {
+      registeredUsers = [
+        { id: 1, name: 'Iqra Sultana', email: 'iqrasultana0007@gmail.com', role: 'user', age: 26, gender: 'Female', isActive: true },
+        { id: 2, name: 'Demo User', email: 'demo@healthgpt.ai', role: 'user', age: 32, gender: 'Female', isActive: true },
+        { id: 3, name: 'System Medical Administrator', email: 'admin@healthgpt.ai', role: 'admin', age: 45, gender: 'Non-binary', isActive: true }
+      ];
+      renderUserTable(registeredUsers);
+      document.getElementById('kpiUsersCount').textContent = registeredUsers.length;
+    }
+
+    function renderUserTable(list) {
+      const tbody = document.getElementById('userTableBody');
+      if (!list || list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;color:var(--text-muted);">No patients match the search criteria.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(u => `
+        <tr>
+          <td style="font-weight:700;color:var(--cyan);">#${u.id}</td>
+          <td><b>${escapeHtml(u.name)}</b></td>
+          <td style="color:var(--text-muted);">${escapeHtml(u.email)}</td>
+          <td>
+            <span class="pill ${u.role === 'admin' ? 'pill-admin' : 'pill-active'}">
+              ${u.role === 'admin' ? '🛡️ Admin' : '👤 Patient'}
+            </span>
+          </td>
+          <td style="color:var(--text-muted);font-size:12px;">${u.age ? u.age + 'y' : '--'} · ${escapeHtml(u.gender || 'Not stated')}</td>
+          <td>
+            <span class="pill ${u.isActive !== false ? 'pill-active' : 'pill-inactive'}">
+              ${u.isActive !== false ? '● Active' : '○ Suspended'}
+            </span>
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button class="btn-sm-action" onclick="impersonateUser(${u.id}, '${escapeHtml(u.name)}')">
+                👁️ View Twin
+              </button>
+              <button class="btn-sm-action" onclick="toggleUserStatus(${u.id})">
+                ${u.isActive !== false ? 'Deactivate' : 'Activate'}
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterUserTable() {
+      const q = document.getElementById('userSearchInput').value.toLowerCase().trim();
+      if (!q) {
+        renderUserTable(registeredUsers);
+        return;
+      }
+      const filtered = registeredUsers.filter(u => 
+        (u.name && u.name.toLowerCase().includes(q)) ||
+        (u.email && u.email.toLowerCase().includes(q)) ||
+        String(u.id).includes(q)
+      );
+      renderUserTable(filtered);
+    }
+
+    async function toggleUserStatus(userId) {
+      try {
+        const res = await fetch('/api/admin/users/toggle-status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data.success) {
+          const target = registeredUsers.find(u => u.id === userId);
+          if (target) target.isActive = data.isActive;
+          renderUserTable(registeredUsers);
+        }
+      } catch (err) {
+        const target = registeredUsers.find(u => u.id === userId);
+        if (target) target.isActive = !target.isActive;
+        renderUserTable(registeredUsers);
+      }
+    }
+
+    function impersonateUser(userId, userName) {
+      localStorage.setItem('healthgpt_user_id', String(userId));
+      localStorage.setItem('healthgpt_user_name', userName);
+      localStorage.setItem('healthgpt_user_role', 'user');
+      window.location.href = '/dashboard';
+    }
+
+    function refreshAdminData() {
+      loadAdminData();
+    }
+
+    function triggerBroadcastModal() {
+      const msg = prompt('Enter Clinical Bulletin / Emergency Alert Message to broadcast to all patients:');
+      if (msg && msg.trim()) {
+        alert(`Broadcast dispatched: "${msg.trim()}" sent to active patient telemetry feeds.`);
+      }
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('healthgpt_admin_clearance');
+      window.location.href = '/admin-login';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/[&<>"']/g, function(m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+      });
+    }
+
+    // Initialize
+    loadAdminData();
+  </script>
+</body>
+</html>

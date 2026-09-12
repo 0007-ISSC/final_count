@@ -4451,6 +4451,13 @@ window.go = window.go || function(pageId, subParam) {
           <span class="status-dot-pulse"></span>
           <span>HealthGPT AI v2.4</span>
         </div>
+        <!-- USER / ADMIN SESSION PILL -->
+        <div id="topUserProfileBadge" style="display:inline-flex;align-items:center;gap:6px;background:var(--card);padding:4px 10px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:12px;font-weight:700;">
+          <span id="topUserRoleIcon">👤</span>
+          <span id="topUserNameDisplay" style="color:var(--ink);">Iqra Sultana</span>
+          <a href="/login" id="topUserSwitchLink" style="font-size:11px;color:var(--primary);text-decoration:none;margin-left:4px;border-left:1px solid var(--line);padding-left:6px;" title="Switch User / Log In">Switch</a>
+          <a href="/admin-login" id="topAdminPortalLink" style="font-size:11px;color:#0284c7;text-decoration:none;border-left:1px solid var(--line);padding-left:6px;" title="Go to Admin Portal">🛡️ Admin</a>
+        </div>
       </div>
     </header>
 
@@ -6258,19 +6265,19 @@ window.go = window.go || function(pageId, subParam) {
         </div>
 
         <!-- UPLOAD DROPZONE -->
-        <div class="rxv-dropzone" id="rxDropzone" onclick="document.getElementById('rxFileInput').click()" style="position:relative;">
+        <div class="rxv-dropzone" id="rxDropzone" onclick="document.getElementById('rxFileInput').click()" ondragover="handleRxDragOver(event)" ondragleave="handleRxDragLeave(event)" ondrop="handleRxDrop(event)" style="position:relative;">
           <div id="rxDropzonePrompt">
             <div style="font-size:46px;margin-bottom:8px;">📄</div>
-            <b style="font-size:16px;color:var(--dark);">Drag & Drop Prescription Photo / PDF, or Click to Browse</b>
+            <b style="font-size:16px;color:var(--dark);">Drag &amp; Drop Prescription Photo or Medical PDF Report, or Click to Browse</b>
             <p style="margin:6px 0 0;color:var(--muted);font-size:13px;">
-              Supports high-resolution JPG, PNG, WEBP, and multi-page documents · Automatic blur and exposure quality auditing
+              Supports high-resolution JPG, PNG, WEBP, and multi-page PDF documents &amp; diagnostic lab reports · Direct vector and multimodal OCR intelligence
             </p>
             <div style="margin-top:14px;display:flex;justify-content:center;gap:10px;">
-              <span class="btn btn-sm btn-secondary" style="pointer-events:none;">📁 Browse Files</span>
+              <span class="btn btn-sm btn-secondary" style="pointer-events:none;">📁 Browse Photos &amp; PDFs</span>
               <button type="button" class="btn btn-sm" style="background:#0284c7;color:white;" onclick="event.stopPropagation();openRxCameraModal();">📷 Use Camera</button>
             </div>
           </div>
-          <input type="file" id="rxFileInput" accept="image/*,.pdf" multiple style="display:none;" onchange="handleRxMultipleFiles(event)">
+          <input type="file" id="rxFileInput" accept="image/*,application/pdf,.pdf" multiple style="display:none;" onchange="handleRxMultipleFiles(event)">
         </div>
 
         <!-- MULTI-PAGE STRIP (Displayed when multi-page or uploaded) -->
@@ -6282,7 +6289,7 @@ window.go = window.go || function(pageId, subParam) {
             </div>
           </div>
           <div style="display:flex;gap:8px;">
-            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('rxFileInput').click()">+ Add Another Page</button>
+            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('rxFileInput').click()">+ Add Another Page / PDF</button>
             <button class="btn btn-secondary btn-sm" onclick="clearOcrWorkspace()">🗑️ Clear All</button>
           </div>
         </div>
@@ -6339,15 +6346,19 @@ window.go = window.go || function(pageId, subParam) {
         <!-- SAMPLE PRE-LOADED PRESCRIPTIONS -->
         <div style="margin-top:16px;">
           <div style="font-size:12px;font-weight:700;text-transform:uppercase;color:var(--muted);margin-bottom:8px;letter-spacing:0.5px;">
-            Or Test Instantly with Verified Clinical Prescriptions:
+            Or Test Instantly with Verified Clinical Prescriptions &amp; PDF Lab Reports:
           </div>
-          <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:10px;" id="rxSampleChipsContainer">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:10px;" id="rxSampleChipsContainer">
+            <div class="rxv-sample-chip" onclick="loadSampleRx('lab_blood_report', this)">
+              <b>🧪 Lab Blood Report (PDF)</b>
+              <span style="color:var(--muted);font-size:11px;">CBC, HbA1c 7.2%, Lipids, Creatinine</span>
+            </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('cardio_htn', this)">
-              <b>🫀 Cardiology & BP Rx</b>
+              <b>🫀 Cardiology &amp; BP Rx</b>
               <span style="color:var(--muted);font-size:11px;">Telmisartan, Amlodipine, Rosuvastatin</span>
             </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('resp_infect', this)">
-              <b>🫁 Bronchitis & Cold Rx</b>
+              <b>🫁 Bronchitis &amp; Cold Rx</b>
               <span style="color:var(--muted);font-size:11px;">Augmentin Duo, Montair-LC, Dolo 650</span>
             </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('diabetes_regimen', this)">
@@ -6518,6 +6529,41 @@ window.go = window.go || function(pageId, subParam) {
               <p id="rxClinicalExplanationText" style="margin:0;font-size:13px;line-height:1.6;color:#1e293b;">
                 Detailed clinical overview explaining the diagnosed condition and why these medications are indicated.
               </p>
+            </div>
+
+            <!-- DIAGNOSTIC LAB TEST PARAMETERS & BIOMARKERS CARD -->
+            <div class="card" id="rxLabReportCard" style="display:none;padding:18px;background:linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%);border:1.5px solid #bae6fd;box-shadow:0 4px 16px rgba(2,132,199,0.06);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:22px;">🧪</span>
+                  <div>
+                    <h4 style="margin:0;font-size:15px;font-weight:700;color:#0369a1;">Pathology &amp; Diagnostic Lab Biomarkers</h4>
+                    <span style="font-size:12px;color:var(--muted);" id="rxLabSubheading">Automated extraction from PDF / medical report scan</span>
+                  </div>
+                </div>
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <span class="pill" id="rxPdfDocBadge" style="background:#e0f2fe;color:#0284c7;font-weight:700;font-size:11px;">📄 PDF Report</span>
+                  <span class="pill" id="rxLabCountBadge" style="background:#dcfce7;color:#166534;font-weight:800;font-size:11px;">0 Parameters</span>
+                </div>
+              </div>
+
+              <!-- Lab Biomarkers Table -->
+              <div style="overflow-x:auto;border-radius:8px;border:1px solid #e0f2fe;">
+                <table class="table" style="width:100%;font-size:12.5px;border-collapse:collapse;margin:0;" id="rxLabTable">
+                  <thead>
+                    <tr style="background:#e0f2fe;color:#0369a1;text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:0.4px;">
+                      <th style="padding:10px 12px;">Test / Biomarker</th>
+                      <th style="padding:10px 12px;">Observed Value</th>
+                      <th style="padding:10px 12px;">Reference Interval</th>
+                      <th style="padding:10px 12px;">Status</th>
+                      <th style="padding:10px 12px;">Clinical Interpretation</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rxLabTableBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <!-- CLINICAL HEALTH RISK ASSESSMENT & RED FLAGS -->
@@ -12932,6 +12978,178 @@ function editUserMessage(_btn, text) {
   }
 }
 
+/* ============================================================
+   ROBUST WEB SPEECH API & MICROPHONE DIAGNOSTICS MANAGER
+   Comprehensive speech synthesis (TTS) & speech recognition (STT)
+   with microphone permission verification, keep-alive timers & detailed logging
+   ============================================================ */
+window.__healthGptSpeechDiagnostics = window.__healthGptSpeechDiagnostics || [];
+
+const WebSpeechManager = {
+  keepAliveTimer: null,
+  activeUtterance: null,
+
+  logDiagnostic(category, type, data) {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      category, // 'TTS' | 'STT' | 'MIC_PERM'
+      type,     // 'info' | 'warn' | 'error' | 'lifecycle'
+      data
+    };
+    window.__healthGptSpeechDiagnostics.push(entry);
+    if (window.__healthGptSpeechDiagnostics.length > 150) {
+      window.__healthGptSpeechDiagnostics.shift();
+    }
+    const logPrefix = `[WebSpeechAPI ${category}]`;
+    if (type === 'error') {
+      console.error(logPrefix, data.message || data.error || data, data);
+    } else if (type === 'warn') {
+      console.warn(logPrefix, data.message || data.error || data, data);
+    } else {
+      console.info(logPrefix, data.message || data);
+    }
+  },
+
+  async checkMicrophonePermissions() {
+    this.logDiagnostic('MIC_PERM', 'info', { message: 'Verifying microphone hardware and browser permissions...' });
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const err = { message: 'navigator.mediaDevices.getUserMedia is unavailable in this browser session.' };
+      this.logDiagnostic('MIC_PERM', 'warn', err);
+      return { ok: false, error: 'unsupported', message: err.message };
+    }
+
+    try {
+      if (navigator.permissions && navigator.permissions.query) {
+        try {
+          const perm = await navigator.permissions.query({ name: 'microphone' });
+          this.logDiagnostic('MIC_PERM', 'info', { queryState: perm.state });
+          if (perm.state === 'denied') {
+            return {
+              ok: false,
+              error: 'not-allowed',
+              message: 'Microphone permission has been blocked. Please click the padlock / site icon in your browser address bar and allow Microphone access.'
+            };
+          }
+        } catch (queryErr) {
+          this.logDiagnostic('MIC_PERM', 'info', { note: 'Direct permissions query bypassed; testing via getUserMedia' });
+        }
+      }
+
+      // Explicitly prompt / test audio stream to establish browser session permission
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const tracks = stream.getAudioTracks();
+      const trackMeta = tracks.map(t => ({ label: t.label, enabled: t.enabled, readyState: t.readyState }));
+      // Immediately stop track so we don't hold the microphone hardware lock
+      tracks.forEach(track => track.stop());
+
+      this.logDiagnostic('MIC_PERM', 'info', { message: 'Microphone permission active and hardware verified.', tracks: trackMeta });
+      return { ok: true, tracks: trackMeta };
+    } catch (err) {
+      const isDenied = err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError';
+      const isNotFound = err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError';
+      this.logDiagnostic('MIC_PERM', 'error', {
+        name: err.name,
+        message: err.message,
+        isDenied,
+        isNotFound
+      });
+      return {
+        ok: false,
+        error: isDenied ? 'not-allowed' : (isNotFound ? 'audio-capture' : err.name),
+        message: isDenied 
+          ? 'Microphone permission was denied. Please allow microphone access in your browser address bar to speak.'
+          : (isNotFound ? 'No microphone hardware found. Please connect an audio input device.' : (err.message || 'Microphone access failed.'))
+      };
+    }
+  },
+
+  speak(text, options = {}) {
+    if (!('speechSynthesis' in window)) {
+      this.logDiagnostic('TTS', 'warn', { message: 'SpeechSynthesis API not available in window' });
+      if (options.onError) options.onError('unsupported', 'Speech synthesis is not supported in this browser.');
+      return;
+    }
+
+    // Unpause or resume stalled engine if stuck
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+    window.speechSynthesis.cancel();
+    clearInterval(this.keepAliveTimer);
+
+    // Clean text of markdown, URLs, symbols for lifelike natural speech
+    const cleanText = (text || '')
+      .replace(/[*#_`~>\[\]]/g, '')
+      .replace(/https?:\/\/[^\s]+/g, '')
+      .replace(/\n+/g, '. ')
+      .trim();
+
+    if (!cleanText) {
+      this.logDiagnostic('TTS', 'warn', { message: 'Empty text passed to SpeechSynthesis' });
+      return;
+    }
+
+    const langCode = options.lang || 'en-US';
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = langCode;
+    utterance.rate = options.rate || 1.0;
+    utterance.pitch = options.pitch || 1.0;
+
+    // Pick best matching voice
+    const voices = window.speechSynthesis.getVoices();
+    if (voices && voices.length > 0) {
+      const matched = voices.find(v => v.lang === langCode || v.lang.replace('_', '-').startsWith(langCode.split('-')[0])) || voices[0];
+      if (matched) utterance.voice = matched;
+    }
+
+    utterance.onstart = (e) => {
+      this.logDiagnostic('TTS', 'lifecycle', { event: 'start', lang: langCode, charLength: cleanText.length });
+      if (options.onStart) options.onStart(e);
+      // Chromium keep-alive pulse: Chrome pauses speech after ~14s without periodic resume()
+      this.keepAliveTimer = setInterval(() => {
+        if (!window.speechSynthesis.speaking) {
+          clearInterval(this.keepAliveTimer);
+        } else {
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }
+      }, 5000);
+    };
+
+    utterance.onend = (e) => {
+      clearInterval(this.keepAliveTimer);
+      this.logDiagnostic('TTS', 'lifecycle', { event: 'end', elapsedTime: e.elapsedTime });
+      if (options.onEnd) options.onEnd(e);
+    };
+
+    utterance.onerror = (e) => {
+      clearInterval(this.keepAliveTimer);
+      this.logDiagnostic('TTS', 'error', {
+        error: e.error,
+        elapsedTime: e.elapsedTime,
+        message: `TTS error: ${e.error}`
+      });
+      if (options.onError) options.onError(e.error, e);
+    };
+
+    this.activeUtterance = utterance;
+
+    // Small delay after cancel ensures clean audio device handoff in Chromium / Safari
+    setTimeout(() => {
+      window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.resume();
+    }, 20);
+  },
+
+  stopSpeaking() {
+    clearInterval(this.keepAliveTimer);
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      this.logDiagnostic('TTS', 'lifecycle', { event: 'cancelled_by_user' });
+    }
+  }
+};
+
 let activeUtterance = null;
 function speakMessageText(btn) {
   if (!('speechSynthesis' in window)) {
@@ -12939,8 +13157,11 @@ function speakMessageText(btn) {
     return;
   }
 
+  const labelEl = btn.querySelector('.tts-label') || btn;
+  const iconEl = btn.querySelector('.tts-icon');
+
   if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel();
+    WebSpeechManager.stopSpeaking();
     document.querySelectorAll('.chat-action-btn').forEach(b => {
       const l = b.querySelector('.tts-label');
       if (l) l.textContent = 'Read Aloud';
@@ -12951,42 +13172,44 @@ function speakMessageText(btn) {
   }
 
   const botMsg = btn.closest('.chat-msg');
-  const textEl = botMsg.querySelector('.bot-rendered-content') || botMsg.querySelector('.bot-text');
+  const textEl = botMsg ? (botMsg.querySelector('.bot-rendered-content') || botMsg.querySelector('.bot-text')) : null;
   const rawText = textEl ? textEl.innerText : '';
   const cleanText = rawText.replace(/[#*`_>~]/g, '').trim();
 
   if (!cleanText) return;
 
   const chatLang = document.getElementById('chatLanguageSelect')?.value || currentAppLanguage || 'en';
-  const utterance = new SpeechSynthesisUtterance(cleanText);
-  utterance.lang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
-  utterance.rate = 1.0;
-  utterance.pitch = 1.0;
+  const targetLang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
 
-  const labelEl = btn.querySelector('.tts-label');
-  const iconEl = btn.querySelector('.tts-icon');
-
-  utterance.onstart = () => {
-    if (labelEl) labelEl.textContent = 'Stop Speaking';
-    if (iconEl) {
-      iconEl.innerHTML = `
-        <span class="audio-equalizer">
-          <span class="audio-equalizer-bar"></span>
-          <span class="audio-equalizer-bar"></span>
-          <span class="audio-equalizer-bar"></span>
-          <span class="audio-equalizer-bar"></span>
-        </span>
-      `;
+  WebSpeechManager.speak(cleanText, {
+    lang: targetLang,
+    rate: 1.0,
+    pitch: 1.0,
+    onStart: () => {
+      if (labelEl) labelEl.textContent = 'Stop Speaking';
+      if (iconEl) {
+        iconEl.innerHTML = `
+          <span class="audio-equalizer">
+            <span class="audio-equalizer-bar"></span>
+            <span class="audio-equalizer-bar"></span>
+            <span class="audio-equalizer-bar"></span>
+            <span class="audio-equalizer-bar"></span>
+          </span>
+        `;
+      }
+    },
+    onEnd: () => {
+      if (labelEl) labelEl.textContent = 'Read Aloud';
+      if (iconEl) iconEl.textContent = '🔊';
+    },
+    onError: (errCode) => {
+      if (labelEl) labelEl.textContent = 'Read Aloud';
+      if (iconEl) iconEl.textContent = '🔊';
+      if (errCode !== 'canceled' && errCode !== 'interrupted') {
+        toast(`⚠️ Audio playback note: ${errCode || 'Speech failed'}`);
+      }
     }
-  };
-
-  utterance.onend = utterance.onerror = () => {
-    if (labelEl) labelEl.textContent = 'Read Aloud';
-    if (iconEl) iconEl.textContent = '🔊';
-  };
-
-  activeUtterance = utterance;
-  window.speechSynthesis.speak(utterance);
+  });
 }
 
 function regenerateBotResponse(userQuery, msgId) {
@@ -15319,11 +15542,12 @@ function triggerVoiceMicNow() {
   interruptVoiceAndSpeak();
 }
 
-function startDoctorVoiceListening() {
+async function startDoctorVoiceListening() {
   if (isVoicePaused || isVoiceMuted) return;
 
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'SpeechRecognition API not supported for doctor voice call' });
     toast('Voice speech recognition not supported in this browser.');
     updateVoiceRoomVisualState('paused', '⚠️ Speech recognition is not supported in this browser.');
     return;
@@ -15332,18 +15556,30 @@ function startDoctorVoiceListening() {
   const liveStatus = document.getElementById('voiceCallLiveStatus');
   const conf = PERSONAS_CONFIG[currentPersona] || PERSONAS_CONFIG.doctor;
 
+  // Verify microphone session permissions before starting
+  const micCheck = await WebSpeechManager.checkMicrophonePermissions();
+  if (!micCheck.ok) {
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'Doctor voice call microphone permission check failed', detail: micCheck });
+    updateVoiceRoomVisualState('paused', `❌ ${micCheck.message}`);
+    if (liveStatus) liveStatus.textContent = micCheck.message;
+    toast(`⚠️ ${micCheck.message}`);
+    return;
+  }
+
   try {
     if (recognitionInstance) {
       try { recognitionInstance.stop(); } catch(e){}
     }
     recognitionInstance = new SpeechRecognition();
     const chatLang = document.getElementById('voiceRoomLangSelect')?.value || document.getElementById('chatLanguageSelect')?.value || currentAppLanguage || 'en';
-    recognitionInstance.lang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
+    const voiceLang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
+    recognitionInstance.lang = voiceLang;
     recognitionInstance.interimResults = true;
     recognitionInstance.continuous = false;
 
     recognitionInstance.onstart = () => {
       isRecordingVoice = true;
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'doctor_call_listening_start', lang: voiceLang });
       const msg = `🎙️ ${conf.name} is listening to you... Speak now!`;
       if (liveStatus) liveStatus.textContent = msg;
       updateVoiceRoomVisualState('listening', msg);
@@ -15375,6 +15611,7 @@ function startDoctorVoiceListening() {
       if (finalTranscript && finalTranscript.trim()) {
         isRecordingVoice = false;
         const query = finalTranscript.trim();
+        WebSpeechManager.logDiagnostic('STT', 'info', { event: 'doctor_call_speech_captured', query });
         
         // Check for hands-free voice stop command
         const lowerQuery = query.toLowerCase();
@@ -15395,6 +15632,11 @@ function startDoctorVoiceListening() {
     };
 
     recognitionInstance.onerror = (err) => {
+      WebSpeechManager.logDiagnostic('STT', 'error', {
+        event: 'doctor_call_stt_error',
+        error: err.error,
+        message: err.message
+      });
       isRecordingVoice = false;
       if (err.error === 'no-speech' && isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
         // Auto-restart listening after silence in endless mode
@@ -15405,12 +15647,20 @@ function startDoctorVoiceListening() {
         }, 600);
         return;
       }
+      if (err.error === 'not-allowed') {
+        const msg = '❌ Microphone access blocked. Please allow microphone permissions in your browser.';
+        if (liveStatus) liveStatus.textContent = msg;
+        updateVoiceRoomVisualState('paused', msg);
+        toast('⚠️ Microphone permission denied.');
+        return;
+      }
       if (liveStatus) liveStatus.textContent = `Listening paused. Click "Speak Now" to speak with ${conf.name}.`;
       updateVoiceRoomVisualState('paused', `Listening paused (${err.error || 'idle'}). Click Speak Now to talk.`);
     };
 
     recognitionInstance.onend = () => {
       isRecordingVoice = false;
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'doctor_call_listening_end' });
       // If voice call is active and AI is not speaking, keep the endless conversation alive!
       if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
         setTimeout(() => {
@@ -15423,16 +15673,15 @@ function startDoctorVoiceListening() {
 
     recognitionInstance.start();
   } catch(e) {
-    console.warn('Voice listening error', e);
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'Doctor voice listening start exception', error: e });
   }
 }
 
 function speakDoctorCallResponse(rawText, langCode) {
   if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
 
   // Strip markdown symbols for clean, lifelike spoken dialogue
-  const clean = rawText
+  const clean = (rawText || '')
     .replace(/[*#_`~]/g, '')
     .replace(/\b(https?:\/\/[^\s]+)/g, '')
     .replace(/\n+/g, '. ')
@@ -15452,43 +15701,41 @@ function speakDoctorCallResponse(rawText, langCode) {
     aiTextEl.textContent = clean;
   }
 
-  const utter = new SpeechSynthesisUtterance(clean);
   const targetLocale = LANGUAGE_VOICE_MAP[langCode] || langCode || 'en-US';
-  utter.lang = targetLocale;
-  utter.rate = 1.0;
-  utter.pitch = currentPersona === 'therapist' ? 1.05 : 0.98;
 
-  const voices = window.speechSynthesis.getVoices();
-  const matched = voices.find(v => v.lang === targetLocale || v.lang.startsWith(targetLocale.split('-')[0]));
-  if (matched) utter.voice = matched;
-
-  utter.onend = () => {
-    if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
-      const listenMsg = `🎙️ ${conf.name} finished speaking. Listening to you... Speak now!`;
-      if (liveStatus) liveStatus.textContent = listenMsg;
-      updateVoiceRoomVisualState('listening', listenMsg);
-      setTimeout(() => {
-        if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
-          startDoctorVoiceListening();
-        }
-      }, 400);
+  WebSpeechManager.speak(clean, {
+    lang: targetLocale,
+    rate: 1.0,
+    pitch: currentPersona === 'therapist' ? 1.05 : 0.98,
+    onStart: () => {
+      updateVoiceRoomVisualState('speaking', `🩺 ${conf.name} is speaking...`);
+    },
+    onEnd: () => {
+      if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
+        const listenMsg = `🎙️ ${conf.name} finished speaking. Listening to you... Speak now!`;
+        if (liveStatus) liveStatus.textContent = listenMsg;
+        updateVoiceRoomVisualState('listening', listenMsg);
+        setTimeout(() => {
+          if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
+            startDoctorVoiceListening();
+          }
+        }, 400);
+      }
+    },
+    onError: (errCode) => {
+      WebSpeechManager.logDiagnostic('TTS', 'error', { event: 'doctor_call_tts_error', error: errCode });
+      if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
+        const listenMsg = `Listening to you... Speak now!`;
+        if (liveStatus) liveStatus.textContent = listenMsg;
+        updateVoiceRoomVisualState('listening', listenMsg);
+        setTimeout(() => {
+          if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
+            startDoctorVoiceListening();
+          }
+        }, 300);
+      }
     }
-  };
-
-  utter.onerror = () => {
-    if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
-      const listenMsg = `Listening to you... Speak now!`;
-      if (liveStatus) liveStatus.textContent = listenMsg;
-      updateVoiceRoomVisualState('listening', listenMsg);
-      setTimeout(() => {
-        if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
-          startDoctorVoiceListening();
-        }
-      }, 300);
-    }
-  };
-
-  window.speechSynthesis.speak(utter);
+  });
 }
 
 /* ============================================================
@@ -15653,7 +15900,7 @@ function stopVoiceSpeechActivity() {
   if (micLabel) micLabel.textContent = 'Voice';
 }
 
-function toggleVoiceSpeech() {
+async function toggleVoiceSpeech() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const voiceBtn = document.getElementById('voiceBtn');
   const voiceMicBtn = document.getElementById('voiceMicBtn');
@@ -15662,6 +15909,7 @@ function toggleVoiceSpeech() {
   const status = document.getElementById('voiceStatusText');
 
   if (!SpeechRecognition) {
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'SpeechRecognition API not available in browser' });
     if (status) status.textContent = 'Voice input not supported in this browser. Please type your message.';
     toast('Speech recognition not supported in this browser.');
     return;
@@ -15673,10 +15921,25 @@ function toggleVoiceSpeech() {
     return;
   }
 
+  // Verify microphone hardware & permissions in active browser session
+  if (status) status.textContent = '🎙️ Verifying microphone access...';
+  const micCheck = await WebSpeechManager.checkMicrophonePermissions();
+  if (!micCheck.ok) {
+    WebSpeechManager.logDiagnostic('STT', 'error', {
+      message: 'Cannot start speech recognition because microphone is inaccessible or blocked',
+      error: micCheck.error,
+      detail: micCheck.message
+    });
+    if (status) status.textContent = `❌ ${micCheck.message}`;
+    toast(`⚠️ ${micCheck.message}`);
+    return;
+  }
+
   try {
     recognitionInstance = new SpeechRecognition();
     const chatLang = document.getElementById('chatLanguageSelect')?.value || currentAppLanguage || 'en';
-    recognitionInstance.lang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
+    const voiceLang = LANGUAGE_VOICE_MAP[chatLang] || 'en-US';
+    recognitionInstance.lang = voiceLang;
     recognitionInstance.interimResults = true;
     recognitionInstance.maxAlternatives = 1;
 
@@ -15684,11 +15947,12 @@ function toggleVoiceSpeech() {
 
     recognitionInstance.onstart = () => {
       isRecordingVoice = true;
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'start', lang: voiceLang });
       if (voiceBtn) voiceBtn.classList.add('listening');
       if (voiceMicBtn) voiceMicBtn.classList.add('active-action');
       if (micIcon) micIcon.textContent = '🔴';
       if (micLabel) micLabel.textContent = 'Listening...';
-      if (status) status.textContent = `🎙️ Listening in ${recognitionInstance.lang}... Speak clearly.`;
+      if (status) status.textContent = `🎙️ Listening in ${voiceLang}... Speak clearly.`;
       startVoiceActivityIndicator();
       toast(`🎙️ Listening in ${getLanguageName(chatLang)}...`);
     };
@@ -15717,6 +15981,7 @@ function toggleVoiceSpeech() {
 
       if (finalTranscript) {
         const cleaned = finalTranscript.trim();
+        WebSpeechManager.logDiagnostic('STT', 'info', { transcript: cleaned, confidence: capturedConfidence });
         if (status) status.textContent = `Captured: "${cleaned}" (${Math.round(capturedConfidence * 100)}% confidence)`;
         stopVoiceSpeechActivity();
 
@@ -15739,18 +16004,39 @@ function toggleVoiceSpeech() {
     };
 
     recognitionInstance.onerror = (err) => {
-      console.warn('SpeechRecognition error:', err);
+      WebSpeechManager.logDiagnostic('STT', 'error', {
+        error: err.error,
+        message: err.message || 'Speech recognition event error',
+        lang: recognitionInstance.lang
+      });
       stopVoiceSpeechActivity();
-      if (status) status.textContent = 'Voice capture paused. Click mic to retry.';
+
+      let userMsg = 'Voice capture paused. Click mic to retry.';
+      if (err.error === 'not-allowed') {
+        userMsg = '❌ Microphone access blocked. Please allow microphone permissions in your browser address bar.';
+        toast('⚠️ Microphone permission blocked.');
+      } else if (err.error === 'audio-capture') {
+        userMsg = '❌ No microphone device detected. Please connect an audio input device.';
+        toast('⚠️ Audio device not detected.');
+      } else if (err.error === 'no-speech') {
+        userMsg = '🎙️ No speech detected. Please speak closer to your microphone.';
+      } else if (err.error === 'network') {
+        userMsg = '⚠️ Network connection interrupted speech service. Click to retry.';
+      } else if (err.error === 'service-not-allowed') {
+        userMsg = '⚠️ Speech recognition service not allowed in current browser frame.';
+      }
+
+      if (status) status.textContent = userMsg;
     };
 
     recognitionInstance.onend = () => {
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'end' });
       stopVoiceSpeechActivity();
     };
 
     recognitionInstance.start();
   } catch (e) {
-    console.error('Voice Speech Recognition start error:', e);
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'Voice Speech Recognition start error', error: e });
     stopVoiceSpeechActivity();
     toast('Could not start microphone.');
   }
@@ -16601,7 +16887,33 @@ Rx:
 1. Tab. Bilastine 20 mg - 1 tab once daily in empty stomach x 7 days
 2. Cream Desonide 0.05% - Apply thin layer on affected rashes twice daily x 7 days
 3. Calamine & Aloe soothing lotion - Apply SOS for itching
-Advice: Avoid scented soaps and synthetic wool, keep skin moisturized.`
+Advice: Avoid scented soaps and synthetic wool, keep skin moisturized.`,
+  lab_blood_report: `METROPOLIS & SRL CLINICAL PATHOLOGY DIAGNOSTIC REPORT
+Patient: Rajiv Mehra, 48M | Ref Dr: Dr. Anirudh Sen, MD (Internal Medicine)
+Date of Collection: 2026-08-25 | Specimen: Venous Whole Blood & Serum
+Report: COMPREHENSIVE METABOLIC & HEMATOLOGY PROFILE
+
+HAEMATOLOGY (CBC):
+- Hemoglobin (Hb): 11.4 g/dL (Reference: 13.0 - 17.0 g/dL) [LOW - Mild Microcytic Anemia]
+- Total Leucocyte Count (TLC): 7,800 /μL (Reference: 4,000 - 11,000 /μL) [NORMAL]
+- Platelet Count: 240,000 /μL (Reference: 150,000 - 450,000 /μL) [NORMAL]
+
+METABOLIC & GLYCEMIC PROFILE:
+- Fasting Blood Glucose: 138 mg/dL (Reference: 70 - 99 mg/dL) [HIGH - Impaired Fasting Glucose]
+- Glycosylated Hemoglobin (HbA1c): 7.2 % (Reference: < 5.7 % Normal, 5.7-6.4% Prediabetes, >=6.5% Diabetes) [HIGH - Suboptimal Glycemic Control]
+
+LIPID PROFILE:
+- Total Cholesterol: 224 mg/dL (Reference: < 200 mg/dL) [HIGH]
+- LDL Cholesterol: 142 mg/dL (Reference: < 100 mg/dL) [HIGH - Elevated Atherogenic Risk]
+- HDL Cholesterol: 42 mg/dL (Reference: > 40 mg/dL) [NORMAL]
+- Triglycerides: 198 mg/dL (Reference: < 150 mg/dL) [HIGH - Moderate Hypertriglyceridemia]
+
+RENAL & HEPATIC FUNCTION:
+- Serum Creatinine: 0.92 mg/dL (Reference: 0.7 - 1.2 mg/dL) [NORMAL]
+- eGFR: > 90 mL/min/1.73m² [NORMAL]
+- SGPT / ALT: 38 U/L (Reference: < 45 U/L) [NORMAL]
+
+Clinical Impression: Impaired Fasting Glycemia (HbA1c 7.2%), Mixed Dyslipidemia, and Mild Microcytic Anemia. Lifestyle interventions, iron-rich nutrition, and metabolic follow-up recommended.`
 };
 
 // Global RxVision State
@@ -16620,6 +16932,43 @@ let isPrivacyRedacted = false;
 let rxBetaChatHistory = [];
 
 /**
+ * Drag and Drop event helpers for smooth, friendly dropzone interactions
+ */
+function handleRxDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropzone = document.getElementById('rxDropzone');
+  if (dropzone) {
+    dropzone.style.borderColor = '#0284c7';
+    dropzone.style.background = '#f0f9ff';
+  }
+}
+
+function handleRxDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropzone = document.getElementById('rxDropzone');
+  if (dropzone) {
+    dropzone.style.borderColor = '';
+    dropzone.style.background = '';
+  }
+}
+
+function handleRxDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  const dropzone = document.getElementById('rxDropzone');
+  if (dropzone) {
+    dropzone.style.borderColor = '';
+    dropzone.style.background = '';
+  }
+  const dt = e.dataTransfer;
+  if (dt && dt.files && dt.files.length > 0) {
+    handleRxMultipleFiles({ target: { files: dt.files } });
+  }
+}
+
+/**
  * Generate a simulated realistic prescription canvas for verified clinical samples
  */
 function generateSamplePrescriptionImage(key) {
@@ -16627,6 +16976,110 @@ function generateSamplePrescriptionImage(key) {
   canvas.width = 800;
   canvas.height = 1050;
   const ctx = canvas.getContext('2d');
+
+  if (key === 'lab_blood_report') {
+    // Diagnostic Pathology Lab Report Layout
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Top Header Banner
+    ctx.fillStyle = '#0c4a6e';
+    ctx.fillRect(40, 30, 720, 110);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px system-ui, sans-serif';
+    ctx.fillText('METROPOLIS & SRL CLINICAL DIAGNOSTIC LABS', 65, 70);
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = '#7dd3fc';
+    ctx.fillText('NABL & CAP Accredited Laboratory · Comprehensive Diagnostic Pathology Report', 65, 96);
+    ctx.fillText('Specimen: Serum & Venous Whole Blood · Automated Clinical Chemistry Analyzer', 65, 118);
+
+    // Patient and Test Details
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 14px system-ui, sans-serif';
+    ctx.fillText('Patient: Rajiv Mehra, 48M  |  Ref Dr: Dr. Anirudh Sen, MD  |  Date: 2026-08-25', 60, 175);
+
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(60, 198);
+    ctx.lineTo(740, 198);
+    ctx.stroke();
+
+    // Table Header
+    ctx.fillStyle = '#e0f2fe';
+    ctx.fillRect(60, 215, 680, 34);
+    ctx.fillStyle = '#0369a1';
+    ctx.font = 'bold 12px system-ui, sans-serif';
+    ctx.fillText('INVESTIGATION / BIOMARKER', 75, 237);
+    ctx.fillText('OBSERVED VALUE', 330, 237);
+    ctx.fillText('REFERENCE INTERVAL', 470, 237);
+    ctx.fillText('STATUS', 645, 237);
+
+    let startY = 282;
+    const labLines = [
+      { name: 'Hemoglobin (Hb)', val: '11.4 g/dL', ref: '13.0 - 17.0 g/dL', stat: 'LOW', color: '#b45309' },
+      { name: 'Total Leucocyte Count (TLC)', val: '7,800 /μL', ref: '4,000 - 11,000 /μL', stat: 'NORMAL', color: '#15803d' },
+      { name: 'Platelet Count', val: '240,000 /μL', ref: '150,000 - 450,000 /μL', stat: 'NORMAL', color: '#15803d' },
+      { name: 'Fasting Blood Glucose', val: '138 mg/dL', ref: '70 - 99 mg/dL', stat: 'HIGH', color: '#be123c' },
+      { name: 'Glycosylated Hemoglobin (HbA1c)', val: '7.2 %', ref: '< 5.7 %', stat: 'HIGH', color: '#be123c' },
+      { name: 'Total Cholesterol', val: '224 mg/dL', ref: '< 200 mg/dL', stat: 'HIGH', color: '#be123c' },
+      { name: 'LDL Cholesterol', val: '142 mg/dL', ref: '< 100 mg/dL', stat: 'HIGH', color: '#be123c' },
+      { name: 'HDL Cholesterol', val: '42 mg/dL', ref: '> 40 mg/dL', stat: 'NORMAL', color: '#15803d' },
+      { name: 'Serum Triglycerides', val: '198 mg/dL', ref: '< 150 mg/dL', stat: 'HIGH', color: '#be123c' },
+      { name: 'Serum Creatinine', val: '0.92 mg/dL', ref: '0.70 - 1.20 mg/dL', stat: 'NORMAL', color: '#15803d' },
+      { name: 'SGPT / Alanine Aminotransferase', val: '38 U/L', ref: '< 45 U/L', stat: 'NORMAL', color: '#15803d' }
+    ];
+
+    labLines.forEach((item, idx) => {
+      if (idx % 2 === 1) {
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(60, startY - 22, 680, 32);
+      }
+      ctx.fillStyle = '#0f172a';
+      ctx.font = '500 13px system-ui, sans-serif';
+      ctx.fillText(item.name, 75, startY);
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.fillText(item.val, 330, startY);
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText(item.ref, 470, startY);
+
+      ctx.fillStyle = item.color;
+      ctx.font = 'bold 12px system-ui, sans-serif';
+      ctx.fillText(item.stat, 645, startY);
+
+      startY += 34;
+    });
+
+    // Clinical Impression Box
+    ctx.fillStyle = '#eff6ff';
+    ctx.strokeStyle = '#bfdbfe';
+    ctx.lineWidth = 1;
+    ctx.fillRect(60, 710, 680, 110);
+    ctx.strokeRect(60, 710, 680, 110);
+    ctx.fillStyle = '#1e40af';
+    ctx.font = 'bold 13px system-ui, sans-serif';
+    ctx.fillText('CLINICAL IMPRESSION & INTERPRETATION:', 75, 735);
+    ctx.fillStyle = '#334155';
+    ctx.font = '12.5px system-ui, sans-serif';
+    ctx.fillText('• Impaired Fasting Glycemia & HbA1c of 7.2% indicates suboptimal metabolic control.', 75, 760);
+    ctx.fillText('• Mixed Dyslipidemia (elevated Total Chol, LDL, & Triglycerides) warrants cardiovascular monitoring.', 75, 782);
+    ctx.fillText('• Mild microcytic anemia (Hb 11.4 g/dL). Lifestyle diet and metabolic follow-up advised.', 75, 804);
+
+    // Pathologist Stamp
+    ctx.strokeStyle = '#0284c7';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(510, 875, 230, 85);
+    ctx.font = 'bold 11px monospace';
+    ctx.fillStyle = '#0369a1';
+    ctx.fillText('CERTIFIED PATHOLOGIST VERIFIED', 525, 900);
+    ctx.font = 'italic 17px cursive';
+    ctx.fillText('Dr. M. K. Sen, MD', 545, 930);
+    ctx.font = '10px monospace';
+    ctx.fillText('NABL / CDSCO Reg: LAB-7729', 530, 950);
+
+    return canvas.toDataURL('image/png');
+  }
 
   // Background medical paper texture
   ctx.fillStyle = '#faf8f5';
@@ -16750,6 +17203,16 @@ function loadSampleRx(key, el) {
  * Document Quality Detection (Sharpness, Exposure, Contrast)
  */
 function auditDocumentQualityClient(dataUrl) {
+  if (typeof dataUrl === 'string' && (dataUrl.startsWith('data:application/pdf') || dataUrl.includes('application/pdf'))) {
+    return Promise.resolve({
+      blurScore: 99,
+      lightingScore: 98,
+      contrastScore: 97,
+      overall: 'Vector PDF Report',
+      advice: 'High-fidelity PDF document detected. Direct vector text & multimodal OCR active.'
+    });
+  }
+
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = function() {
@@ -16869,6 +17332,10 @@ function updateQualityIndicators(q) {
  * Image Pre-processing with Canvas (Grayscale, Contrast Boost, Sharpen)
  */
 function preprocessImageWithCanvas(dataUrl, contrastMultiplier = 1.35, sharpen = true) {
+  if (typeof dataUrl === 'string' && (dataUrl.startsWith('data:application/pdf') || dataUrl.includes('application/pdf'))) {
+    return Promise.resolve(dataUrl);
+  }
+
   return new Promise((resolve) => {
     const img = new Image();
     img.onload = function() {
@@ -16962,13 +17429,17 @@ function renderRxPageThumbnails() {
 
   if (rxPages.length > 0) {
     strip.style.display = 'flex';
-    container.innerHTML = rxPages.map((page, idx) => `
-      <button class="btn btn-sm ${idx === activeRxPageIndex ? '' : 'btn-secondary'}" 
-              style="${idx === activeRxPageIndex ? 'background:#0284c7;color:white;' : ''};font-size:11px;" 
-              onclick="switchRxPage(${idx})">
-        📄 Page ${idx + 1} (${page.quality?.blurScore || 90}%)
-      </button>
-    `).join('');
+    container.innerHTML = rxPages.map((page, idx) => {
+      const isPdf = (page.name && page.name.toLowerCase().endsWith('.pdf')) || (typeof page.originalData === 'string' && page.originalData.startsWith('data:application/pdf'));
+      const label = isPdf ? `📑 PDF: ${escapeHtml(page.name || 'Report.pdf')}` : `📄 Page ${idx + 1} (${page.quality?.blurScore || 90}%)`;
+      return `
+        <button class="btn btn-sm ${idx === activeRxPageIndex ? '' : 'btn-secondary'}" 
+                style="${idx === activeRxPageIndex ? 'background:#0284c7;color:white;' : ''};font-size:11px;" 
+                onclick="switchRxPage(${idx})">
+          ${label}
+        </button>
+      `;
+    }).join('');
   } else {
     strip.style.display = 'none';
   }
@@ -17044,10 +17515,45 @@ function updateActiveViewerImage() {
   const imgEl = document.getElementById('rxActiveViewerImg');
   if (!imgEl) return;
   const src = rxViewMode === 'enhanced' ? (currentEnhancedImageBase64 || currentUploadedImageBase64) : currentUploadedImageBase64;
-  if (src) {
+  if (!src) return;
+
+  const isPdf = typeof src === 'string' && (src.startsWith('data:application/pdf') || src.includes('application/pdf'));
+  let pdfContainer = document.getElementById('rxPdfEmbedContainer');
+
+  if (isPdf) {
+    imgEl.style.display = 'none';
+    if (!pdfContainer) {
+      const stage = document.getElementById('rxImageWrapper');
+      if (stage) {
+        pdfContainer = document.createElement('div');
+        pdfContainer.id = 'rxPdfEmbedContainer';
+        pdfContainer.style.width = '100%';
+        pdfContainer.style.minHeight = '480px';
+        stage.appendChild(pdfContainer);
+      }
+    }
+    if (pdfContainer) {
+      pdfContainer.style.display = 'block';
+      pdfContainer.innerHTML = `
+        <div style="background:#0f172a;border-radius:10px;padding:24px 16px;text-align:center;color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <div style="font-size:44px;margin-bottom:8px;">📑</div>
+          <h4 style="margin:0 0 6px;font-size:16px;color:#38bdf8;font-weight:700;">PDF Medical Report Ingested</h4>
+          <p style="margin:0 0 14px;font-size:12.5px;color:#94a3b8;max-width:380px;line-height:1.5;">
+            Digital PDF loaded. All lab biomarkers, reference ranges, clinician observations, and medications have been extracted.
+          </p>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;">
+            <a href="${src}" download="medical-report.pdf" class="btn btn-sm" style="background:#0284c7;color:white;text-decoration:none;font-size:12px;">⬇️ Download Original PDF</a>
+          </div>
+          <iframe src="${src}" style="width:100%;height:400px;border:1px solid #334155;border-radius:8px;background:white;" title="PDF Preview"></iframe>
+        </div>
+      `;
+    }
+  } else {
+    imgEl.style.display = 'block';
+    if (pdfContainer) pdfContainer.style.display = 'none';
     imgEl.src = src;
-    document.getElementById('rxVerificationWorkspace').style.display = 'block';
   }
+  document.getElementById('rxVerificationWorkspace').style.display = 'block';
 }
 
 /**
@@ -17158,6 +17664,7 @@ async function analyzePrescription(sampleId) {
       const conf = data.confidence || 96;
       const latency = data.processingTimeMs || 420;
       const medsCount = data.parsed.medications?.length || 0;
+      const labCount = data.parsed.labParameters?.length || 0;
 
       if (engineBadge) {
         engineBadge.textContent = `✅ Analyzed (${conf}% Confidence · ${latency}ms)`;
@@ -17169,7 +17676,11 @@ async function analyzePrescription(sampleId) {
         const metricsEl = document.getElementById('rxSuccessMetricsText');
         const confBadge = document.getElementById('rxSuccessConfidenceBadge');
         if (metricsEl) {
-          metricsEl.textContent = `Extracted doctor credentials, ${medsCount} verified medications, dosage schedules, safety warnings, and Jan Aushadhi generic alternatives in ${latency}ms.`;
+          if (labCount > 0) {
+            metricsEl.textContent = `Extracted diagnostic lab report with ${labCount} biomarker test parameters, clinician findings, ${medsCount} medications, and Jan Aushadhi generic alternatives in ${latency}ms.`;
+          } else {
+            metricsEl.textContent = `Extracted doctor credentials, ${medsCount} verified medications, dosage schedules, safety warnings, and Jan Aushadhi generic alternatives in ${latency}ms.`;
+          }
         }
         if (confBadge) confBadge.textContent = `${conf}% Confidence`;
         successBox.style.display = 'block';
@@ -17220,6 +17731,53 @@ function renderRxResults(rx) {
   }
   if (docTypeBadge) {
     docTypeBadge.textContent = rx.documentType || 'Clinical Prescription';
+  }
+
+  // 1.5 Render Diagnostic Lab Biomarkers & Test Parameters (if present in report)
+  const labCard = document.getElementById('rxLabReportCard');
+  const labBody = document.getElementById('rxLabTableBody');
+  const labCountBadge = document.getElementById('rxLabCountBadge');
+  const pdfDocBadge = document.getElementById('rxPdfDocBadge');
+  const labSubheading = document.getElementById('rxLabSubheading');
+
+  const labParams = Array.isArray(rx.labParameters) ? rx.labParameters : [];
+  if (labParams.length > 0) {
+    if (labCard) labCard.style.display = 'block';
+    if (labCountBadge) labCountBadge.textContent = `${labParams.length} Parameter${labParams.length > 1 ? 's' : ''}`;
+    if (pdfDocBadge) {
+      pdfDocBadge.textContent = rx.documentType?.toLowerCase().includes('lab') ? '🧪 Diagnostic Pathology Report' : '📄 Clinical PDF Report';
+    }
+    const abnormalCount = labParams.filter(p => (p.status || '').toUpperCase() === 'HIGH' || (p.status || '').toUpperCase() === 'LOW' || (p.status || '').toUpperCase() === 'CRITICAL').length;
+    if (labSubheading) {
+      labSubheading.textContent = `Automated analysis · ${abnormalCount} abnormal biomarker(s) flagged with clinical interpretations`;
+    }
+    if (labBody) {
+      labBody.innerHTML = labParams.map(p => {
+        const stat = (p.status || 'NORMAL').toUpperCase();
+        let badgeStyle = 'background:#dcfce7;color:#166534;';
+        let badgeIcon = '🟢';
+        if (stat === 'HIGH' || stat === 'CRITICAL') {
+          badgeStyle = 'background:#fee2e2;color:#991b1b;';
+          badgeIcon = '🔴';
+        } else if (stat === 'LOW') {
+          badgeStyle = 'background:#fef3c7;color:#92400e;';
+          badgeIcon = '🟡';
+        }
+        return `
+          <tr style="border-bottom:1px solid #e2e8f0;background:${stat !== 'NORMAL' ? '#fffafb' : '#ffffff'};">
+            <td style="padding:10px 12px;font-weight:700;color:#0f172a;">${escapeHtml(p.testName || 'Test')}</td>
+            <td style="padding:10px 12px;font-weight:700;color:#0369a1;">${escapeHtml(p.value || '-')} ${escapeHtml(p.unit || '')}</td>
+            <td style="padding:10px 12px;color:#64748b;">${escapeHtml(p.referenceRange || 'N/A')}</td>
+            <td style="padding:10px 12px;">
+              <span class="pill" style="${badgeStyle}font-size:11px;font-weight:700;padding:2px 8px;">${badgeIcon} ${escapeHtml(stat)}</span>
+            </td>
+            <td style="padding:10px 12px;color:#334155;font-size:12px;">${escapeHtml(p.clinicalInterpretation || 'Clinically evaluated')}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+  } else if (labCard) {
+    labCard.style.display = 'none';
   }
 
   // 2. Render Health Risk Assessment & Red Flags
@@ -27896,7 +28454,7 @@ function getSelectedVoiceLanguage() {
 function initPeriodVoiceRecognition() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec) {
-    console.warn('SpeechRecognition API not available in current browser environment.');
+    WebSpeechManager.logDiagnostic('STT', 'warn', { message: 'SpeechRecognition API not available for period voice tracker' });
     return null;
   }
 
@@ -27907,6 +28465,7 @@ function initPeriodVoiceRecognition() {
 
   recognition.onstart = () => {
     isPeriodVoiceRecording = true;
+    WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'period_voice_start' });
     updateVoiceUIState('listening');
   };
 
@@ -27940,15 +28499,16 @@ function initPeriodVoiceRecognition() {
   };
 
   recognition.onerror = (event) => {
-    console.warn('Period speech recognition event error:', event.error);
+    WebSpeechManager.logDiagnostic('STT', 'error', { event: 'period_voice_error', error: event.error });
     if (event.error === 'not-allowed') {
-      toast('⚠️ Microphone permission required for voice logging.');
+      toast('⚠️ Microphone permission required for voice logging. Please allow access in your browser address bar.');
     }
     updateVoiceUIState('ready');
     isPeriodVoiceRecording = false;
   };
 
   recognition.onend = () => {
+    WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'period_voice_end' });
     isPeriodVoiceRecording = false;
     updateVoiceUIState('ready');
     const fullText = periodAccumulatedSpokenText.trim();
@@ -27961,7 +28521,7 @@ function initPeriodVoiceRecognition() {
   return recognition;
 }
 
-function togglePeriodVoiceDictation() {
+async function togglePeriodVoiceDictation() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec) {
     toast('⚠️ Speech-to-Text API is not supported in this browser. Please use Chrome, Edge, or Safari.');
@@ -27975,6 +28535,14 @@ function togglePeriodVoiceDictation() {
     isPeriodVoiceRecording = false;
     updateVoiceUIState('ready');
   } else {
+    // Check microphone permissions
+    const micCheck = await WebSpeechManager.checkMicrophonePermissions();
+    if (!micCheck.ok) {
+      WebSpeechManager.logDiagnostic('STT', 'error', { message: 'Period voice dictation microphone check failed', detail: micCheck });
+      toast(`⚠️ ${micCheck.message}`);
+      return;
+    }
+
     if (!periodSpeechRecognition) {
       periodSpeechRecognition = initPeriodVoiceRecognition();
     }
@@ -27984,7 +28552,7 @@ function togglePeriodVoiceDictation() {
     try {
       periodSpeechRecognition.start();
     } catch (err) {
-      console.warn('SpeechRecognition already running or busy, restarting...', err);
+      WebSpeechManager.logDiagnostic('STT', 'warn', { message: 'Period voice recognition busy, restarting', error: err });
       try {
         periodSpeechRecognition.stop();
         setTimeout(() => {
@@ -30302,13 +30870,11 @@ function speakBetaMessage(msgId) {
 
   // If already speaking this message, toggle stop
   if (betaActiveSpeakingId === msgId) {
-    window.speechSynthesis.cancel();
+    WebSpeechManager.stopSpeaking();
     betaActiveSpeakingId = null;
     renderBetaChatHistory();
     return;
   }
-
-  window.speechSynthesis.cancel();
 
   const msg = betaChatHistory.find(m => m.id === msgId);
   if (!msg) return;
@@ -30320,23 +30886,22 @@ function speakBetaMessage(msgId) {
     .replace(/\(.*?\)/g, '')
     .trim();
 
-  const utterance = new SpeechSynthesisUtterance(plainText);
-  utterance.rate = 0.95;
-  utterance.pitch = 1.05;
-
   betaActiveSpeakingId = msgId;
   renderBetaChatHistory();
 
-  utterance.onend = () => {
-    betaActiveSpeakingId = null;
-    renderBetaChatHistory();
-  };
-  utterance.onerror = () => {
-    betaActiveSpeakingId = null;
-    renderBetaChatHistory();
-  };
-
-  window.speechSynthesis.speak(utterance);
+  WebSpeechManager.speak(plainText, {
+    lang: 'en-US',
+    rate: 0.96,
+    pitch: 1.05,
+    onEnd: () => {
+      betaActiveSpeakingId = null;
+      renderBetaChatHistory();
+    },
+    onError: () => {
+      betaActiveSpeakingId = null;
+      renderBetaChatHistory();
+    }
+  });
 }
 
 function copyBetaMessage(msgId, btn) {
@@ -30411,7 +30976,7 @@ function exportBetaChatHistory() {
   showPeriodToast('📥 Consultation history exported successfully.');
 }
 
-function toggleBetaVoiceInput() {
+async function toggleBetaVoiceInput() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRec) {
     showPeriodToast('⚠️ Speech recognition not supported in this browser.');
@@ -30431,6 +30996,14 @@ function toggleBetaVoiceInput() {
     return;
   }
 
+  // Verify microphone session permission
+  const micCheck = await WebSpeechManager.checkMicrophonePermissions();
+  if (!micCheck.ok) {
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'BETA voice input mic check failed', detail: micCheck });
+    showPeriodToast(`⚠️ ${micCheck.message}`);
+    return;
+  }
+
   try {
     betaSpeechRecognition = new SpeechRec();
     betaSpeechRecognition.lang = 'en-US';
@@ -30438,6 +31011,7 @@ function toggleBetaVoiceInput() {
     betaSpeechRecognition.continuous = false;
 
     betaSpeechRecognition.onstart = () => {
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'beta_voice_start' });
       if (micBtn) micBtn.style.color = '#db2777';
       if (banner) banner.style.display = 'flex';
       if (liveText) liveText.textContent = 'Listening to your voice...';
@@ -30458,6 +31032,7 @@ function toggleBetaVoiceInput() {
       if (input && transcript) input.value = transcript;
 
       if (final) {
+        WebSpeechManager.logDiagnostic('STT', 'info', { event: 'beta_voice_captured', transcript: final });
         if (banner) banner.style.display = 'none';
         if (micBtn) micBtn.style.color = '';
         betaSpeechRecognition = null;
@@ -30466,13 +31041,17 @@ function toggleBetaVoiceInput() {
     };
 
     betaSpeechRecognition.onerror = (e) => {
-      console.warn('Speech recognition error:', e);
+      WebSpeechManager.logDiagnostic('STT', 'error', { event: 'beta_voice_error', error: e.error });
+      if (e.error === 'not-allowed') {
+        showPeriodToast('❌ Microphone permission denied.');
+      }
       if (banner) banner.style.display = 'none';
       if (micBtn) micBtn.style.color = '';
       betaSpeechRecognition = null;
     };
 
     betaSpeechRecognition.onend = () => {
+      WebSpeechManager.logDiagnostic('STT', 'lifecycle', { event: 'beta_voice_end' });
       if (banner) banner.style.display = 'none';
       if (micBtn) micBtn.style.color = '';
       betaSpeechRecognition = null;
@@ -30480,7 +31059,7 @@ function toggleBetaVoiceInput() {
 
     betaSpeechRecognition.start();
   } catch (err) {
-    console.error('Failed to start speech recognition:', err);
+    WebSpeechManager.logDiagnostic('STT', 'error', { message: 'Failed to start speech recognition for BETA', error: err });
     if (banner) banner.style.display = 'none';
     if (micBtn) micBtn.style.color = '';
   }
@@ -32428,14 +33007,14 @@ function toggleCareCastAutoPlay() {
 
 function toggleCurrentInshortsAudio() {
   if (!('speechSynthesis' in window)) {
-    alert('Speech synthesis is not supported on this browser.');
+    toast('Speech synthesis is not supported on this browser.');
     return;
   }
 
   const btnListenTop = document.getElementById('btnInshortsListen');
 
   if (isCareCastSpeaking) {
-    window.speechSynthesis.cancel();
+    WebSpeechManager.stopSpeaking();
     isCareCastSpeaking = false;
     if (btnListenTop) {
       btnListenTop.innerHTML = '🗣️ Listen (60s)';
@@ -32449,35 +33028,37 @@ function toggleCurrentInshortsAudio() {
   if (!itm) return;
 
   const narrationText = `${itm.title}. Reported by ${itm.source}. ${itm.summary}. Clinical takeaway: ${itm.clinicalTakeaway}`;
-  careCastSpeechUtterance = new SpeechSynthesisUtterance(narrationText);
-  careCastSpeechUtterance.rate = 1.05;
-  careCastSpeechUtterance.pitch = 1.0;
+  isCareCastSpeaking = true;
 
-  careCastSpeechUtterance.onstart = () => {
-    isCareCastSpeaking = true;
-    if (btnListenTop) {
-      btnListenTop.innerHTML = '<span class="inshorts-audio-indicator"><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span></span> Stop Audio';
+  WebSpeechManager.speak(narrationText, {
+    lang: 'en-US',
+    rate: 1.05,
+    pitch: 1.0,
+    onStart: () => {
+      isCareCastSpeaking = true;
+      if (btnListenTop) {
+        btnListenTop.innerHTML = '<span class="inshorts-audio-indicator"><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span></span> Stop Audio';
+      }
+      renderCareCastInshortsCard(careCastCurrentIndex);
+    },
+    onEnd: () => {
+      isCareCastSpeaking = false;
+      if (btnListenTop) {
+        btnListenTop.innerHTML = '🗣️ Listen (60s)';
+      }
+      renderCareCastInshortsCard(careCastCurrentIndex);
+    },
+    onError: (errCode) => {
+      isCareCastSpeaking = false;
+      if (btnListenTop) {
+        btnListenTop.innerHTML = '🗣️ Listen (60s)';
+      }
+      renderCareCastInshortsCard(careCastCurrentIndex);
+      if (errCode !== 'canceled' && errCode !== 'interrupted') {
+        toast(`⚠️ Audio error: ${errCode || 'Playback failed'}`);
+      }
     }
-    renderCareCastInshortsCard(careCastCurrentIndex);
-  };
-
-  careCastSpeechUtterance.onend = () => {
-    isCareCastSpeaking = false;
-    if (btnListenTop) {
-      btnListenTop.innerHTML = '🗣️ Listen (60s)';
-    }
-    renderCareCastInshortsCard(careCastCurrentIndex);
-  };
-
-  careCastSpeechUtterance.onerror = () => {
-    isCareCastSpeaking = false;
-    if (btnListenTop) {
-      btnListenTop.innerHTML = '🗣️ Listen (60s)';
-    }
-    renderCareCastInshortsCard(careCastCurrentIndex);
-  };
-
-  window.speechSynthesis.speak(careCastSpeechUtterance);
+  });
 }
 
 function shareCareCastStory(id) {
@@ -33648,6 +34229,28 @@ function downloadSupabaseSqlScript() {
 
 // Auto-check Supabase status, fetch dynamic Health Score, and preload doctors on page load
 window.addEventListener('DOMContentLoaded', () => {
+  // Hydrate top navigation user session badge
+  try {
+    const savedName = localStorage.getItem('healthgpt_user_name');
+    const savedRole = localStorage.getItem('healthgpt_user_role');
+    const nameEl = document.getElementById('topUserNameDisplay');
+    const iconEl = document.getElementById('topUserRoleIcon');
+    const adminLink = document.getElementById('topAdminPortalLink');
+    if (savedName && nameEl) {
+      nameEl.textContent = savedName;
+    }
+    if (savedRole === 'admin') {
+      if (iconEl) iconEl.textContent = '🛡️';
+      if (adminLink) {
+        adminLink.textContent = '🛡️ Command Center';
+        adminLink.href = '/admin/dashboard';
+        adminLink.style.fontWeight = '800';
+      }
+    }
+  } catch (e) {
+    console.warn('Session hydration note:', e);
+  }
+
   setTimeout(() => {
     checkSupabaseStatus();
     fetchSupabaseHealthScore(true);
