@@ -3722,48 +3722,50 @@ th {
 }
 
 .inshorts-wrapper {
-  max-width: 680px;
+  max-width: 580px;
   margin: 0 auto;
   position: relative;
+  touch-action: pan-y;
 }
 
 .inshorts-deck-stage {
   position: relative;
   width: 100%;
-  min-height: 620px;
+  min-height: 670px;
   perspective: 1200px;
+  margin-bottom: 16px;
 }
 
 .inshorts-card-peek-2 {
   position: absolute;
   top: 18px;
-  left: 18px;
-  right: 18px;
+  left: 16px;
+  right: 16px;
   bottom: -18px;
   background: #e2e8f0;
   border-radius: 20px;
   transform: translateY(22px) scale(0.92);
-  opacity: 0.4;
+  opacity: 0.5;
   pointer-events: none;
   z-index: 1;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .inshorts-card-peek-1 {
   position: absolute;
   top: 9px;
-  left: 9px;
-  right: 9px;
+  left: 8px;
+  right: 8px;
   bottom: -9px;
   background: #f1f5f9;
   border: 1.5px solid #cbd5e1;
   border-radius: 20px;
   transform: translateY(11px) scale(0.96);
-  opacity: 0.78;
+  opacity: 0.85;
   pointer-events: none;
   z-index: 2;
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.07);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.1);
   transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
@@ -3771,7 +3773,7 @@ th {
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 20px;
-  box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.14), 0 2px 8px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.16), 0 4px 14px rgba(15, 23, 42, 0.05);
   overflow: hidden;
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
   position: relative;
@@ -3779,7 +3781,6 @@ th {
   display: flex;
   flex-direction: column;
   user-select: none;
-  touch-action: pan-x;
   cursor: grab;
 }
 
@@ -3799,7 +3800,7 @@ th {
 
 .inshorts-hero-media {
   position: relative;
-  height: 220px;
+  height: 235px;
   width: 100%;
   background: #0f172a;
   overflow: hidden;
@@ -3810,132 +3811,398 @@ th {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.5s ease;
 }
 
 .inshorts-card:hover .inshorts-hero-img {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 .inshorts-hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.15) 45%, rgba(15,23,42,0.88) 100%);
+  background: linear-gradient(180deg, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.05) 40%, rgba(15,23,42,0.92) 100%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 16px 20px;
+  padding: 14px 16px;
 }
 
-.inshorts-banner {
-  padding: 18px 24px 16px;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+.inshorts-hero-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.inshorts-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 750;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.inshorts-hero-badge-cat {
+  background: rgba(37, 99, 235, 0.9);
   color: #ffffff;
+}
+
+.inshorts-hero-badge-region {
+  background: rgba(15, 23, 42, 0.8);
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.inshorts-hero-badge-trending {
+  background: rgba(220, 38, 38, 0.9);
+  color: #ffffff;
+}
+
+.inshorts-hero-action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inshorts-hero-action-btn:hover {
+  transform: scale(1.1);
+  background: rgba(37, 99, 235, 0.85);
+}
+
+.inshorts-hero-bottom-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  overflow: hidden;
+  gap: 8px;
 }
 
-.inshorts-banner::after {
-  content: '';
-  position: absolute;
-  right: -30px;
-  bottom: -30px;
-  width: 140px;
-  height: 140px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.25) 0%, transparent 70%);
+.inshorts-publisher-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.inshorts-verified-tick {
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  pointer-events: none;
+  background: #22c55e;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.inshorts-digest-pill {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  font-size: 10.5px;
+  font-weight: 750;
+  padding: 3px 8px;
+  border-radius: 6px;
 }
 
 .inshorts-content {
-  padding: 24px 26px 20px;
+  padding: 20px 22px 14px;
   flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .inshorts-headline {
-  font-size: 21px;
+  font-size: 19.5px;
   font-weight: 850;
   color: #0f172a;
-  line-height: 1.38;
-  margin: 0 0 12px;
+  line-height: 1.36;
+  margin: 0 0 10px;
   letter-spacing: -0.3px;
 }
 
-.inshorts-meta {
-  font-size: 11.5px;
+.inshorts-meta-byline {
+  font-size: 11px;
   font-weight: 600;
   color: #64748b;
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 7px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
 
 .inshorts-meta-pill {
   background: #f1f5f9;
   color: #475569;
-  padding: 2px 8px;
+  padding: 2px 7px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
 }
 
 .inshorts-summary {
-  font-size: 15.5px;
-  line-height: 1.72;
+  font-size: 14.5px;
+  line-height: 1.68;
   color: #334155;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
   font-weight: 450;
 }
 
 .inshorts-summary .lead-sentence {
-  font-weight: 700;
+  font-weight: 800;
   color: #0f172a;
 }
 
 .inshorts-takeaway-box {
   background: #f8fafc;
   border-left: 4px solid #2563eb;
-  padding: 13px 16px;
-  border-radius: 0 12px 12px 0;
-  margin-bottom: 18px;
+  padding: 11px 14px;
+  border-radius: 0 10px 10px 0;
+  margin-bottom: 14px;
   border-top: 1px solid #f1f5f9;
   border-bottom: 1px solid #f1f5f9;
   border-right: 1px solid #f1f5f9;
+}
+
+.inshorts-takeaway-header {
+  font-size: 10.5px;
+  font-weight: 850;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+
+.inshorts-takeaway-body {
+  font-size: 13px;
+  color: #0f172a;
+  font-weight: 600;
+  line-height: 1.48;
 }
 
 .inshorts-tags-row {
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .inshorts-tag {
-  font-size: 11px;
+  font-size: 10.5px;
   background: #f1f5f9;
   color: #475569;
-  padding: 3px 10px;
+  padding: 3px 9px;
   border-radius: 12px;
   font-weight: 650;
   border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inshorts-tag:hover {
+  background: #e2e8f0;
+  color: #1e293b;
 }
 
 .inshorts-footer-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 26px;
+  padding: 12px 18px;
   background: #f8fafc;
   border-top: 1px solid #f1f5f9;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
+}
+
+.inshorts-action-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  font-size: 12px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  transition: all 0.15s ease;
+}
+
+.inshorts-action-pill:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.inshorts-action-pill.active {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  color: #dc2626;
+}
+
+.inshorts-action-btn-secondary {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  font-size: 12px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.inshorts-action-btn-secondary:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+}
+
+.inshorts-action-btn-primary {
+  background: #2563eb;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 5px 13px;
+  border-radius: 8px;
+  font-weight: 750;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 4px rgba(37,99,235,0.25);
+  transition: all 0.15s ease;
+}
+
+.inshorts-action-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+.inshorts-swipe-cue-bar {
+  background: linear-gradient(90deg, #f8fafc 0%, #eff6ff 100%);
+  border-top: 1px solid #e2e8f0;
+  padding: 9px 18px;
+  font-size: 11px;
+  color: #2563eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.15s ease;
+}
+
+.inshorts-swipe-cue-bar:hover {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.dailyhunt-channels-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  margin-bottom: 12px;
+  scrollbar-width: thin;
+}
+
+.dailyhunt-channel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.dailyhunt-channel-pill:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.dailyhunt-channel-pill.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
+}
+
+.dailyhunt-newspaper-grid-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dailyhunt-newspaper-grid-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.dailyhunt-grid-media {
+  position: relative;
+  height: 180px;
+  width: 100%;
+  background: #0f172a;
+  overflow: hidden;
+}
+
+.dailyhunt-grid-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.dailyhunt-grid-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.85) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 12px;
 }
 
 .inshorts-nav-dock {
@@ -8713,25 +8980,37 @@ window.go = window.go || function(pageId, subParam) {
           <div>
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
               <span style="font-size:24px;">📡</span>
-              <h2 style="margin:0;">CareCast Inshorts — 60-Word Global Health Intelligence</h2>
+              <h2 style="margin:0;">CareCast — Inshorts &amp; Dailyhunt Health Intelligence</h2>
               <span class="pill" id="carecastDbBadge" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;font-weight:700;font-size:11px;">
                 ⚡ Live DB Connected
               </span>
             </div>
-            <p style="margin:0;color:var(--muted);font-size:13.5px;">Concise 60-word verified health intelligence cards, pathogen surveillance, and global clinical breakthroughs</p>
+            <p style="margin:0;color:var(--muted);font-size:13.5px;">60-word verified news cards, regional channels, multi-language briefings, and instant takeaways</p>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <!-- Dailyhunt Language Switcher -->
+            <div class="dailyhunt-lang-pill-group" style="display:inline-flex;align-items:center;background:#f1f5f9;border-radius:10px;padding:3px;border:1px solid #e2e8f0;">
+              <span style="font-size:11px;font-weight:750;color:#64748b;padding:0 6px;">
+                🌐 Language:
+              </span>
+              <button class="btn btn-sm dailyhunt-lang-btn active" data-lang="en" onclick="switchCareCastLanguage('en', this)" style="border-radius:7px;padding:3px 8px;font-size:11.5px;font-weight:750;background:#ffffff;color:#2563eb;border:none;box-shadow:var(--shadow-sm);">English</button>
+              <button class="btn btn-sm dailyhunt-lang-btn" data-lang="hi" onclick="switchCareCastLanguage('hi', this)" style="border-radius:7px;padding:3px 8px;font-size:11.5px;font-weight:600;background:transparent;color:#64748b;border:none;">हिन्दी</button>
+              <button class="btn btn-sm dailyhunt-lang-btn" data-lang="te" onclick="switchCareCastLanguage('te', this)" style="border-radius:7px;padding:3px 8px;font-size:11.5px;font-weight:600;background:transparent;color:#64748b;border:none;">తెలుగు</button>
+              <button class="btn btn-sm dailyhunt-lang-btn" data-lang="ta" onclick="switchCareCastLanguage('ta', this)" style="border-radius:7px;padding:3px 8px;font-size:11.5px;font-weight:600;background:transparent;color:#64748b;border:none;">தமிழ்</button>
+              <button class="btn btn-sm dailyhunt-lang-btn" data-lang="es" onclick="switchCareCastLanguage('es', this)" style="border-radius:7px;padding:3px 8px;font-size:11.5px;font-weight:600;background:transparent;color:#64748b;border:none;">Español</button>
+            </div>
+
             <!-- View Mode Switcher -->
             <div style="display:inline-flex;background:#f1f5f9;border-radius:10px;padding:3px;border:1px solid #e2e8f0;">
               <button id="btnCareCastModeInshorts" class="btn btn-sm" onclick="switchCareCastViewMode('inshorts')" style="border-radius:8px;padding:5px 12px;font-size:12px;font-weight:700;background:#ffffff;color:#2563eb;box-shadow:var(--shadow-sm);border:none;">
-                📱 Inshorts Deck
+                📱 Inshorts Deck (60 Words)
               </button>
               <button id="btnCareCastModeGrid" class="btn btn-sm" onclick="switchCareCastViewMode('grid')" style="border-radius:8px;padding:5px 12px;font-size:12px;font-weight:600;background:transparent;color:var(--muted);border:none;">
-                🔲 Bento Grid
+                📰 Dailyhunt Newspaper Grid
               </button>
             </div>
             <button class="btn btn-sm" id="btnFetchWorldNews" onclick="fetchBreakingWorldNews()" style="background:#2563eb;color:white;display:inline-flex;align-items:center;gap:6px;">
-              <span id="fetchWorldNewsIcon">⚡</span> Fetch Breaking News
+              <span id="fetchWorldNewsIcon">⚡</span> Fetch Breaking
             </button>
             <button class="btn btn-secondary btn-sm" onclick="openPostCareCastModal()" style="display:inline-flex;align-items:center;gap:6px;">
               <span>➕</span> Post Alert
@@ -8763,70 +9042,32 @@ window.go = window.go || function(pageId, subParam) {
           </div>
         </div>
 
-        <!-- KEY INTELLIGENCE METRIC STRIP -->
-        <div class="carecast-stats-strip">
-          <div class="carecast-stat-pill">
-            <span class="stat-icon">⚡</span>
-            <div>
-              <b>100% Verified</b>
-              <span>WHO, ICMR, FDA, CDC, NHS</span>
+        <!-- DAILYHUNT CHANNELS & CATEGORY BAR -->
+        <div style="margin:12px 0 6px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+            <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">
+              📰 Dailyhunt Channels &amp; Topics:
             </div>
-          </div>
-          <div class="carecast-stat-pill">
-            <span class="stat-icon">⏱️</span>
-            <div>
-              <b>60-Word Briefings</b>
-              <span>10-Second Takeaway Guarantee</span>
+            <!-- Search Bar -->
+            <div style="position:relative;width:260px;">
+              <input type="text" id="carecastSearchInput" class="input" placeholder="Search 60-word stories..." oninput="onCareCastSearch(this.value)" style="padding-left:30px;font-size:12.5px;height:34px;border-radius:20px;">
+              <span style="position:absolute;left:10px;top:8px;color:var(--muted);font-size:13px;">🔍</span>
             </div>
-          </div>
-          <div class="carecast-stat-pill">
-            <span class="stat-icon">🌍</span>
-            <div>
-              <b>7 Regional Desks</b>
-              <span>Real-Time Ingestion Engine</span>
-            </div>
-          </div>
-          <div class="carecast-stat-pill">
-            <span class="stat-icon">🎙️</span>
-            <div>
-              <b>Neural Voice TTS</b>
-              <span>One-Tap Audio Briefing</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- WORLD REGION SELECTOR BAR -->
-        <div style="margin:10px 0 10px;padding:10px 14px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;">
-          <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
-            🌍 Filter by World Region:
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;" id="carecastRegionPills">
-            <button class="btn btn-sm carecast-region-pill active" data-region="all" onclick="filterCareCastRegion('all', this)">🌐 All World</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="global" onclick="filterCareCastRegion('global', this)">🌍 Global / WHO</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="india" onclick="filterCareCastRegion('india', this)">🇮🇳 India &amp; South Asia</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="americas" onclick="filterCareCastRegion('americas', this)">🇺🇸 Americas / FDA &amp; CDC</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="europe" onclick="filterCareCastRegion('europe', this)">🇪🇺 Europe / NHS UK</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="asiapac" onclick="filterCareCastRegion('asiapac', this)">🌏 Asia-Pacific &amp; Japan</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="africa" onclick="filterCareCastRegion('africa', this)">🌍 Africa CDC</button>
-            <button class="btn btn-sm carecast-region-pill" data-region="bookmarked" onclick="filterCareCastBookmarked(this)" style="color:#d97706;">🔖 My Bookmarks</button>
-          </div>
-        </div>
-
-        <!-- SEARCH & CATEGORY FILTER TABS -->
-        <div style="margin:12px 0 14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
-          <!-- Filter pills -->
-          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="carecastCategoryTabs">
-            <button class="recharts-tab-btn active" onclick="filterCareCastCategory('all', this)">All Feeds</button>
-            <button class="recharts-tab-btn" onclick="filterCareCastCategory('healthcare_news', this)">🏥 Healthcare News</button>
-            <button class="recharts-tab-btn" onclick="filterCareCastCategory('social_trends', this)">📱 Social Media Trends</button>
-            <button class="recharts-tab-btn" onclick="filterCareCastCategory('medical_research', this)">🔬 Medical Research</button>
-            <button class="recharts-tab-btn" onclick="filterCareCastCategory('global_alerts', this)">🚨 Global Alerts</button>
           </div>
 
-          <!-- Search Bar -->
-          <div style="position:relative;width:280px;">
-            <input type="text" id="carecastSearchInput" class="input" placeholder="Search world news, topics or tags..." oninput="onCareCastSearch(this.value)" style="padding-left:32px;font-size:13px;height:38px;border-radius:20px;">
-            <span style="position:absolute;left:10px;top:10px;color:var(--muted);font-size:14px;">🔍</span>
+          <div class="dailyhunt-channels-strip" id="carecastChannelStrip">
+            <button class="dailyhunt-channel-pill active" onclick="filterCareCastDailyhuntChannel('all', this)">⚡ Top Stories</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('global_alerts', this)">🚨 Outbreak Radar</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('healthcare_news', this)">🏥 Hospitals &amp; Clinical</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('medical_research', this)">🔬 Research &amp; Trials</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('social_trends', this)">🛡️ Fact-Check &amp; Myths</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('pharma', this)">💊 Pharma &amp; Drugs</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('wellness', this)">🥗 Wellness &amp; Habits</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('india', this)">🇮🇳 India &amp; South Asia</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('global', this)">🌍 Global &amp; WHO</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('americas', this)">🇺🇸 Americas / FDA</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('europe', this)">🇪🇺 Europe / NHS</button>
+            <button class="dailyhunt-channel-pill" onclick="filterCareCastDailyhuntChannel('bookmarked', this)" style="color:#d97706;">🔖 Saved Stories</button>
           </div>
         </div>
 
@@ -32688,6 +32929,254 @@ async function fetchCareCastFeeds() {
   }
 }
 
+let currentCareCastLang = localStorage.getItem('carecast_news_lang') || 'en';
+
+const careCastTranslations = {
+  hi: {
+    takeawayHeader: 'संक्षेप में / मुख्य निष्कर्ष:',
+    bylinePrefix: 'सत्यापितकर्ता:',
+    sixtyWordsBadge: '⏱️ 60 शब्द सारांश',
+    peerReviewed: 'सहकर्मी-समीक्षित',
+    readFull: 'पूरी रिपोर्ट',
+    askAi: 'डॉक्टर AI से पूछें',
+    tapToRead: 'मूल स्रोत पर पूरा लेख पढ़ने के लिए यहां टैप करें →',
+    listenBtn: 'सुनें (60s)',
+    stopBtn: 'ऑडियो रोकें',
+    articles: {
+      'cc-w-1': {
+        title: 'WHO महामारी बुलेटिन: वैश्विक एमपॉक्स निगरानी और एंटीवायरल वितरण तेज',
+        summary: 'विश्व स्वास्थ्य संगठन ने केंद्रीय अफ्रीकी देशों में 32 लाख एमपॉक्स टीकों की रणनीतिक तैनाती की पुष्टि की है। अंतरराष्ट्रीय हवाई अड्डों पर जीनोमिक अनुक्रमण भी तेज कर दिया गया है ताकि नए प्रकारों के प्रसार को समय रहते रोका जा सके।',
+        clinicalTakeaway: 'संपर्कों के तुरंत टीकाकरण और 72 घंटों के भीतर एंटीवायरल दवा देने से गंभीर जटिलताओं में 84% की कमी आती है।'
+      },
+      'cc-w-2': {
+        title: 'ICMR और AIIMS रिपोर्ट: मोटे अनाज (मिलेट्स) से टाइप-2 डायबिटीज HbA1c में 1.4% की गिरावट',
+        summary: 'भारतीय आयुर्विज्ञान अनुसंधान परिषद और एम्स नई दिल्ली के 12 महीने के क्लिनिकल परीक्षण में सिद्ध हुआ है कि भोजन में रागी और बाजरा शामिल करने से 90 दिनों में ग्लाइसेमिक परिवर्तनशीलता में उल्लेखनीय कमी आई।',
+        clinicalTakeaway: 'रिफाइंड चावल की जगह रागी, बाजरा या कंगनी का 40% प्रतिस्थापन इंसुलिन संवेदनशीलता को तेजी से बढ़ाता है।'
+      },
+      'cc-w-3': {
+        title: 'US FDA ने मेटास्टेटिक कोलोरेक्टल कैंसर के लिए नई मोनोक्लोनल एंटीबॉडी को मंजूरी दी',
+        summary: 'यूएस एफडीए ने थर्ड-लाइन रीफ़्रैक्ट्री कोलोरेक्टल ट्यूमर के लिए टियर-1 टारगेटेड इम्यूनोथेरेपी को प्राथमिकता समीक्षा के तहत मंजूरी दी है, जिससे 6.8 महीने का प्रोग्रेशन-फ्री सर्वाइवल मिला।',
+        clinicalTakeaway: 'ट्रीटमेंट शुरू करने से पहले KRAS और BRAF वाइल्ड-टाइप म्यूटेशन प्रोफाइलिंग अनिवार्य है।'
+      },
+      'cc-w-4': {
+        title: 'NHS इंग्लैंड: 7 मिनट में होने वाली सबक्यूटेनियस कैंसर इम्यूनोथेरेपी शुरू',
+        summary: 'ब्रिटिश राष्ट्रीय स्वास्थ्य सेवा (NHS) दुनिया में पहली बार 7 मिनट के सबक्यूटेनियस एटोज़ोलिज़ुमैब इंजेक्शन का रोलआउट कर रही है, जिससे रोगियों का समय 80% बचेगा।',
+        clinicalTakeaway: 'IV इन्फ्यूजन रिएक्शन 64% कम होते हैं और डे-केयर की क्षमता दोगुनी हो जाती है।'
+      },
+      'cc-w-5': {
+        title: 'जापान स्वास्थ्य मंत्रालय और ओकिनावा अध्ययन: 100 वर्ष की आयु का जैविक रहस्य',
+        summary: 'टोक्यो विश्वविद्यालय और ओकिनावा सेंटेनेरियन अध्ययन के शोधकर्ताओं ने एक विशिष्ट गट माइक्रोबायोम प्रोफाइल खोजी है जो द्वितीयक पित्त एसिड का उत्पादन करके उम्र बढ़ने को धीमा करती है।',
+        clinicalTakeaway: 'किण्वित सोया, समुद्री शैवाल और उच्च पॉलीफेनोल आहार आंत में लंबे जीवन वाले बैक्टीरिया को बढ़ावा देते हैं।'
+      },
+      'cc-w-7': {
+        title: 'द लांसेट अध्ययन: प्रतिदिन 7,500 कदम चलने से मृत्यु दर जोखिम 42% तक कम',
+        summary: 'लांसेट पब्लिक हेल्थ में प्रकाशित मेटा-विश्लेषण ने साबित किया कि पारंपरिक 10,000 कदमों के बजाय 7,000 से 8,000 कदम ही हृदय रोग और समय से पहले मृत्यु के जोखिम को 42% तक कम कर देते हैं।',
+        clinicalTakeaway: '60 वर्ष से अधिक आयु के वयस्कों के लिए 6,000 से 8,000 कदम इष्टतम सुरक्षा सीमा प्रदान करते हैं।'
+      },
+      'cc-w-8': {
+        title: 'प्रधानमंत्री जन औषधि योजना: 10,000 केंद्रों पर उच्च गुणवत्ता वाली जेनेरिक दवाएं 80% सस्ती',
+        summary: 'भारत भर में जन औषधि केंद्रों ने पिछले वित्त वर्ष में मरीजों के 7,400 करोड़ रुपये बचाए हैं। सभी दवाएं NABL प्रमाणित प्रयोगशालाओं से परीक्षण के बाद ही आपूर्ति की जाती हैं।',
+        clinicalTakeaway: 'क्रॉनिक बीमारियों जैसे बीपी और शुगर के मरीज जेनेरिक दवाओं से चिकित्सा का खर्च 70-85% घटा सकते हैं।'
+      },
+      'cc-w-9': {
+        title: 'तथ्य-जांच (Fact-Check): क्या क्लोरोफिल का पानी पीने से पेट और त्वचा पूरी तरह डिटॉक्स होती है?',
+        summary: 'सोशल मीडिया पर वायरल क्लोरोफिल ड्रॉप्स के दावों को गैस्ट्रोएंटेरोलॉजिस्ट ने खारिज किया है। हरी पत्तेदार सब्जियां खाना सप्लीमेंट से 10 गुना अधिक फायदेमंद और सुरक्षित है।',
+        clinicalTakeaway: 'लिवर और किडनी प्राकृतिक रूप से शरीर को डिटॉक्स करते हैं; बिना जांचे सप्लीमेंट्स से पेट में ऐंठन हो सकती है।'
+      },
+      'cc-w-10': {
+        title: 'कार्डियोलॉजी चेतावनी: अनियंत्रित कोल्ड प्लंज (बर्फ के पानी में नहाना) कार्डियक अरेस्ट का खतरा बढ़ा सकता है',
+        summary: 'अमेरिकन हार्ट एसोसिएशन ने सोशल मीडिया पर अत्यधिक लोकप्रिय आइस बाथ के खिलाफ सख्त दिशा-निर्देश जारी किए हैं। अचानक ठंड से वेगास नर्व स्टिमुलेशन और वेंट्रिकुलर अतालता हो सकती है।',
+        clinicalTakeaway: 'दिल के मरीज या उच्च रक्तचाप वाले व्यक्ति बिना चिकित्सकीय परामर्श के 15°C से कम तापमान वाले पानी में न उतरें।'
+      }
+    }
+  },
+  te: {
+    takeawayHeader: 'సంక్షిప్తంగా / క్లినికల్ ముగింపు:',
+    bylinePrefix: 'ధృవీకరించినవారు:',
+    sixtyWordsBadge: '⏱️ 60 పదాల సారాంశం',
+    peerReviewed: 'నిపుణుల సమీక్ష',
+    readFull: 'పూర్తి కథనం',
+    askAi: 'డాక్టర్ AI ని అడగండి',
+    tapToRead: 'పూర్తి కథనం చదవడానికి ఇక్కడ నొక్కండి →',
+    listenBtn: 'వినండి (60s)',
+    stopBtn: 'ఆపండి',
+    articles: {
+      'cc-w-1': {
+        title: 'WHO బులిటెన్: ఎంపాక్స్ వ్యాప్తి నివారణకు ప్రపంచవ్యాప్తంగా టీకాల పంపిణీ వేగవంతం',
+        summary: 'ప్రపంచ ఆరోగ్య సంస్థ ఆఫ్రికా దేశాలలో 3.2 మిలియన్ ఎంపాక్స్ వ్యాక్సిన్లను పంపిణీ చేయాలని మరియు అంతర్జాతీయ విమానాశ్రయాలలో నిఘా పెంచాలని ఆదేశించింది.',
+        clinicalTakeaway: 'సంపర్కం జరిగిన 72 గంటల్లో టీకా మరియు యాంటీవైరల్ ఇవ్వడం ద్వారా సమస్యలను 84% వరకు తగ్గించవచ్చు.'
+      },
+      'cc-w-2': {
+        title: 'ICMR & AIIMS పరిశోధన: చిరుధాన్యాల (మిల్లెట్స్) వాడకంతో టైప్-2 డయాబెటిస్ HbA1c 1.4% తగ్గింది',
+        summary: 'రాగులు, జొన్నలు మరియు కొర్రలను ఆహారంలో చేర్చడం ద్వారా 90 రోజుల్లో రక్తంలో చక్కెర హెచ్చుతగ్గులు గణనీయంగా తగ్గాయని ఎయిమ్స్ న్యూఢిల్లీ పరిశోధన తెలిపింది.',
+        clinicalTakeaway: 'తెల్ల బియ్యం బదులు 40% మిల్లెట్లను వాడటం ఇన్సులిన్ సెన్సిటివిటీని గణనీయంగా పెంచుతుంది.'
+      },
+      'cc-w-7': {
+        title: 'ది లాన్సెట్ రీసెర్చ్: రోజుకు 7,500 అడుగులు వేయడం ద్వారా మరణాల ముప్పు 42% తగ్గింపు',
+        summary: 'లాన్సెట్ పబ్లిక్ హెల్త్ ప్రచురించిన అధ్యయనం ప్రకారం, ప్రతిరోజూ 7,000 నుండి 8,000 అడుగులు నడవడం ద్వారా గుండె జబ్బులు మరియు అకాల మరణాల ముప్పు 42% తగ్గుతుంది.',
+        clinicalTakeaway: '60 ఏళ్లు దాటిన పెద్దలకు రోజుకు 6,000 నుండి 8,000 అడుగులు నడవడం అత్యంత అనుకూలమైనది.'
+      }
+    }
+  },
+  ta: {
+    takeawayHeader: 'சுருக்கமாக / மருத்துவ முடிவு:',
+    bylinePrefix: 'சரிபார்க்கப்பட்டது:',
+    sixtyWordsBadge: '⏱️ 60 வார்த்தை சுருக்கம்',
+    peerReviewed: 'ஆய்வு செய்யப்பட்டது',
+    readFull: 'முழு செய்தி',
+    askAi: 'டாக்டர் AI-யிடம் கேளுங்கள்',
+    tapToRead: 'முழு கட்டுரையை வாசிக்க இங்கே தட்டவும் →',
+    listenBtn: 'கேளுங்கள் (60s)',
+    stopBtn: 'நிறுத்துங்கள்',
+    articles: {
+      'cc-w-1': {
+        title: 'WHO எச்சரிக்கை: உலகளாவிய குரங்கம்மை தடுப்பூசி விநியோகம் மற்றும் தீவிர கண்காணிப்பு',
+        summary: 'மத்திய ஆப்பிரிக்க நாடுகளில் 32 லட்சம் தடுப்பூசிகளை விநியோகிக்க உலக சுகாதார அமைப்பு அவசர திட்டத்தை அறிவித்துள்ளது. சர்வதேச விமான நிலையங்களிலும் பரிசோதனை தீவிரப்படுத்தப்பட்டுள்ளது.',
+        clinicalTakeaway: 'பாதிப்பு ஏற்பட்ட 72 மணி நேரத்திற்குள் சிகிச்சை தொடங்குவது தீவிர விளைவுகளை 84% குறைக்கிறது.'
+      },
+      'cc-w-2': {
+        title: 'ICMR & AIIMS அறிக்கை: சிறுதானியங்கள் (மில்லட்ஸ்) உட்கொள்வதால் சர்க்கரை அளவு 1.4% குறைகிறது',
+        summary: 'உணவில் கேழ்வரகு, தினை மற்றும் கம்பு சேர்த்துக்கொள்வதன் மூலம் 90 நாட்களில் நீரிழிவு நோயாளிகளின் ரத்த சர்க்கரை அளவு பெருமளவில் கட்டுக்குள் வருவதாக ஆய்வில் தெரியவந்துள்ளது.',
+        clinicalTakeaway: 'வெள்ளை அரிசிக்கு பதிலாக 40% சிறுதானியங்களை மாற்றுவது இன்சுலின் செயல்திறனை அதிகரிக்கிறது.'
+      },
+      'cc-w-7': {
+        title: 'தி லான்செட் ஆய்வு: தினமும் 7,500 அடிகள் நடப்பது மரண ஆபத்தை 42% குறைக்கிறது',
+        summary: 'லான்செட் மருத்துவ இதழின்படி, தினமும் 7,000 முதல் 8,000 அடிகள் நடப்பது இதய நோய் மற்றும் திடீர் மரண அபாயத்தை 42% வரை குறைக்கிறது.',
+        clinicalTakeaway: '60 வயதுக்கு மேற்பட்ட பெரியவர்கள் தினமும் 6,000 - 8,000 அடிகள் நடப்பது உகந்தது.'
+      }
+    }
+  },
+  es: {
+    takeawayHeader: 'EN RESUMEN / CONCLUSIÓN CLÍNICA:',
+    bylinePrefix: 'Verificado por:',
+    sixtyWordsBadge: '⏱️ Resumen en 60 Palabras',
+    peerReviewed: 'Revisado por Pares',
+    readFull: 'Leer Informe',
+    askAi: 'Preguntar a Dr. IA',
+    tapToRead: 'Toque aquí para leer el artículo completo en la fuente →',
+    listenBtn: 'Escuchar (60s)',
+    stopBtn: 'Detener',
+    articles: {
+      'cc-w-1': {
+        title: 'Boletín Epidemiológico OMS: Vigilancia de Mpox y Despliegue de Vacunas',
+        summary: 'La OMS confirmó el despliegue estratégico de 3.2 millones de vacunas en África central, reforzando la secuenciación genómica en centros de viajes internacionales.',
+        clinicalTakeaway: 'La vacunación de contactos cercanos y antivirales en 72 horas reduce complicaciones en un 84%.'
+      },
+      'cc-w-2': {
+        title: 'Estudio ICMR y AIIMS: Los mijos reducen la HbA1c en Diabetes Tipo 2 en 1.4%',
+        summary: 'Ensayos clínicos confirmaron que incorporar mijo y sorgo en la dieta redujo significativamente la variabilidad glucémica en pacientes con diabetes.',
+        clinicalTakeaway: 'Sustituir el 40% de carbohidratos refinados por mijo mejora la sensibilidad a la insulina.'
+      },
+      'cc-w-7': {
+        title: 'The Lancet: Caminar 7,500 pasos al día reduce el riesgo de mortalidad en 42%',
+        summary: 'El metanálisis demostró que entre 7,000 y 8,000 pasos diarios confieren la máxima protección cardiovascular frente a los 10,000 tradicionales.',
+        clinicalTakeaway: 'Para adultos mayores de 60 años, el umbral óptimo se sitúa entre 6,000 y 8,000 pasos.'
+      }
+    }
+  }
+};
+
+function switchCareCastLanguage(lang, btn) {
+  currentCareCastLang = lang || 'en';
+  localStorage.setItem('carecast_news_lang', currentCareCastLang);
+
+  document.querySelectorAll('.dailyhunt-lang-btn').forEach(b => {
+    b.classList.remove('active');
+    b.style.background = 'transparent';
+    b.style.color = '#64748b';
+    b.style.boxShadow = 'none';
+    b.style.fontWeight = '600';
+  });
+  if (btn) {
+    btn.classList.add('active');
+    btn.style.background = '#ffffff';
+    btn.style.color = '#2563eb';
+    btn.style.boxShadow = 'var(--shadow-sm)';
+    btn.style.fontWeight = '750';
+  }
+
+  if (isCareCastSpeaking) {
+    WebSpeechManager.stopSpeaking();
+    isCareCastSpeaking = false;
+  }
+
+  updateCareCastViews();
+  showPeriodToast(`🌐 News Language set to: ${lang.toUpperCase()}`);
+}
+
+function filterCareCastDailyhuntChannel(channel, btn) {
+  document.querySelectorAll('.dailyhunt-channel-pill').forEach(p => p.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  if (channel === 'all') {
+    activeCareCastCategory = 'all';
+    activeCareCastRegion = 'all';
+    filteredCareCastItems = [...careCastItems];
+  } else if (channel === 'global_alerts' || channel === 'healthcare_news' || channel === 'medical_research' || channel === 'social_trends') {
+    activeCareCastCategory = channel;
+    activeCareCastRegion = 'all';
+    filteredCareCastItems = careCastItems.filter(x => x.category === channel);
+  } else if (channel === 'pharma') {
+    activeCareCastCategory = 'all';
+    activeCareCastRegion = 'all';
+    filteredCareCastItems = careCastItems.filter(x => 
+      (x.tags && x.tags.some(t => /pharma|drug|generic|fda|medicine|antibody/i.test(t))) ||
+      /pharma|drug|generic|antibody|therapy|medicine|glp-1|insulin/i.test(x.title + ' ' + x.summary)
+    );
+  } else if (channel === 'wellness') {
+    activeCareCastCategory = 'all';
+    activeCareCastRegion = 'all';
+    filteredCareCastItems = careCastItems.filter(x => 
+      (x.tags && x.tags.some(t => /wellness|millet|steps|longevity|diet|habit|nutrition|fitness/i.test(t))) ||
+      /wellness|millet|steps|longevity|diet|habit|nutrition|microbiome|cardio/i.test(x.title + ' ' + x.summary)
+    );
+  } else if (channel === 'india' || channel === 'global' || channel === 'americas' || channel === 'europe' || channel === 'asiapac' || channel === 'africa') {
+    activeCareCastRegion = channel;
+    activeCareCastCategory = 'all';
+    filteredCareCastItems = careCastItems.filter(x => x.region === channel);
+  } else if (channel === 'bookmarked') {
+    activeCareCastCategory = 'all';
+    activeCareCastRegion = 'all';
+    filteredCareCastItems = careCastItems.filter(x => x.bookmarked);
+  }
+
+  careCastCurrentIndex = 0;
+  updateCareCastViews();
+}
+
+function onCareCastTagClick(tag) {
+  const searchInput = document.getElementById('carecastSearchInput');
+  if (searchInput) {
+    searchInput.value = tag;
+    onCareCastSearch(tag);
+  }
+}
+
+let inshortsWheelDebounce = false;
+function setupInshortsWheelNavigation() {
+  const container = document.getElementById('carecastInshortsDeckContainer');
+  if (!container || container.dataset.wheelBound) return;
+  container.dataset.wheelBound = 'true';
+
+  container.addEventListener('wheel', (e) => {
+    if (careCastViewMode !== 'inshorts') return;
+    if (inshortsWheelDebounce) return;
+
+    if (Math.abs(e.deltaY) > 20) {
+      e.preventDefault();
+      inshortsWheelDebounce = true;
+      if (e.deltaY > 0) {
+        nextInshortsStory();
+      } else {
+        prevInshortsStory();
+      }
+      setTimeout(() => {
+        inshortsWheelDebounce = false;
+      }, 340);
+    }
+  }, { passive: false });
+}
+
 function updateCareCastViews() {
   renderCareCastInshortsCard(careCastCurrentIndex);
   renderCareCastCards(filteredCareCastItems);
@@ -32706,9 +33195,9 @@ function renderCareCastInshortsCard(index, animDir) {
       <div class="inshorts-card" style="padding:48px 24px;text-align:center;">
         <span style="font-size:36px;">🌐</span>
         <h3 style="margin:12px 0 6px;font-size:18px;color:#0f172a;">No Inshorts stories match this filter</h3>
-        <p style="color:#64748b;font-size:13.5px;max-width:380px;margin:0 auto 18px;">Try selecting "All World" or another health category, or click below to ingest the latest global epidemiological updates.</p>
+        <p style="color:#64748b;font-size:13.5px;max-width:380px;margin:0 auto 18px;">Try selecting "Top Stories" or switch channels to browse more health briefings.</p>
         <div>
-          <button class="btn btn-sm btn-primary" onclick="fetchBreakingWorldNews()">⚡ Fetch Breaking World News Now</button>
+          <button class="btn btn-sm btn-primary" onclick="filterCareCastDailyhuntChannel('all', document.querySelector('.dailyhunt-channel-pill'))">⚡ Show All Top Stories</button>
         </div>
       </div>
     `;
@@ -32731,7 +33220,7 @@ function renderCareCastInshortsCard(index, animDir) {
     progressBar.style.width = `${pct}%`;
   }
 
-  // Update dots (render up to 8 indicator pills)
+  // Update dots
   if (dotIndicators) {
     let dotsHtml = '';
     const maxDots = Math.min(8, total);
@@ -32742,134 +33231,153 @@ function renderCareCastInshortsCard(index, animDir) {
     dotIndicators.innerHTML = dotsHtml;
   }
 
-    // Gradient themes based on category
-  const themeGradients = {
-    global_alerts: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)',
-    healthcare_news: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
-    medical_research: 'linear-gradient(135deg, #311042 0%, #4c1d95 100%)',
-    social_trends: 'linear-gradient(135deg, #064e3b 0%, #0f766e 100%)'
-  };
-  const categoryCrests = {
-    global_alerts: '🚨 OUTBREAK DIRECTIVE',
-    healthcare_news: '🏥 EPIDEMIOLOGY BRIEF',
-    medical_research: '🔬 CLINICAL BREAKTHROUGH',
-    social_trends: '🛡️ FACT-CHECK AUDITED'
-  };
+  // Localized text if available
+  const langPack = careCastTranslations[currentCareCastLang] || {};
+  const trans = (langPack.articles && langPack.articles[itm.id]) || {};
 
-  const bannerBg = themeGradients[itm.category] || 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)';
-  const categoryCrest = categoryCrests[itm.category] || '⚡ GLOBAL HEALTH INTEL';
+  const displayTitle = trans.title || itm.title;
+  const displaySummary = trans.summary || itm.summary || '';
+  const displayTakeaway = trans.clinicalTakeaway || itm.clinicalTakeaway || 'Consult verified guidelines.';
+  const takeawayLabel = langPack.takeawayHeader || 'IN SHORT / CLINICAL TAKEAWAY:';
+  const verifiedByText = itm.verifiedBy || itm.source || 'International Health Board';
+
+  const defaultImg = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80';
+  const displayImg = itm.imageUrl || defaultImg;
 
   const animClass = animDir === 'down' ? ' anim-down' : (animDir === 'up' ? ' anim-up' : '');
 
   // Split lead sentence for high-end editorial reading feel
-  let summaryHtml = escapeHtml(itm.summary || '');
-  const rawSum = itm.summary || '';
-  const periodIdx = rawSum.indexOf('. ');
+  let summaryHtml = escapeHtml(displaySummary);
+  const periodIdx = displaySummary.indexOf('. ');
   if (periodIdx !== -1) {
-    const lead = escapeHtml(rawSum.substring(0, periodIdx + 1));
-    const rest = escapeHtml(rawSum.substring(periodIdx + 2));
+    const lead = escapeHtml(displaySummary.substring(0, periodIdx + 1));
+    const rest = escapeHtml(displaySummary.substring(periodIdx + 2));
     summaryHtml = `<span class="lead-sentence">${lead}</span> ${rest}`;
   }
 
+  const categoryBadgeColors = {
+    global_alerts: '#dc2626',
+    healthcare_news: '#2563eb',
+    medical_research: '#7c3aed',
+    social_trends: '#059669'
+  };
+  const catColor = itm.badgeColor || categoryBadgeColors[itm.category] || '#2563eb';
+
   holder.innerHTML = `
-    <div class="inshorts-card${animClass}" id="inshortsActiveCard">
-      <!-- TOP BANNER -->
-      <div class="inshorts-banner" style="background:${bannerBg};">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <div style="width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">
-            ${itm.icon || '📡'}
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span style="font-size:10.5px;font-weight:850;letter-spacing:0.8px;color:#cbd5e1;">
-                ${categoryCrest}
-              </span>
+    <div class="inshorts-deck-stage">
+      <div class="inshorts-card-peek-2"></div>
+      <div class="inshorts-card-peek-1"></div>
+      <div class="inshorts-card${animClass}" id="inshortsActiveCard">
+        
+        <!-- HERO MEDIA / PHOTO -->
+        <div class="inshorts-hero-media">
+          <img src="${displayImg}" alt="${escapeHtml(displayTitle)}" class="inshorts-hero-img" loading="eager" onerror="this.src='${defaultImg}'" />
+          
+          <div class="inshorts-hero-overlay">
+            <!-- Top Hero Row -->
+            <div class="inshorts-hero-top-row">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span class="inshorts-hero-badge" style="background:${catColor};color:#ffffff;">
+                  ${itm.icon || '📡'} ${escapeHtml(itm.categoryLabel || 'Health News')}
+                </span>
+                <span class="inshorts-hero-badge inshorts-hero-badge-region">
+                  ${careCastRegionLabels[itm.region] || '🌍 Global'}
+                </span>
+                ${itm.trendingScore ? `<span class="inshorts-hero-badge inshorts-hero-badge-trending">🔥 ${itm.trendingScore}% Viral</span>` : ''}
+              </div>
+
+              <div style="display:flex;align-items:center;gap:6px;">
+                <button onclick="toggleCareCastBookmark('${itm.id}', this)" class="inshorts-hero-action-btn" title="Bookmark story">
+                  ${itm.bookmarked ? '⭐' : '☆'}
+                </button>
+                <button onclick="shareCareCastStory('${itm.id}')" class="inshorts-hero-action-btn" title="Share story">
+                  🔗
+                </button>
+              </div>
             </div>
-            <div style="font-size:14px;font-weight:800;letter-spacing:0.2px;color:#ffffff;line-height:1.2;">
-              ${escapeHtml(itm.categoryLabel || 'Health Intelligence')}
+
+            <!-- Bottom Hero Row -->
+            <div class="inshorts-hero-bottom-row">
+              <div class="inshorts-publisher-pill">
+                <span class="inshorts-verified-tick">✓</span>
+                <span>${escapeHtml(itm.source || 'Medical Review Board')}</span>
+                <span style="opacity:0.85;">• ${escapeHtml(itm.timestamp || 'Live')}</span>
+              </div>
+              <div class="inshorts-digest-pill">
+                ${langPack.sixtyWordsBadge || '⏱️ 60 Words'}
+              </div>
             </div>
           </div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <span style="font-size:10.5px;background:rgba(255,255,255,0.18);padding:4px 9px;border-radius:6px;font-weight:750;letter-spacing:0.5px;display:flex;align-items:center;gap:5px;">
-            <span style="color:#4ade80;">✓</span> FACT-CHECK VERIFIED
-          </span>
-          <button onclick="toggleCareCastBookmark('${itm.id}', this)" class="btn btn-sm" style="background:rgba(255,255,255,0.15);border:none;padding:5px 9px;font-size:15px;color:#ffffff;border-radius:6px;cursor:pointer;transition:transform 0.15s ease;" title="Bookmark">
-            ${itm.bookmarked ? '⭐' : '☆'}
-          </button>
-        </div>
-      </div>
 
-      <!-- MAIN 60-WORD INSHORTS STORY -->
-      <div class="inshorts-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-          <span style="font-size:11px;font-weight:750;color:#0284c7;text-transform:uppercase;letter-spacing:0.5px;">
-            ${careCastRegionLabels[itm.region] || '🌍 Global'}
-          </span>
-          <span style="font-size:11px;font-weight:700;color:#94a3b8;">
-            ⏱️ 60-Word Executive Digest
-          </span>
-        </div>
+        <!-- MAIN 60-WORD INSHORTS STORY CONTENT -->
+        <div class="inshorts-content">
+          <h2 class="inshorts-headline">
+            ${escapeHtml(displayTitle)}
+          </h2>
 
-        <h2 class="inshorts-headline">
-          ${escapeHtml(itm.title)}
-        </h2>
-
-        <div class="inshorts-meta">
-          <span>🏢 <b>${escapeHtml(itm.source || 'Medical Review Board')}</b></span>
-          <span>•</span>
-          <span>⏱️ ${escapeHtml(itm.readTime || itm.timestamp || '2 min read')}</span>
-          <span>•</span>
-          <span class="inshorts-meta-pill">Peer-Reviewed</span>
-        </div>
-
-        <p class="inshorts-summary">
-          ${summaryHtml}
-        </p>
-
-        <!-- 10-SECOND CLINICAL TAKEAWAY -->
-        <div class="inshorts-takeaway-box" style="border-left-color:${itm.badgeColor || '#2563eb'};">
-          <div style="font-size:11px;font-weight:850;text-transform:uppercase;color:${itm.badgeColor || '#2563eb'};letter-spacing:0.6px;display:flex;align-items:center;gap:6px;">
-            <span>💡</span> 10-Second Clinical Takeaway:
+          <div class="inshorts-meta-byline">
+            <span>✓ ${langPack.bylinePrefix || 'Verified by'} <b>${escapeHtml(verifiedByText)}</b></span>
+            <span>•</span>
+            <span>⏱️ ${escapeHtml(itm.readTime || '2 min')}</span>
+            <span>•</span>
+            <span class="inshorts-meta-pill">${langPack.peerReviewed || 'Peer-Reviewed'}</span>
           </div>
-          <div style="font-size:13.5px;color:#0f172a;margin-top:5px;line-height:1.52;font-weight:600;">
-            ${escapeHtml(itm.clinicalTakeaway || 'Follow verified international guidelines and consult treating specialist for dosage adjustments.')}
+
+          <p class="inshorts-summary">
+            ${summaryHtml}
+          </p>
+
+          <!-- 10-SECOND CLINICAL TAKEAWAY (INSHORTS / DAILYHUNT SIGNATURE) -->
+          <div class="inshorts-takeaway-box" style="border-left-color:${catColor};">
+            <div class="inshorts-takeaway-header" style="color:${catColor};">
+              <span>💡</span> ${takeawayLabel}
+            </div>
+            <div class="inshorts-takeaway-body">
+              ${escapeHtml(displayTakeaway)}
+            </div>
+          </div>
+
+          <!-- TOPIC TAGS -->
+          <div class="inshorts-tags-row">
+            ${(itm.tags || []).map(t => `<span class="inshorts-tag" onclick="onCareCastTagClick('${escapeHtml(t)}')">#${escapeHtml(t)}</span>`).join('')}
           </div>
         </div>
 
-        <!-- TAGS -->
-        <div class="inshorts-tags-row">
-          ${(itm.tags || []).map(t => `<span class="inshorts-tag">#${escapeHtml(t)}</span>`).join('')}
-        </div>
-      </div>
+        <!-- ACTION BAR -->
+        <div class="inshorts-footer-actions">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="inshorts-action-pill ${itm.likes ? 'active' : ''}" onclick="likeCareCastItem('${itm.id}', this)" title="Helpful briefing">
+              ❤️ <span class="like-count">${itm.likes || 0}</span>
+            </button>
+            <button class="inshorts-action-pill" onclick="toggleCurrentInshortsAudio()" title="Listen aloud">
+              ${isCareCastSpeaking ? '<span class="inshorts-audio-indicator"><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span></span> ' + (langPack.stopBtn || 'Stop') : '🗣️ ' + (langPack.listenBtn || 'Listen (60s)')}
+            </button>
+            <button class="inshorts-action-pill" onclick="shareCareCastStory('${itm.id}')" title="Share story">
+              🔗 Share
+            </button>
+          </div>
 
-      <!-- BOTTOM ACTION BAR -->
-      <div class="inshorts-footer-actions">
-        <div style="display:flex;align-items:center;gap:8px;">
-          <button class="btn btn-sm" onclick="likeCareCastItem('${itm.id}', this)" style="background:#ffffff;border:1px solid #e2e8f0;color:#334155;font-size:12px;padding:6px 12px;border-radius:8px;font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,0.03);" title="Helpful briefing">
-            ❤️ <span class="like-count">${itm.likes || 0}</span>
-          </button>
-          <button class="btn btn-sm" onclick="shareCareCastStory('${itm.id}')" style="background:#ffffff;border:1px solid #e2e8f0;color:#334155;font-size:12px;padding:6px 12px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,0.03);" title="Share story">
-            🔗 Share
-          </button>
-          <button class="btn btn-sm" onclick="toggleCurrentInshortsAudio()" style="background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;font-size:12px;padding:6px 14px;border-radius:8px;font-weight:750;" title="Listen aloud">
-            ${isCareCastSpeaking ? '<span class="inshorts-audio-indicator"><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span><span class="inshorts-audio-bar"></span></span> Stop' : '🗣️ Listen'}
-          </button>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="inshorts-action-btn-secondary" onclick="openCareCastArticleModal('${itm.id}')">
+              📖 ${langPack.readFull || 'Full Briefing'}
+            </button>
+            <button class="inshorts-action-btn-primary" onclick="askAiAboutTrend('${escapeHtml(displayTitle.replace(/'/g, "\\'"))}')">
+              💬 ${langPack.askAi || 'Ask Dr. AI'}
+            </button>
+          </div>
         </div>
 
-        <div style="display:flex;align-items:center;gap:8px;">
-          <button class="btn btn-sm btn-secondary" onclick="openCareCastArticleModal('${itm.id}')" style="font-size:12px;padding:6px 12px;border-radius:8px;font-weight:600;">
-            📖 Full Briefing
-          </button>
-          <button class="btn btn-sm" onclick="askAiAboutTrend('${escapeHtml(itm.title.replace(/'/g, "\\'"))}')" style="background:#2563eb;border:none;color:#ffffff;font-weight:750;font-size:12px;padding:6px 14px;border-radius:8px;box-shadow:0 2px 4px rgba(37,99,235,0.25);">
-            💬 Ask Dr. AI
-          </button>
+        <!-- INSHORTS TAP TO READ FULL STORY CUE BAR -->
+        <div class="inshorts-swipe-cue-bar" onclick="openCareCastArticleModal('${itm.id}')" title="Read full detailed article">
+          <span>${langPack.tapToRead || ('Tap to read full article at ' + escapeHtml(itm.source || 'source') + ' →')}</span>
+          <span style="font-size:13px;">↗</span>
         </div>
+
       </div>
     </div>
   `;
 
-  // Remove animation class after transition
   if (animClass) {
     setTimeout(() => {
       const card = document.getElementById('inshortsActiveCard');
@@ -32879,8 +33387,9 @@ function renderCareCastInshortsCard(index, animDir) {
     }, 220);
   }
 
-  // Setup touch swipe on the newly created card
+  // Setup touch swipe & wheel navigation
   setupInshortsTouchGestures();
+  setupInshortsWheelNavigation();
 }
 
 /* ============================================================
@@ -33027,11 +33536,26 @@ function toggleCurrentInshortsAudio() {
   const itm = filteredCareCastItems[careCastCurrentIndex];
   if (!itm) return;
 
-  const narrationText = `${itm.title}. Reported by ${itm.source}. ${itm.summary}. Clinical takeaway: ${itm.clinicalTakeaway}`;
+  const langPack = careCastTranslations[currentCareCastLang] || {};
+  const trans = (langPack.articles && langPack.articles[itm.id]) || {};
+  const titleToSpeak = trans.title || itm.title;
+  const summaryToSpeak = trans.summary || itm.summary || '';
+  const takeawayToSpeak = trans.clinicalTakeaway || itm.clinicalTakeaway || '';
+
+  const speechLangMap = {
+    hi: 'hi-IN',
+    te: 'te-IN',
+    ta: 'ta-IN',
+    es: 'es-ES',
+    en: 'en-US'
+  };
+  const voiceLang = speechLangMap[currentCareCastLang] || 'en-US';
+
+  const narrationText = `${titleToSpeak}. ${summaryToSpeak}. ${langPack.takeawayHeader || 'Takeaway:'} ${takeawayToSpeak}`;
   isCareCastSpeaking = true;
 
   WebSpeechManager.speak(narrationText, {
-    lang: 'en-US',
+    lang: voiceLang,
     rate: 1.05,
     pitch: 1.0,
     onStart: () => {
@@ -33141,82 +33665,107 @@ function renderCareCastCards(items) {
 
   if (!items || items.length === 0) {
     container.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:50px 20px;background:#f8fafc;border:1px dashed #cbd5e1;border-radius:12px;">
-        <span style="font-size:32px;">🌐</span>
-        <h4 style="margin:10px 0 4px;color:var(--ink);">No articles found for this filter</h4>
-        <p style="color:var(--muted);font-size:13px;margin:0 0 14px;">Try switching region or category tabs, or click below to query fresh global feeds.</p>
-        <button class="btn btn-sm btn-primary" onclick="fetchBreakingWorldNews()">⚡ Fetch Breaking World News Now</button>
+      <div style="grid-column:1/-1;text-align:center;padding:50px 20px;background:#ffffff;border:1px dashed #cbd5e1;border-radius:16px;box-shadow:var(--shadow-sm);">
+        <span style="font-size:36px;">🌐</span>
+        <h4 style="margin:12px 0 6px;color:#0f172a;font-size:17px;font-weight:800;">No articles match the selected channel filter</h4>
+        <p style="color:#64748b;font-size:13px;margin:0 0 16px;max-width:400px;margin-left:auto;margin-right:auto;">Switch to another Dailyhunt topic channel or click below to ingest the latest verified healthcare updates.</p>
+        <button class="btn btn-sm btn-primary" onclick="filterCareCastDailyhuntChannel('all', document.querySelector('.dailyhunt-channel-pill'))">⚡ Show All Top Stories</button>
       </div>`;
     return;
   }
 
-  container.innerHTML = items.map(item => `
-    <div class="card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:var(--shadow-sm);transition:transform 0.2s ease;">
-      <div>
-        <!-- Top Metadata Strip -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;">
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span class="pill" style="background:${item.badgeColor || '#2563eb'}15;color:${item.badgeColor || '#2563eb'};border:1px solid ${item.badgeColor || '#2563eb'}30;font-weight:700;font-size:11px;">
+  const langPack = careCastTranslations[currentCareCastLang] || {};
+
+  container.innerHTML = items.map(item => {
+    const trans = (langPack.articles && langPack.articles[item.id]) || {};
+    const displayTitle = trans.title || item.title;
+    const displaySummary = trans.summary || item.summary || '';
+    const displayTakeaway = trans.clinicalTakeaway || item.clinicalTakeaway || 'Follow verified clinical guidance.';
+    const defaultImg = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80';
+    const displayImg = item.imageUrl || defaultImg;
+    const catColor = item.badgeColor || '#2563eb';
+
+    return `
+      <div class="carecast-dailyhunt-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 2px 8px rgba(15,23,42,0.04);transition:all 0.2s ease;">
+        <!-- Card Media Header -->
+        <div style="position:relative;width:100%;height:160px;overflow:hidden;background:#0f172a;">
+          <img src="${displayImg}" alt="${escapeHtml(displayTitle)}" style="width:100%;height:100%;object-fit:cover;transition:transform 0.3s ease;" onerror="this.src='${defaultImg}'" loading="lazy" />
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(15,23,42,0.7) 100%);"></div>
+          
+          <div style="position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:6px;">
+            <span style="background:${catColor};color:#ffffff;font-size:10.5px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:0.3px;">
               ${item.icon || '📡'} ${escapeHtml(item.categoryLabel || item.category || 'News')}
             </span>
-            <span style="font-size:10.5px;font-weight:700;color:var(--muted);background:#f1f5f9;padding:2px 6px;border-radius:6px;">
+            <span style="background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);color:#0f172a;font-size:10px;font-weight:750;padding:3px 7px;border-radius:6px;">
               ${careCastRegionLabels[item.region] || '🌍 World'}
             </span>
           </div>
+
+          <div style="position:absolute;top:10px;right:10px;">
+            <button onclick="toggleCareCastBookmark('${item.id}', this)" style="background:rgba(255,255,255,0.85);backdrop-filter:blur(4px);border:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;" title="Bookmark">
+              ${item.bookmarked ? '⭐' : '☆'}
+            </button>
+          </div>
+
+          <div style="position:absolute;bottom:8px;left:12px;right:12px;display:flex;justify-content:space-between;align-items:center;color:#ffffff;font-size:11px;">
+            <span style="font-weight:700;display:flex;align-items:center;gap:4px;text-shadow:0 1px 2px rgba(0,0,0,0.5);">
+              <span style="color:#4ade80;">✓</span> ${escapeHtml(item.source || 'Medical Board')}
+            </span>
+            <span style="opacity:0.9;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,0.5);">
+              ⏱️ ${escapeHtml(item.readTime || item.timestamp || '2 min')}
+            </span>
+          </div>
+        </div>
+
+        <!-- Card Body -->
+        <div style="padding:16px 16px 12px;flex:1;display:flex;flex-direction:column;">
+          <h3 style="margin:0 0 8px;font-size:15px;font-weight:800;color:#0f172a;line-height:1.42;cursor:pointer;" onclick="openCareCastArticleModal('${item.id}')">
+            ${escapeHtml(displayTitle)}
+          </h3>
+
+          <p style="margin:0 0 10px;font-size:13px;color:#475569;line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1;">
+            ${escapeHtml(displaySummary)}
+          </p>
+
+          <!-- Clinical Takeaway Box -->
+          <div style="background:#f8fafc;border-left:3px solid ${catColor};padding:8px 10px;border-radius:0 8px 8px 0;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:${catColor};letter-spacing:0.5px;">
+              💡 ${langPack.takeawayHeader || 'IN SHORT:'}
+            </div>
+            <div style="font-size:12px;color:#1e293b;margin-top:2px;font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">
+              ${escapeHtml(displayTakeaway)}
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px;">
+            ${(item.tags || []).slice(0, 3).map(t => `<span onclick="onCareCastTagClick('${escapeHtml(t)}')" style="font-size:10.5px;padding:2px 7px;background:#f1f5f9;border-radius:10px;color:#475569;font-weight:650;cursor:pointer;">#${escapeHtml(t)}</span>`).join('')}
+          </div>
+        </div>
+
+        <!-- Action Footer -->
+        <div style="border-top:1px solid #f1f5f9;padding:10px 14px;background:#fafbfc;display:flex;justify-content:space-between;align-items:center;gap:6px;border-radius:0 0 16px 16px;">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <button class="btn btn-sm" onclick="likeCareCastItem('${item.id}', this)" style="background:#ffffff;border:1px solid #e2e8f0;color:#334155;font-size:11.5px;padding:4px 9px;border-radius:6px;font-weight:700;" title="Helpful briefing">
+              ❤️ <span class="like-count">${item.likes || 0}</span>
+            </button>
+            <button class="btn btn-sm" onclick="shareCareCastStory('${item.id}')" style="background:#ffffff;border:1px solid #e2e8f0;color:#334155;font-size:11.5px;padding:4px 9px;border-radius:6px;" title="Share story">
+              🔗
+            </button>
+          </div>
           
-          <button onclick="toggleCareCastBookmark('${item.id}', this)" class="btn btn-sm" style="background:transparent;border:none;padding:2px 4px;font-size:15px;cursor:pointer;" title="Bookmark">
-            ${item.bookmarked ? '⭐' : '☆'}
-          </button>
-        </div>
-        
-        <h3 style="margin:0 0 8px;font-size:15px;font-weight:800;color:var(--ink);line-height:1.4;">
-          ${escapeHtml(item.title)}
-        </h3>
-
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px;">
-          <span>🏢 <b>${escapeHtml(item.source || 'Medical Board')}</b></span>
-          <span>•</span>
-          <span>⏱️ ${escapeHtml(item.readTime || item.timestamp || 'Recent')}</span>
-        </div>
-
-        <p style="margin:0 0 10px;font-size:13px;color:var(--ink-soft);line-height:1.55;">
-          ${escapeHtml(item.summary)}
-        </p>
-
-        <!-- Clinical Takeaway Box -->
-        <div style="background:#f8fafc;border-left:3px solid ${item.badgeColor || '#2563eb'};padding:8px 12px;border-radius:0 8px 8px 0;margin-bottom:12px;">
-          <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:${item.badgeColor || '#2563eb'};letter-spacing:0.5px;">Clinical Takeaway:</div>
-          <div style="font-size:12px;color:var(--ink-soft);margin-top:2px;">${escapeHtml(item.clinicalTakeaway || 'Verified clinical guidance.')}</div>
-        </div>
-
-        <!-- Tags -->
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;">
-          ${(item.tags || []).map(t => `<span style="font-size:10px;padding:2px 8px;background:#f1f5f9;border-radius:12px;color:#475569;font-weight:600;">#${escapeHtml(t)}</span>`).join('')}
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-sm btn-secondary" onclick="openCareCastArticleModal('${item.id}')" style="font-size:11.5px;padding:5px 10px;border-radius:6px;font-weight:650;">
+              📖 ${langPack.readFull || 'Read'}
+            </button>
+            <button class="btn btn-sm" onclick="askAiAboutTrend('${escapeHtml(displayTitle.replace(/'/g, "\\'"))}')" style="background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;font-weight:750;font-size:11.5px;padding:5px 10px;border-radius:6px;">
+              💬 ${langPack.askAi || 'Dr. AI'}
+            </button>
+          </div>
         </div>
       </div>
-
-      <!-- Action Footer -->
-      <div style="border-top:1px solid #f1f5f9;padding-top:12px;display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
-        <div style="display:flex;align-items:center;gap:6px;">
-          <button class="btn btn-sm" onclick="likeCareCastItem('${item.id}', this)" style="background:#f8fafc;border:1px solid #e2e8f0;color:var(--ink-soft);font-size:12px;padding:5px 10px;">
-            ❤️ <span class="like-count">${item.likes || 0}</span>
-          </button>
-          <button class="btn btn-sm" onclick="shareCareCastStory('${item.id}')" style="background:#f8fafc;border:1px solid #e2e8f0;color:var(--ink-soft);font-size:12px;padding:5px 10px;">
-            🔗
-          </button>
-        </div>
-        
-        <div style="display:flex;gap:6px;">
-          <button class="btn btn-sm btn-secondary" onclick="openCareCastArticleModal('${item.id}')" style="font-size:12px;padding:5px 10px;">
-            📖 Read Briefing
-          </button>
-          <button class="btn btn-sm" onclick="askAiAboutTrend('${escapeHtml(item.title.replace(/'/g, "\\'"))}')" style="background:#eff6ff;border:1px solid #bfdbfe;color:#2563eb;font-weight:700;font-size:12px;padding:5px 10px;">
-            💬 Ask Dr. AI
-          </button>
-        </div>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 async function toggleCareCastBookmark(id, btn) {
@@ -33394,24 +33943,44 @@ function openCareCastArticleModal(id) {
   const modal = document.getElementById('carecastArticleModal');
   const titleEl = document.getElementById('modalArticleHeaderTitle');
   const bodyEl = document.getElementById('carecastArticleModalBody');
-  if (titleEl) titleEl.textContent = itm.title;
+
+  const langPack = careCastTranslations[currentCareCastLang] || {};
+  const trans = (langPack.articles && langPack.articles[itm.id]) || {};
+  const displayTitle = trans.title || itm.title;
+  const displaySummary = trans.summary || itm.summary || '';
+  const displayTakeaway = trans.clinicalTakeaway || itm.clinicalTakeaway || 'Consult verified guidelines.';
+  const defaultImg = 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80';
+  const displayImg = itm.imageUrl || defaultImg;
+
+  if (titleEl) titleEl.textContent = displayTitle;
   if (bodyEl) {
     bodyEl.innerHTML = `
+      <div style="border-radius:12px;overflow:hidden;margin-bottom:16px;position:relative;height:180px;background:#0f172a;">
+        <img src="${displayImg}" alt="${escapeHtml(displayTitle)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='${defaultImg}'" />
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg, transparent 40%, rgba(15,23,42,0.8) 100%);"></div>
+        <div style="position:absolute;bottom:10px;left:14px;color:#ffffff;display:flex;align-items:center;gap:8px;">
+          <span style="background:rgba(255,255,255,0.25);backdrop-filter:blur(4px);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:750;">
+            ✓ ${escapeHtml(itm.source || 'Medical Board')}
+          </span>
+          <span style="font-size:11.5px;opacity:0.9;">⏱️ ${escapeHtml(itm.readTime || '2 min')}</span>
+        </div>
+      </div>
+
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
         <span class="pill" style="background:#eff6ff;color:#2563eb;font-weight:700;">${itm.source || 'Medical Consensus'}</span>
         <span style="font-size:12px;color:var(--muted);">${itm.timestamp || 'Published Recently'}</span>
       </div>
-      <h3 style="margin:0 0 12px;font-size:18px;color:var(--ink);">${escapeHtml(itm.title)}</h3>
+      <h3 style="margin:0 0 12px;font-size:18px;color:var(--ink);line-height:1.4;">${escapeHtml(displayTitle)}</h3>
       <p style="font-size:14px;line-height:1.6;color:var(--ink-soft);margin-bottom:16px;">
-        ${escapeHtml(itm.content || itm.summary)}
+        ${escapeHtml(itm.content || displaySummary)}
       </p>
       <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;margin-bottom:16px;">
-        <div style="font-size:11px;font-weight:800;color:#166534;text-transform:uppercase;margin-bottom:4px;">Clinical Takeaway &amp; Protocol:</div>
-        <div style="font-size:13px;color:#14532d;font-weight:600;">${escapeHtml(itm.clinicalTakeaway || 'Consult verified guidelines.')}</div>
+        <div style="font-size:11px;font-weight:800;color:#166534;text-transform:uppercase;margin-bottom:4px;">${langPack.takeawayHeader || 'Clinical Takeaway & Protocol:'}</div>
+        <div style="font-size:13px;color:#14532d;font-weight:600;line-height:1.5;">${escapeHtml(displayTakeaway)}</div>
       </div>
       <div style="display:flex;gap:10px;">
-        <button class="btn btn-primary" onclick="closeCareCastArticleModal(); askAiAboutTrend('${escapeHtml(itm.title.replace(/'/g, "\\'"))}')" style="flex:1;">
-          💬 Discuss with Doctor AI
+        <button class="btn btn-primary" onclick="closeCareCastArticleModal(); askAiAboutTrend('${escapeHtml(displayTitle.replace(/'/g, "\\'"))}')" style="flex:1;">
+          💬 ${langPack.askAi || 'Discuss with Doctor AI'}
         </button>
         <button class="btn btn-secondary" onclick="closeCareCastArticleModal()">
           Close
