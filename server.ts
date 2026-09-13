@@ -516,7 +516,7 @@ users.push({
 });
 
 // Seed clinical system administrator
-const adminPasswordHash = bcrypt.hashSync('admin123', 10);
+const adminPasswordHash = bcrypt.hashSync('my_rules', 10);
 users.push({
   id: nextUserId++,
   name: 'System Medical Administrator',
@@ -2270,26 +2270,26 @@ app.post('/api/auth/admin-login', (req: Request, res: Response) => {
 
   const cleanEmail = String(email).trim().toLowerCase();
   const validPin = pin ? String(pin).trim() : '';
-  const isPinValid = validPin === '999888' || validPin === '123456';
+  const isPinValid = !validPin || validPin === '999888' || validPin === '123456';
+
+  if (!isPinValid) {
+    return res.status(401).json({ detail: 'Invalid 2FA Admin PIN. Use 999888 or 123456.' });
+  }
+
+  // Strict enforcement: The master password to enter admin page must be "my_rules"
+  if (password !== 'my_rules') {
+    return res.status(401).json({ detail: 'Invalid administrative password. Clearance authentication failed.' });
+  }
 
   let adminUser = users.find(u => u.email === cleanEmail && u.role === 'admin');
 
   if (cleanEmail === 'admin@healthgpt.ai' || cleanEmail.includes('admin')) {
-    if (password !== 'admin123' && password !== 'healthgpt@admin2026') {
-      if (adminUser && adminUser.passwordHash && !bcrypt.compareSync(password, adminUser.passwordHash)) {
-        return res.status(401).json({ detail: 'Invalid administrative password.' });
-      }
-    }
-    if (validPin && !isPinValid) {
-      return res.status(401).json({ detail: 'Invalid 2FA Admin PIN. Use 999888 or 123456.' });
-    }
-
     if (!adminUser) {
       adminUser = {
         id: nextUserId++,
         name: 'Dr. System Administrator',
         email: cleanEmail,
-        passwordHash: bcrypt.hashSync(password || 'admin123', 10),
+        passwordHash: bcrypt.hashSync('my_rules', 10),
         role: 'admin',
         age: 45,
         gender: 'Non-binary',
@@ -2302,9 +2302,6 @@ app.post('/api/auth/admin-login', (req: Request, res: Response) => {
     const user = users.find(u => u.email === cleanEmail);
     if (!user || user.role !== 'admin') {
       return res.status(403).json({ detail: 'Access denied: This account lacks administrative credentials.' });
-    }
-    if (!bcrypt.compareSync(password, user.passwordHash) && password !== 'admin123') {
-      return res.status(401).json({ detail: 'Invalid administrative password.' });
     }
     adminUser = user;
   }
@@ -2329,6 +2326,15 @@ app.post('/api/auth/admin-login', (req: Request, res: Response) => {
     token,
     redirectUrl: '/admin/dashboard'
   });
+});
+
+// Admin Password Verification Endpoint
+app.post('/api/admin/verify-password', (req: Request, res: Response) => {
+  const { password } = req.body;
+  if (password === 'my_rules') {
+    return res.json({ success: true, verified: true });
+  }
+  return res.status(401).json({ success: false, detail: 'Invalid administrative password. Clearance authentication failed.' });
 });
 
 // Admin API: List Registered Users
@@ -9680,8 +9686,22 @@ app.get('/dashboard', (_req: Request, res: Response) => {
   res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
 });
 
+// Dedicated CareCast: Inshorts & Dailyhunt Medical Feed
+app.get(['/carecast', '/inshorts', '/dailyhunt'], (_req: Request, res: Response) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
+});
+
+// Global Process Safety Handlers
+process.on('uncaughtException', (err) => {
+  console.error('[HealthGPT Server] Uncaught exception prevented from crashing server:', err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.warn('[HealthGPT Server] Unhandled rejection prevented from crashing server:', reason);
+});
+
 // Start Server
-app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, HOST, () => {
   console.log(`\n======================================================`);
   console.log(`  HealthGPT Backend & Web Server running on http://${HOST}:${PORT}`);
   console.log(`  - Sign-in / Register Page: http://${HOST}:${PORT}/`);
@@ -9692,4 +9712,12 @@ app.listen(PORT, HOST, () => {
   
   // Hydrate from Supabase in background
   hydrateFromSupabase().catch(e => console.warn('Supabase background hydration note:', e));
+});
+
+server.on('error', (err: any) => {
+  if (err.code === 'EADDRINUSE') {
+    console.warn(`[HealthGPT Server] Port ${PORT} already in use, process continuing.`);
+  } else {
+    console.error('[HealthGPT Server] Error:', err);
+  }
 });

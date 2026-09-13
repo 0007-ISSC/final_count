@@ -579,8 +579,88 @@
     }
 
     function logoutAdmin() {
+      sessionStorage.removeItem('healthgpt_admin_auth');
       localStorage.removeItem('healthgpt_admin_clearance');
       window.location.href = '/admin-login';
+    }
+
+    function checkAdminAccess() {
+      const auth = sessionStorage.getItem('healthgpt_admin_auth');
+      const modal = document.getElementById('adminPasswordGateModal');
+      if (!modal) return true;
+      if (auth !== 'my_rules') {
+        modal.style.display = 'flex';
+        setTimeout(() => {
+          const inp = document.getElementById('gatePasswordInput');
+          if (inp) inp.focus();
+        }, 100);
+        return false;
+      } else {
+        modal.style.display = 'none';
+        return true;
+      }
+    }
+
+    function toggleGatePassword() {
+      const input = document.getElementById('gatePasswordInput');
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    async function handleGateUnlock(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('gatePasswordInput');
+      const alertBox = document.getElementById('gateAlert');
+      const pass = input ? input.value.trim() : '';
+      const btn = document.getElementById('btnGateUnlock');
+
+      if (pass !== 'my_rules') {
+        if (alertBox) {
+          alertBox.textContent = '❌ Access Denied: Incorrect administrative password. Please check your clearance credentials.';
+          alertBox.style.display = 'block';
+        }
+        if (input) {
+          input.focus();
+          input.select();
+        }
+        return;
+      }
+
+      if (btn) {
+        btn.innerHTML = '<span>Verifying Clearance...</span>';
+        btn.disabled = true;
+      }
+
+      try {
+        const res = await fetch('/api/admin/verify-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pass })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
+          localStorage.setItem('healthgpt_admin_clearance', 'super_admin');
+          document.getElementById('adminPasswordGateModal').style.display = 'none';
+          loadAdminData();
+        } else {
+          if (alertBox) {
+            alertBox.textContent = '❌ Invalid administrative password. Access denied.';
+            alertBox.style.display = 'block';
+          }
+        }
+      } catch (err) {
+        sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
+        localStorage.setItem('healthgpt_admin_clearance', 'super_admin');
+        document.getElementById('adminPasswordGateModal').style.display = 'none';
+        loadAdminData();
+      } finally {
+        if (btn) {
+          btn.innerHTML = '<span>Unlock Admin Page</span> <span>→</span>';
+          btn.disabled = false;
+        }
+      }
     }
 
     function escapeHtml(str) {
@@ -590,8 +670,50 @@
       });
     }
 
-    // Initialize
-    loadAdminData();
+    // Initialize with password check
+    if (checkAdminAccess()) {
+      loadAdminData();
+    }
   </script>
+
+  <!-- SECURED ADMIN ACCESS GATE MODAL -->
+  <div id="adminPasswordGateModal" style="position:fixed;inset:0;background:rgba(9,13,22,0.96);backdrop-filter:blur(16px);z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;">
+    <div style="width:100%;max-width:440px;background:#141f36;border:1.5px solid #223254;border-radius:18px;padding:32px 28px;box-shadow:0 20px 50px rgba(0,0,0,0.6);text-align:center;position:relative;">
+      
+      <div style="width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#0284c7,#0f766e);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;box-shadow:0 0 25px rgba(2,132,199,0.4);">
+        🔒
+      </div>
+
+      <h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:6px;">Administrator Security Gate</h2>
+      <p style="font-size:13px;color:#94a3b8;line-height:1.5;margin-bottom:20px;">
+        Restricted clinical operations area. Please enter the master password to access the Command Center.
+      </p>
+
+      <div id="gateAlert" style="display:none;background:rgba(248,113,113,0.15);border:1px solid rgba(248,113,113,0.3);color:#f87171;padding:10px 14px;border-radius:8px;font-size:12.5px;font-weight:600;margin-bottom:16px;text-align:left;"></div>
+
+      <form onsubmit="handleGateUnlock(event)" style="display:flex;flex-direction:column;gap:14px;text-align:left;">
+        <div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <label style="font-size:12px;font-weight:700;color:#cbd5e1;">Master Password</label>
+            <span style="font-size:11px;color:#38bdf8;font-weight:700;">🔒 Required Clearance</span>
+          </div>
+          <div style="position:relative;display:flex;align-items:center;">
+            <input type="password" id="gatePasswordInput" placeholder="••••••••" required autocomplete="current-password" style="width:100%;height:46px;background:#0f172a;border:1.5px solid #223254;border-radius:10px;padding:0 44px 0 14px;font-size:14px;color:#fff;outline:none;transition:border-color 0.2s;">
+            <button type="button" onclick="toggleGatePassword()" style="position:absolute;right:10px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;" aria-label="Toggle password visibility">👁</button>
+          </div>
+        </div>
+
+        <button type="submit" id="btnGateUnlock" style="width:100%;height:46px;background:linear-gradient(135deg,#0284c7,#0f766e);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 15px rgba(2,132,199,0.35);transition:all 0.2s;margin-top:4px;">
+          <span>Unlock Admin Page</span>
+          <span>→</span>
+        </button>
+
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#64748b;">
+          <span>Authorized Access Only</span>
+          <a href="/dashboard" style="color:#94a3b8;text-decoration:none;font-weight:600;">&larr; Back to Patient Portal</a>
+        </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>

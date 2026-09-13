@@ -34812,9 +34812,17 @@ window.addEventListener('DOMContentLoaded', () => {
       if (iconEl) iconEl.textContent = '🛡️';
       if (adminLink) {
         adminLink.textContent = '🛡️ Command Center';
-        adminLink.href = '/admin/dashboard';
+        const hasAdminAuth = sessionStorage.getItem('healthgpt_admin_auth') === 'my_rules';
+        adminLink.href = hasAdminAuth ? '/admin/dashboard' : '/admin-login';
         adminLink.style.fontWeight = '800';
       }
+    }
+    const path = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    if (path.includes('carecast') || path.includes('inshorts') || path.includes('dailyhunt') || hash === '#carecast' || hash === '#disease') {
+      setTimeout(() => {
+        go('disease');
+      }, 100);
     }
   } catch (e) {
     console.warn('Session hydration note:', e);

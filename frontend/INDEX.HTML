@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Framer Motion Core Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
+
   <style>
     :root {
       /* Refined Warm White & Beige Palette */
@@ -844,12 +847,256 @@
       font-size: 13px;
       color: var(--ink-secondary);
     }
+
+    /* Interactive 3D Card Parallax & Dynamic Specular Shine */
+    .auth-card, .visual-showcase {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
+      position: relative;
+    }
+
+    .card-shine {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: radial-gradient(circle 380px at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255, 255, 255, 0.6) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 2;
+    }
+
+    .auth-card:hover .card-shine, .visual-showcase:hover .card-shine {
+      opacity: 1;
+    }
+
+    /* Dynamic Button Shimmer & Boom Physics */
+    .btn-warm-primary {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-warm-primary::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -80%;
+      width: 220%;
+      height: 200%;
+      background: linear-gradient(60deg, transparent 30%, rgba(255, 255, 255, 0.3) 50%, transparent 70%);
+      transform: rotate(25deg);
+      transition: all 0.7s ease;
+      pointer-events: none;
+    }
+
+    .btn-warm-primary:hover::after {
+      left: 110%;
+    }
+
+    /* Confetti & Particle Sparks Explosion */
+    .boom-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      animation: boomFly 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    @keyframes boomFly {
+      0% {
+        transform: translate(0, 0) scale(1.3) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Interactive Sound FX Toggle Pill */
+    .sound-toggle-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      color: var(--ink-secondary);
+      transition: all 0.2s ease;
+    }
+
+    .sound-toggle-btn:hover {
+      background: var(--accent-warm-light);
+      color: var(--accent-warm);
+      border-color: var(--accent-warm);
+      transform: translateY(-1px);
+    }
+
+    .sound-toggle-btn.active {
+      color: var(--accent-warm);
+      border-color: var(--accent-warm);
+    }
+
+    /* ═════════════════════════════════════════════════════════
+       FRAMER MOTION ENTRANCE SPRING & STAGGER TRANSITIONS
+       ═════════════════════════════════════════════════════════ */
+    @keyframes fmSpringHeader {
+      0% {
+        opacity: 0;
+        transform: translateY(-28px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fmSpringShowcase {
+      0% {
+        opacity: 0;
+        transform: translateX(-48px) scale(0.96);
+      }
+      65% {
+        opacity: 0.95;
+        transform: translateX(3px) scale(1.004);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    @keyframes fmSpringAuthCard {
+      0% {
+        opacity: 0;
+        transform: translateX(48px) scale(0.96);
+      }
+      65% {
+        opacity: 0.95;
+        transform: translateX(-3px) scale(1.004);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    @keyframes fmSpringItemUp {
+      0% {
+        opacity: 0;
+        transform: translateY(22px) scale(0.98);
+      }
+      70% {
+        opacity: 0.95;
+        transform: translateY(-2px) scale(1.003);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes fmRoleSwitchFadeSlide {
+      0% {
+        opacity: 0;
+        transform: translateX(20px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+    }
+
+    /* Hardware-accelerated Framer Motion entrance primitives */
+    .top-header {
+      animation: fmSpringHeader 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .visual-showcase {
+      animation: fmSpringShowcase 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
+    }
+
+    .auth-card {
+      animation: fmSpringAuthCard 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+    }
+
+    /* Cascading stagger entrance for visual showcase content */
+    .visual-showcase .showcase-eyebrow {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+    }
+    .visual-showcase .showcase-quote {
+      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+    }
+    .visual-showcase .showcase-desc {
+      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both;
+    }
+    .visual-showcase .vitality-card {
+      animation: fmSpringItemUp 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
+    }
+    .visual-showcase .showcase-footer {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+    }
+
+    /* Cascading stagger entrance for auth card items */
+    .auth-card .role-switcher-bar {
+      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+    }
+    .auth-card .auth-card-header {
+      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+    }
+    #patientFormWrapper .input-group:nth-child(1) {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
+    }
+    #patientFormWrapper .input-group:nth-child(2) {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both;
+    }
+    #patientFormWrapper .input-group:nth-child(3) {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
+    }
+    #patientFormWrapper .input-group:nth-child(4) {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both;
+    }
+    #patientFormWrapper .form-meta-row {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.56s both;
+    }
+    #patientFormWrapper .btn-warm-primary {
+      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.60s both;
+    }
+    #patientFormWrapper .ornament-divider {
+      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.64s both;
+    }
+    #patientFormWrapper .quick-profiles-list {
+      animation: fmSpringItemUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.68s both;
+    }
+
+    .fm-switch-in {
+      animation: fmRoleSwitchFadeSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .top-header,
+      .visual-showcase,
+      .auth-card,
+      .visual-showcase *,
+      .auth-card *,
+      .fm-switch-in {
+        animation: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Ambient Organic Warm Background Canvas Blobs -->
+  <!-- Ambient Organic Warm Background Canvas Blobs & Interactive Constellation Web -->
   <div class="ambient-canvas-wrap">
+    <canvas id="ambientConstellationCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
@@ -866,6 +1113,9 @@
     </a>
 
     <div class="header-status" style="display:flex;align-items:center;gap:12px;">
+      <button type="button" class="sound-toggle-btn active" id="soundToggleBtn" onclick="toggleAudioFX()" title="Toggle interactive audio feedback">
+        <span>🔊</span> <span id="soundToggleLabel">Audio On</span>
+      </button>
       <div class="nav-portal-links">
         <a href="/user-login" class="nav-portal-btn" title="Open Dedicated Patient Login Page">
           <span>👤</span> <span>Patient Login</span>
@@ -885,7 +1135,8 @@
   <main class="main-wrapper">
 
     <!-- Left Visual Showcase (Atmospheric Warm Sanctuary) -->
-    <section class="visual-showcase">
+    <section class="visual-showcase" id="visualShowcase">
+      <div class="card-shine"></div>
       <div>
         <div class="showcase-eyebrow">
           <span>🌿</span>
@@ -938,6 +1189,7 @@
 
     <!-- Right: Warm White & Beige Interactive Login Card -->
     <section class="auth-card" id="authCard">
+      <div class="card-shine"></div>
 
       <!-- Role Switcher Tabs -->
       <div class="role-switcher-bar">
@@ -965,7 +1217,7 @@
           <div class="input-group">
             <label class="input-label" for="usernameInput">User Name</label>
             <div class="input-wrapper">
-              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name">
+              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">👤</span>
             </div>
           </div>
@@ -974,7 +1226,7 @@
           <div class="input-group">
             <label class="input-label" for="emailInput">Email Address</label>
             <div class="input-wrapper">
-              <input type="email" id="emailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email">
+              <input type="email" id="emailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">✉</span>
             </div>
           </div>
@@ -983,7 +1235,7 @@
           <div class="input-group">
             <label class="input-label" for="passwordInput">Password</label>
             <div class="input-wrapper">
-              <input type="password" id="passwordInput" class="input-field" placeholder="••••••••" value="password123" required autocomplete="current-password">
+              <input type="password" id="passwordInput" class="input-field" placeholder="••••••••" value="password123" required autocomplete="current-password" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🔒</span>
               <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">👁</button>
             </div>
@@ -998,7 +1250,7 @@
               </button>
             </div>
             <div class="input-wrapper">
-              <input type="text" id="otpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;">
+              <input type="text" id="otpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🔑</span>
             </div>
             <div id="otpStatusHint" style="margin-top:5px;font-size:11.5px;color:var(--forest);font-weight:600;display:flex;align-items:center;gap:4px;">
@@ -1007,7 +1259,7 @@
           </div>
 
           <!-- 5. SIGN IN (AFTER THAT SIGN IN) -->
-          <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:12px;">
+          <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:12px;" onclick="triggerButtonBoom(event)">
             <span>Sign In as Patient</span>
             <span>→</span>
           </button>
@@ -1024,10 +1276,12 @@
       <div id="adminFormWrapper" style="display:none;">
         <div style="margin-bottom:14px;background:#f8f5ee;border:1px solid var(--card-border);border-radius:var(--radius-md);padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">
           <div>
-            <b style="font-size:12px;color:var(--ink-primary);display:block;">⚡ Master Admin Credentials</b>
-            <span style="font-size:11px;color:var(--ink-muted);">admin@healthgpt.ai / admin123</span>
+            <b style="font-size:12px;color:var(--ink-primary);display:block;">🛡️ Clinical Operations Clearance</b>
+            <span style="font-size:11px;color:var(--ink-muted);">System Administrator (admin@healthgpt.ai)</span>
           </div>
-          <button type="button" onclick="fillAdminPresetIndex()" style="background:var(--accent-warm);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;padding:4px 8px;cursor:pointer;">Auto-Fill</button>
+          <button type="button" onclick="fillAdminPresetIndex()" style="background:var(--accent-warm);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:700;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:4px;">
+            <span>⚡ Load Credentials</span>
+          </button>
         </div>
 
         <form id="adminLoginFormIndex" onsubmit="handleAdminSignInIndex(event)" style="display:flex;flex-direction:column;gap:14px;">
@@ -1035,18 +1289,24 @@
           <div class="input-group">
             <label class="input-label" for="indexAdminEmailInput">Admin Email / ID</label>
             <div class="input-wrapper">
-              <input type="email" id="indexAdminEmailInput" class="input-field" placeholder="admin@healthgpt.ai" value="admin@healthgpt.ai" required autocomplete="username">
+              <input type="email" id="indexAdminEmailInput" class="input-field" placeholder="admin@healthgpt.ai" value="admin@healthgpt.ai" required autocomplete="username" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🛡️</span>
             </div>
           </div>
 
           <!-- Admin Password -->
           <div class="input-group">
-            <label class="input-label" for="indexAdminPasswordInput">Master Password</label>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <label class="input-label" for="indexAdminPasswordInput" style="margin-bottom:0;">Master Password</label>
+              <span id="adminSecLevel" style="font-size:11px;color:var(--accent-warm);font-weight:700;">🔒 Clearance Clearance</span>
+            </div>
             <div class="input-wrapper">
-              <input type="password" id="indexAdminPasswordInput" class="input-field" placeholder="••••••••" value="admin123" required autocomplete="current-password">
-              <span class="input-icon">🔒</span>
+              <input type="password" id="indexAdminPasswordInput" class="input-field" placeholder="••••••••" value="" required autocomplete="current-password" oninput="handleAdminPasswordInput(this.value)" onfocus="playInteractiveTone('focus')">
+              <span class="input-icon" id="adminLockIcon">🔒</span>
               <button type="button" class="toggle-pass-btn" onclick="toggleAdminPassIndex()" aria-label="Toggle password visibility">👁</button>
+            </div>
+            <div id="adminPassStrengthWrap" style="height:3px;background:#e8ded2;border-radius:2px;overflow:hidden;margin-top:6px;display:none;">
+              <div id="adminPassStrengthBar" style="height:100%;width:0%;background:#8c6d46;transition:all 0.3s ease;"></div>
             </div>
           </div>
 
@@ -1054,15 +1314,15 @@
           <div class="input-group">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <label class="input-label" for="indexAdminPinInput" style="margin-bottom:0;">2FA Security PIN</label>
-              <span style="font-size:11px;color:var(--accent-warm);font-weight:700;">PIN: 999888</span>
+              <span style="font-size:11px;color:var(--forest);font-weight:700;">Security Token</span>
             </div>
             <div class="input-wrapper">
-              <input type="text" id="indexAdminPinInput" class="input-field" placeholder="6-digit Admin PIN" value="999888" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;">
+              <input type="text" id="indexAdminPinInput" class="input-field" placeholder="6-digit Admin PIN" value="999888" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🔑</span>
             </div>
           </div>
 
-          <button type="submit" class="btn-warm-primary" id="btnAdminSignInIndex" style="margin-top:12px;background:linear-gradient(135deg, #0f172a, #1e293b);border-color:#334155;">
+          <button type="submit" class="btn-warm-primary" id="btnAdminSignInIndex" style="margin-top:12px;background:linear-gradient(135deg, #0f172a, #1e293b);border-color:#334155;" onclick="triggerButtonBoom(event)">
             <span>Authenticate as Admin</span>
             <span>→</span>
           </button>
@@ -1269,7 +1529,7 @@
       proceedToDashboard('guest', 'Guest Explorer');
     }
 
-    /* Role Switcher Handler */
+    /* Role Switcher Handler with Framer Motion Layout Slide */
     function switchLoginRole(role) {
       const tabPatient = document.getElementById('tabPatientBtn');
       const tabAdmin = document.getElementById('tabAdminBtn');
@@ -1278,6 +1538,8 @@
       const authTitle = document.getElementById('authTitleText');
       const authSub = document.getElementById('authSubtitleText');
 
+      const M = window.Motion;
+
       if (role === 'admin') {
         tabAdmin.classList.add('active');
         tabPatient.classList.remove('active');
@@ -1285,6 +1547,26 @@
         adminForm.style.display = 'block';
         if (authTitle) authTitle.textContent = 'Clinical Admin Login';
         if (authSub) authSub.textContent = 'Command center access for clinicians & medical governance';
+
+        // Framer Motion spring layout slide
+        if (M && typeof M.animate === 'function') {
+          M.animate(adminForm, { opacity: [0, 1], x: [22, 0], scale: [0.98, 1] }, {
+            duration: 0.4,
+            ease: [0.16, 1, 0.3, 1]
+          });
+          M.animate('#adminFormWrapper .input-group, #adminFormWrapper .btn-warm-primary', {
+            opacity: [0, 1],
+            y: [14, 0]
+          }, {
+            delay: (typeof M.stagger === 'function' ? M.stagger(0.045, { start: 0.05 }) : 0.05),
+            duration: 0.35,
+            ease: [0.16, 1, 0.3, 1]
+          });
+        } else {
+          adminForm.classList.remove('fm-switch-in');
+          void adminForm.offsetWidth;
+          adminForm.classList.add('fm-switch-in');
+        }
       } else {
         tabPatient.classList.add('active');
         tabAdmin.classList.remove('active');
@@ -1292,6 +1574,26 @@
         adminForm.style.display = 'none';
         if (authTitle) authTitle.textContent = 'Welcome to HealthGPT';
         if (authSub) authSub.textContent = 'Sign in to your clinical twin, consultation logs & health dashboard';
+
+        // Framer Motion spring layout slide
+        if (M && typeof M.animate === 'function') {
+          M.animate(patientForm, { opacity: [0, 1], x: [-22, 0], scale: [0.98, 1] }, {
+            duration: 0.4,
+            ease: [0.16, 1, 0.3, 1]
+          });
+          M.animate('#patientFormWrapper .input-group, #patientFormWrapper .btn-warm-primary', {
+            opacity: [0, 1],
+            y: [14, 0]
+          }, {
+            delay: (typeof M.stagger === 'function' ? M.stagger(0.045, { start: 0.05 }) : 0.05),
+            duration: 0.35,
+            ease: [0.16, 1, 0.3, 1]
+          });
+        } else {
+          patientForm.classList.remove('fm-switch-in');
+          void patientForm.offsetWidth;
+          patientForm.classList.add('fm-switch-in');
+        }
       }
     }
 
@@ -1302,9 +1604,38 @@
 
     function fillAdminPresetIndex() {
       document.getElementById('indexAdminEmailInput').value = 'admin@healthgpt.ai';
-      document.getElementById('indexAdminPasswordInput').value = 'admin123';
+      document.getElementById('indexAdminPasswordInput').value = 'my_rules';
       document.getElementById('indexAdminPinInput').value = '999888';
-      showAlert('Master Admin credentials auto-filled', 'success');
+      handleAdminPasswordInput('my_rules');
+      showAlert('✓ Master Admin clearance credentials loaded securely', 'success');
+      playInteractiveTone('success');
+    }
+
+    function handleAdminPasswordInput(val) {
+      const wrap = document.getElementById('adminPassStrengthWrap');
+      const bar = document.getElementById('adminPassStrengthBar');
+      const badge = document.getElementById('adminSecLevel');
+      const lockIcon = document.getElementById('adminLockIcon');
+      if (!val) {
+        if (wrap) wrap.style.display = 'none';
+        if (badge) badge.textContent = '🔒 Clearance Required';
+        if (lockIcon) lockIcon.textContent = '🔒';
+        return;
+      }
+      if (wrap) wrap.style.display = 'block';
+      let score = Math.min(100, val.length * 14);
+      if (bar) {
+        bar.style.width = score + '%';
+        if (score > 70) {
+          bar.style.background = '#3b7a57';
+          if (badge) badge.innerHTML = '🛡️ Key Verified';
+          if (lockIcon) lockIcon.textContent = '🛡️';
+        } else {
+          bar.style.background = '#8c6d46';
+          if (badge) badge.innerHTML = '⚡ Clearance Entered';
+          if (lockIcon) lockIcon.textContent = '🔑';
+        }
+      }
     }
 
     async function handleAdminSignInIndex(e) {
@@ -1316,6 +1647,14 @@
 
       if (!email || !password || !pin) {
         showAlert('Please fill in Admin Email, Password, and 2FA PIN', 'error');
+        playInteractiveTone('error');
+        return;
+      }
+
+      // Enforce: password must be "my_rules"
+      if (password !== 'my_rules') {
+        showAlert('Access Denied: Invalid administrative credentials. Please verify your clearance.', 'error');
+        playInteractiveTone('error');
         return;
       }
 
@@ -1331,6 +1670,8 @@
         const data = await res.json().catch(() => ({}));
 
         if (res.ok && data.success) {
+          playInteractiveTone('success');
+          sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
           localStorage.setItem('healthgpt_user_id', String(data.user?.id || '999'));
           localStorage.setItem('healthgpt_user_name', data.user?.name || 'Medical Administrator');
           localStorage.setItem('healthgpt_user_role', 'admin');
@@ -1347,20 +1688,335 @@
             window.location.href = '/admin/dashboard';
           }, 450);
         } else if (data.detail) {
+          playInteractiveTone('error');
           showAlert(data.detail, 'error');
           btn.innerHTML = '<span>Authenticate as Admin</span> <span>→</span>';
           btn.disabled = false;
         } else {
-          // Fallback
-          window.location.href = '/admin/dashboard';
+          // Fallback if password is correct
+          if (password === 'my_rules') {
+            playInteractiveTone('success');
+            sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
+            window.location.href = '/admin/dashboard';
+          } else {
+            playInteractiveTone('error');
+            showAlert('Authentication failed.', 'error');
+            btn.innerHTML = '<span>Authenticate as Admin</span> <span>→</span>';
+            btn.disabled = false;
+          }
         }
       } catch (err) {
-        window.location.href = '/admin/dashboard';
+        if (password === 'my_rules') {
+          playInteractiveTone('success');
+          sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
+          window.location.href = '/admin/dashboard';
+        } else {
+          playInteractiveTone('error');
+          showAlert('Authentication failed.', 'error');
+          btn.innerHTML = '<span>Authenticate as Admin</span> <span>→</span>';
+          btn.disabled = false;
+        }
       }
     }
 
-    // Auto-detect URL parameter ?role=admin
+    /* ═══════════════════════════════════════════════════════
+       INTERACTIVE BOOM ENGINE: AUDIO SYNTH, PARTICLES & TILT
+       ═══════════════════════════════════════════════════════ */
+    let audioFxEnabled = true;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          audioCtx = new AudioContext();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudioFX() {
+      audioFxEnabled = !audioFxEnabled;
+      const btn = document.getElementById('soundToggleBtn');
+      const lbl = document.getElementById('soundToggleLabel');
+      if (btn && lbl) {
+        if (audioFxEnabled) {
+          btn.classList.add('active');
+          lbl.textContent = 'Audio On';
+          btn.querySelector('span').textContent = '🔊';
+          playInteractiveTone('focus');
+        } else {
+          btn.classList.remove('active');
+          lbl.textContent = 'Audio Muted';
+          btn.querySelector('span').textContent = '🔇';
+        }
+      }
+    }
+
+    function playInteractiveTone(type) {
+      if (!audioFxEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'focus') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(587.33, now + 0.08);
+          gain.gain.setValueAtTime(0.04, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'boom') {
+          // Energetic harmonic chime
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.15);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'success') {
+          // Joyful rising arpeggio chord
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const chordOsc = audioCtx.createOscillator();
+            const chordGain = audioCtx.createGain();
+            chordOsc.type = 'sine';
+            chordOsc.frequency.setValueAtTime(freq, now + idx * 0.05);
+            chordGain.gain.setValueAtTime(0.06, now + idx * 0.05);
+            chordGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+            chordOsc.connect(chordGain);
+            chordGain.connect(audioCtx.destination);
+            chordOsc.start(now + idx * 0.05);
+            chordOsc.stop(now + 0.45);
+          });
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.linearRampToValueAtTime(160, now + 0.18);
+          gain.gain.setValueAtTime(0.07, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        }
+      } catch (e) {
+        // AudioContext ignored if blocked
+      }
+    }
+
+    /* Confetti & Particle Sparks Explosion */
+    function triggerButtonBoom(e) {
+      playInteractiveTone('boom');
+      const rect = e.currentTarget.getBoundingClientRect();
+      const cx = e.clientX || rect.left + rect.width / 2;
+      const cy = e.clientY || rect.top + rect.height / 2;
+
+      const colors = ['#8c6d46', '#c4a480', '#e4d7c5', '#5b7056', '#a65b44', '#f59e0b', '#38bdf8'];
+      const count = 28;
+
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'boom-particle';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.floor(Math.random() * 8) + 4;
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * 110 + 35;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance;
+
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.background = color;
+        p.style.boxShadow = `0 0 8px ${color}`;
+        p.style.left = cx + 'px';
+        p.style.top = cy + 'px';
+        p.style.setProperty('--tx', tx + 'px');
+        p.style.setProperty('--ty', ty + 'px');
+
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 850);
+      }
+    }
+
+    /* 3D Interactive Card Parallax Tilt */
+    function initCardTilt() {
+      const cards = [document.getElementById('authCard'), document.getElementById('visualShowcase')];
+
+      cards.forEach(card => {
+        if (!card) return;
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const midX = rect.width / 2;
+          const midY = rect.height / 2;
+
+          const rotateX = ((y - midY) / midY) * -5;
+          const rotateY = ((x - midX) / midX) * 5;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
+          card.style.setProperty('--shine-x', `${(x / rect.width) * 100}%`);
+          card.style.setProperty('--shine-y', `${(y / rect.height) * 100}%`);
+        });
+
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
+        });
+      });
+    }
+
+    /* Constellation Web Particle Simulation */
+    function initConstellationCanvas() {
+      const canvas = document.getElementById('ambientConstellationCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      const particleCount = Math.min(55, Math.floor(window.innerWidth / 24));
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+          radius: Math.random() * 2 + 1.2,
+          alpha: Math.random() * 0.4 + 0.2
+        });
+      }
+
+      let mouse = { x: -1000, y: -1000 };
+      window.addEventListener('mousemove', (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+
+      function animate() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+
+          // Mouse gentle attraction
+          const dxMouse = mouse.x - p.x;
+          const dyMouse = mouse.y - p.y;
+          const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+          if (distMouse < 160) {
+            p.x += dxMouse * 0.008;
+            p.y += dyMouse * 0.008;
+          }
+
+          // Draw particle
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(140, 109, 70, ${p.alpha})`;
+          ctx.fill();
+
+          // Connect nearby particles
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 110) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              const linkAlpha = (1 - dist / 110) * 0.18;
+              ctx.strokeStyle = `rgba(140, 109, 70, ${linkAlpha})`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+
+    /* Framer Motion Programmatic Spring Entrance Orchestration */
+    function initFramerMotionEntrance() {
+      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (isReduced) return;
+
+      const M = window.Motion;
+      if (M && typeof M.animate === 'function') {
+        try {
+          // Top Header Spring Drop
+          M.animate('.top-header', { y: [-28, 0], opacity: [0, 1] }, {
+            duration: 0.72,
+            ease: [0.16, 1, 0.3, 1]
+          });
+
+          // Left Showcase Spring Slide from Left
+          M.animate('.visual-showcase', { x: [-48, 0], opacity: [0, 1], scale: [0.96, 1] }, {
+            duration: 0.88,
+            delay: 0.06,
+            ease: [0.16, 1, 0.3, 1]
+          });
+
+          // Right Auth Card Spring Slide from Right
+          M.animate('.auth-card', { x: [48, 0], opacity: [0, 1], scale: [0.96, 1] }, {
+            duration: 0.88,
+            delay: 0.12,
+            ease: [0.16, 1, 0.3, 1]
+          });
+
+          // Staggered Showcase Details
+          const showcaseItems = document.querySelectorAll('.showcase-eyebrow, .showcase-quote, .showcase-desc, .vitality-card, .showcase-footer');
+          if (showcaseItems.length && typeof M.stagger === 'function') {
+            M.animate(showcaseItems, { y: [16, 0], opacity: [0, 1] }, {
+              delay: M.stagger(0.06, { start: 0.2 }),
+              duration: 0.6,
+              ease: [0.16, 1, 0.3, 1]
+            });
+          }
+
+          // Staggered Auth Card Details
+          const cardItems = document.querySelectorAll('.role-switcher-bar, .auth-card-header, #patientFormWrapper .input-group, #patientFormWrapper .form-meta-row, #patientFormWrapper .btn-warm-primary, #patientFormWrapper .ornament-divider, #patientFormWrapper .quick-profiles-list');
+          if (cardItems.length && typeof M.stagger === 'function') {
+            M.animate(cardItems, { y: [18, 0], opacity: [0, 1] }, {
+              delay: M.stagger(0.05, { start: 0.24 }),
+              duration: 0.6,
+              ease: [0.16, 1, 0.3, 1]
+            });
+          }
+        } catch (e) {
+          console.debug('Framer Motion orchestration notice:', e);
+        }
+      }
+    }
+
+    // Auto-detect URL parameter ?role=admin & initialize dynamic elements
     window.addEventListener('DOMContentLoaded', () => {
+      initCardTilt();
+      initConstellationCanvas();
+      initFramerMotionEntrance();
+
       const params = new URLSearchParams(window.location.search);
       if (params.get('role') === 'admin' || window.location.hash === '#admin') {
         switchLoginRole('admin');
