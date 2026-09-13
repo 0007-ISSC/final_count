@@ -449,6 +449,15 @@
       transform: none;
     }
 
+    .btn-admin-submit.btn-verified-pulse {
+      background: linear-gradient(135deg, #059669, #047857) !important;
+      border: 1.5px solid #34d399 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 28px rgba(52, 211, 153, 0.7) !important;
+      opacity: 1 !important;
+      pointer-events: none;
+    }
+
     /* ALERT */
     .admin-alert {
       padding: 10px 14px;
@@ -1103,6 +1112,37 @@
       }, 450);
     }
 
+    /* Framer Motion subtle success pulse animation for verified credentials */
+    async function playButtonSuccessPulse(btn, customText = 'Clearance Verified') {
+      if (!btn) return;
+      btn.disabled = true;
+      btn.classList.add('btn-verified-pulse');
+      btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:7px;"><span>🛡️</span> <b>${customText}</b></span>`;
+
+      const M = window.Motion;
+      if (M && typeof M.animate === 'function') {
+        try {
+          await M.animate(btn, {
+            scale: [1, 1.045, 0.985, 1],
+            boxShadow: [
+              '0 4px 18px rgba(2, 132, 199, 0.35)',
+              '0 0 32px rgba(52, 211, 153, 0.85), 0 4px 20px rgba(5, 150, 105, 0.4)',
+              '0 0 16px rgba(52, 211, 153, 0.5), 0 4px 14px rgba(5, 150, 105, 0.3)'
+            ]
+          }, {
+            duration: 0.52,
+            ease: [0.16, 1, 0.3, 1]
+          });
+        } catch (err) {
+          console.debug('Button pulse notice:', err);
+        }
+      } else {
+        btn.style.transform = 'scale(1.04)';
+        await new Promise(r => setTimeout(r, 350));
+        btn.style.transform = 'scale(1)';
+      }
+    }
+
     async function handleAdminSignIn(e) {
       if (e) e.preventDefault();
       const email = document.getElementById('adminEmailInput').value.trim();
@@ -1146,6 +1186,8 @@
         const data = await response.json().catch(() => ({}));
 
         if (response.ok && data.success) {
+          // Subtle success pulse visual feedback on login button before navigation
+          await playButtonSuccessPulse(btn, 'Clearance Granted · Redirecting...');
           proceedToAdminDashboard(data.user);
         } else if (data.detail) {
           playCyberAudio('error');
@@ -1155,6 +1197,7 @@
         } else {
           // Fallback if network issue, but only if password is verified
           if (password === 'my_rules') {
+            await playButtonSuccessPulse(btn, 'Clearance Granted · Redirecting...');
             proceedToAdminDashboard({ id: 999, name: 'Medical Administrator', email });
           } else {
             playCyberAudio('error');
@@ -1165,6 +1208,7 @@
         }
       } catch (err) {
         if (password === 'my_rules') {
+          await playButtonSuccessPulse(btn, 'Clearance Granted · Redirecting...');
           proceedToAdminDashboard({ id: 999, name: 'Medical Administrator', email });
         } else {
           playCyberAudio('error');

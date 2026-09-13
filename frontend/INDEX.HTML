@@ -561,6 +561,15 @@
       transform: translateY(0);
     }
 
+    .btn-warm-primary.btn-verified-pulse {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      border: 1.5px solid #34d399 !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 28px rgba(52, 211, 153, 0.7) !important;
+      opacity: 1 !important;
+      pointer-events: none;
+    }
+
     /* Notification / Error / Success Alert */
     .alert-banner {
       padding: 10px 14px;
@@ -1510,6 +1519,7 @@
         const data = await response.json().catch(() => ({}));
 
         if (response.ok && data.success) {
+          await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
           proceedToDashboard(data.user?.id || '1', data.user?.name || username);
         } else if (data.detail) {
           showAlert(data.detail, 'error');
@@ -1517,10 +1527,12 @@
           btn.disabled = false;
         } else {
           // Graceful fallback to guarantee entry
+          await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
           proceedToDashboard('1', username);
         }
       } catch (err) {
         // Fallback for offline or sandbox iframe
+        await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
         proceedToDashboard('1', username);
       }
     }
@@ -1638,6 +1650,37 @@
       }
     }
 
+    /* Framer Motion subtle success pulse animation on login button */
+    async function playButtonSuccessPulseIndex(btn, customText = 'Clearance Verified') {
+      if (!btn) return;
+      btn.disabled = true;
+      btn.classList.add('btn-verified-pulse');
+      btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:7px;"><span>🛡️</span> <b>${customText}</b></span>`;
+
+      const M = window.Motion;
+      if (M && typeof M.animate === 'function') {
+        try {
+          await M.animate(btn, {
+            scale: [1, 1.045, 0.985, 1],
+            boxShadow: [
+              '0 6px 16px -2px rgba(140, 109, 70, 0.35)',
+              '0 0 32px rgba(52, 211, 153, 0.85), 0 4px 20px rgba(5, 150, 105, 0.4)',
+              '0 0 16px rgba(52, 211, 153, 0.5), 0 4px 14px rgba(5, 150, 105, 0.3)'
+            ]
+          }, {
+            duration: 0.52,
+            ease: [0.16, 1, 0.3, 1]
+          });
+        } catch (err) {
+          console.debug('Button pulse notice:', err);
+        }
+      } else {
+        btn.style.transform = 'scale(1.04)';
+        await new Promise(r => setTimeout(r, 350));
+        btn.style.transform = 'scale(1)';
+      }
+    }
+
     async function handleAdminSignInIndex(e) {
       if (e) e.preventDefault();
       const email = document.getElementById('indexAdminEmailInput').value.trim();
@@ -1671,6 +1714,9 @@
 
         if (res.ok && data.success) {
           playInteractiveTone('success');
+          // Framer Motion subtle success pulse on button before navigation
+          await playButtonSuccessPulseIndex(btn, 'Clearance Verified · Launching...');
+
           sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
           localStorage.setItem('healthgpt_user_id', String(data.user?.id || '999'));
           localStorage.setItem('healthgpt_user_name', data.user?.name || 'Medical Administrator');
@@ -1696,6 +1742,7 @@
           // Fallback if password is correct
           if (password === 'my_rules') {
             playInteractiveTone('success');
+            await playButtonSuccessPulseIndex(btn, 'Clearance Verified · Launching...');
             sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
             window.location.href = '/admin/dashboard';
           } else {
@@ -1708,6 +1755,7 @@
       } catch (err) {
         if (password === 'my_rules') {
           playInteractiveTone('success');
+          await playButtonSuccessPulseIndex(btn, 'Clearance Verified · Launching...');
           sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
           window.location.href = '/admin/dashboard';
         } else {
