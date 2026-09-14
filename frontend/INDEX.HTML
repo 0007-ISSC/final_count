@@ -1275,6 +1275,12 @@
             <span>Sign In as Patient</span>
             <span>→</span>
           </button>
+
+          <!-- CELEBRATION LOGIN ANIMATION PREVIEW TRIGGER -->
+          <button type="button" class="btn-warm-primary" onclick="triggerCelebrationPreview()" style="margin-top:8px;background:linear-gradient(135deg, #0d9488 0%, #2563eb 100%);border:none;box-shadow:0 4px 14px rgba(13,148,136,0.32);">
+            <span>🎆 Login Animation with Firecrackers</span>
+            <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">Celebration</span>
+          </button>
         </form>
 
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--card-border-subtle);text-align:center;font-size:12px;color:var(--ink-secondary);">
@@ -1350,11 +1356,72 @@
     </section>
   </main>
 
-  <!-- Smooth Success Screen Overlay -->
-  <div class="success-trans-overlay" id="successOverlay">
-    <div class="trans-ring">✓</div>
-    <h3 class="trans-title" id="transTitle">Authentication Verified</h3>
-    <p class="trans-sub" id="transSubtitle">Opening your Clinical Health Dashboard...</p>
+  <!-- FIRECRACKERS CELEBRATION LOGIN ANIMATION OVERLAY -->
+  <div id="loginCelebrationOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:radial-gradient(circle at center, rgba(15,23,42,0.92) 0%, rgba(3,7,18,0.98) 100%);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;overflow:hidden;user-select:none;">
+    <!-- Firecrackers Canvas -->
+    <canvas id="firecrackersCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:all;cursor:crosshair;"></canvas>
+
+    <!-- Top floating instruction & controls -->
+    <div style="position:absolute;top:20px;display:flex;align-items:center;gap:12px;z-index:10;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:30px;color:#f8fafc;font-size:12.5px;font-weight:600;">
+      <span>🎆 Tap anywhere to ignite custom firecrackers!</span>
+      <button type="button" onclick="fireMultipleRockets(4)" style="background:linear-gradient(135deg,#f59e0b,#ef4444);border:none;color:white;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:15px;cursor:pointer;">💥 Launch Barrage</button>
+    </div>
+
+    <!-- Celebratory Central Card -->
+    <div id="celebrationCard" style="position:relative;z-index:10;background:rgba(255,255,255,0.98);color:#0f172a;max-width:440px;width:90%;border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 25px 60px -12px rgba(0,0,0,0.6), 0 0 45px rgba(245,158,11,0.45);border:2px solid rgba(251,191,36,0.65);transform:scale(0.88);opacity:0;transition:all 0.42s cubic-bezier(0.16,1,0.3,1);">
+      <!-- Emblem with glowing pulse -->
+      <div style="width:68px;height:68px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 28px rgba(245,158,11,0.6);position:relative;">
+        <span>🎉</span>
+      </div>
+
+      <div style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:800;padding:3px 12px;border-radius:16px;margin-bottom:8px;border:1px solid #fde68a;">
+        <span>✨ AUTHENTICATION VERIFIED</span>
+      </div>
+
+      <h2 style="font-size:22px;font-weight:900;margin:0 0 4px;color:#0f172a;letter-spacing:-0.5px;">Welcome to HealthGPT!</h2>
+      <p id="celebrationUserNameText" style="font-size:13.5px;color:#64748b;margin:0 0 16px;font-weight:600;">Opening clinical telemetry for Iqra Sultana</p>
+
+      <!-- Live Clinical Telemetry Checklist -->
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:16px;text-align:left;display:flex;flex-direction:column;gap:7px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
+          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
+            <span style="color:#10b981;font-weight:900;">✓</span> Clinical AI Engine
+          </span>
+          <span style="color:#059669;font-weight:700;font-size:11px;">Active</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
+          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
+            <span style="color:#10b981;font-weight:900;">✓</span> Secure Patient Vault
+          </span>
+          <span style="color:#059669;font-weight:700;font-size:11px;">Decrypted</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
+          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
+            <span style="color:#10b981;font-weight:900;">✓</span> Supabase Telemetry
+          </span>
+          <span style="color:#059669;font-weight:700;font-size:11px;">Connected</span>
+        </div>
+      </div>
+
+      <!-- Animated Progress Bar -->
+      <div style="margin-bottom:16px;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px;">
+          <span>Synchronizing Telemetry</span>
+          <span id="celebrationCountdownText">100%</span>
+        </div>
+        <div style="height:7px;background:#e2e8f0;border-radius:6px;overflow:hidden;position:relative;">
+          <div id="celebrationProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg, #10b981, #06b6d4, #f59e0b);border-radius:6px;"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="finishCelebrationRedirect()" style="flex:1;background:linear-gradient(135deg, #0f172a, #1e293b);color:white;border:none;padding:11px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,0.25);">
+          <span>Enter Dashboard Now</span>
+          <span>→</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -1458,30 +1525,381 @@
     }
 
     /* =========================================================
-       3. NAVIGATION & UNIFIED SIGN IN HANDLER
-          Sequence: User Name -> Email -> Password -> OTP -> Sign In
+       3. NAVIGATION & FIRECRACKERS CELEBRATION LOGIN HANDLER
        ========================================================= */
-    function proceedToDashboard(userId, userName) {
-      const overlay = document.getElementById('successOverlay');
-      const transTitle = document.getElementById('transTitle');
-      const transSubtitle = document.getElementById('transSubtitle');
+    let celebrationRedirectTimer = null;
+    let firecrackersRunning = false;
+    let firecrackerRockets = [];
+    let firecrackerSparks = [];
+    let fcCanvas = null;
+    let fcCtx = null;
+    let fcAnimId = null;
 
-      const displayName = userName ? userName.split(' ')[0] : 'User';
-      transTitle.textContent = `Welcome, ${displayName}`;
-      transSubtitle.textContent = 'Launching your clinical telemetry interface...';
-      overlay.style.display = 'flex';
+    function proceedToDashboard(userId, userName) {
+      startLoginFirecrackersCelebration(userId, userName);
+    }
+
+    function triggerCelebrationPreview() {
+      const username = document.getElementById('usernameInput')?.value || 'Iqra Sultana';
+      startLoginFirecrackersCelebration('1', username, true);
+    }
+
+    function startLoginFirecrackersCelebration(userId, userName, isPreview = false) {
+      const overlay = document.getElementById('loginCelebrationOverlay');
+      const card = document.getElementById('celebrationCard');
+      const userText = document.getElementById('celebrationUserNameText');
+      const progressBar = document.getElementById('celebrationProgressBar');
+      const countdownText = document.getElementById('celebrationCountdownText');
+
+      const displayName = userName || 'Iqra Sultana';
+      if (userText) userText.textContent = `Opening clinical telemetry for ${displayName}`;
 
       try {
+        sessionStorage.setItem('healthgpt_authenticated', 'true');
+        sessionStorage.setItem('healthgpt_celebrate_login', 'true');
         localStorage.setItem('healthgpt_user_id', String(userId || '1'));
         localStorage.setItem('healthgpt_user_name', String(userName || 'Iqra Sultana'));
       } catch (e) {
         console.warn(e);
       }
 
-      // Smooth fast transition
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
+
+      // Initialize Firecracker Canvas
+      initFirecrackersCanvas();
+
+      // Launch initial salvo of rockets
+      fireMultipleRockets(4);
+
+      // Play joyful celebration sounds
+      playCelebrationChimes();
+      setTimeout(() => playFirecrackerPopSound(), 350);
+      setTimeout(() => playFirecrackerPopSound(), 750);
+      setTimeout(() => playFirecrackerPopSound(), 1200);
+      setTimeout(() => playFirecrackerPopSound(), 1700);
+
+      // Subsequent automated fireworks bursts
+      setTimeout(() => fireMultipleRockets(3), 800);
+      setTimeout(() => fireMultipleRockets(3), 1600);
+      setTimeout(() => fireMultipleRockets(4), 2400);
+
+      // Animate Card Entrance
       setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 400);
+        if (card) {
+          card.style.transform = 'scale(1)';
+          card.style.opacity = '1';
+        }
+      }, 100);
+
+      // Animate Progress Bar
+      if (progressBar) {
+        progressBar.style.width = '0%';
+        setTimeout(() => {
+          progressBar.style.width = '100%';
+        }, 50);
+      }
+
+      // Countdown percentage timer
+      let pct = 0;
+      const pctInterval = setInterval(() => {
+        pct += 5;
+        if (countdownText) countdownText.textContent = `${Math.min(pct, 100)}%`;
+        if (pct >= 100) clearInterval(pctInterval);
+      }, 140);
+
+      // Auto redirect after 3.4 seconds
+      if (celebrationRedirectTimer) clearTimeout(celebrationRedirectTimer);
+      celebrationRedirectTimer = setTimeout(() => {
+        finishCelebrationRedirect();
+      }, 3400);
+    }
+
+    function finishCelebrationRedirect() {
+      if (celebrationRedirectTimer) clearTimeout(celebrationRedirectTimer);
+      firecrackersRunning = false;
+      if (fcAnimId) cancelAnimationFrame(fcAnimId);
+      window.location.href = '/dashboard';
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       FIRECRACKERS ENGINE: CANVAS PHYSICS & SOUND SYNTH
+       ═══════════════════════════════════════════════════════ */
+    const FC_PALETTES = [
+      ['#f59e0b', '#fbbf24', '#fef08a', '#d97706'], // Gold & Amber
+      ['#ef4444', '#f43f5e', '#fb7185', '#fda4af'], // Crimson & Ruby
+      ['#10b981', '#34d399', '#6ee7b7', '#059669'], // Emerald Mint
+      ['#3b82f6', '#06b6d4', '#67e8f9', '#93c5fd'], // Sapphire & Cyan
+      ['#8b5cf6', '#d946ef', '#c084fc', '#f472b6'], // Amethyst & Orchid
+      ['#ffffff', '#fde047', '#38bdf8', '#4ade80']  // Electric Diamond
+    ];
+
+    function initFirecrackersCanvas() {
+      fcCanvas = document.getElementById('firecrackersCanvas');
+      if (!fcCanvas) return;
+      fcCtx = fcCanvas.getContext('2d');
+      if (!fcCtx) return;
+
+      const resize = () => {
+        fcCanvas.width = window.innerWidth;
+        fcCanvas.height = window.innerHeight;
+      };
+      resize();
+      window.addEventListener('resize', resize);
+
+      // Click or tap anywhere to launch custom fireworks at point
+      fcCanvas.onpointerdown = (e) => {
+        createCustomBurst(e.clientX, e.clientY);
+        playFirecrackerPopSound();
+      };
+
+      firecrackerRockets = [];
+      firecrackerSparks = [];
+      firecrackersRunning = true;
+
+      renderFirecrackersFrame();
+    }
+
+    function launchSingleRocket(startX, targetY, paletteIndex) {
+      if (!fcCanvas) return;
+      const palette = FC_PALETTES[paletteIndex !== undefined ? paletteIndex : Math.floor(Math.random() * FC_PALETTES.length)];
+      const x = startX !== undefined ? startX : Math.random() * (fcCanvas.width * 0.8) + (fcCanvas.width * 0.1);
+      const y = fcCanvas.height;
+      const target = targetY !== undefined ? targetY : Math.random() * (fcCanvas.height * 0.45) + (fcCanvas.height * 0.12);
+      const speed = Math.random() * 3 + 12;
+      const vx = (Math.random() - 0.5) * 2.5;
+
+      firecrackerRockets.push({
+        x, y, vx,
+        vy: -speed,
+        targetY: target,
+        color: palette[0],
+        palette,
+        trail: []
+      });
+
+      playRocketWhooshSound();
+    }
+
+    function fireMultipleRockets(count = 3) {
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          launchSingleRocket();
+        }, i * 180 + Math.random() * 80);
+      }
+    }
+
+    function createCustomBurst(x, y, palette) {
+      const colors = palette || FC_PALETTES[Math.floor(Math.random() * FC_PALETTES.length)];
+      const sparkCount = Math.floor(Math.random() * 35) + 65;
+
+      for (let i = 0; i < sparkCount; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 7 + 1.5;
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const life = Math.random() * 45 + 50;
+
+        firecrackerSparks.push({
+          x, y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          color,
+          alpha: 1,
+          size: Math.random() * 3.5 + 1.5,
+          life,
+          maxLife: life,
+          gravity: 0.14,
+          drag: 0.965,
+          isCrackler: Math.random() < 0.28,
+          flicker: Math.random() > 0.4
+        });
+      }
+    }
+
+    function renderFirecrackersFrame() {
+      if (!firecrackersRunning || !fcCtx || !fcCanvas) return;
+
+      // Dark translucent wash to create luminous trails
+      fcCtx.globalCompositeOperation = 'destination-out';
+      fcCtx.fillStyle = 'rgba(0, 0, 0, 0.22)';
+      fcCtx.fillRect(0, 0, fcCanvas.width, fcCanvas.height);
+      fcCtx.globalCompositeOperation = 'lighter';
+
+      // 1. Update & Render Rockets
+      for (let i = firecrackerRockets.length - 1; i >= 0; i--) {
+        const r = firecrackerRockets[i];
+        r.x += r.vx;
+        r.y += r.vy;
+        r.vy += 0.08; // gravity deceleration
+
+        // Smoke / spark trail behind rocket
+        r.trail.push({ x: r.x, y: r.y, alpha: 1 });
+        if (r.trail.length > 8) r.trail.shift();
+
+        // Draw trail
+        for (let t = 0; t < r.trail.length; t++) {
+          const pt = r.trail[t];
+          fcCtx.beginPath();
+          fcCtx.arc(pt.x, pt.y, (t / r.trail.length) * 2.5 + 1, 0, Math.PI * 2);
+          fcCtx.fillStyle = `rgba(251, 191, 36, ${t / r.trail.length})`;
+          fcCtx.fill();
+        }
+
+        // Rocket head
+        fcCtx.beginPath();
+        fcCtx.arc(r.x, r.y, 3.5, 0, Math.PI * 2);
+        fcCtx.fillStyle = r.color;
+        fcCtx.shadowBlur = 10;
+        fcCtx.shadowColor = r.color;
+        fcCtx.fill();
+        fcCtx.shadowBlur = 0;
+
+        // Check if rocket reached zenith
+        if (r.y <= r.targetY || r.vy >= -1) {
+          createCustomBurst(r.x, r.y, r.palette);
+          playFirecrackerPopSound();
+          firecrackerRockets.splice(i, 1);
+        }
+      }
+
+      // 2. Update & Render Sparks
+      for (let i = firecrackerSparks.length - 1; i >= 0; i--) {
+        const s = firecrackerSparks[i];
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vy += s.gravity;
+        s.vx *= s.drag;
+        s.vy *= s.drag;
+        s.life--;
+        s.alpha = s.life / s.maxLife;
+
+        // Secondary cracklers popping into micro-sparks
+        if (s.isCrackler && s.life < s.maxLife * 0.45 && Math.random() < 0.1) {
+          s.isCrackler = false;
+          for (let m = 0; m < 3; m++) {
+            const mAngle = Math.random() * Math.PI * 2;
+            const mSpeed = Math.random() * 2.5 + 1;
+            firecrackerSparks.push({
+              x: s.x, y: s.y,
+              vx: Math.cos(mAngle) * mSpeed,
+              vy: Math.sin(mAngle) * mSpeed,
+              color: '#ffffff',
+              alpha: 1,
+              size: 1.5,
+              life: 18,
+              maxLife: 18,
+              gravity: 0.1,
+              drag: 0.94,
+              isCrackler: false,
+              flicker: true
+            });
+          }
+        }
+
+        if (s.life <= 0) {
+          firecrackerSparks.splice(i, 1);
+          continue;
+        }
+
+        const flickerAlpha = s.flicker && Math.random() > 0.4 ? s.alpha * 0.6 : s.alpha;
+        fcCtx.beginPath();
+        fcCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        fcCtx.fillStyle = s.color;
+        fcCtx.globalAlpha = flickerAlpha;
+        fcCtx.shadowBlur = 8;
+        fcCtx.shadowColor = s.color;
+        fcCtx.fill();
+        fcCtx.shadowBlur = 0;
+        fcCtx.globalAlpha = 1;
+      }
+
+      fcAnimId = requestAnimationFrame(renderFirecrackersFrame);
+    }
+
+    /* Sound Synthesizer for Firecrackers */
+    function playRocketWhooshSound() {
+      if (!audioFxEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(840, now + 0.35);
+        gain.gain.setValueAtTime(0.04, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch (e) {}
+    }
+
+    function playFirecrackerPopSound() {
+      if (!audioFxEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+
+        // Resonant pop
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320 + Math.random() * 180, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+
+        // Crackle shimmer
+        const bufferSize = audioCtx.sampleRate * 0.12;
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
+        }
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = 'highpass';
+        filter.frequency.value = 1200;
+        const noiseGain = audioCtx.createGain();
+        noiseGain.gain.setValueAtTime(0.06, now);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(audioCtx.destination);
+        noise.start(now);
+      } catch (e) {}
+    }
+
+    function playCelebrationChimes() {
+      if (!audioFxEnabled) return;
+      try {
+        initAudio();
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5]; // C5, E5, G5, C6, E6
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.07, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.6);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.65);
+        });
+      } catch (e) {}
     }
 
     async function handleUnifiedSignIn(e) {

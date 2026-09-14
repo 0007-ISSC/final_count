@@ -580,4 +580,79 @@ export class SupabaseService {
       return { success: false, error: err?.message || 'Failed to fetch from Supabase' };
     }
   }
+
+  /**
+   * Supabase Auth: Sign in user with email and password
+   */
+  public static async signInWithSupabase(email: string, password: string): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      const client = this.getClient();
+      const { data, error } = await client.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to authenticate with Supabase' };
+    }
+  }
+
+  /**
+   * Supabase Auth: Sign up new user with email, password and metadata
+   */
+  public static async signUpWithSupabase(email: string, password: string, metadata: Record<string, any> = {}): Promise<{ success: boolean; data?: any; error?: string }> {
+    try {
+      const client = this.getClient();
+      const { data, error } = await client.auth.signUp({
+        email: email.trim().toLowerCase(),
+        password,
+        options: {
+          data: metadata
+        }
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      return { success: true, data };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to register with Supabase' };
+    }
+  }
+
+  /**
+   * Supabase Auth: Sign out
+   */
+  public static async signOutSupabase(): Promise<{ success: boolean; error?: string }> {
+    try {
+      const client = this.getClient();
+      const { error } = await client.auth.signOut();
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to sign out from Supabase' };
+    }
+  }
+
+  /**
+   * Supabase Auth: Get authenticated user from token
+   */
+  public static async getSupabaseUser(jwtToken: string): Promise<{ success: boolean; user?: any; error?: string }> {
+    try {
+      const client = this.getClient();
+      const { data: { user }, error } = await client.auth.getUser(jwtToken);
+      if (error || !user) {
+        return { success: false, error: error?.message || 'Invalid or expired Supabase token' };
+      }
+      return { success: true, user };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to retrieve Supabase user' };
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
   "name": "HealthGPT",
-  "description": "Comprehensive AI healthcare platform featuring CareCast Inshorts & Dailyhunt 60-word medical briefings, interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi and Alex, RxVision multimodal prescription OCR verification workspace with safety radar and Jan Aushadhi generic alternatives, world-class Period & Cycle health suite with 3D female reproductive anatomy, emergency SOS beacons, and clinical analytics.",
+  "description": "Comprehensive AI healthcare platform featuring Supabase user authentication for secure access to personal health records and the 3D Human Digital Twin, interactive D3.js clinical analytics module with longitudinal health trends over time, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and emergency SOS beacons.",
   "requestFramePermissions": [
     "camera",
     "microphone",
