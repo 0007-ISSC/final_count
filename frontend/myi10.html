@@ -42,6 +42,11 @@
 </script>
 
 <style>
+/* Remove PC, Tablet, Mobile, and Watch device mode switch only on Overview page */
+body:has(#dashboard.page.active) #headerDeviceModeSwitch {
+  display: none !important;
+}
+
 /* Doctor Summary Clinical PDF & Print Styles */
 .doctor-pdf-modal-overlay {
   position: fixed;
@@ -4692,8 +4697,8 @@ window.go = window.go || function(pageId, subParam) {
           </select>
         </div>
 
-        <!-- CROSS-PLATFORM DEVICE MODE SELECTOR -->
-        <div class="device-mode-switch" style="display:inline-flex;align-items:center;gap:3px;background:var(--card);padding:3px 6px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);">
+        <!-- CROSS-PLATFORM DEVICE MODE SELECTOR (REMOVED ON OVERVIEW PAGE) -->
+        <div class="device-mode-switch" id="headerDeviceModeSwitch" style="display:none;align-items:center;gap:3px;background:var(--card);padding:3px 6px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);">
           <button id="devModeDesktop" onclick="setDeviceMode('desktop')" style="background:#2563eb;color:white;border:none;padding:4px 8px;border-radius:12px;font-size:11.5px;font-weight:700;cursor:pointer;" title="Desktop View">🖥️ PC</button>
           <button id="devModeTablet" onclick="setDeviceMode('tablet')" style="background:transparent;color:var(--ink-soft);border:none;padding:4px 8px;border-radius:12px;font-size:11.5px;font-weight:600;cursor:pointer;" title="Tablet View">📟 Tablet</button>
           <button id="devModeMobile" onclick="setDeviceMode('mobile')" style="background:transparent;color:var(--ink-soft);border:none;padding:4px 8px;border-radius:12px;font-size:11.5px;font-weight:600;cursor:pointer;" title="Mobile View">📱 Mobile</button>
@@ -12094,6 +12099,12 @@ function go(pageId, subParam) {
   if (PAGE_METAS[pageId]) {
     document.getElementById('pageHeadingTitle').textContent = PAGE_METAS[pageId][0];
     document.getElementById('pageHeadingSub').textContent = PAGE_METAS[pageId][1];
+  }
+
+  // Remove/hide PC, Tablet, Mobile, and Watch device mode switch only on Overview page ('dashboard')
+  const devSwitch = document.getElementById('headerDeviceModeSwitch');
+  if (devSwitch) {
+    devSwitch.style.display = (pageId === 'dashboard') ? 'none' : 'inline-flex';
   }
 
   // Sub-actions
@@ -34621,15 +34632,15 @@ async function checkSupabaseStatus(showToast = false) {
         pulseDot.style.boxShadow = '0 0 8px #22c55e';
       }
     } else {
-      if (badgeText) badgeText.textContent = '⚠️ Supabase: Offline';
+      if (badgeText) badgeText.textContent = '⚡ Local Store (Standby)';
       if (badgeBtn) {
-        badgeBtn.style.background = '#fff1f2';
-        badgeBtn.style.borderColor = '#fecdd3';
-        badgeBtn.style.color = '#be123c';
+        badgeBtn.style.background = '#fefce8';
+        badgeBtn.style.borderColor = '#fef08a';
+        badgeBtn.style.color = '#854d0e';
       }
       if (pulseDot) {
-        pulseDot.style.background = '#f43f5e';
-        pulseDot.style.boxShadow = '0 0 8px #f43f5e';
+        pulseDot.style.background = '#eab308';
+        pulseDot.style.boxShadow = '0 0 8px #eab308';
       }
     }
 

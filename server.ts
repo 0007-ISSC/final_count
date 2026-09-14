@@ -9626,10 +9626,10 @@ async function hydrateFromSupabase() {
         }
       }
     } else {
-      console.warn('⚠️ Supabase connection notice:', status.message);
+      console.log(`ℹ️ Supabase Backend: ${status.message} (Resilient in-memory persistence active)`);
     }
-  } catch (err) {
-    console.warn('Supabase initialization note:', err);
+  } catch (err: any) {
+    console.log('ℹ️ Supabase initialization check completed with in-memory fallback:', err?.message || err);
   }
 }
 
@@ -9637,14 +9637,15 @@ async function hydrateFromSupabase() {
 // Health Check & Root / Dashboard Pages
 // ----------------------------------------------------
 app.get('/api/health', (_req: Request, res: Response) => {
+  const isSupabaseOnline = SupabaseService.isOnline();
   return res.json({
     status: 'healthy',
     backend: 'online',
-    database: 'supabase-connected',
+    database: isSupabaseOnline ? 'supabase-connected' : 'in-memory-resilient',
     supabase: {
       projectId: 'aympyxmjgbgmcvcdnzyt',
       url: 'https://aympyxmjgbgmcvcdnzyt.supabase.co',
-      connected: true
+      connected: isSupabaseOnline
     },
     version: '2.4.0',
     llm: LLMDispatcher.getStatus(),
@@ -9656,7 +9657,7 @@ app.get('/health', (_req: Request, res: Response) => {
   return res.json({
     status: 'healthy',
     backend: 'online',
-    database: 'supabase-connected',
+    database: SupabaseService.isOnline() ? 'supabase-connected' : 'in-memory-resilient',
     projectId: 'aympyxmjgbgmcvcdnzyt',
     version: '2.4.0',
     platform: 'HealthGPT Node.js Runtime',
@@ -9691,6 +9692,11 @@ app.get(['/carecast', '/inshorts', '/dailyhunt'], (_req: Request, res: Response)
   res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
 });
 
+// Multi-page Interactive Onboarding Experience with Animated VFX
+app.get(['/onboarding', '/welcome', '/get-started', '/tour'], (_req: Request, res: Response) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'onboarding.html'));
+});
+
 // Global Process Safety Handlers
 process.on('uncaughtException', (err) => {
   console.error('[HealthGPT Server] Uncaught exception prevented from crashing server:', err);
@@ -9711,7 +9717,7 @@ const server = app.listen(PORT, HOST, () => {
   console.log(`======================================================\n`);
   
   // Hydrate from Supabase in background
-  hydrateFromSupabase().catch(e => console.warn('Supabase background hydration note:', e));
+  hydrateFromSupabase().catch(e => console.log('ℹ️ Supabase background hydration note:', e?.message || e));
 });
 
 server.on('error', (err: any) => {

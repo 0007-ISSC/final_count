@@ -1,0 +1,2920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Onboarding & Calibration — HealthGPT Clinical Intelligence</title>
+  <meta name="description" content="Interactive multi-stage onboarding with animated VFX, holographic biometrics, and AI clinical twin calibration.">
+
+  <!-- Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Framer Motion Core Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
+
+  <!-- Immediate LocalStorage Guard: Bypass onboarding if user already completed it -->
+  <script>
+    (function () {
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var isRestart = params.get('restart') === 'true' || params.get('force') === 'true';
+        var isCompleted = localStorage.getItem('healthgpt_onboarding_completed') === 'true';
+        if (isCompleted && !isRestart) {
+          var userToken = localStorage.getItem('healthgpt_user_id');
+          // If already authenticated jump to dashboard, otherwise jump to login interface
+          window.location.replace(userToken ? '/dashboard' : '/user-login');
+        }
+      } catch (err) {
+        console.warn('Onboarding early guard notice:', err);
+      }
+    })();
+  </script>
+
+  <style>
+    :root {
+      --bg-cream: #f9f6f0;
+      --bg-warm-sand: #f3ece2;
+      --bg-card: #ffffff;
+      --card-border: #e8ded2;
+      --card-border-subtle: #f0e9df;
+
+      --ink-primary: #2c2523;
+      --ink-secondary: #5c524e;
+      --ink-muted: #8c827a;
+
+      --accent-warm: #8c6d46;
+      --accent-warm-hover: #735735;
+      --accent-warm-light: #f5eee4;
+
+      --accent-cyan: #0284c7;
+      --accent-cyan-light: #e0f2fe;
+      --accent-emerald: #059669;
+      --accent-emerald-light: #d1fae5;
+      --accent-terracotta: #a65b44;
+      --accent-purple: #7c3aed;
+
+      --shadow-luxury: 0 24px 48px -16px rgba(80, 60, 40, 0.12), 0 0 1px 1px rgba(80, 60, 40, 0.05);
+      --shadow-glow-cyan: 0 0 36px rgba(2, 132, 199, 0.25);
+      --shadow-glow-warm: 0 0 36px rgba(140, 109, 70, 0.25);
+      --shadow-glow-emerald: 0 0 36px rgba(5, 150, 105, 0.3);
+
+      --radius-xl: 24px;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-cream);
+      color: var(--ink-primary);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Ambient Background & Animated Glowing VFX Blobs */
+    .ambient-canvas-wrap {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .vfx-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.65;
+      pointer-events: none;
+      transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .vfx-blob-1 {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(232, 218, 198, 0.8) 0%, rgba(212, 193, 166, 0.25) 70%, transparent 100%);
+      top: -120px;
+      left: -120px;
+      animation: floatOrganic 22s infinite alternate ease-in-out;
+    }
+
+    .vfx-blob-2 {
+      width: 480px;
+      height: 480px;
+      background: radial-gradient(circle, rgba(200, 225, 220, 0.7) 0%, rgba(160, 205, 195, 0.2) 70%, transparent 100%);
+      bottom: -140px;
+      right: -100px;
+      animation: floatOrganic 26s infinite alternate-reverse ease-in-out;
+    }
+
+    .vfx-blob-3 {
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, rgba(245, 215, 205, 0.6) 0%, rgba(240, 190, 175, 0.15) 70%, transparent 100%);
+      top: 35%;
+      left: 55%;
+      animation: floatOrganic 18s infinite alternate ease-in-out;
+    }
+
+    @keyframes floatOrganic {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(45px, -35px) scale(1.08); }
+      100% { transform: translate(-30px, 40px) scale(0.94); }
+    }
+
+    /* Top Progress Bar & Header */
+    .onboarding-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(249, 246, 240, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(232, 222, 210, 0.85);
+      padding: 10px 28px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Top Progress Strip with Steps Remaining Count */
+    .top-progress-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(232, 222, 210, 0.65);
+    }
+
+    .top-progress-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .progress-step-tag {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ink-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .progress-separator {
+      color: var(--ink-muted);
+      opacity: 0.5;
+    }
+
+    .steps-remaining-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-warm-light);
+      color: var(--accent-warm);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 11.5px;
+      border: 1px solid rgba(140, 109, 70, 0.25);
+      box-shadow: 0 1px 4px rgba(140, 109, 70, 0.06);
+    }
+
+    .remaining-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-warm);
+      display: inline-block;
+      animation: pulseDot 1.8s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(0.85); opacity: 0.5; }
+      50% { transform: scale(1.25); opacity: 1; }
+    }
+
+    .top-progress-strip-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-percent-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--ink-secondary);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-family: 'Space Grotesk', monospace;
+    }
+
+    .btn-top-strip-skip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      border: 1px solid rgba(140, 109, 70, 0.28);
+      color: var(--accent-warm);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-top-strip-skip:hover {
+      background: var(--accent-warm);
+      color: #ffffff;
+      border-color: var(--accent-warm);
+    }
+
+    .header-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--ink-primary);
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent-warm), var(--accent-warm-hover));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.3);
+    }
+
+    .brand-name {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-warm);
+      background: var(--accent-warm-light);
+      padding: 3px 8px;
+      border-radius: 20px;
+      border: 1px solid rgba(140, 109, 70, 0.2);
+    }
+
+    /* Progress Indicators */
+    .steps-stepper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 24px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(232, 222, 210, 0.4);
+      color: var(--ink-muted);
+      border: 1px solid transparent;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+
+    .step-pill.active {
+      background: #ffffff;
+      color: var(--accent-warm);
+      border-color: var(--accent-warm);
+      box-shadow: 0 4px 14px rgba(140, 109, 70, 0.15);
+      font-weight: 700;
+    }
+
+    .step-pill.completed {
+      background: var(--accent-emerald-light);
+      color: var(--accent-emerald);
+      border-color: rgba(5, 150, 105, 0.3);
+    }
+
+    .step-circle {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: rgba(140, 130, 122, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .step-pill.active .step-circle {
+      background: var(--accent-warm);
+    }
+
+    .step-pill.completed .step-circle {
+      background: var(--accent-emerald);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-audio-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      border: 1px solid var(--card-border);
+      background: #ffffff;
+      color: var(--ink-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-audio-toggle:hover {
+      background: var(--accent-warm-light);
+      border-color: var(--accent-warm);
+      color: var(--accent-warm);
+    }
+
+    .btn-audio-toggle.active {
+      background: var(--accent-warm-light);
+      border-color: var(--accent-warm);
+      color: var(--accent-warm);
+    }
+
+    /* Skip Button */
+    .btn-skip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--accent-warm);
+      background: rgba(140, 109, 70, 0.08);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 15px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(140, 109, 70, 0.3);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-skip:hover {
+      color: #ffffff;
+      background: var(--accent-warm);
+      border-color: var(--accent-warm);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.25);
+    }
+
+    /* Continuous Horizontal Progress Bar at Top */
+    .progress-bar-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4.5px;
+      background: rgba(232, 222, 210, 0.7);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-warm) 0%, #c29962 45%, var(--accent-emerald) 100%);
+      width: 20%;
+      transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 12px rgba(140, 109, 70, 0.6);
+      position: relative;
+    }
+
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      animation: progressShimmer 2.4s infinite ease-in-out;
+    }
+
+    @keyframes progressShimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    /* Main Container & Onboarding Stage */
+    .stage-wrapper {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 24px 60px;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Onboarding Card Deck with Swipe Gestures */
+    .onboarding-card {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-luxury);
+      padding: 44px 48px;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      will-change: transform, opacity;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      touch-action: pan-y;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .onboarding-card.is-dragging {
+      cursor: grabbing !important;
+      transition: none !important;
+    }
+
+    /* Swipe Edge Guidance Indicators */
+    .swipe-edge-indicator {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 15px;
+      border-radius: 20px;
+      background: rgba(44, 37, 35, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 30;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .swipe-edge-indicator.edge-left {
+      left: 18px;
+    }
+
+    .swipe-edge-indicator.edge-right {
+      right: 18px;
+    }
+
+    .swipe-edge-indicator.visible {
+      opacity: 1;
+    }
+
+    /* Card Corner Skip Button */
+    .card-corner-actions {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      z-index: 20;
+    }
+
+    .btn-card-skip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(249, 246, 240, 0.85);
+      border: 1px solid var(--card-border);
+      color: var(--ink-muted);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 13px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-card-skip:hover {
+      background: #ffffff;
+      color: var(--accent-warm);
+      border-color: var(--accent-warm);
+      box-shadow: 0 2px 8px rgba(140, 109, 70, 0.12);
+    }
+
+    .swipe-hint-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      text-align: center;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    .swipe-gesture-icon {
+      display: inline-block;
+      font-size: 15px;
+      animation: nudgeHorizontal 2.4s infinite ease-in-out;
+    }
+
+    @keyframes nudgeHorizontal {
+      0%, 100% { transform: translateX(0); }
+      30% { transform: translateX(-4px); }
+      70% { transform: translateX(4px); }
+    }
+
+    .onboarding-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-warm), var(--accent-emerald));
+      opacity: 0.85;
+    }
+
+    /* Step Page Panels (Only current is active) */
+    .page-panel {
+      display: none;
+      animation: fadeInSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .page-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeInSlide {
+      from {
+        opacity: 0;
+        transform: translateY(22px) scale(0.985);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--accent-warm-light);
+      color: var(--accent-warm);
+      border: 1px solid rgba(140, 109, 70, 0.2);
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 38px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink-primary);
+      line-height: 1.15;
+      margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+      font-size: 15px;
+      color: var(--ink-secondary);
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.55;
+    }
+
+    /* STEP 1: HOLOGRAPHIC BIO-CARD & PROFILE SETUP */
+    .step1-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    .form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .input-field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .input-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .text-input, .select-input {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--card-border);
+      background: #faf7f2;
+      font-size: 14px;
+      color: var(--ink-primary);
+      font-family: inherit;
+      transition: all 0.25s;
+    }
+
+    .text-input:focus, .select-input:focus {
+      outline: none;
+      border-color: var(--accent-warm);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(140, 109, 70, 0.15);
+    }
+
+    .avatar-picker-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .avatar-opt {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--card-border);
+      background: #ffffff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .avatar-opt.selected {
+      border-color: var(--accent-warm);
+      background: var(--accent-warm-light);
+      transform: scale(1.12);
+      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.25);
+    }
+
+    /* Holographic Live Bio-Card VFX */
+    .holographic-preview-card {
+      background: linear-gradient(135deg, #201a18 0%, #2f2724 50%, #1e1715 100%);
+      border-radius: 20px;
+      padding: 28px;
+      color: #f8fafc;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(44, 37, 35, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transform-style: preserve-3d;
+      transition: transform 0.2s ease-out;
+    }
+
+    .holographic-preview-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 215, 0, 0.15) 50%, rgba(56, 189, 248, 0.15) 60%, transparent 80%);
+      pointer-events: none;
+      animation: holographicSheen 6s infinite linear;
+    }
+
+    @keyframes holographicSheen {
+      0% { transform: translateX(-150%) skewX(-20deg); }
+      100% { transform: translateX(150%) skewX(-20deg); }
+    }
+
+    .card-top-chip {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .sim-chip {
+      width: 38px;
+      height: 28px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #d4af37, #aa820a);
+      border: 1px solid #ffe599;
+      position: relative;
+    }
+
+    .card-status-dot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-family: 'Space Grotesk', monospace;
+      color: #34d399;
+    }
+
+    .pulse-glow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: dotPulse 1.8s infinite;
+    }
+
+    @keyframes dotPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
+
+    .card-patient-name {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    .card-patient-id {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: 'Space Grotesk', monospace;
+      letter-spacing: 0.1em;
+      margin-bottom: 20px;
+    }
+
+    .card-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .card-meta-item small {
+      font-size: 10px;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.5);
+      display: block;
+      margin-bottom: 2px;
+      letter-spacing: 0.05em;
+    }
+
+    .card-meta-item strong {
+      font-size: 13px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* STEP 2: AI CLINICAL PHYSICIAN TWIN */
+    .step2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .doctor-card {
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      background: #faf7f2;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .doctor-card:hover {
+      border-color: var(--accent-warm);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(140, 109, 70, 0.12);
+    }
+
+    .doctor-card.selected {
+      border-color: var(--accent-warm);
+      background: #ffffff;
+      box-shadow: 0 12px 32px rgba(140, 109, 70, 0.2), 0 0 0 2px var(--accent-warm);
+    }
+
+    .doctor-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .doctor-avatar {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      background: var(--accent-warm-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      border: 1px solid rgba(140, 109, 70, 0.25);
+    }
+
+    .doctor-name {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .doctor-specialty {
+      font-size: 12px;
+      color: var(--accent-warm);
+      font-weight: 600;
+    }
+
+    .doctor-traits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .trait-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: rgba(140, 109, 70, 0.1);
+      color: var(--ink-secondary);
+      font-weight: 600;
+    }
+
+    /* Live ECG Rhythm Waveform Box */
+    .ecg-waveform-card {
+      background: #0f172a;
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      color: #f8fafc;
+      border: 1px solid #1e293b;
+      margin-top: 14px;
+    }
+
+    .ecg-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .ecg-title {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Space Grotesk', monospace;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ecg-bpm-readout {
+      font-size: 14px;
+      font-family: 'Space Grotesk', monospace;
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    #ecgCanvas {
+      width: 100%;
+      height: 70px;
+      display: block;
+    }
+
+    .ecg-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .ecg-range-slider {
+      accent-color: #38bdf8;
+      width: 160px;
+      cursor: pointer;
+    }
+
+    /* STEP 3: CLINICAL CAPABILITIES RADAR */
+    .modules-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .module-item {
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      background: #faf7f2;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+
+    .module-item:hover {
+      border-color: var(--accent-warm);
+      transform: translateY(-3px);
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(140, 109, 70, 0.1);
+    }
+
+    .module-item.selected {
+      border-color: var(--accent-warm);
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(140, 109, 70, 0.18), 0 0 0 1.5px var(--accent-warm);
+    }
+
+    .module-checkbox {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      border: 2px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: transparent;
+      background: #ffffff;
+      transition: all 0.2s;
+    }
+
+    .module-item.selected .module-checkbox {
+      background: var(--accent-warm);
+      border-color: var(--accent-warm);
+      color: #ffffff;
+    }
+
+    .module-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+
+    .module-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 4px;
+    }
+
+    .module-desc {
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.4;
+    }
+
+    /* STEP 4: BIOMETRIC TELEMETRY SENSORS */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .sensor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sensor-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      background: #faf7f2;
+      border: 1px solid var(--card-border);
+      transition: all 0.2s;
+    }
+
+    .sensor-item:hover {
+      background: #ffffff;
+      border-color: var(--accent-warm);
+    }
+
+    .sensor-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sensor-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--accent-warm-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .sensor-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .sensor-sub {
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    /* Modern Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      transition: .3s;
+      border-radius: 26px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-emerald);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Live Telemetry Radar Visualizer */
+    .telemetry-radar-box {
+      background: linear-gradient(135deg, #090d16 0%, #131d2e 100%);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      color: #f8fafc;
+      border: 1px solid #1e293b;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(9, 13, 22, 0.4);
+    }
+
+    .radar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-family: 'Space Grotesk', monospace;
+    }
+
+    .radar-badge {
+      font-size: 11px;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .telemetry-bars-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .telemetry-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .bar-label-flex {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-family: 'Space Grotesk', monospace;
+      color: #94a3b8;
+    }
+
+    .bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar-value-fill {
+      height: 100%;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #38bdf8, #34d399);
+      transition: width 0.6s ease;
+    }
+
+    /* STEP 5: ACTIVATION & CELEBRATION */
+    .step5-wrap {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    .scanner-orb-wrap {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 28px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scanner-svg {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+
+    .scanner-bg-circle {
+      fill: none;
+      stroke: rgba(140, 109, 70, 0.15);
+      stroke-width: 7;
+    }
+
+    .scanner-progress-circle {
+      fill: none;
+      stroke: url(#scannerGradient);
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scanner-center-content {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scanner-percentage {
+      font-family: 'Space Grotesk', monospace;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-warm);
+    }
+
+    .scanner-icon {
+      font-size: 36px;
+      display: none;
+    }
+
+    .summary-badge-card {
+      background: #faf7f2;
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(140, 109, 70, 0.2);
+      font-size: 13px;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .summary-row span:first-child {
+      color: var(--ink-secondary);
+    }
+
+    .summary-row span:last-child {
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    /* Actions Navigation Bar */
+    .card-actions-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--card-border-subtle);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--card-border);
+      background: #ffffff;
+      color: var(--ink-secondary);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: var(--bg-warm-sand);
+      border-color: var(--ink-muted);
+      color: var(--ink-primary);
+    }
+
+    .btn-back:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .btn-next {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 13px 28px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, var(--accent-warm) 0%, var(--accent-warm-hover) 100%);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(140, 109, 70, 0.3);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-next:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(140, 109, 70, 0.4);
+    }
+
+    .btn-next:active {
+      transform: translateY(0);
+    }
+
+    .btn-launch-final {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4) !important;
+      font-size: 15px !important;
+      padding: 14px 34px !important;
+    }
+
+    .step-counter-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-remaining-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--bg-warm-sand);
+      color: var(--ink-secondary);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(140, 109, 70, 0.2);
+    }
+
+    .btn-skip-subtle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      border: 1px solid rgba(140, 109, 70, 0.25);
+      color: var(--ink-muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-skip-subtle:hover {
+      color: var(--accent-warm);
+      background: rgba(140, 109, 70, 0.08);
+      border-color: var(--accent-warm);
+    }
+
+    .restart-mode-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 10px 16px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      width: 100%;
+    }
+
+    .restart-mode-banner a {
+      color: #1d4ed8;
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
+    /* Confetti Particle Canvas */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Responsive Breakdown */
+    @media (max-width: 900px) {
+      .onboarding-card {
+        padding: 30px 24px;
+      }
+      .step1-grid, .step2-grid, .telemetry-grid {
+        grid-template-columns: 1fr;
+      }
+      .modules-matrix {
+        grid-template-columns: 1fr 1fr;
+      }
+      .steps-stepper {
+        display: none;
+      }
+      .holographic-preview-card {
+        max-width: 440px;
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .modules-matrix {
+        grid-template-columns: 1fr;
+      }
+      .page-title {
+        font-size: 30px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full-screen Canvas for Ambient Biometric Constellation VFX -->
+  <div class="ambient-canvas-wrap">
+    <div class="vfx-blob vfx-blob-1"></div>
+    <div class="vfx-blob vfx-blob-2"></div>
+    <div class="vfx-blob vfx-blob-3"></div>
+    <canvas id="ambientConstellationCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  </div>
+
+  <!-- Celebratory Fireworks & Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Sticky Top Header & Stepper with Remaining Steps Counter -->
+  <header class="onboarding-header" id="onboardingHeader">
+    <!-- Top Progress Bar Strip showing remaining steps count -->
+    <div class="top-progress-strip" id="topProgressStrip">
+      <div class="top-progress-info">
+        <span class="progress-step-tag" id="topStepPill">Step 1 of 5</span>
+        <span class="progress-separator">•</span>
+        <span class="steps-remaining-text" id="topStepsRemaining">
+          <span class="remaining-pulse-dot"></span>
+          <strong id="stepsRemainingCount">4</strong> steps remaining
+        </span>
+      </div>
+
+      <div class="top-progress-strip-right">
+        <span class="progress-percent-text" id="topProgressPct">20% Completed</span>
+        <button type="button" class="btn-top-strip-skip" id="btnTopStripSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
+          <span>Skip to Login</span>
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Navigation Bar Row -->
+    <div class="header-main-row">
+      <a href="/" class="brand-link" id="brandHomeLink">
+        <div class="brand-icon">🌿</div>
+        <div>
+          <span class="brand-name">HealthGPT</span>
+        </div>
+        <span class="brand-tag">Onboarding</span>
+      </a>
+
+      <!-- Step Progress Pills -->
+      <nav class="steps-stepper" aria-label="Onboarding Steps">
+        <div class="step-pill active" id="stepPill1" onclick="jumpToStep(1)">
+          <span class="step-circle">1</span>
+          <span>Profile</span>
+        </div>
+        <div class="step-pill" id="stepPill2" onclick="jumpToStep(2)">
+          <span class="step-circle">2</span>
+          <span>AI Twin</span>
+        </div>
+        <div class="step-pill" id="stepPill3" onclick="jumpToStep(3)">
+          <span class="step-circle">3</span>
+          <span>Priorities</span>
+        </div>
+        <div class="step-pill" id="stepPill4" onclick="jumpToStep(4)">
+          <span class="step-circle">4</span>
+          <span>Telemetry</span>
+        </div>
+        <div class="step-pill" id="stepPill5" onclick="jumpToStep(5)">
+          <span class="step-circle">5</span>
+          <span>Activation</span>
+        </div>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="header-actions">
+        <button type="button" class="btn-audio-toggle active" id="audioToggleBtn" onclick="toggleAudio()" title="Toggle ambient audio effects">
+          <span id="audioIcon">🔊</span>
+          <span id="audioLabel">Sound ON</span>
+        </button>
+        <button type="button" class="btn-skip" id="btnHeaderSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
+          <span>Skip to Login</span>
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Continuous Progress Bar Track -->
+    <div class="progress-bar-track" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" id="topProgressBarTrack">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+  </header>
+
+  <!-- Main Stage Card Container -->
+  <main class="stage-wrapper">
+    <!-- Optional Restart Notice Banner (Shown when arriving via ?restart=true) -->
+    <div class="restart-mode-banner" id="restartModeBanner" style="display:none;">
+      <span>ℹ️ <strong>Tutorial Replay Mode:</strong> Navigating through onboarding. Your progress will be remembered once finished.</span>
+      <a href="/user-login">Exit to Login →</a>
+    </div>
+
+    <div class="onboarding-card" id="onboardingDeckCard">
+      <!-- Swipe Navigation Edge Visual Indicators -->
+      <div class="swipe-edge-indicator edge-left" id="swipeIndicatorLeft" aria-hidden="true">
+        <span>←</span>
+        <span>Previous Step</span>
+      </div>
+      <div class="swipe-edge-indicator edge-right" id="swipeIndicatorRight" aria-hidden="true">
+        <span>Next Step</span>
+        <span>→</span>
+      </div>
+
+      <!-- Quick Corner Skip Button inside card -->
+      <div class="card-corner-actions">
+        <button type="button" class="btn-card-skip" id="btnCardSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
+          <span>Skip Tutorial</span>
+          <span>✕</span>
+        </button>
+      </div>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 1: IDENTITY & LIVE HOLOGRAPHIC BIO-CARD
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel active" id="pageStep1">
+        <div class="page-header">
+          <div class="page-badge">✨ Stage 01 of 05 · Patient Identity</div>
+          <h1 class="page-title">Personalize Your Clinical Profile</h1>
+          <p class="page-subtitle">Configure your baseline medical persona to calibrate customized diagnostics, metabolic indicators, and clinical communication.</p>
+        </div>
+
+        <div class="step1-grid">
+          <div class="form-col">
+            <div class="input-field-group">
+              <label class="input-label" for="onboardingFullName">Full Legal or Preferred Name</label>
+              <input type="text" id="onboardingFullName" class="text-input" placeholder="e.g. Eleanor Vance" value="Eleanor Vance" oninput="updateHolographicCard()">
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+              <div class="input-field-group">
+                <label class="input-label" for="onboardingAge">Age Range</label>
+                <select id="onboardingAge" class="select-input" onchange="updateHolographicCard()">
+                  <option value="18-24">18 – 24 years</option>
+                  <option value="25-34" selected>25 – 34 years</option>
+                  <option value="35-49">35 – 49 years</option>
+                  <option value="50-64">50 – 64 years</option>
+                  <option value="65+">65+ years</option>
+                </select>
+              </div>
+
+              <div class="input-field-group">
+                <label class="input-label" for="onboardingBlood">Blood Group</label>
+                <select id="onboardingBlood" class="select-input" onchange="updateHolographicCard()">
+                  <option value="O+">O Positive (O+)</option>
+                  <option value="A+">A Positive (A+)</option>
+                  <option value="B+">B Positive (B+)</option>
+                  <option value="AB+">AB Positive (AB+)</option>
+                  <option value="O-">O Negative (O-)</option>
+                  <option value="Other">Not Specified</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="input-field-group">
+              <label class="input-label" for="onboardingGoal">Primary Health Aspiration</label>
+              <select id="onboardingGoal" class="select-input" onchange="updateHolographicCard()">
+                <option value="Holistic Longevity & Prevention">Holistic Longevity & Preventive Care</option>
+                <option value="Chronic Condition Management">Chronic Vital Management (Cardio/Endocrine)</option>
+                <option value="Hormonal & Reproductive Vitality">Hormonal & Reproductive Vitality</option>
+                <option value="Athletic Performance & Biohacking">Athletic Biomarker Optimization</option>
+                <option value="Mental Well-being & Stress Resilience">Mental Well-being & Sleep Rhythm</option>
+              </select>
+            </div>
+
+            <div class="input-field-group">
+              <label class="input-label">Select Holographic Identity Avatar</label>
+              <div class="avatar-picker-row">
+                <button type="button" class="avatar-opt selected" onclick="selectAvatar('👩‍⚕️', this)">👩‍⚕️</button>
+                <button type="button" class="avatar-opt" onclick="selectAvatar('🌿', this)">🌿</button>
+                <button type="button" class="avatar-opt" onclick="selectAvatar('🧬', this)">🧬</button>
+                <button type="button" class="avatar-opt" onclick="selectAvatar('🏃‍♀️', this)">🏃‍♀️</button>
+                <button type="button" class="avatar-opt" onclick="selectAvatar('🧘', this)">🧘</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Holographic Real-time Bio-Card -->
+          <div>
+            <div class="holographic-preview-card" id="holographicCard">
+              <div class="card-top-chip">
+                <div class="sim-chip"></div>
+                <div class="card-status-dot">
+                  <span class="pulse-glow-dot"></span>
+                  <span>SYNCED · VERIFIED</span>
+                </div>
+              </div>
+              <div class="card-patient-name" id="holoNameDisplay">ELEANOR VANCE</div>
+              <div class="card-patient-id" id="holoIdDisplay">UID-2026-HLTH-88219</div>
+
+              <div class="card-meta-grid">
+                <div class="card-meta-item">
+                  <small>Age Cohort</small>
+                  <strong id="holoAgeDisplay">25 – 34</strong>
+                </div>
+                <div class="card-meta-item">
+                  <small>Blood Type</small>
+                  <strong id="holoBloodDisplay">O+</strong>
+                </div>
+                <div class="card-meta-item">
+                  <small>Avatar</small>
+                  <strong id="holoAvatarDisplay">👩‍⚕️ Active</strong>
+                </div>
+              </div>
+
+              <div style="margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:space-between;">
+                <span>PRIORITY: <b id="holoGoalDisplay" style="color:#38bdf8;">Holistic Longevity</b></span>
+                <span style="font-family:'Space Grotesk', monospace;font-size:10px;">AES-256 ENCRYPTED</span>
+              </div>
+            </div>
+            <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ink-muted);">
+              🖱️ Hover or tilt to experience holographic optical refraction
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 2: AI CLINICAL PHYSICIAN PAIRING & ECG VFX
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel" id="pageStep2">
+        <div class="page-header">
+          <div class="page-badge">🩺 Stage 02 of 05 · AI Clinical Twin</div>
+          <h1 class="page-title">Calibrate Your Primary AI Care Companion</h1>
+          <p class="page-subtitle">Select your dedicated AI physician interface to match your communication preference and clinical focus.</p>
+        </div>
+
+        <div class="step2-grid">
+          <!-- Doctor 1: Dr. Nambi -->
+          <div class="doctor-card selected" id="docCardNambi" onclick="selectDoctor('nambi')">
+            <div class="doctor-head">
+              <div class="doctor-avatar">👨‍⚕️</div>
+              <div>
+                <div class="doctor-name">Dr. Nambi, MD</div>
+                <div class="doctor-specialty">Internal Medicine & Diagnostics</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--ink-secondary);line-height:1.5;">
+              Analytical, clinically rigorous, and evidence-driven. Specializes in comprehensive symptom differential diagnosis, multi-organ laboratory analysis, and pharmacotherapy interactions.
+            </p>
+            <div class="doctor-traits">
+              <span class="trait-badge">🧬 Differential Dx</span>
+              <span class="trait-badge">💊 Pharmacovigilance</span>
+              <span class="trait-badge">🔬 Lab Analytics</span>
+            </div>
+            <button type="button" class="btn-audio-toggle" style="align-self:flex-start;margin-top:4px;" onclick="previewDoctorVoice('nambi', event)">
+              <span>🔊</span> Voice Sample
+            </button>
+          </div>
+
+          <!-- Doctor 2: Alex -->
+          <div class="doctor-card" id="docCardAlex" onclick="selectDoctor('alex')">
+            <div class="doctor-head">
+              <div class="doctor-avatar">🧘‍♀️</div>
+              <div>
+                <div class="doctor-name">Alex, Holistic RN</div>
+                <div class="doctor-specialty">Integrative Health & Mental Wellness</div>
+              </div>
+            </div>
+            <p style="font-size:13px;color:var(--ink-secondary);line-height:1.5;">
+              Warm, empathetic, and lifestyle-focused. Specializes in circadian rhythm balance, nervous system regulation, nutritional pacing, and stress resilience.
+            </p>
+            <div class="doctor-traits">
+              <span class="trait-badge">🌸 Circadian Rhythm</span>
+              <span class="trait-badge">🧠 Somatic Wellness</span>
+              <span class="trait-badge">🥗 Lifestyle Coaching</span>
+            </div>
+            <button type="button" class="btn-audio-toggle" style="align-self:flex-start;margin-top:4px;" onclick="previewDoctorVoice('alex', event)">
+              <span>🔊</span> Voice Sample
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Harmonic ECG Oscilloscope Canvas -->
+        <div class="ecg-waveform-card">
+          <div class="ecg-top">
+            <div class="ecg-title">
+              <span>🫀 LIVE DIGITAL TWIN ECG HARMONIC WAVEFORM</span>
+              <span class="radar-badge">LEAD II · REALTIME</span>
+            </div>
+            <div class="ecg-bpm-readout" id="ecgBpmDisplay">72 BPM · NSR</div>
+          </div>
+          <canvas id="ecgCanvas"></canvas>
+          <div class="ecg-controls-row">
+            <span>Adjust Resting Pulse Calibration:</span>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span id="sliderBpmValue" style="font-family:'Space Grotesk',monospace;color:#38bdf8;font-weight:700;">72</span>
+              <input type="range" class="ecg-range-slider" id="ecgSlider" min="55" max="110" value="72" oninput="adjustEcgBpm(this.value)">
+              <span style="font-size:11px;">BPM</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 3: CLINICAL CAPABILITIES RADAR
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel" id="pageStep3">
+        <div class="page-header">
+          <div class="page-badge">⚡ Stage 03 of 05 · Clinical Capabilities</div>
+          <h1 class="page-title">Select Your Primary Care Tools</h1>
+          <p class="page-subtitle">Enable the interactive healthcare suites you want prioritized across your main command center.</p>
+        </div>
+
+        <div class="modules-matrix">
+          <div class="module-item selected" onclick="toggleModule(this, 'rxvision')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">📄</span>
+            <div class="module-name">RxVision OCR & Radar</div>
+            <p class="module-desc">Multimodal prescription analysis, contraindication scanner & Jan Aushadhi generic alternatives.</p>
+          </div>
+
+          <div class="module-item selected" onclick="toggleModule(this, 'twin')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🫀</span>
+            <div class="module-name">3D Human Digital Twin</div>
+            <p class="module-desc">Interactive WebGL anatomical organ simulations with real-time biometric heatmaps.</p>
+          </div>
+
+          <div class="module-item selected" onclick="toggleModule(this, 'cycle')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🌸</span>
+            <div class="module-name">Cycle & Hormone Suite</div>
+            <p class="module-desc">Ovulation tracking, follicular phase intelligence & female reproductive 3D model.</p>
+          </div>
+
+          <div class="module-item selected" onclick="toggleModule(this, 'carecast')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">📰</span>
+            <div class="module-name">CareCast Inshorts Feed</div>
+            <p class="module-desc">Bite-sized 60-word medical briefings, audio podcasts, and peer-reviewed journals.</p>
+          </div>
+
+          <div class="module-item selected" onclick="toggleModule(this, 'sos')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🚨</span>
+            <div class="module-name">Emergency SOS Beacons</div>
+            <p class="module-desc">1-tap geolocation beacon with instant paramedic telemetry and nearest hospital routing.</p>
+          </div>
+
+          <div class="module-item" onclick="toggleModule(this, 'metabolic')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🥗</span>
+            <div class="module-name">Metabolic & Nutrition</div>
+            <p class="module-desc">Macronutrient glycemic curves, meal scanning, and insulin sensitivity telemetry.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 4: BIOMETRIC TELEMETRY & WEARABLE SYNC
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel" id="pageStep4">
+        <div class="page-header">
+          <div class="page-badge">📡 Stage 04 of 05 · Continuous Telemetry</div>
+          <h1 class="page-title">Biometric Sensors & Wearable Sync</h1>
+          <p class="page-subtitle">Configure real-time telemetry stream integrations for continuous physiological monitoring.</p>
+        </div>
+
+        <div class="telemetry-grid">
+          <div class="sensor-list">
+            <div class="sensor-item">
+              <div class="sensor-info">
+                <div class="sensor-icon">⌚</div>
+                <div>
+                  <div class="sensor-label">Smartwatch Heart Rate & HRV</div>
+                  <div class="sensor-sub">Apple Watch, Fitbit & Wear OS continuous pulse stream</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleHr" checked onchange="updateTelemetryRadar()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="sensor-item">
+              <div class="sensor-info">
+                <div class="sensor-icon">🩸</div>
+                <div>
+                  <div class="sensor-label">SpO2 Blood Oxygen Monitoring</div>
+                  <div class="sensor-sub">Nocturnal desaturation warning & respiratory rate</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleSpo2" checked onchange="updateTelemetryRadar()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="sensor-item">
+              <div class="sensor-info">
+                <div class="sensor-icon">🌙</div>
+                <div>
+                  <div class="sensor-label">Sleep Architecture & Stages</div>
+                  <div class="sensor-sub">Deep REM cycling and circadian recovery scoring</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleSleep" checked onchange="updateTelemetryRadar()">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="sensor-item">
+              <div class="sensor-info">
+                <div class="sensor-icon">⚡</div>
+                <div>
+                  <div class="sensor-label">Immediate Fall & Crash Detection</div>
+                  <div class="sensor-sub">Automated 911 / EMS dispatch on acute impact</div>
+                </div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="toggleFall" checked onchange="updateTelemetryRadar()">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Live Signal Quality & Stream Preview -->
+          <div class="telemetry-radar-box">
+            <div class="radar-header">
+              <span style="font-weight:700;color:#38bdf8;">TELEMETRY LINK STATUS</span>
+              <span class="radar-badge" id="telemetryStatusBadge">ACTIVE · 4/4 SENSORS</span>
+            </div>
+
+            <div class="telemetry-bars-group">
+              <div class="telemetry-bar-row">
+                <div class="bar-label-flex">
+                  <span>Pulse Buffer Latency</span>
+                  <span id="latencyDisplay">18ms</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-value-fill" id="barLatency" style="width: 88%;"></div>
+                </div>
+              </div>
+
+              <div class="telemetry-bar-row">
+                <div class="bar-label-flex">
+                  <span>Continuous Encryption Strength</span>
+                  <span>AES-GCM 256</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-value-fill" style="width: 100%; background: #34d399;"></div>
+                </div>
+              </div>
+
+              <div class="telemetry-bar-row">
+                <div class="bar-label-flex">
+                  <span>Digital Twin Fidelity Score</span>
+                  <span id="fidelityDisplay">98.4%</span>
+                </div>
+                <div class="bar-track">
+                  <div class="bar-value-fill" id="barFidelity" style="width: 98%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding:12px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:11px;color:#94a3b8;font-family:'Space Grotesk',monospace;display:flex;align-items:center;gap:8px;">
+              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;"></span>
+              <span>All biometric streams conform to HIPAA & ISO-27701 Zero-Knowledge policies.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 5: ACTIVATION CELEBRATION & NEURAL HANDSHAKE
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel" id="pageStep5">
+        <div class="step5-wrap">
+          <div class="page-badge" style="background:#d1fae5;color:#059669;border-color:rgba(5,150,105,0.3);">
+            🎉 Stage 05 of 05 · Calibration Complete
+          </div>
+
+          <!-- Circular SVG Calibration VFX Scanner -->
+          <div class="scanner-orb-wrap">
+            <svg class="scanner-svg" viewBox="0 0 140 140">
+              <defs>
+                <linearGradient id="scannerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#8c6d46" />
+                  <stop offset="50%" stop-color="#38bdf8" />
+                  <stop offset="100%" stop-color="#059669" />
+                </linearGradient>
+              </defs>
+              <circle class="scanner-bg-circle" cx="70" cy="70" r="60"></circle>
+              <circle class="scanner-progress-circle" id="scannerCircle" cx="70" cy="70" r="60"></circle>
+            </svg>
+            <div class="scanner-center-content">
+              <div class="scanner-percentage" id="scannerPercentText">0%</div>
+              <div class="scanner-icon" id="scannerIconCheck">✨</div>
+            </div>
+          </div>
+
+          <h1 class="page-title" id="finalCelebrationTitle">Calibrating Neural Digital Twin...</h1>
+          <p class="page-subtitle" id="finalCelebrationSub" style="margin-bottom:28px;">
+            Synthesizing clinical baseline, doctor pairing, and telemetry data models into your personal HealthGPT workspace.
+          </p>
+
+          <!-- Summary Confirmation Card -->
+          <div class="summary-badge-card" id="summaryBadgeCard">
+            <div class="summary-row">
+              <span>Patient Profile:</span>
+              <span id="sumName">Eleanor Vance (25-34 yrs, O+)</span>
+            </div>
+            <div class="summary-row">
+              <span>Assigned AI Physician:</span>
+              <span id="sumDoc">Dr. Nambi, MD (Internal Medicine)</span>
+            </div>
+            <div class="summary-row">
+              <span>Active Specialties:</span>
+              <span id="sumModules">RxVision, 3D Twin, Cycle Health, CareCast, SOS</span>
+            </div>
+            <div class="summary-row">
+              <span>Telemetry Streams:</span>
+              <span id="sumSensors">Heart Rate, SpO2, Sleep, Fall Detection</span>
+            </div>
+          </div>
+
+          <!-- Quick Navigation Actions -->
+          <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
+            <button type="button" class="btn-next btn-launch-final" id="btnLaunchDashboard" onclick="finishOnboarding('/dashboard')">
+              🚀 Enter HealthGPT Dashboard
+            </button>
+            <button type="button" class="btn-back" onclick="finishOnboarding('/carecast')">
+              📰 Open CareCast Feed
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Navigation Footer Buttons -->
+      <footer class="card-actions-row" id="cardActionsRow">
+        <button type="button" class="btn-back" id="btnStepBack" onclick="previousStep()" disabled>
+          ← Back
+        </button>
+
+        <div class="step-counter-cluster">
+          <div style="font-size:13px;color:var(--ink-secondary);font-weight:700;" id="stepCounterText">
+            Step 1 of 5
+          </div>
+          <span class="footer-remaining-badge" id="footerRemainingBadge">
+            <strong id="footerRemainingNum">4</strong> steps remaining
+          </span>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button type="button" class="btn-skip-subtle" id="btnFooterSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
+            Skip Tutorial
+          </button>
+          <button type="button" class="btn-next" id="btnStepNext" onclick="nextStep()">
+            Continue →
+          </button>
+        </div>
+      </footer>
+
+    </div>
+
+    <!-- Swipe & Drag Interaction Guidance Banner -->
+    <div class="swipe-hint-banner" id="swipeHintBanner" aria-live="polite">
+      <span class="swipe-gesture-icon">↔</span>
+      <span><strong>Swipe or drag card</strong> to navigate slides · Keyboard Arrow keys (← →) also supported</span>
+    </div>
+  </main>
+
+  <!-- Interactive JavaScript Engine -->
+  <script>
+    /* ══════════════════════════════════════════════════════════
+       STATE MACHINE & ONBOARDING DATA MODEL
+       ══════════════════════════════════════════════════════════ */
+    let currentStep = 1;
+    const totalSteps = 5;
+
+    const onboardingState = {
+      fullName: 'Eleanor Vance',
+      age: '25-34',
+      blood: 'O+',
+      goal: 'Holistic Longevity & Prevention',
+      avatar: '👩‍⚕️',
+      doctor: 'nambi',
+      bpm: 72,
+      modules: ['rxvision', 'twin', 'cycle', 'carecast', 'sos'],
+      telemetry: {
+        hr: true,
+        spo2: true,
+        sleep: true,
+        fall: true
+      },
+      soundEnabled: true
+    };
+
+    /* Web Audio Synthesizer for Interactive VFX Chimes */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) audioCtx = new AudioContextClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTone(type = 'blip') {
+      if (!onboardingState.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'blip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(540, now);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+          gain.gain.setValueAtTime(0.06, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        } else if (type === 'step') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.exponentialRampToValueAtTime(660, now + 0.14);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'toggle') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(620, now);
+          osc.frequency.exponentialRampToValueAtTime(740, now + 0.06);
+          gain.gain.setValueAtTime(0.05, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'celebrate') {
+          // Arpeggio chord
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const chordOsc = ctx.createOscillator();
+            const chordGain = ctx.createGain();
+            chordOsc.connect(chordGain);
+            chordGain.connect(ctx.destination);
+            chordOsc.type = 'triangle';
+            chordOsc.frequency.setValueAtTime(freq, now + idx * 0.09);
+            chordGain.gain.setValueAtTime(0.08, now + idx * 0.09);
+            chordGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.4);
+            chordOsc.start(now + idx * 0.09);
+            chordOsc.stop(now + idx * 0.09 + 0.4);
+          });
+        }
+      } catch (e) {
+        console.debug('Audio synth notice:', e);
+      }
+    }
+
+    function toggleAudio() {
+      onboardingState.soundEnabled = !onboardingState.soundEnabled;
+      const btn = document.getElementById('audioToggleBtn');
+      const icon = document.getElementById('audioIcon');
+      const label = document.getElementById('audioLabel');
+
+      if (onboardingState.soundEnabled) {
+        btn.classList.add('active');
+        icon.textContent = '🔊';
+        label.textContent = 'Sound ON';
+        playTone('blip');
+      } else {
+        btn.classList.remove('active');
+        icon.textContent = '🔇';
+        label.textContent = 'Muted';
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP TRANSITIONS & FRAMER MOTION ORCHESTRATION
+       ══════════════════════════════════════════════════ */
+    function updateStepperUI() {
+      const fillPct = (currentStep / totalSteps) * 100;
+      const stepsRemaining = totalSteps - currentStep;
+
+      // Update continuous progress bar
+      const barFill = document.getElementById('progressBarFill');
+      if (barFill) barFill.style.width = fillPct + '%';
+
+      // Update Top Progress Bar Remaining Steps and Counters
+      const topStepPill = document.getElementById('topStepPill');
+      if (topStepPill) topStepPill.textContent = `Step ${currentStep} of ${totalSteps}`;
+
+      const stepsRemainingCount = document.getElementById('stepsRemainingCount');
+      if (stepsRemainingCount) stepsRemainingCount.textContent = stepsRemaining;
+
+      const topStepsRemaining = document.getElementById('topStepsRemaining');
+      if (topStepsRemaining) {
+        if (stepsRemaining === 0) {
+          topStepsRemaining.innerHTML = '<span class="remaining-pulse-dot" style="background:#059669;"></span> <strong>0</strong> steps remaining · Complete!';
+          topStepsRemaining.style.borderColor = 'rgba(5, 150, 105, 0.3)';
+          topStepsRemaining.style.color = '#059669';
+        } else if (stepsRemaining === 1) {
+          topStepsRemaining.innerHTML = '<span class="remaining-pulse-dot"></span> <strong>1</strong> step remaining';
+          topStepsRemaining.style.borderColor = '';
+          topStepsRemaining.style.color = '';
+        } else {
+          topStepsRemaining.innerHTML = `<span class="remaining-pulse-dot"></span> <strong>${stepsRemaining}</strong> steps remaining`;
+          topStepsRemaining.style.borderColor = '';
+          topStepsRemaining.style.color = '';
+        }
+      }
+
+      const topProgressPct = document.getElementById('topProgressPct');
+      if (topProgressPct) {
+        topProgressPct.textContent = stepsRemaining === 0 ? '100% Calibrated' : `${fillPct}% Completed`;
+      }
+
+      // Update pills
+      for (let i = 1; i <= totalSteps; i++) {
+        const pill = document.getElementById(`stepPill${i}`);
+        if (!pill) continue;
+        pill.classList.remove('active', 'completed');
+        if (i === currentStep) {
+          pill.classList.add('active');
+        } else if (i < currentStep) {
+          pill.classList.add('completed');
+        }
+      }
+
+      // Update footer controls and remaining badge
+      const backBtn = document.getElementById('btnStepBack');
+      const nextBtn = document.getElementById('btnStepNext');
+      const counterText = document.getElementById('stepCounterText');
+      const actionsRow = document.getElementById('cardActionsRow');
+      const footerRemainingNum = document.getElementById('footerRemainingNum');
+      const footerRemainingBadge = document.getElementById('footerRemainingBadge');
+
+      if (backBtn) backBtn.disabled = currentStep === 1;
+      if (counterText) counterText.textContent = `Step ${currentStep} of ${totalSteps}`;
+
+      if (footerRemainingNum) footerRemainingNum.textContent = stepsRemaining;
+      if (footerRemainingBadge) {
+        if (stepsRemaining === 0) {
+          footerRemainingBadge.textContent = 'Calibration Complete ✨';
+        } else {
+          footerRemainingBadge.innerHTML = `<strong id="footerRemainingNum">${stepsRemaining}</strong> step${stepsRemaining === 1 ? '' : 's'} remaining`;
+        }
+      }
+
+      if (actionsRow) {
+        if (currentStep === totalSteps) {
+          actionsRow.style.display = 'none'; // Step 5 has its own prominent launch buttons
+        } else {
+          actionsRow.style.display = 'flex';
+          if (nextBtn) nextBtn.textContent = (currentStep === 4) ? 'Finish Calibration ✨' : 'Continue →';
+        }
+      }
+    }
+
+    /* Skip onboarding and proceed straight to login interface */
+    function skipToLogin() {
+      try {
+        localStorage.setItem('healthgpt_onboarding_completed', 'true');
+        localStorage.setItem('healthgpt_onboarding_skipped', 'true');
+        localStorage.setItem('healthgpt_onboarding_completed_at', new Date().toISOString());
+      } catch (err) {
+        console.warn('LocalStorage save notice:', err);
+      }
+
+      playTone('step');
+
+      const card = document.getElementById('onboardingDeckCard');
+      if (card) {
+        card.style.transition = 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(-14px) scale(0.98)';
+      }
+
+      setTimeout(() => {
+        window.location.href = '/user-login';
+      }, 200);
+    }
+
+    function showStep(stepNumber, direction = 1) {
+      if (stepNumber < 1 || stepNumber > totalSteps) return;
+
+      const currentPanel = document.getElementById(`pageStep${currentStep}`);
+      const nextPanel = document.getElementById(`pageStep${stepNumber}`);
+
+      const M = window.Motion;
+
+      // Animate current out and next in with Framer Motion if available
+      if (M && typeof M.animate === 'function') {
+        const outX = direction > 0 ? -40 : 40;
+        const inX = direction > 0 ? 40 : -40;
+
+        M.animate(currentPanel, { opacity: [1, 0], x: [0, outX] }, { duration: 0.22, ease: 'easeOut' })
+          .then(() => {
+            currentPanel.classList.remove('active');
+            nextPanel.classList.add('active');
+            M.animate(nextPanel, { opacity: [0, 1], x: [inX, 0], scale: [0.98, 1] }, { duration: 0.38, ease: [0.16, 1, 0.3, 1] });
+
+            // Trigger step-specific logic
+            onStepEnter(stepNumber);
+          });
+      } else {
+        currentPanel.classList.remove('active');
+        nextPanel.classList.add('active');
+        onStepEnter(stepNumber);
+      }
+
+      currentStep = stepNumber;
+      updateStepperUI();
+      playTone('step');
+    }
+
+    function nextStep() {
+      if (currentStep < totalSteps) {
+        showStep(currentStep + 1, 1);
+      }
+    }
+
+    function previousStep() {
+      if (currentStep > 1) {
+        showStep(currentStep - 1, -1);
+      }
+    }
+
+    function jumpToStep(targetStep) {
+      if (targetStep === currentStep) return;
+      const dir = targetStep > currentStep ? 1 : -1;
+      showStep(targetStep, dir);
+    }
+
+    function onStepEnter(stepNumber) {
+      if (stepNumber === 2) {
+        // Start ECG waveform
+        startEcgWaveform();
+      } else if (stepNumber === 5) {
+        // Launch calibration scan and fireworks
+        launchActivationCelebration();
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP 1: HOLOGRAPHIC BIO-CARD LIVE UPDATES
+       ══════════════════════════════════════════════════ */
+    function updateHolographicCard() {
+      const name = document.getElementById('onboardingFullName').value.trim() || 'Valued Patient';
+      const age = document.getElementById('onboardingAge').value;
+      const blood = document.getElementById('onboardingBlood').value;
+      const goal = document.getElementById('onboardingGoal').value;
+
+      onboardingState.fullName = name;
+      onboardingState.age = age;
+      onboardingState.blood = blood;
+      onboardingState.goal = goal;
+
+      document.getElementById('holoNameDisplay').textContent = name.toUpperCase();
+      document.getElementById('holoAgeDisplay').textContent = age;
+      document.getElementById('holoBloodDisplay').textContent = blood;
+      document.getElementById('holoGoalDisplay').textContent = goal.split(' ')[0] + ' ' + (goal.split(' ')[1] || '');
+
+      playTone('blip');
+    }
+
+    function selectAvatar(emoji, el) {
+      document.querySelectorAll('.avatar-opt').forEach(b => b.classList.remove('selected'));
+      el.classList.add('selected');
+      onboardingState.avatar = emoji;
+      document.getElementById('holoAvatarDisplay').textContent = `${emoji} Active`;
+      playTone('blip');
+    }
+
+    // Holographic card 3D tilt
+    const holoCard = document.getElementById('holographicCard');
+    if (holoCard) {
+      holoCard.addEventListener('mousemove', (e) => {
+        const rect = holoCard.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const cx = rect.width / 2;
+        const cy = rect.height / 2;
+
+        const rotX = -((y - cy) / cy) * 12;
+        const rotY = ((x - cx) / cx) * 14;
+
+        holoCard.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+
+      holoCard.addEventListener('mouseleave', () => {
+        holoCard.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      });
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP 2: AI CLINICAL PHYSICIAN & ECG OSCILLOSCOPE
+       ══════════════════════════════════════════════════ */
+    function selectDoctor(docKey) {
+      onboardingState.doctor = docKey;
+      document.getElementById('docCardNambi').classList.toggle('selected', docKey === 'nambi');
+      document.getElementById('docCardAlex').classList.toggle('selected', docKey === 'alex');
+      playTone('toggle');
+    }
+
+    function previewDoctorVoice(docKey, e) {
+      if (e) e.stopPropagation();
+      playTone('celebrate');
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const text = docKey === 'nambi'
+          ? "Hello, I am Doctor Nambi. I look forward to analyzing your symptoms and guiding your diagnostic journey."
+          : "Hello, I'm Alex. Welcome to your personalized wellness space. Let's cultivate your health and balance together.";
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 1.0;
+        utterance.pitch = docKey === 'nambi' ? 0.95 : 1.1;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    /* Interactive Live ECG Canvas */
+    let ecgAnimId = null;
+    let ecgTime = 0;
+    function startEcgWaveform() {
+      const canvas = document.getElementById('ecgCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      // Adjust dimensions to devicePixelRatio
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+      if (ecgAnimId) cancelAnimationFrame(ecgAnimId);
+
+      function drawEcg() {
+        ctx.clearRect(0, 0, rect.width, rect.height);
+
+        // Draw faint oscilloscope grid lines
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < rect.width; x += 24) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, rect.height);
+          ctx.stroke();
+        }
+        for (let y = 0; y < rect.height; y += 18) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(rect.width, y);
+          ctx.stroke();
+        }
+
+        // Draw ECG Waveform trace
+        const midY = rect.height / 2;
+        const bpmFactor = onboardingState.bpm / 60; // speed scale
+        ecgTime += 2.2 * bpmFactor;
+
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 10;
+
+        ctx.beginPath();
+        for (let x = 0; x < rect.width; x += 2) {
+          const t = (x + ecgTime) % 240;
+          let y = midY;
+
+          // P Wave
+          if (t > 40 && t < 65) {
+            y -= Math.sin(((t - 40) / 25) * Math.PI) * 7;
+          }
+          // Q Dip
+          else if (t >= 75 && t < 80) {
+            y += ((t - 75) / 5) * 6;
+          }
+          // R Spike
+          else if (t >= 80 && t < 90) {
+            y -= 28 - Math.abs(t - 85) * 5.6;
+          }
+          // S Dip
+          else if (t >= 90 && t < 98) {
+            y += Math.sin(((t - 90) / 8) * Math.PI) * 8;
+          }
+          // T Wave
+          else if (t > 120 && t < 165) {
+            y -= Math.sin(((t - 120) / 45) * Math.PI) * 11;
+          }
+
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        ecgAnimId = requestAnimationFrame(drawEcg);
+      }
+      drawEcg();
+    }
+
+    function adjustEcgBpm(val) {
+      onboardingState.bpm = parseInt(val, 10);
+      document.getElementById('sliderBpmValue').textContent = val;
+      document.getElementById('ecgBpmDisplay').textContent = `${val} BPM · NSR`;
+      playTone('blip');
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP 3: CLINICAL CAPABILITIES RADAR
+       ══════════════════════════════════════════════════ */
+    function toggleModule(el, moduleKey) {
+      el.classList.toggle('selected');
+      const isSelected = el.classList.contains('selected');
+
+      if (isSelected) {
+        if (!onboardingState.modules.includes(moduleKey)) onboardingState.modules.push(moduleKey);
+        playTone('toggle');
+      } else {
+        onboardingState.modules = onboardingState.modules.filter(m => m !== moduleKey);
+        playTone('blip');
+      }
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP 4: BIOMETRIC TELEMETRY & SENSORS
+       ══════════════════════════════════════════════════ */
+    function updateTelemetryRadar() {
+      onboardingState.telemetry.hr = document.getElementById('toggleHr').checked;
+      onboardingState.telemetry.spo2 = document.getElementById('toggleSpo2').checked;
+      onboardingState.telemetry.sleep = document.getElementById('toggleSleep').checked;
+      onboardingState.telemetry.fall = document.getElementById('toggleFall').checked;
+
+      const activeCount = Object.values(onboardingState.telemetry).filter(Boolean).length;
+      document.getElementById('telemetryStatusBadge').textContent = `ACTIVE · ${activeCount}/4 SENSORS`;
+
+      const latencyMs = 15 + (4 - activeCount) * 4;
+      document.getElementById('latencyDisplay').textContent = `${latencyMs}ms`;
+      document.getElementById('barLatency').style.width = `${Math.min(100, 105 - activeCount * 4)}%`;
+
+      const fidelity = (86 + activeCount * 3.1).toFixed(1);
+      document.getElementById('fidelityDisplay').textContent = `${fidelity}%`;
+      document.getElementById('barFidelity').style.width = `${fidelity}%`;
+
+      playTone('toggle');
+    }
+
+    /* ══════════════════════════════════════════════════
+       STEP 5: ACTIVATION SCANNER & CONFETTI FIREWORKS
+       ══════════════════════════════════════════════════ */
+    function launchActivationCelebration() {
+      const circle = document.getElementById('scannerCircle');
+      const pctText = document.getElementById('scannerPercentText');
+      const iconCheck = document.getElementById('scannerIconCheck');
+      const title = document.getElementById('finalCelebrationTitle');
+      const sub = document.getElementById('finalCelebrationSub');
+
+      // Populate summary details
+      document.getElementById('sumName').textContent = `${onboardingState.fullName} (${onboardingState.age} yrs, ${onboardingState.blood})`;
+      document.getElementById('sumDoc').textContent = onboardingState.doctor === 'nambi' ? 'Dr. Nambi, MD (Internal Medicine)' : 'Alex, Holistic RN (Integrative Wellness)';
+
+      const moduleLabels = {
+        rxvision: 'RxVision OCR',
+        twin: '3D Human Twin',
+        cycle: 'Cycle Health',
+        carecast: 'CareCast Feed',
+        sos: 'Emergency SOS',
+        metabolic: 'Metabolic Tracker'
+      };
+      document.getElementById('sumModules').textContent = onboardingState.modules.map(m => moduleLabels[m] || m).join(', ');
+
+      const activeSensors = [];
+      if (onboardingState.telemetry.hr) activeSensors.push('Heart Rate');
+      if (onboardingState.telemetry.spo2) activeSensors.push('SpO2');
+      if (onboardingState.telemetry.sleep) activeSensors.push('Sleep');
+      if (onboardingState.telemetry.fall) activeSensors.push('Fall SOS');
+      document.getElementById('sumSensors').textContent = activeSensors.join(', ') || 'Manual Logging Only';
+
+      // Animate circular scan progress from 0 to 100%
+      let progress = 0;
+      const circumference = 377;
+      circle.style.strokeDashoffset = circumference;
+
+      const scanTimer = setInterval(() => {
+        progress += 4;
+        if (progress > 100) progress = 100;
+
+        const offset = circumference - (progress / 100) * circumference;
+        circle.style.strokeDashoffset = offset;
+        pctText.textContent = `${progress}%`;
+
+        if (progress === 100) {
+          clearInterval(scanTimer);
+          pctText.style.display = 'none';
+          iconCheck.style.display = 'block';
+
+          title.textContent = 'Welcome Aboard HealthGPT!';
+          sub.textContent = 'Your clinical digital twin is calibrated, encrypted, and ready for your first consultation.';
+
+          playTone('celebrate');
+          fireConfettiBurst();
+        }
+      }, 50);
+    }
+
+    /* Confetti Particle Cannon Animation */
+    function fireConfettiBurst() {
+      const canvas = document.getElementById('confettiCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const confettiPieces = [];
+      const colors = ['#8c6d46', '#38bdf8', '#059669', '#f59e0b', '#ec4899', '#7c3aed', '#10b981'];
+
+      for (let i = 0; i < 110; i++) {
+        confettiPieces.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          w: Math.random() * 9 + 4,
+          h: Math.random() * 6 + 3,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 0.7) * 18,
+          gravity: 0.28,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 12,
+          alpha: 1
+        });
+      }
+
+      function updateConfetti() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = 0;
+
+        for (let p of confettiPieces) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += p.gravity;
+          p.rotation += p.rotationSpeed;
+          p.alpha -= 0.007;
+
+          if (p.alpha > 0) {
+            active++;
+            ctx.save();
+            ctx.translate(p.x, p.y);
+            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.restore();
+          }
+        }
+
+        if (active > 0) {
+          requestAnimationFrame(updateConfetti);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      updateConfetti();
+    }
+
+    /* Save preferences to localStorage & proceed */
+    function finishOnboarding(targetUrl) {
+      try {
+        localStorage.setItem('healthgpt_onboarding_completed', 'true');
+        localStorage.setItem('healthgpt_user_name', onboardingState.fullName);
+        localStorage.setItem('healthgpt_user_age', onboardingState.age);
+        localStorage.setItem('healthgpt_user_blood', onboardingState.blood);
+        localStorage.setItem('healthgpt_user_goal', onboardingState.goal);
+        localStorage.setItem('healthgpt_user_avatar', onboardingState.avatar);
+        localStorage.setItem('healthgpt_preferred_doctor', onboardingState.doctor);
+        localStorage.setItem('healthgpt_active_modules', JSON.stringify(onboardingState.modules));
+        localStorage.setItem('healthgpt_telemetry_prefs', JSON.stringify(onboardingState.telemetry));
+      } catch (err) {
+        console.warn('LocalStorage save notice:', err);
+      }
+
+      playTone('celebrate');
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 350);
+    }
+
+    /* ══════════════════════════════════════════════════
+       SWIPE & DRAG NAVIGATION GESTURE CONTROLLER
+       ══════════════════════════════════════════════════ */
+    function initSwipeToNavigate() {
+      const card = document.getElementById('onboardingDeckCard');
+      if (!card) return;
+
+      const cueLeft = document.getElementById('swipeIndicatorLeft');
+      const cueRight = document.getElementById('swipeIndicatorRight');
+
+      let startX = 0;
+      let startY = 0;
+      let currentX = 0;
+      let isDragging = false;
+      let isHorizontalSwipe = false;
+      let startTime = 0;
+
+      function isInteractiveTarget(el) {
+        if (!el) return false;
+        const tag = el.tagName.toLowerCase();
+        return (
+          tag === 'input' ||
+          tag === 'select' ||
+          tag === 'textarea' ||
+          tag === 'button' ||
+          tag === 'canvas' ||
+          el.closest('button') ||
+          el.closest('input') ||
+          el.closest('select') ||
+          el.closest('textarea') ||
+          el.closest('.avatar-opt') ||
+          el.closest('.module-item') ||
+          el.closest('.doc-choice-card') ||
+          el.closest('.switch') ||
+          el.closest('.step-pill') ||
+          el.closest('.ecg-range-slider')
+        );
+      }
+
+      function handleDragStart(x, y, target) {
+        if (isInteractiveTarget(target)) return;
+        isDragging = true;
+        isHorizontalSwipe = false;
+        startX = x;
+        startY = y;
+        currentX = x;
+        startTime = Date.now();
+        card.classList.add('is-dragging');
+      }
+
+      function handleDragMove(x, y, e) {
+        if (!isDragging) return;
+
+        const deltaX = x - startX;
+        const deltaY = y - startY;
+
+        // Detect direction
+        if (!isHorizontalSwipe) {
+          if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
+            // Predominantly vertical scrolling; let user scroll normally
+            isDragging = false;
+            card.classList.remove('is-dragging');
+            resetDragTransform(false);
+            return;
+          }
+          if (Math.abs(deltaX) > 8) {
+            isHorizontalSwipe = true;
+          }
+        }
+
+        if (isHorizontalSwipe) {
+          if (e && e.cancelable) e.preventDefault();
+          currentX = x;
+
+          // Provide rubber-band resistance at boundaries
+          let effectiveDelta = deltaX;
+          if ((currentStep === 1 && deltaX > 0) || (currentStep === totalSteps && deltaX < 0)) {
+            effectiveDelta = deltaX * 0.22;
+          } else {
+            effectiveDelta = deltaX * 0.65;
+          }
+
+          const tilt = effectiveDelta * 0.014;
+          card.style.transform = `translateX(${effectiveDelta}px) rotate(${tilt}deg)`;
+
+          // Illuminate directional edge cues
+          if (deltaX > 25 && currentStep > 1) {
+            if (cueLeft) cueLeft.classList.add('visible');
+            if (cueRight) cueRight.classList.remove('visible');
+          } else if (deltaX < -25 && currentStep < totalSteps) {
+            if (cueRight) cueRight.classList.add('visible');
+            if (cueLeft) cueLeft.classList.remove('visible');
+          } else {
+            if (cueLeft) cueLeft.classList.remove('visible');
+            if (cueRight) cueRight.classList.remove('visible');
+          }
+        }
+      }
+
+      function handleDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        card.classList.remove('is-dragging');
+
+        if (cueLeft) cueLeft.classList.remove('visible');
+        if (cueRight) cueRight.classList.remove('visible');
+
+        const deltaX = currentX - startX;
+        const duration = Math.max(Date.now() - startTime, 1);
+        const velocity = Math.abs(deltaX) / duration;
+
+        // Swipe threshold: distance > 55px or fast flick (velocity > 0.35 and distance > 25px)
+        const thresholdMet = Math.abs(deltaX) > 55 || (velocity > 0.35 && Math.abs(deltaX) > 25);
+
+        if (thresholdMet) {
+          if (deltaX < 0 && currentStep < totalSteps) {
+            // Swiped left -> navigate to next slide
+            resetDragTransform(false);
+            nextStep();
+            return;
+          } else if (deltaX > 0 && currentStep > 1) {
+            // Swiped right -> navigate to previous slide
+            resetDragTransform(false);
+            previousStep();
+            return;
+          }
+        }
+
+        // Spring smoothly back to center if threshold not reached or boundary blocked
+        resetDragTransform(true);
+      }
+
+      function resetDragTransform(animate = false) {
+        if (animate) {
+          card.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
+          card.style.transform = 'translateX(0) rotate(0deg)';
+          setTimeout(() => {
+            card.style.transition = '';
+          }, 330);
+        } else {
+          card.style.transition = '';
+          card.style.transform = 'translateX(0) rotate(0deg)';
+        }
+      }
+
+      // Pointer events for desktop drag
+      card.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        handleDragStart(e.clientX, e.clientY, e.target);
+      });
+
+      window.addEventListener('pointermove', (e) => {
+        handleDragMove(e.clientX, e.clientY, e);
+      });
+
+      window.addEventListener('pointerup', handleDragEnd);
+      window.addEventListener('pointercancel', handleDragEnd);
+
+      // Touch events for mobile/tablet swipe
+      card.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          handleDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchmove', (e) => {
+        if (isDragging && e.touches.length === 1) {
+          handleDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', handleDragEnd);
+      window.addEventListener('touchcancel', handleDragEnd);
+    }
+
+    /* ══════════════════════════════════════════════════
+       BACKGROUND QUANTUM CONSTELLATION CANVAS VFX
+       ══════════════════════════════════════════════════ */
+    function initAmbientConstellation() {
+      const canvas = document.getElementById('ambientConstellationCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      let width = (canvas.width = window.innerWidth);
+      let height = (canvas.height = window.innerHeight);
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particleCount = Math.min(width > 768 ? 55 : 30, 65);
+      const particles = [];
+
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.45,
+          vy: (Math.random() - 0.5) * 0.45,
+          radius: Math.random() * 1.8 + 1,
+          alpha: Math.random() * 0.45 + 0.15
+        });
+      }
+
+      function drawConstellation() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0 || p.x > width) p.vx *= -1;
+          if (p.y < 0 || p.y > height) p.vy *= -1;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(140, 109, 70, ${p.alpha})`;
+          ctx.fill();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            const p2 = particles[j];
+            const dx = p.x - p2.x;
+            const dy = p.y - p2.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 115) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              const linkAlpha = (1 - dist / 115) * 0.16;
+              ctx.strokeStyle = `rgba(140, 109, 70, ${linkAlpha})`;
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(drawConstellation);
+      }
+      drawConstellation();
+    }
+
+    /* Keyboard accessibility navigation */
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && currentStep < totalSteps) {
+        // Only advance if not typing inside input
+        if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+          nextStep();
+        }
+      } else if (e.key === 'ArrowLeft' && currentStep > 1) {
+        if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+          previousStep();
+        }
+      }
+    });
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check if arriving with ?restart=true to show replay notice
+      try {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('restart') === 'true' || params.get('force') === 'true') {
+          const banner = document.getElementById('restartModeBanner');
+          if (banner) banner.style.display = 'flex';
+        }
+      } catch (err) {
+        console.warn('URL params check notice:', err);
+      }
+
+      initAmbientConstellation();
+      initSwipeToNavigate();
+      updateStepperUI();
+    });
+  </script>
+</body>
+</html>

@@ -195,6 +195,27 @@
       transform: translateY(-1px);
     }
 
+    .btn-tour-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(140, 109, 70, 0.08);
+      color: var(--accent-warm);
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 20px;
+      text-decoration: none;
+      border: 1.5px solid rgba(140, 109, 70, 0.28);
+      transition: all 0.2s ease;
+    }
+
+    .btn-tour-switch:hover {
+      background: var(--accent-warm);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
     /* MAIN STAGE */
     .portal-main {
       width: 100%;
@@ -822,6 +843,10 @@
         <span>🔊</span>
         <span id="userAudioLabel">Sound On</span>
       </button>
+      <a href="/onboarding?restart=true" class="btn-tour-switch" id="navOnboardingTourBtn" title="Launch interactive onboarding tutorial">
+        <span>✨</span>
+        <span>App Tour</span>
+      </a>
       <a href="/admin-login" class="btn-admin-switch" id="navSwitchToAdminBtn" title="Switch to Clinical Admin Login">
         <span>🛡️</span>
         <span>Admin Login Portal</span>

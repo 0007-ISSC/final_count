@@ -257,6 +257,17 @@ export class SupabaseService {
     projectId: 'aympyxmjgbgmcvcdnzyt'
   };
 
+  private static cachedStatus: SupabaseConnectionStatus | null = null;
+  private static lastCheckTimestamp = 0;
+  private static readonly STATUS_CACHE_TTL = 30000; // 30s cache to avoid hammering Supabase
+
+  /**
+   * Quick check if Supabase backend is currently known to be online
+   */
+  public static isOnline(): boolean {
+    return this.cachedStatus ? this.cachedStatus.connected : false;
+  }
+
   /**
    * Automatically normalizes Supabase dashboard URLs (e.g., https://supabase.com/dashboard/project/...)
    * to their correct REST API endpoint (https://<project-ref>.supabase.co)
@@ -288,15 +299,37 @@ export class SupabaseService {
   }
 
   /**
-   * Returns or lazily initializes the Supabase client instance
+   * Returns or lazily initializes the Supabase client instance with a fast request timeout
    */
   public static getClient(): SupabaseClient {
     if (!this.client) {
       const cfg = this.getConfig();
+
+      // Custom fetch with 3500ms timeout to prevent requests from hanging if Supabase gateway lags
+      const fetchWithTimeout = (url: any, options: any = {}) => {
+        const timeoutMs = 3500;
+        const controller = new AbortController();
+        const timerId = setTimeout(() => controller.abort(), timeoutMs);
+
+        if (options.signal) {
+          options.signal.addEventListener('abort', () => controller.abort());
+        }
+
+        return fetch(url, {
+          ...options,
+          signal: controller.signal
+        }).finally(() => {
+          clearTimeout(timerId);
+        });
+      };
+
       this.client = createClient(cfg.url, cfg.anonKey, {
         auth: {
           persistSession: false,
           autoRefreshToken: false
+        },
+        global: {
+          fetch: fetchWithTimeout as any
         }
       });
     }
@@ -322,7 +355,12 @@ export class SupabaseService {
   /**
    * Check connection to Supabase and inspect table statuses
    */
-  public static async testConnection(): Promise<SupabaseConnectionStatus> {
+  public static async testConnection(forceRefresh = false): Promise<SupabaseConnectionStatus> {
+    const now = Date.now();
+    if (!forceRefresh && this.cachedStatus && (now - this.lastCheckTimestamp < this.STATUS_CACHE_TTL)) {
+      return this.cachedStatus;
+    }
+
     const start = Date.now();
     const config = this.getConfig();
     const client = this.getClient();
@@ -339,70 +377,118 @@ export class SupabaseService {
       // Even if 'users' table is not created yet (PGRST205), Supabase itself responded, meaning connection works!
       if (!testErr || testErr.code === 'PGRST205' || testErr.code === '42P01') {
         connected = true;
-        message = testErr ? `Connected to Supabase (${config.projectId}). Schema initialization required.` : `Connected and synchronized with Supabase (${config.projectId}).`;
+        message = testErr
+          ? `Connected to Supabase (${config.projectId}). Schema initialization required.`
+          : `Connected and synchronized with Supabase (${config.projectId}).`;
       } else {
         connected = false;
         let errMsg = testErr.message || testErr.code || 'Unknown connection error';
-        if (typeof errMsg === 'string' && (errMsg.includes('<!DOCTYPE') || errMsg.includes('<html'))) {
-          errMsg = `Supabase returned an HTML response instead of JSON. Ensure SUPABASE_URL points to https://${config.projectId}.supabase.co`;
+        if (typeof errMsg === 'string') {
+          if (
+            errMsg.toLowerCase().includes('gateway timeout') ||
+            errMsg.toLowerCase().includes('timeout') ||
+            errMsg.toLowerCase().includes('abort') ||
+            (testErr as any)?.status === 504 ||
+            (testErr as any)?.status === 502
+          ) {
+            errMsg = 'Supabase Cloud standby mode (Gateway Timeout 504). Resilient local persistence active.';
+          } else if (errMsg.includes('<!DOCTYPE') || errMsg.includes('<html')) {
+            errMsg = `Supabase returned an HTML response instead of JSON. Ensure SUPABASE_URL points to https://${config.projectId}.supabase.co`;
+          }
         }
-        message = `Supabase responded with error: ${errMsg}`;
+        message = errMsg;
       }
 
-      // Check each target table status
-      for (const table of SUPABASE_TABLES) {
-        try {
-          const { count, error } = await client.from(table).select('*', { count: 'exact', head: true });
-          if (!error) {
-            tableStatuses[table] = {
-              name: table,
-              exists: true,
-              count: count || 0
-            };
-          } else if (error.code === 'PGRST205' || error.code === '42P01') {
-            tableStatuses[table] = {
-              name: table,
-              exists: false,
-              count: null,
-              error: 'Table not created in Supabase yet'
-            };
-          } else {
-            tableStatuses[table] = {
-              name: table,
-              exists: false,
-              count: null,
-              error: error.message
-            };
-          }
-        } catch (e: any) {
+      if (!connected) {
+        // Fast fallback: mark tables without firing 11 failing network queries
+        for (const table of SUPABASE_TABLES) {
           tableStatuses[table] = {
             name: table,
             exists: false,
             count: null,
-            error: e?.message || 'Error checking table'
+            error: 'Supabase offline or in standby mode'
           };
         }
+      } else {
+        // Check each target table status in parallel with Promise.allSettled
+        await Promise.allSettled(
+          SUPABASE_TABLES.map(async (table) => {
+            try {
+              const { count, error } = await client.from(table).select('*', { count: 'exact', head: true });
+              if (!error) {
+                tableStatuses[table] = {
+                  name: table,
+                  exists: true,
+                  count: count || 0
+                };
+              } else if (error.code === 'PGRST205' || error.code === '42P01') {
+                tableStatuses[table] = {
+                  name: table,
+                  exists: false,
+                  count: null,
+                  error: 'Table not created in Supabase yet'
+                };
+              } else {
+                tableStatuses[table] = {
+                  name: table,
+                  exists: false,
+                  count: null,
+                  error: error.message
+                };
+              }
+            } catch (e: any) {
+              tableStatuses[table] = {
+                name: table,
+                exists: false,
+                count: null,
+                error: e?.message || 'Error checking table'
+              };
+            }
+          })
+        );
       }
 
-      return {
+      const result: SupabaseConnectionStatus = {
         connected,
         url: config.url,
         projectId: config.projectId,
-        latencyMs,
+        latencyMs: connected ? latencyMs : Math.min(latencyMs, 3500),
         tables: tableStatuses,
         message,
         sqlSchema: SUPABASE_SQL_SCHEMA
       };
+
+      this.cachedStatus = result;
+      this.lastCheckTimestamp = Date.now();
+      return result;
     } catch (err: any) {
-      return {
+      const rawMsg = err?.message || 'Failed to establish connection to Supabase';
+      const friendlyMsg = rawMsg.toLowerCase().includes('timeout') || rawMsg.toLowerCase().includes('abort')
+        ? 'Supabase Cloud standby mode (Gateway Timeout 504). Resilient local persistence active.'
+        : rawMsg;
+
+      for (const table of SUPABASE_TABLES) {
+        tableStatuses[table] = {
+          name: table,
+          exists: false,
+          count: null,
+          error: 'Standby mode'
+        };
+      }
+
+      const result: SupabaseConnectionStatus = {
         connected: false,
         url: config.url,
         projectId: config.projectId,
-        latencyMs: Date.now() - start,
-        tables: {},
-        message: err?.message || 'Failed to establish connection to Supabase',
+        latencyMs: Math.min(Date.now() - start, 3500),
+        tables: tableStatuses,
+        message: friendlyMsg,
         sqlSchema: SUPABASE_SQL_SCHEMA
       };
+
+      this.cachedStatus = result;
+      this.lastCheckTimestamp = Date.now();
+      return result;
     }
   }
 
@@ -411,6 +497,9 @@ export class SupabaseService {
    */
   public static async safeUpsert(table: string, data: any | any[]): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
+      if (this.cachedStatus && !this.cachedStatus.connected && (Date.now() - this.lastCheckTimestamp < this.STATUS_CACHE_TTL)) {
+        return { success: false, error: 'Supabase in standby mode; synchronized locally' };
+      }
       const client = this.getClient();
       const payload = Array.isArray(data) ? data : [data];
       if (payload.length === 0) return { success: true, data: [] };
@@ -430,6 +519,9 @@ export class SupabaseService {
    */
   public static async safeInsert(table: string, data: any): Promise<{ success: boolean; data?: any; error?: string }> {
     try {
+      if (this.cachedStatus && !this.cachedStatus.connected && (Date.now() - this.lastCheckTimestamp < this.STATUS_CACHE_TTL)) {
+        return { success: false, error: 'Supabase in standby mode; stored locally' };
+      }
       const client = this.getClient();
       const { data: result, error } = await client.from(table).insert(data).select();
       if (error) {
@@ -446,6 +538,9 @@ export class SupabaseService {
    */
   public static async safeDelete(table: string, matchColumn: string, matchValue: any): Promise<{ success: boolean; error?: string }> {
     try {
+      if (this.cachedStatus && !this.cachedStatus.connected && (Date.now() - this.lastCheckTimestamp < this.STATUS_CACHE_TTL)) {
+        return { success: false, error: 'Supabase in standby mode; deleted locally' };
+      }
       const client = this.getClient();
       const { error } = await client.from(table).delete().eq(matchColumn, matchValue);
       if (error) {
@@ -462,6 +557,9 @@ export class SupabaseService {
    */
   public static async safeSelect(table: string, query?: { column?: string; value?: any; limit?: number; order?: string }): Promise<{ success: boolean; data?: any[]; error?: string }> {
     try {
+      if (this.cachedStatus && !this.cachedStatus.connected && (Date.now() - this.lastCheckTimestamp < this.STATUS_CACHE_TTL)) {
+        return { success: false, error: 'Supabase in standby mode; using local store' };
+      }
       const client = this.getClient();
       let req = client.from(table).select('*');
       if (query?.column && query?.value !== undefined) {
