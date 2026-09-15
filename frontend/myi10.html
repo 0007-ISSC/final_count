@@ -13886,10 +13886,29 @@ const WebSpeechManager = {
   activeUtterance: null,
 
   logDiagnostic(category, type, data) {
+    const errCode = String((data && (data.error || data.event || data.code || data.message)) || '').toLowerCase();
+    const isNormalTtsInterruption = category === 'TTS' && (
+      errCode === 'interrupted' ||
+      errCode === 'canceled' ||
+      errCode.includes('interrupted') ||
+      errCode.includes('canceled')
+    );
+    const isNormalSttIdle = category === 'STT' && (
+      errCode === 'no-speech' ||
+      errCode === 'aborted' ||
+      errCode.includes('no-speech') ||
+      errCode.includes('aborted')
+    );
+
+    let effectiveType = type;
+    if (effectiveType === 'error' && (isNormalTtsInterruption || isNormalSttIdle)) {
+      effectiveType = 'lifecycle';
+    }
+
     const entry = {
       timestamp: new Date().toISOString(),
       category, // 'TTS' | 'STT' | 'MIC_PERM'
-      type,     // 'info' | 'warn' | 'error' | 'lifecycle'
+      type: effectiveType,     // 'info' | 'warn' | 'error' | 'lifecycle'
       data
     };
     window.__healthGptSpeechDiagnostics.push(entry);
@@ -13897,12 +13916,12 @@ const WebSpeechManager = {
       window.__healthGptSpeechDiagnostics.shift();
     }
     const logPrefix = `[WebSpeechAPI ${category}]`;
-    if (type === 'error') {
+    if (effectiveType === 'error') {
       console.error(logPrefix, data.message || data.error || data, data);
-    } else if (type === 'warn') {
+    } else if (effectiveType === 'warn') {
       console.warn(logPrefix, data.message || data.error || data, data);
     } else {
-      console.info(logPrefix, data.message || data);
+      console.info(logPrefix, data.message || data.error || data);
     }
   },
 
@@ -14020,11 +14039,21 @@ const WebSpeechManager = {
 
     utterance.onerror = (e) => {
       clearInterval(this.keepAliveTimer);
-      this.logDiagnostic('TTS', 'error', {
-        error: e.error,
-        elapsedTime: e.elapsedTime,
-        message: `TTS error: ${e.error}`
-      });
+      const isInterrupted = e.error === 'interrupted' || e.error === 'canceled';
+      if (isInterrupted) {
+        this.logDiagnostic('TTS', 'lifecycle', {
+          event: 'speech_interrupted_or_cancelled',
+          error: e.error,
+          elapsedTime: e.elapsedTime,
+          message: `TTS speech playback gracefully interrupted (${e.error})`
+        });
+      } else {
+        this.logDiagnostic('TTS', 'error', {
+          error: e.error,
+          elapsedTime: e.elapsedTime,
+          message: `TTS error: ${e.error}`
+        });
+      }
       if (options.onError) options.onError(e.error, e);
     };
 
@@ -16528,10 +16557,11 @@ async function startDoctorVoiceListening() {
     };
 
     recognitionInstance.onerror = (err) => {
-      WebSpeechManager.logDiagnostic('STT', 'error', {
-        event: 'doctor_call_stt_error',
+      const isNormalIdle = err.error === 'no-speech' || err.error === 'aborted';
+      WebSpeechManager.logDiagnostic('STT', isNormalIdle ? 'lifecycle' : 'error', {
+        event: isNormalIdle ? 'doctor_call_stt_idle' : 'doctor_call_stt_error',
         error: err.error,
-        message: err.message
+        message: err.message || (isNormalIdle ? 'Speech detection idle' : 'Speech recognition error')
       });
       isRecordingVoice = false;
       if (err.error === 'no-speech' && isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
@@ -16619,7 +16649,12 @@ function speakDoctorCallResponse(rawText, langCode) {
       }
     },
     onError: (errCode) => {
-      WebSpeechManager.logDiagnostic('TTS', 'error', { event: 'doctor_call_tts_error', error: errCode });
+      const isInterrupted = errCode === 'interrupted' || errCode === 'canceled';
+      if (isInterrupted) {
+        WebSpeechManager.logDiagnostic('TTS', 'lifecycle', { event: 'doctor_call_tts_interrupted', error: errCode });
+      } else {
+        WebSpeechManager.logDiagnostic('TTS', 'error', { event: 'doctor_call_tts_error', error: errCode });
+      }
       if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
         const listenMsg = `Listening to you... Speak now!`;
         if (liveStatus) liveStatus.textContent = listenMsg;
@@ -16900,9 +16935,11 @@ async function toggleVoiceSpeech() {
     };
 
     recognitionInstance.onerror = (err) => {
-      WebSpeechManager.logDiagnostic('STT', 'error', {
+      const isNormalIdle = err.error === 'no-speech' || err.error === 'aborted';
+      WebSpeechManager.logDiagnostic('STT', isNormalIdle ? 'lifecycle' : 'error', {
+        event: isNormalIdle ? 'voice_capture_idle' : 'voice_capture_error',
         error: err.error,
-        message: err.message || 'Speech recognition event error',
+        message: err.message || (isNormalIdle ? 'No speech detected / capture stopped' : 'Speech recognition event error'),
         lang: recognitionInstance.lang
       });
       stopVoiceSpeechActivity();
@@ -29395,7 +29432,11 @@ function initPeriodVoiceRecognition() {
   };
 
   recognition.onerror = (event) => {
-    WebSpeechManager.logDiagnostic('STT', 'error', { event: 'period_voice_error', error: event.error });
+    const isNormalIdle = event.error === 'no-speech' || event.error === 'aborted';
+    WebSpeechManager.logDiagnostic('STT', isNormalIdle ? 'lifecycle' : 'error', {
+      event: isNormalIdle ? 'period_voice_idle' : 'period_voice_error',
+      error: event.error
+    });
     if (event.error === 'not-allowed') {
       toast('⚠️ Microphone permission required for voice logging. Please allow access in your browser address bar.');
     }
@@ -31937,7 +31978,11 @@ async function toggleBetaVoiceInput() {
     };
 
     betaSpeechRecognition.onerror = (e) => {
-      WebSpeechManager.logDiagnostic('STT', 'error', { event: 'beta_voice_error', error: e.error });
+      const isNormalIdle = e.error === 'no-speech' || e.error === 'aborted';
+      WebSpeechManager.logDiagnostic('STT', isNormalIdle ? 'lifecycle' : 'error', {
+        event: isNormalIdle ? 'beta_voice_idle' : 'beta_voice_error',
+        error: e.error
+      });
       if (e.error === 'not-allowed') {
         showPeriodToast('❌ Microphone permission denied.');
       }
