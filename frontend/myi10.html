@@ -4906,6 +4906,12 @@ window.go = window.go || function(pageId, subParam) {
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;"></span>
         </button>
 
+        <!-- DEDICATED AI COMPANIONS CHAT BUTTON -->
+        <a href="/chat" class="btn btn-sm" id="topNavCompanionChatBtn" style="background:#ffffff;border:1.5px solid #0d9488;color:#0f766e;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;text-decoration:none;box-shadow:0 1px 3px rgba(0,0,0,0.05);transition:all 0.2s;" title="Open Dedicated AI Companions Chat Interface (Dr. Nambi & Alex)">
+          <span>💬</span>
+          <span>Companion Chat</span>
+        </a>
+
         <!-- SUPABASE CLOUD BACKEND BADGE & MODAL TRIGGER -->
         <button class="btn btn-sm" id="supabaseStatusBadgeBtn" onclick="openSupabaseModal()" style="background:#ecfdf5;border:1.5px solid #86efac;color:#15803d;font-weight:700;display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.2s;" title="Supabase Cloud Backend (Project: aympyxmjgbgmcvcdnzyt)">
           <span id="supabasePulseDot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px #22c55e;"></span>
@@ -12600,6 +12606,7 @@ const NAV_SECTIONS = [
     items: [
       { id: 'dashboard', icon: '📊', label: 'Health Overview', badge: 'Live', badgeColor: '#2563eb' },
       { id: 'aiConsult', icon: '🩺', label: 'AI Clinical Consult', badge: 'Nambi & Alex', badgeColor: '#6366f1' },
+      { id: 'companionChatExternal', icon: '💬', label: 'Dr. Nambi & Alex Chat', badge: 'Full Chat', badgeColor: '#0d9488', action: "window.location.href='/chat'" },
       { id: 'twinAnalytics', icon: '🧬', label: 'Digital Health Twin', badge: '3D Human + AI', badgeColor: '#0d9488' }
     ]
   },

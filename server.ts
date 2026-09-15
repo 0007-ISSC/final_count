@@ -10180,6 +10180,11 @@ app.get('/dashboard', (_req: Request, res: Response) => {
   res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
 });
 
+// Dedicated AI Companions Chat Interface (Dr. Nambi & Alex)
+app.get(['/chat', '/companion-chat', '/ai-chat', '/consultation-chat'], (_req: Request, res: Response) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'chat.html'));
+});
+
 // Dedicated CareCast: Inshorts & Dailyhunt Medical Feed
 app.get(['/carecast', '/inshorts', '/dailyhunt'], (_req: Request, res: Response) => {
   res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
