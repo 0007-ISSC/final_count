@@ -26,6 +26,12 @@ import {
   type DrugValidationResult,
   type MedicineProfile,
 } from '../data/medicinesData.ts';
+import {
+  findJanAushadhiAlternative,
+  getJanAushadhiPrescriptionAlternatives,
+  type JanAushadhiPrescriptionSummary,
+  type JanAushadhiMedicine,
+} from '../data/janAushadhiData.ts';
 
 export interface DocumentQualityReport {
   qualityScore: number; // 0 - 100
@@ -144,6 +150,21 @@ export interface ExtractedMedication {
   safetyBadgeText?: string;
   safetyEvaluation?: string;
   safeConsumptionRules?: string[];
+  // Jan Aushadhi Generic Substitution Details
+  janAushadhiDetails?: {
+    matched: boolean;
+    genericName: string;
+    pmbjpCode: string;
+    dosageForm: string;
+    packSize: string;
+    brandedPriceINR: number;
+    janAushadhiPriceINR: number;
+    savingsAmountINR: number;
+    savingsPercent: number;
+    cdscoStandards: string;
+    indications: string;
+    popularBrands: string[];
+  };
 }
 
 export interface FieldWithConfidence<T = string> {
@@ -205,6 +226,7 @@ export interface ParsedPrescription {
   totalMedicationsCount?: number;
   verifiedMedicationsCount?: number;
   potentialMonthlySavingsINR?: number;
+  janAushadhiSummary?: JanAushadhiPrescriptionSummary;
   verificationStatus?: 'draft' | 'verified' | 'archived';
   verifiedAt?: string;
   // Lab & Diagnostic PDF Findings
@@ -849,6 +871,39 @@ JSON Schema:
 
       const profile = lookupMedicineComprehensive(v?.canonicalName || norm.suggested || m.name);
 
+      // Automatic Jan Aushadhi Generic Alternative Matching
+      const jaMatch = findJanAushadhiAlternative(
+        v?.canonicalName || norm.suggested || m.name,
+        v?.genericName || norm.canonicalSalt || m.genericName
+      );
+
+      let janAushadhiDetails: ExtractedMedication['janAushadhiDetails'] | undefined = undefined;
+      let genericAlternative = v?.genericAlternative || 'Consult pharmacist for Jan Aushadhi generic equivalent';
+      let savingsPercent = v?.savingsPercent || profile?.costSavingsPercent || 50;
+      let brandedPriceINR = v?.brandedPriceINR || profile?.brandedPriceINR || 120;
+      let genericPriceINR = v?.genericPriceINR || profile?.genericPriceINR || 35;
+
+      if (jaMatch) {
+        genericAlternative = `${jaMatch.genericName} (${jaMatch.pmbjpCode})`;
+        savingsPercent = jaMatch.savingsPercent;
+        brandedPriceINR = jaMatch.brandedAvgPriceINR;
+        genericPriceINR = jaMatch.janAushadhiPriceINR;
+        janAushadhiDetails = {
+          matched: true,
+          genericName: jaMatch.genericName,
+          pmbjpCode: jaMatch.pmbjpCode,
+          dosageForm: jaMatch.dosageForm,
+          packSize: jaMatch.packSize,
+          brandedPriceINR: jaMatch.brandedAvgPriceINR,
+          janAushadhiPriceINR: jaMatch.janAushadhiPriceINR,
+          savingsAmountINR: jaMatch.savingsAmountINR,
+          savingsPercent: jaMatch.savingsPercent,
+          cdscoStandards: jaMatch.cdscoStandards,
+          indications: jaMatch.indications,
+          popularBrands: jaMatch.popularBrands
+        };
+      }
+
       const medItem: ExtractedMedication = {
         id: `med-${Date.now()}-${idx}`,
         name: v?.canonicalName || norm.suggested || m.name || 'Prescription Medication',
@@ -869,10 +924,11 @@ JSON Schema:
         genericName: v?.genericName || norm.canonicalSalt,
         validationConfidence: conf,
         matchType: v?.matchType || (norm.isVerified ? 'fuzzy_match' : 'unverified'),
-        genericAlternative: v?.genericAlternative || 'Consult pharmacist for Jan Aushadhi generic equivalent',
-        savingsPercent: v?.savingsPercent || profile?.costSavingsPercent || 50,
-        brandedPriceINR: v?.brandedPriceINR || profile?.brandedPriceINR || 120,
-        genericPriceINR: v?.genericPriceINR || profile?.genericPriceINR || 35,
+        genericAlternative,
+        savingsPercent,
+        brandedPriceINR,
+        genericPriceINR,
+        janAushadhiDetails,
         foodInteractions: v?.foodInteractions || profile?.foodInteractions || ['Avoid alcohol', 'Take after food'],
         pregnancySafety: v?.pregnancySafety || profile?.pregnancySafety || 'Consult clinician',
         prescriptionRequired: v?.prescriptionRequired ?? true,
@@ -1040,6 +1096,13 @@ JSON Schema:
       labParameters: Array.isArray(parsed.labParameters) ? parsed.labParameters : undefined,
       pdfMetadata: parsed.pdfMetadata,
     };
+
+    // Calculate Jan Aushadhi generic alternatives across all medications
+    const jaSummary = getJanAushadhiPrescriptionAlternatives(enrichedMedications);
+    result.janAushadhiSummary = jaSummary;
+    if (jaSummary.totalMonthlySavingsINR > 0) {
+      result.potentialMonthlySavingsINR = jaSummary.totalMonthlySavingsINR;
+    }
 
     // Run safety review & allergy check
     result.safetyReview = this.auditPrescriptionSafety(result);

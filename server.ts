@@ -36,7 +36,9 @@ import {
   JAN_AUSHADHI_KENDRA_STORES,
   searchJanAushadhiMedicines,
   searchJanAushadhiStores,
-  calculateDistanceKm
+  calculateDistanceKm,
+  findJanAushadhiAlternative,
+  getJanAushadhiPrescriptionAlternatives
 } from './src/data/janAushadhiData.ts';
 import { registerBookingHandler, type BookingRequestParams, type BookingExecutionResult } from './src/services/appointmentBookingService.ts';
 
@@ -3518,6 +3520,40 @@ app.post('/api/jan-aushadhi/calculate-savings', (req: Request, res: Response) =>
     annualSavingsINR,
     overallSavingsPercent,
     breakdown
+  });
+});
+
+app.post('/api/jan-aushadhi/prescription-alternatives', (req: Request, res: Response) => {
+  const medications = Array.isArray(req.body.medications) ? req.body.medications : [];
+  const summary = getJanAushadhiPrescriptionAlternatives(medications);
+
+  return res.json({
+    success: true,
+    summary,
+  });
+});
+
+app.get('/api/jan-aushadhi/suggest-alternative', (req: Request, res: Response) => {
+  const brand = String(req.query.brand || req.query.name || '').trim();
+  const salt = String(req.query.salt || req.query.generic || '').trim();
+
+  if (!brand && !salt) {
+    return res.status(400).json({ success: false, detail: 'Please provide brand or salt query parameters' });
+  }
+
+  const alternative = findJanAushadhiAlternative(brand, salt);
+  if (!alternative) {
+    return res.json({
+      success: true,
+      found: false,
+      message: 'No exact Jan Aushadhi generic equivalent found in current catalog.'
+    });
+  }
+
+  return res.json({
+    success: true,
+    found: true,
+    medicine: alternative
   });
 });
 
@@ -10162,7 +10198,7 @@ app.get('/', (_req: Request, res: Response) => {
 });
 
 // Dedicated User / Patient Login Page
-app.get(['/login', '/user-login'], (_req: Request, res: Response) => {
+app.get(['/login', '/user-login', '/cinematic-login'], (_req: Request, res: Response) => {
   res.sendFile(path.join(FRONTEND_DIR, 'user-login.html'));
 });
 

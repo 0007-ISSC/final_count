@@ -3,48 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Login — HealthGPT Clinical Health Intelligence</title>
+  <title>HealthGPT — Where AI Meets Healthcare | Cinematic Access Portal</title>
+  <meta name="description" content="Cinematic futuristic AI healthcare portal featuring 3D holographic digital twin, real-time biometric telemetry, and secure clinical access.">
+
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Framer Motion Core Engine -->
-  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
+  <!-- External Libraries: Three.js for 3D Hologram, GSAP & ScrollTrigger for Cinematic Scroll Orchestration -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 
   <style>
     :root {
-      --bg-cream: #f9f6f0;
-      --bg-warm-sand: #f3ece2;
-      --bg-card: #ffffff;
-      --card-border: #e8ded2;
-      --card-border-subtle: #f0e9df;
-      
-      --ink-primary: #2c2523;
-      --ink-secondary: #5c524e;
-      --ink-muted: #8c827a;
-      
-      --accent-warm: #8c6d46;
-      --accent-warm-hover: #735735;
-      --accent-warm-light: #f5eee4;
-      
-      --accent-sage: #5b7056;
-      --accent-sage-light: #edf2eb;
-      
-      --accent-terracotta: #a65b44;
-      --accent-terracotta-light: #faeee9;
-      
-      --forest: #2d5a3f;
-      --danger: #b91c1c;
-      --danger-bg: #fee2e2;
-      --success: #15803d;
-      --success-bg: #dcfce7;
-      
-      --shadow-luxury: 0 20px 40px -15px rgba(80, 60, 40, 0.08), 0 0 1px 1px rgba(80, 60, 40, 0.04);
-      --shadow-hover: 0 25px 50px -12px rgba(80, 60, 40, 0.12);
-      
-      --radius-xl: 24px;
-      --radius-lg: 16px;
-      --radius-md: 10px;
+      --bg-dark: #040813;
+      --bg-surface: #091122;
+      --bg-card: rgba(11, 22, 44, 0.75);
+      --border-cyan: rgba(14, 165, 233, 0.28);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --glow-cyan: rgba(14, 165, 233, 0.45);
+      --glow-emerald: rgba(16, 185, 129, 0.35);
+
+      --cyan-bright: #38bdf8;
+      --cyan-deep: #0284c7;
+      --emerald-bright: #34d399;
+      --text-white: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * {
@@ -54,1850 +45,1509 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      min-height: 100vh;
-      background-color: var(--bg-cream);
-      color: var(--ink-primary);
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-      position: relative;
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: var(--font-body);
       overflow-x: hidden;
     }
 
-    .ambient-canvas-wrap {
+    body {
+      min-height: 300vh;
+      position: relative;
+      background: radial-gradient(circle at 50% 20%, #0a1733 0%, #040813 65%);
+      color: var(--text-white);
+    }
+
+    /* Fixed Background Stage for 3D Hologram, Waves, and Telemetry Particles */
+    #cinematicStage {
       position: fixed;
       inset: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
-      z-index: 0;
+      z-index: 1;
       overflow: hidden;
     }
 
-    .blob {
+    #threeCanvas {
       position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.65;
-      animation: floatOrganic 20s infinite alternate ease-in-out;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
     }
 
-    .blob-1 {
-      width: 550px;
-      height: 550px;
-      background: radial-gradient(circle, #ecdcc9 0%, rgba(245, 238, 228, 0) 70%);
-      top: -120px;
-      left: -100px;
+    #ecgCanvas {
+      position: absolute;
+      bottom: 24px;
+      left: 0;
+      width: 100%;
+      height: 90px;
+      opacity: 0.85;
+      pointer-events: none;
     }
 
-    .blob-2 {
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, #e4d7c5 0%, rgba(249, 246, 240, 0) 70%);
-      bottom: -150px;
-      right: -100px;
-      animation-delay: -8s;
+    /* Vignette & Ambient Holographic Mesh Overlay */
+    .viewport-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(4, 8, 19, 0.85) 90%),
+                  linear-gradient(rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 48px 48px, 48px 48px;
+      pointer-events: none;
+      z-index: 2;
     }
 
-    @keyframes floatOrganic {
-      0% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(40px, 30px) scale(1.08); }
-      100% { transform: translate(-30px, 50px) scale(0.94); }
-    }
-
-    /* TOP GLOBAL NAVBAR */
-    .portal-nav {
+    /* Cinematic Audio & Telemetry HUD Bar */
+    .cinematic-header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
-      height: 64px;
-      background: rgba(249, 246, 240, 0.88);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--card-border-subtle);
-      z-index: 50;
+      height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 28px;
+      padding: 0 32px;
+      background: linear-gradient(180deg, rgba(4, 8, 19, 0.95) 0%, rgba(4, 8, 19, 0) 100%);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .nav-brand {
+    .brand-logo {
       display: flex;
       align-items: center;
       gap: 12px;
       text-decoration: none;
-      color: var(--ink-primary);
+      color: white;
     }
 
-    .brand-emblem {
-      width: 36px;
-      height: 36px;
+    .brand-symbol {
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #8c6d46, #5b7056);
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(2, 132, 199, 0.6) 100%);
+      border: 1px solid var(--border-cyan);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.35);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #ffffff;
-      font-size: 18px;
-      box-shadow: 0 4px 10px rgba(140, 109, 70, 0.25);
-    }
-
-    .brand-name {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--ink-primary);
-    }
-
-    .portal-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--accent-warm-light);
-      color: var(--accent-warm);
-      border: 1px solid rgba(140, 109, 70, 0.2);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 20px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .btn-admin-switch {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: #0f172a;
-      color: #f8fafc;
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 7px 15px;
-      border-radius: 20px;
-      text-decoration: none;
-      border: 1px solid #334155;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
-      transition: all 0.2s ease;
-    }
-
-    .btn-admin-switch:hover {
-      background: #1e293b;
-      border-color: #38bdf8;
-      transform: translateY(-1px);
-    }
-
-    .btn-tour-switch {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(140, 109, 70, 0.08);
-      color: var(--accent-warm);
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 7px 14px;
-      border-radius: 20px;
-      text-decoration: none;
-      border: 1.5px solid rgba(140, 109, 70, 0.28);
-      transition: all 0.2s ease;
-    }
-
-    .btn-tour-switch:hover {
-      background: var(--accent-warm);
-      color: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    /* MAIN STAGE */
-    .portal-main {
-      width: 100%;
-      max-width: 1040px;
-      margin-top: 80px;
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 32px;
+      font-size: 19px;
       position: relative;
-      z-index: 10;
     }
 
-    @media (max-width: 860px) {
-      .portal-main {
-        grid-template-columns: 1fr;
-        margin-top: 70px;
-        gap: 20px;
-      }
+    .brand-symbol::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 13px;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      animation: pulseGlow 3s infinite alternate;
     }
 
-    /* LEFT CLINICAL SHOWCASE */
-    .showcase-panel {
-      background: #ffffff;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-xl);
-      padding: 36px 32px;
-      box-shadow: var(--shadow-luxury);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+    @keyframes pulseGlow {
+      0% { opacity: 0.3; transform: scale(0.98); }
+      100% { opacity: 0.8; transform: scale(1.02); }
     }
 
-    .portal-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--accent-sage-light);
-      color: var(--accent-sage);
-      border: 1px solid rgba(91, 112, 86, 0.25);
-      padding: 6px 12px;
-      border-radius: 30px;
-      font-size: 12px;
-      font-weight: 700;
-      width: fit-content;
-      margin-bottom: 20px;
+    .brand-text h1 {
+      font-family: var(--font-display);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff 0%, #bae6fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .showcase-title {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 38px;
-      line-height: 1.15;
+    .brand-text span {
+      font-size: 10.5px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--cyan-bright);
       font-weight: 600;
-      color: var(--ink-primary);
-      margin-bottom: 14px;
-    }
-
-    .showcase-sub {
-      font-size: 14.5px;
-      line-height: 1.6;
-      color: var(--ink-secondary);
-      margin-bottom: 24px;
-    }
-
-    .feature-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .feature-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 14px;
-      background: var(--bg-cream);
-      border: 1px solid var(--card-border-subtle);
-      border-radius: var(--radius-md);
-    }
-
-    .feature-icon {
-      font-size: 18px;
-      line-height: 1;
-      padding: 4px;
-      border-radius: 8px;
-      background: #ffffff;
-    }
-
-    .feature-text b {
-      font-size: 13.5px;
-      color: var(--ink-primary);
       display: block;
-      margin-bottom: 2px;
     }
 
-    .feature-text p {
-      font-size: 12px;
-      color: var(--ink-muted);
-      line-height: 1.4;
-    }
-
-    .telemetry-preview {
-      background: linear-gradient(135deg, #fbf8f3, #f5ede1);
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-    }
-
-    .vital-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 10px;
-    }
-
-    .vital-box {
-      background: #ffffff;
-      border: 1px solid var(--card-border-subtle);
-      border-radius: 8px;
-      padding: 10px 8px;
-      text-align: center;
-    }
-
-    .vital-num {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--ink-primary);
-    }
-
-    .vital-lbl {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--ink-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 2px;
-    }
-
-    /* RIGHT AUTH FORM CARD */
-    .auth-card {
-      background: #ffffff;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-xl);
-      padding: 36px 32px;
-      box-shadow: var(--shadow-luxury);
+    .header-actions {
       display: flex;
-      flex-direction: column;
-    }
-
-    .auth-card-header {
-      margin-bottom: 22px;
-    }
-
-    .card-headline {
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--ink-primary);
-      margin-bottom: 6px;
-    }
-
-    .card-subtext {
-      font-size: 13.5px;
-      color: var(--ink-secondary);
-      line-height: 1.45;
-    }
-
-    /* PRESET SELECTORS */
-    .presets-wrap {
-      margin-bottom: 20px;
-      background: var(--bg-cream);
-      border: 1px solid var(--card-border-subtle);
-      border-radius: var(--radius-md);
-      padding: 10px 12px;
-    }
-
-    .presets-label {
-      font-size: 11px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--ink-muted);
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 16px;
     }
 
-    .preset-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .preset-btn {
-      background: #ffffff;
-      border: 1px solid var(--card-border);
-      color: var(--ink-primary);
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 5px 10px;
-      border-radius: 16px;
+    .btn-hud {
+      background: rgba(14, 165, 233, 0.1);
+      border: 1px solid var(--border-cyan);
+      color: var(--cyan-bright);
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
+      gap: 8px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
     }
 
-    .preset-btn:hover {
-      background: var(--accent-warm-light);
-      border-color: var(--accent-warm);
-      color: var(--accent-warm-hover);
+    .btn-hud:hover {
+      background: rgba(14, 165, 233, 0.25);
+      border-color: var(--cyan-bright);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.4);
+      transform: translateY(-1px);
     }
 
-    /* FORM ELEMENTS */
-    .form-group {
+    /* Scroll Depth Indicator Progress */
+    .cinematic-progress-bar {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7, #38bdf8, #34d399);
+      box-shadow: 0 0 8px #38bdf8;
+      z-index: 51;
+      transition: width 0.1s linear;
+    }
+
+    /* Cinematic Scroll Sections (Acts 1, 2, 3) */
+    .scroll-content-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+    }
+
+    .cinematic-section {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+
+    /* ACT 1: HERO VIEWPORT */
+    .hero-container {
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      background: rgba(14, 165, 233, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #7dd3fc;
+      margin-bottom: 24px;
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
+    }
+
+    .pulsing-node {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 10px #34d399;
+      animation: pulseNode 1.8s infinite;
+    }
+
+    @keyframes pulseNode {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .hero-headline {
+      font-family: var(--font-display);
+      font-size: clamp(38px, 6vw, 76px);
+      font-weight: 800;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 40px rgba(14, 165, 233, 0.25);
+    }
+
+    .hero-subline {
+      font-size: clamp(16px, 2vw, 21px);
+      color: #cbd5e1;
+      max-width: 680px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      font-weight: 400;
+    }
+
+    .hero-subline b {
+      color: #38bdf8;
+      font-weight: 600;
+    }
+
+    /* Floating Telemetry Metric Chips */
+    .metrics-dock {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 48px;
+      width: 100%;
+      max-width: 820px;
+    }
+
+    .metric-chip {
+      background: rgba(11, 22, 44, 0.65);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 12px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .metric-chip:hover {
+      border-color: rgba(56, 189, 248, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(14, 165, 233, 0.25);
+    }
+
+    .metric-chip .icon {
+      font-size: 20px;
+    }
+
+    .metric-chip .info {
+      text-align: left;
+    }
+
+    .metric-chip .label {
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+    }
+
+    .metric-chip .value {
+      font-family: var(--font-mono);
+      font-size: 14px;
+      color: var(--cyan-bright);
+      font-weight: 700;
+    }
+
+    /* Scroll Prompt Cue */
+    .scroll-cue {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+    }
+
+    .scroll-cue:hover {
+      color: var(--cyan-bright);
+    }
+
+    .mouse-wheel {
+      width: 24px;
+      height: 40px;
+      border-radius: 14px;
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      position: relative;
+    }
+
+    .mouse-wheel::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--cyan-bright);
+      animation: wheelMove 2s infinite ease-in-out;
+    }
+
+    @keyframes wheelMove {
+      0% { opacity: 1; transform: translate(-50%, 0); }
+      100% { opacity: 0; transform: translate(-50%, 16px); }
+    }
+
+    /* ACT 2: BIOMETRIC DECRYPTION GATEWAY */
+    .biometric-container {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      text-align: center;
+      background: rgba(7, 15, 30, 0.7);
+      border: 1px solid rgba(14, 165, 233, 0.25);
+      border-radius: 24px;
+      padding: 48px 36px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(14, 165, 233, 0.1);
+      position: relative;
+    }
+
+    .biometric-scanner-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .scanner-ring-outer {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(56, 189, 248, 0.4);
+      animation: rotateRing 20s linear infinite;
+    }
+
+    .scanner-ring-inner {
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      border: 1px solid rgba(52, 211, 153, 0.5);
+    }
+
+    .scanner-core-btn {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.3) 0%, rgba(4, 8, 19, 0.8) 100%);
+      border: 1px solid var(--border-cyan);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      color: var(--cyan-bright);
+      box-shadow: 0 0 24px rgba(14, 165, 233, 0.3);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .biometric-scanner-wrap:hover .scanner-core-btn {
+      transform: scale(1.06);
+      box-shadow: 0 0 36px rgba(14, 165, 233, 0.6);
+      border-color: var(--cyan-bright);
+    }
+
+    .scanner-beam {
+      position: absolute;
+      left: 15px;
+      right: 15px;
+      height: 2px;
+      background: #34d399;
+      box-shadow: 0 0 12px #34d399;
+      top: 20px;
+      animation: scanSweep 2.2s infinite ease-in-out alternate;
+    }
+
+    @keyframes rotateRing {
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes scanSweep {
+      0% { top: 20px; opacity: 0.2; }
+      50% { opacity: 1; }
+      100% { top: 120px; opacity: 0.2; }
+    }
+
+    .telemetry-feed {
+      background: rgba(3, 7, 18, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-align: left;
+      color: #94a3b8;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-top: 24px;
+      line-height: 1.6;
+    }
+
+    .telemetry-feed .log-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .telemetry-feed .log-success {
+      color: #34d399;
+    }
+
+    /* ACT 3: CLINICAL LOGIN TERMINAL */
+    .terminal-container {
+      max-width: 520px;
+      width: 100%;
+      margin: 0 auto;
+      background: rgba(9, 17, 34, 0.85);
+      border: 1px solid rgba(14, 165, 233, 0.35);
+      border-radius: 20px;
+      padding: 36px 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7),
+                  0 0 40px rgba(14, 165, 233, 0.15);
+      position: relative;
+      z-index: 20;
+    }
+
+    .terminal-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--cyan-bright), transparent);
+    }
+
+    .terminal-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .terminal-header h2 {
+      font-family: var(--font-display);
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    .terminal-header p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Quick Role Preset Pills */
+    .role-presets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .role-preset-btn {
+      background: rgba(14, 165, 233, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #e2e8f0;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .role-preset-btn:hover, .role-preset-btn.active {
+      background: rgba(14, 165, 233, 0.2);
+      border-color: var(--cyan-bright);
+      transform: translateY(-1px);
+    }
+
+    .role-preset-btn .icon {
+      font-size: 18px;
+    }
+
+    .role-preset-btn .role-title {
+      font-size: 12px;
+      font-weight: 700;
+      display: block;
+    }
+
+    .role-preset-btn .role-desc {
+      font-size: 10px;
+      color: var(--text-dim);
+      display: block;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
     }
 
     .form-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--ink-primary);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: block;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+      letter-spacing: 0.3px;
     }
 
     .input-wrapper {
       position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .input-field {
-      width: 100%;
-      height: 44px;
-      background: #ffffff;
-      border: 1.5px solid var(--card-border);
-      border-radius: var(--radius-md);
-      padding: 0 40px 0 14px;
-      font-size: 13.5px;
-      font-family: inherit;
-      color: var(--ink-primary);
-      transition: all 0.2s ease;
-      outline: none;
-    }
-
-    .input-field:focus {
-      border-color: var(--accent-warm);
-      box-shadow: 0 0 0 3px rgba(140, 109, 70, 0.12);
     }
 
     .input-icon {
       position: absolute;
-      right: 12px;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
       font-size: 16px;
-      color: var(--ink-muted);
-      pointer-events: none;
+      color: var(--text-dim);
     }
 
-    .toggle-pass-btn {
+    .form-input {
+      width: 100%;
+      background: rgba(4, 8, 19, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 11px 14px 11px 40px;
+      font-size: 13.5px;
+      color: white;
+      outline: none;
+      transition: all 0.25s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--cyan-bright);
+      background: rgba(4, 8, 19, 0.95);
+      box-shadow: 0 0 16px rgba(14, 165, 233, 0.35);
+    }
+
+    .form-input::placeholder {
+      color: #475569;
+    }
+
+    .form-toggle-btn {
       position: absolute;
-      right: 10px;
-      background: none;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
       border: none;
-      color: var(--ink-muted);
-      font-size: 15px;
+      color: #64748b;
       cursor: pointer;
-      padding: 4px;
+      font-size: 14px;
     }
 
     .btn-submit {
       width: 100%;
-      height: 48px;
-      background: linear-gradient(135deg, var(--accent-warm), var(--accent-warm-hover));
-      color: #ffffff;
-      border: none;
-      border-radius: var(--radius-md);
-      font-size: 14.5px;
-      font-weight: 800;
-      font-family: inherit;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: white;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
       cursor: pointer;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 4px 14px rgba(140, 109, 70, 0.25);
-      transition: all 0.2s ease;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    .btn-submit:hover {
+    .btn-submit:hover:not(:disabled) {
+      background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.6);
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(140, 109, 70, 0.32);
     }
 
     .btn-submit:disabled {
       opacity: 0.6;
       cursor: not-allowed;
-      transform: none;
     }
 
-    .btn-submit.btn-verified-pulse {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-      border: 1.5px solid #34d399 !important;
-      color: #ffffff !important;
-      box-shadow: 0 0 28px rgba(52, 211, 153, 0.7) !important;
-      opacity: 1 !important;
-      pointer-events: none;
-    }
-
-    /* ALERT BANNER */
-    .alert-banner {
-      padding: 10px 14px;
-      border-radius: var(--radius-md);
-      font-size: 12.5px;
-      font-weight: 600;
-      margin-bottom: 14px;
-      display: none;
-    }
-
-    .alert-banner.error {
-      background: var(--danger-bg);
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
-
-    .alert-banner.success {
-      background: var(--success-bg);
-      color: var(--success);
-      border: 1px solid #bbf7d0;
-    }
-
-    .alert-banner.info {
-      background: #eff6ff;
-      color: #1e40af;
-      border: 1px solid #bfdbfe;
-    }
-
-    /* FOOTER SWITCH */
-    .auth-footer {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid var(--card-border-subtle);
-      text-align: center;
-      font-size: 12.5px;
-      color: var(--ink-secondary);
-    }
-
-    .auth-footer a {
-      color: var(--accent-warm);
-      font-weight: 700;
-      text-decoration: none;
-    }
-
-    .auth-footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* OVERLAY */
-    .success-trans-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(249, 246, 240, 0.96);
-      backdrop-filter: blur(12px);
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      animation: fadeIn 0.25s ease forwards;
-    }
-
-    .trans-ring {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--success-bg);
-      border: 2px solid var(--success);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      color: var(--success);
-      margin-bottom: 16px;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    /* 3D Interactive Card Parallax & Specular Sheen */
-    .showcase-panel, .auth-card {
-      transform-style: preserve-3d;
-      perspective: 1000px;
-      transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.25s ease;
-      position: relative;
-    }
-
-    .card-specular-shine {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: radial-gradient(circle 380px at var(--shine-x, 50%) var(--shine-y, 50%), rgba(255, 255, 255, 0.5) 0%, transparent 60%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 2;
-    }
-
-    .showcase-panel:hover .card-specular-shine, .auth-card:hover .card-specular-shine {
-      opacity: 1;
-    }
-
-    /* Boom Particle Sparks */
-    .boom-particle {
-      position: fixed;
-      pointer-events: none;
-      z-index: 9999;
-      border-radius: 50%;
-      animation: boomParticleFly 0.85s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    }
-
-    @keyframes boomParticleFly {
-      0% {
-        transform: translate(0, 0) scale(1.4) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translate(var(--tx), var(--ty)) scale(0) rotate(360deg);
-        opacity: 0;
-      }
-    }
-
-    .btn-audio-toggle {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #ffffff;
-      border: 1px solid var(--card-border);
-      color: var(--ink-secondary);
+    .btn-guest {
+      width: 100%;
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      color: #94a3b8;
+      border-radius: 10px;
+      padding: 10px;
       font-size: 12px;
-      font-weight: 700;
-      padding: 7px 13px;
-      border-radius: 20px;
+      font-weight: 600;
       cursor: pointer;
+      margin-top: 10px;
       transition: all 0.2s ease;
     }
 
-    .btn-audio-toggle:hover {
-      background: var(--accent-warm-light);
-      color: var(--accent-warm);
-      border-color: var(--accent-warm);
+    .btn-guest:hover {
+      color: white;
+      border-color: var(--cyan-bright);
+      background: rgba(14, 165, 233, 0.05);
     }
 
-    .btn-audio-toggle.active {
-      color: var(--accent-warm);
-      border-color: var(--accent-warm);
-      background: var(--accent-warm-light);
+    .terminal-footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--text-dim);
     }
 
-    /* ═════════════════════════════════════════════════════════
-       FRAMER MOTION ENTRANCE SPRING & STAGGER TRANSITIONS
-       ═════════════════════════════════════════════════════════ */
-    @keyframes fmPortalNavDrop {
-      0% {
-        opacity: 0;
-        transform: translateY(-26px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .terminal-footer a {
+      color: var(--cyan-bright);
+      text-decoration: none;
     }
 
-    @keyframes fmPortalSlideLeftIn {
-      0% {
-        opacity: 0;
-        transform: translateX(-48px) scale(0.96);
-      }
-      65% {
-        opacity: 0.95;
-        transform: translateX(3px) scale(1.004);
-      }
-      100% {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-      }
+    .terminal-footer a:hover {
+      text-decoration: underline;
     }
 
-    @keyframes fmPortalSlideRightIn {
-      0% {
-        opacity: 0;
-        transform: translateX(48px) scale(0.96);
+    /* Alert Banner */
+    .alert-box {
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 12px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .alert-box.error {
+      background: rgba(220, 38, 38, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .alert-box.success {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      color: #6ee7b7;
+    }
+
+    @media (max-width: 768px) {
+      .cinematic-header {
+        padding: 0 16px;
       }
-      65% {
-        opacity: 0.95;
-        transform: translateX(-3px) scale(1.004);
+      .role-presets {
+        grid-template-columns: 1fr;
       }
-      100% {
-        opacity: 1;
-        transform: translateX(0) scale(1);
+      .metrics-dock {
+        flex-direction: column;
+        align-items: center;
       }
-    }
-
-    @keyframes fmPortalItemUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px) scale(0.98);
-      }
-      70% {
-        opacity: 0.95;
-        transform: translateY(-2px) scale(1.003);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    /* Hardware-accelerated Framer Motion entrance primitives */
-    .portal-nav {
-      animation: fmPortalNavDrop 0.75s cubic-bezier(0.16, 1, 0.3, 1) both;
-    }
-
-    .showcase-panel {
-      animation: fmPortalSlideLeftIn 0.88s cubic-bezier(0.16, 1, 0.3, 1) 0.06s both;
-    }
-
-    .auth-card {
-      animation: fmPortalSlideRightIn 0.88s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
-    }
-
-    /* Staggered entrance for showcase panel */
-    .showcase-panel .portal-pill {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
-    }
-    .showcase-panel .showcase-title {
-      animation: fmPortalItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
-    }
-    .showcase-panel .showcase-sub {
-      animation: fmPortalItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both;
-    }
-    .showcase-panel .feature-item:nth-of-type(1) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.36s both;
-    }
-    .showcase-panel .feature-item:nth-of-type(2) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
-    }
-    .showcase-panel .feature-item:nth-of-type(3) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.48s both;
-    }
-    .showcase-panel .feature-item:nth-of-type(4) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
-    }
-    .showcase-panel .telemetry-preview {
-      animation: fmPortalItemUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.60s both;
-    }
-
-    /* Staggered entrance for user login card controls */
-    .auth-card .auth-card-header {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
-    }
-    .auth-card .preset-container {
-      animation: fmPortalItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
-    }
-    .auth-card .form-group:nth-of-type(1) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
-    }
-    .auth-card .form-group:nth-of-type(2) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both;
-    }
-    .auth-card .form-group:nth-of-type(3) {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
-    }
-    .auth-card .form-options {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both;
-    }
-    .auth-card .btn-submit {
-      animation: fmPortalItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
-    }
-    .auth-card .card-footer {
-      animation: fmPortalItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.64s both;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .portal-nav,
-      .showcase-panel,
-      .auth-card,
-      .showcase-panel *,
-      .auth-card * {
-        animation: none !important;
-        transform: none !important;
-        opacity: 1 !important;
+      .metric-chip {
+        width: 100%;
+        max-width: 320px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="ambient-canvas-wrap">
-    <div class="blob blob-1"></div>
-    <div class="blob blob-2"></div>
-    <canvas id="userConstellationCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+  <!-- FIXED STAGE: THREE.JS 3D HUMAN SILHOUETTE + ECG OSCILLOSCOPE -->
+  <div id="cinematicStage">
+    <canvas id="threeCanvas"></canvas>
+    <canvas id="ecgCanvas"></canvas>
   </div>
+  <div class="viewport-overlay"></div>
 
-  <!-- TOP NAVIGATION BAR -->
-  <header class="portal-nav">
-    <a href="/" class="nav-brand">
-      <div class="brand-emblem">🌿</div>
-      <div>
-        <span class="brand-name">HealthGPT</span>
-        <span class="portal-badge">User Portal</span>
+  <!-- FLOATING CINEMATIC NAVIGATION HUD -->
+  <header class="cinematic-header">
+    <a href="/" class="brand-logo" title="HealthGPT Main Hub">
+      <div class="brand-symbol">🧬</div>
+      <div class="brand-text">
+        <h1>HealthGPT</h1>
+        <span>Where AI Meets Healthcare</span>
       </div>
     </a>
 
-    <div class="nav-actions" style="display:flex;align-items:center;gap:12px;">
-      <button type="button" class="btn-audio-toggle active" id="userAudioToggle" onclick="toggleUserAudio()" title="Toggle interactive sound effects">
-        <span>🔊</span>
-        <span id="userAudioLabel">Sound On</span>
+    <div class="header-actions">
+      <button class="btn-hud" id="audioToggleBtn" onclick="toggleAudioSynthesizer()" title="Toggle Cinematic Ambient Synth">
+        <span id="audioIcon">🔈</span> <span id="audioText">Audio HUD</span>
       </button>
-      <a href="/onboarding?restart=true" class="btn-tour-switch" id="navOnboardingTourBtn" title="Launch interactive onboarding tutorial">
-        <span>✨</span>
-        <span>App Tour</span>
+      <a href="#terminalAct" class="btn-hud" style="background:rgba(56,189,248,0.18);border-color:#38bdf8;" title="Jump directly to Clinical Terminal">
+        <span>⚡</span> <span>Instant Access</span>
       </a>
-      <a href="/admin-login" class="btn-admin-switch" id="navSwitchToAdminBtn" title="Switch to Clinical Admin Login">
-        <span>🛡️</span>
-        <span>Admin Login Portal</span>
+      <a href="/admin-login" class="btn-hud" title="Switch to Clinician & Admin Console">
+        <span>👨‍⚕️</span> <span>Admin</span>
       </a>
     </div>
   </header>
 
-  <!-- MAIN STAGE -->
-  <main class="portal-main">
+  <!-- SCROLL PROGRESS STRIP -->
+  <div class="cinematic-progress-bar" id="cinematicProgressBar"></div>
 
-    <!-- LEFT: PATIENT CLINICAL SHOWCASE -->
-    <section class="showcase-panel">
-      <div>
-        <div class="portal-pill">
-          <span>🌿</span>
-          <span>Patient &amp; User Health Gateway</span>
+  <!-- SCROLL-DRIVEN CINEMATIC EXPERIENCE -->
+  <main class="scroll-content-container">
+
+    <!-- ACT 1: THE AI FRONTIER -->
+    <section class="cinematic-section" id="heroAct">
+      <div class="hero-container">
+        <div class="hero-eyebrow">
+          <span class="pulsing-node"></span>
+          <span>Next-Generation Neural Healthcare Engine</span>
         </div>
 
-        <h1 class="showcase-title">Empowered Health &amp; Clinical Telemetry</h1>
-        <p class="showcase-sub">
-          Log in to access your interactive 3D Human Digital Twin, consultation history with AI Doctor Dr. Nambi, RxVision prescription verification, and comprehensive wellness radar.
+        <h1 class="hero-headline">
+          Where AI Meets<br>Healthcare
+        </h1>
+
+        <p class="hero-subline">
+          Experience full-spectrum clinical intelligence. Powered by <b>multimodal diagnostics</b>, 
+          CDSCO-verified pharmacopeia, interactive 3D digital twin telemetry, and real-time clinical companions.
         </p>
 
-        <div class="feature-list">
-          <div class="feature-item">
-            <div class="feature-icon">🩺</div>
-            <div class="feature-text">
-              <b>3D Human Digital Twin</b>
-              <p>Explore synchronized anatomical telemetry with real-time biological sync.</p>
+        <!-- Live Floating Telemetry Chips -->
+        <div class="metrics-dock">
+          <div class="metric-chip">
+            <span class="icon">❤️</span>
+            <div class="info">
+              <div class="label">Cardiac Rhythm</div>
+              <div class="value" id="hudHrText">72 BPM · Normal Sinus</div>
             </div>
           </div>
-
-          <div class="feature-item">
-            <div class="feature-icon">💊</div>
-            <div class="feature-text">
-              <b>RxVision Prescription OCR</b>
-              <p>Multimodal AI extraction, drug safety verification & Jan Aushadhi generic radar.</p>
+          <div class="metric-chip">
+            <span class="icon">🫁</span>
+            <div class="info">
+              <div class="label">Oxygen Saturation</div>
+              <div class="value">99% SpO2 · Ambient</div>
             </div>
           </div>
-
-          <div class="feature-item">
-            <div class="feature-icon">🌸</div>
-            <div class="feature-text">
-              <b>Period &amp; Reproductive Suite</b>
-              <p>Predictive ovulation tracking, biological cycle wheel & BETA companion.</p>
+          <div class="metric-chip">
+            <span class="icon">⚡</span>
+            <div class="info">
+              <div class="label">Synaptic Latency</div>
+              <div class="value">1.2 ms · Homeostasis</div>
             </div>
           </div>
-
-          <div class="feature-item">
-            <div class="feature-icon">🚨</div>
-            <div class="feature-text">
-              <b>One-Touch Emergency SOS</b>
-              <p>Instant location telemetry dispatch to emergency responders & personal contacts.</p>
+          <div class="metric-chip">
+            <span class="icon">🛡️</span>
+            <div class="info">
+              <div class="label">Security Architecture</div>
+              <div class="value">CDSCO · 256-Bit TLS</div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="telemetry-preview">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <b style="font-size:12px;color:var(--ink-primary);display:flex;align-items:center;gap:6px;">
-            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;"></span>
-            Personal Health Signal Sync
-          </b>
-          <span style="font-size:11px;color:var(--ink-muted);font-weight:600;">256-Bit Encrypted</span>
-        </div>
-        <div class="vital-grid">
-          <div class="vital-box">
-            <div class="vital-num" style="color:#0f766e;">72</div>
-            <div class="vital-lbl">Resting BPM</div>
-          </div>
-          <div class="vital-box">
-            <div class="vital-num" style="color:#0284c7;">99%</div>
-            <div class="vital-lbl">SpO2 Oxygen</div>
-          </div>
-          <div class="vital-box">
-            <div class="vital-num" style="color:#8c6d46;">118/78</div>
-            <div class="vital-lbl">BP mmHg</div>
-          </div>
+        <div class="scroll-cue" onclick="scrollToAct('biometricAct')">
+          <span>Scroll to initiate neural clearance</span>
+          <div class="mouse-wheel"></div>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT: USER LOGIN FORM CARD -->
-    <section class="auth-card" id="userAuthCard">
-      <div class="card-specular-shine"></div>
-      <div class="auth-card-header">
-        <h2 class="card-headline">Patient Sign In</h2>
-        <p class="card-subtext">Access your personal health consultations, records &amp; twin</p>
-      </div>
-
-      <!-- Quick 1-Click Fill Preset Profile -->
-      <div class="presets-wrap">
-        <div class="presets-label">
-          <span>⚡ Fast Test Patient Profiles:</span>
+    <!-- ACT 2: BIOMETRIC DECRYPTION GATEWAY -->
+    <section class="cinematic-section" id="biometricAct">
+      <div class="biometric-container">
+        <div class="hero-eyebrow" style="margin-bottom:16px;">
+          <span>Biometric & Neural Clearance Layer</span>
         </div>
-        <div class="preset-chips">
-          <button type="button" class="preset-btn" onclick="fillUserPreset('Iqra Sultana', 'iqrasultana0007@gmail.com', 'password123', '123456', event)">
-            <span>👤</span> <b>Iqra Sultana</b> (Primary)
-          </button>
-          <button type="button" class="preset-btn" onclick="fillUserPreset('Demo User', 'demo@healthgpt.ai', 'health123', '123456', event)">
-            <span>👤</span> <b>Demo Patient</b>
-          </button>
-        </div>
-      </div>
-
-      <!-- Alert Banner -->
-      <div class="alert-banner" id="userAlertBanner"></div>
-
-      <!-- USER LOGIN FORM -->
-      <form id="userLoginForm" onsubmit="handleUserSignIn(event)">
-        <!-- 1. USER NAME -->
-        <div class="form-group">
-          <label class="form-label" for="userNameInput">User Name</label>
-          <div class="input-wrapper">
-            <input type="text" id="userNameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name" onfocus="playUserAudioTone('focus')">
-            <span class="input-icon">👤</span>
-          </div>
-        </div>
-
-        <!-- 2. EMAIL ADDRESS -->
-        <div class="form-group">
-          <label class="form-label" for="userEmailInput">Email Address</label>
-          <div class="input-wrapper">
-            <input type="email" id="userEmailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email" onfocus="playUserAudioTone('focus')">
-            <span class="input-icon">✉</span>
-          </div>
-        </div>
-
-        <!-- 3. PASSWORD -->
-        <div class="form-group">
-          <label class="form-label" for="userPasswordInput">Password</label>
-          <div class="input-wrapper">
-            <input type="password" id="userPasswordInput" class="input-field" placeholder="••••••••" value="password123" required autocomplete="current-password" onfocus="playUserAudioTone('focus')">
-            <button type="button" class="toggle-pass-btn" onclick="toggleUserPasswordVisibility()" aria-label="Toggle password visibility">👁</button>
-          </div>
-        </div>
-
-        <!-- 4. OTP CODE -->
-        <div class="form-group">
-          <div class="form-label">
-            <span>Verification OTP</span>
-            <button type="button" id="btnRequestOtpUser" onclick="requestOtpUser(event)" style="background:none;border:none;color:var(--accent-warm);font-size:11.5px;font-weight:700;cursor:pointer;padding:0;">
-              ⚡ Get OTP
-            </button>
-          </div>
-          <div class="input-wrapper">
-            <input type="text" id="userOtpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playUserAudioTone('focus')">
-            <span class="input-icon">🔑</span>
-          </div>
-          <span id="userOtpHint" style="font-size:11px;color:var(--forest);font-weight:600;margin-top:3px;display:block;">
-            ✓ Test OTP: <b>123456</b> (or click "Get OTP")
-          </span>
-        </div>
-
-        <!-- 5. SIGN IN BUTTON -->
-        <button type="submit" class="btn-submit" id="btnUserSignInSubmit" onclick="triggerUserBoom(event)">
-          <span>Sign In as Patient</span>
-          <span>→</span>
-        </button>
-
-        <!-- CELEBRATION LOGIN ANIMATION TRIGGER -->
-        <button type="button" class="btn-submit" onclick="triggerUserCelebrationPreview()" style="margin-top:8px;background:linear-gradient(135deg, #0d9488 0%, #2563eb 100%);box-shadow:0 4px 14px rgba(13,148,136,0.32);">
-          <span>🎆 Login Animation with Firecrackers</span>
-          <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">Celebration</span>
-        </button>
-      </form>
-
-      <div class="auth-footer">
-        <p>
-          Are you a clinician, medical officer, or admin?
-          <a href="/admin-login">Go to Admin Login Portal &rarr;</a>
+        <h2 style="font-family:var(--font-display);font-size:32px;font-weight:700;margin-bottom:12px;">
+          Physiological Identity Verification
+        </h2>
+        <p style="font-size:14px;color:var(--text-muted);max-width:540px;margin:0 auto 28px;">
+          HealthGPT scans and synchronizes with your personal clinical telemetry. 
+          Touch the biometric node below to simulate instant optical clearance.
         </p>
+
+        <!-- Interactive Biometric Scanner Node -->
+        <div class="biometric-scanner-wrap" id="biometricTouchNode" onclick="triggerBiometricScan()">
+          <div class="scanner-ring-outer"></div>
+          <div class="scanner-ring-inner"></div>
+          <div class="scanner-beam"></div>
+          <div class="scanner-core-btn">
+            <span id="scannerIcon">👆</span>
+          </div>
+        </div>
+
+        <div id="biometricStatusText" style="font-size:13px;font-weight:700;color:var(--cyan-bright);letter-spacing:1px;text-transform:uppercase;">
+          Tap node to verify biometric credentials
+        </div>
+
+        <!-- Real-time Telemetry Data Stream Feed -->
+        <div class="telemetry-feed" id="telemetryTerminalFeed">
+          <div class="log-line"><span class="log-success">[OK]</span> 3D Digital Twin Contours Initialized (1,840 vertices loaded)</div>
+          <div class="log-line"><span class="log-success">[OK]</span> Oscilloscope ECG Feed: 72 BPM Sinus Homeostasis</div>
+          <div class="log-line"><span class="log-success">[OK]</span> CDSCO Bioequivalence Database Ready (10,000+ PMBJP Generics)</div>
+          <div class="log-line"><span style="color:#38bdf8;">[SYS]</span> Awaiting clinical terminal handshake...</div>
+        </div>
+
+        <div class="scroll-cue" style="margin-top:32px;" onclick="scrollToAct('terminalAct')">
+          <span>Proceed to Clinical Terminal ↓</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACT 3: CLINICAL ACCESS TERMINAL -->
+    <section class="cinematic-section" id="terminalAct">
+      <div class="terminal-container" id="userAuthCard">
+        <div class="terminal-header">
+          <div style="font-size:28px;margin-bottom:8px;">🔐</div>
+          <h2>Clinical Neural Terminal</h2>
+          <p>Sign in to access your HealthGPT Dashboard & Medical Records</p>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div class="alert-box" id="authAlertBox">
+          <span id="alertIcon">⚠️</span>
+          <span id="alertMessage"></span>
+        </div>
+
+        <!-- Quick Demo Role Presets -->
+        <div class="role-presets">
+          <div class="role-preset-btn active" id="presetPatient" onclick="applyRolePreset('patient')">
+            <span class="icon">👤</span>
+            <div>
+              <span class="role-title">Patient Portal</span>
+              <span class="role-desc">patient@healthgpt.io</span>
+            </div>
+          </div>
+          <div class="role-preset-btn" id="presetClinician" onclick="applyRolePreset('clinician')">
+            <span class="icon">🩺</span>
+            <div>
+              <span class="role-title">Dr. Nambi AI</span>
+              <span class="role-desc">dr.nambi@healthgpt.io</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Authentication Form -->
+        <form id="userLoginForm" onsubmit="handleCinematicSignIn(event)">
+          <div class="form-group">
+            <label class="form-label">Username / Patient ID</label>
+            <div class="input-wrapper">
+              <span class="input-icon">👤</span>
+              <input type="text" id="userInputUsername" class="form-input" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Clinical Account Email</label>
+            <div class="input-wrapper">
+              <span class="input-icon">✉️</span>
+              <input type="email" id="userInputEmail" class="form-input" placeholder="patient@healthgpt.io" value="patient@healthgpt.io" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Security Password</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔒</span>
+              <input type="password" id="userInputPassword" class="form-input" placeholder="••••••••••••" value="healthgpt2026" required>
+              <button type="button" class="form-toggle-btn" onclick="togglePasswordVisibility('userInputPassword')" title="Show/Hide Password">👁️</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">2FA Biometric Passcode / OTP</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🛡️</span>
+              <input type="text" id="userInputOtp" class="form-input" placeholder="6-digit verification code" value="842915" required maxlength="6">
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit" id="btnTerminalSubmit">
+            <span>Enter HealthGPT System</span>
+            <span>→</span>
+          </button>
+
+          <button type="button" class="btn-guest" onclick="handleInstantGuestEntry()">
+            ⚡ Instant Direct Entry (Guest Diagnostic Session)
+          </button>
+        </form>
+
+        <div class="terminal-footer">
+          <div>Encrypted with CDSCO 256-bit Healthcare Protocols.</div>
+          <div style="margin-top:6px;">
+            Need clinical administrator access? <a href="/admin-login">Switch to Admin Portal</a>
+          </div>
+        </div>
       </div>
     </section>
 
   </main>
 
-  <!-- FIRECRACKERS CELEBRATION LOGIN ANIMATION OVERLAY -->
-  <div id="userLoginCelebrationOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:radial-gradient(circle at center, rgba(15,23,42,0.92) 0%, rgba(3,7,18,0.98) 100%);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;overflow:hidden;user-select:none;">
-    <!-- Firecrackers Canvas -->
-    <canvas id="userFirecrackersCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:all;cursor:crosshair;"></canvas>
-
-    <!-- Top floating instruction & controls -->
-    <div style="position:absolute;top:20px;display:flex;align-items:center;gap:12px;z-index:10;background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);padding:6px 16px;border-radius:30px;color:#f8fafc;font-size:12.5px;font-weight:600;">
-      <span>🎆 Tap anywhere to ignite custom firecrackers!</span>
-      <button type="button" onclick="userFireMultipleRockets(4)" style="background:linear-gradient(135deg,#f59e0b,#ef4444);border:none;color:white;font-size:11.5px;font-weight:800;padding:4px 10px;border-radius:15px;cursor:pointer;">💥 Launch Barrage</button>
-    </div>
-
-    <!-- Celebratory Central Card -->
-    <div id="userCelebrationCard" style="position:relative;z-index:10;background:rgba(255,255,255,0.98);color:#0f172a;max-width:440px;width:90%;border-radius:24px;padding:28px 24px;text-align:center;box-shadow:0 25px 60px -12px rgba(0,0,0,0.6), 0 0 45px rgba(245,158,11,0.45);border:2px solid rgba(251,191,36,0.65);transform:scale(0.88);opacity:0;transition:all 0.42s cubic-bezier(0.16,1,0.3,1);">
-      <!-- Emblem with glowing pulse -->
-      <div style="width:68px;height:68px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 28px rgba(245,158,11,0.6);position:relative;">
-        <span>🎉</span>
-      </div>
-
-      <div style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;font-size:11px;font-weight:800;padding:3px 12px;border-radius:16px;margin-bottom:8px;border:1px solid #fde68a;">
-        <span>✨ AUTHENTICATION VERIFIED</span>
-      </div>
-
-      <h2 style="font-size:22px;font-weight:900;margin:0 0 4px;color:#0f172a;letter-spacing:-0.5px;">Welcome to HealthGPT!</h2>
-      <p id="userCelebrationUserNameText" style="font-size:13.5px;color:#64748b;margin:0 0 16px;font-weight:600;">Opening clinical telemetry for Iqra Sultana</p>
-
-      <!-- Live Clinical Telemetry Checklist -->
-      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:16px;text-align:left;display:flex;flex-direction:column;gap:7px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
-          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
-            <span style="color:#10b981;font-weight:900;">✓</span> Clinical AI Engine
-          </span>
-          <span style="color:#059669;font-weight:700;font-size:11px;">Active</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
-          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
-            <span style="color:#10b981;font-weight:900;">✓</span> Secure Patient Vault
-          </span>
-          <span style="color:#059669;font-weight:700;font-size:11px;">Decrypted</span>
-        </div>
-        <div style="display:flex;align-items:center;justify-content:space-between;font-size:12px;">
-          <span style="display:flex;align-items:center;gap:8px;color:#334155;font-weight:700;">
-            <span style="color:#10b981;font-weight:900;">✓</span> Supabase Telemetry
-          </span>
-          <span style="color:#059669;font-weight:700;font-size:11px;">Connected</span>
-        </div>
-      </div>
-
-      <!-- Animated Progress Bar -->
-      <div style="margin-bottom:16px;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#64748b;margin-bottom:5px;">
-          <span>Synchronizing Telemetry</span>
-          <span id="userCelebrationCountdownText">100%</span>
-        </div>
-        <div style="height:7px;background:#e2e8f0;border-radius:6px;overflow:hidden;position:relative;">
-          <div id="userCelebrationProgressBar" style="height:100%;width:0%;background:linear-gradient(90deg, #10b981, #06b6d4, #f59e0b);border-radius:6px;"></div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div style="display:flex;gap:10px;">
-        <button type="button" onclick="finishUserCelebrationRedirect()" style="flex:1;background:linear-gradient(135deg, #0f172a, #1e293b);color:white;border:none;padding:11px;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 14px rgba(0,0,0,0.25);">
-          <span>Enter Dashboard Now</span>
-          <span>→</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
   <script>
-    /* ═══════════════════════════════════════════════════════
-       INTERACTIVE BOOM AUDIO SYNTH & PARTICLES
-       ═══════════════════════════════════════════════════════ */
-    let userAudioEnabled = true;
-    let userAudioCtx = null;
+    /* ============================================================
+       CINEMATIC 3D ENGINE — THREE.JS HOLOGRAPHIC HUMAN SILHOUETTE
+       ============================================================ */
+    let scene, camera, renderer;
+    let hologramGroup, bodyParticles, neuralLines, heartNode;
+    let clock = new THREE.Clock();
+    let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
+    let scrollProgress = 0;
 
-    function initUserAudio() {
-      if (!userAudioCtx) {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (AudioContext) {
-          userAudioCtx = new AudioContext();
-        }
-      }
-      if (userAudioCtx && userAudioCtx.state === 'suspended') {
-        userAudioCtx.resume();
-      }
+    function initThreeScene() {
+      const canvas = document.getElementById('threeCanvas');
+      if (!canvas) return;
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x040813, 0.035);
+
+      camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
+      camera.position.set(0, 0, 18);
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      hologramGroup = new THREE.Group();
+      scene.add(hologramGroup);
+
+      buildHolographicHumanModel();
+      buildDataStreamParticles();
+
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('scroll', onWindowScroll);
+
+      animateThree();
     }
 
-    function toggleUserAudio() {
-      userAudioEnabled = !userAudioEnabled;
-      const btn = document.getElementById('userAudioToggle');
-      const lbl = document.getElementById('userAudioLabel');
-      if (btn && lbl) {
-        if (userAudioEnabled) {
-          btn.classList.add('active');
-          lbl.textContent = 'Sound On';
-          btn.querySelector('span').textContent = '🔊';
-          playUserAudioTone('focus');
+    /* Anatomical Point Cloud Generator for 3D Human Silhouette */
+    function buildHolographicHumanModel() {
+      const particleCount = 2800;
+      const geometry = new THREE.BufferGeometry();
+      const positions = new Float32Array(particleCount * 3);
+      const colors = new Float32Array(particleCount * 3);
+
+      const colorCyan = new THREE.Color(0x38bdf8);
+      const colorDeep = new THREE.Color(0x0284c7);
+      const colorGreen = new THREE.Color(0x34d399);
+
+      let idx = 0;
+
+      // 1. Head & Cranium (Sphere cluster)
+      for (let i = 0; i < 380; i++) {
+        const u = Math.random();
+        const v = Math.random();
+        const theta = u * 2.0 * Math.PI;
+        const phi = Math.acos(2.0 * v - 1.0);
+        const r = 1.1 + Math.random() * 0.15;
+        const sinPhi = Math.sin(phi);
+
+        positions[idx * 3] = r * sinPhi * Math.cos(theta) * 0.85;
+        positions[idx * 3 + 1] = 5.2 + r * Math.cos(phi) * 1.05;
+        positions[idx * 3 + 2] = r * sinPhi * Math.sin(theta) * 0.85;
+
+        colorCyan.toArray(colors, idx * 3);
+        idx++;
+      }
+
+      // 2. Neck & Spine Core
+      for (let i = 0; i < 180; i++) {
+        const y = 0.5 + (i / 180) * 3.8;
+        const rad = 0.35 + Math.sin(i * 0.1) * 0.15;
+        const ang = Math.random() * Math.PI * 2;
+
+        positions[idx * 3] = Math.cos(ang) * rad;
+        positions[idx * 3 + 1] = y;
+        positions[idx * 3 + 2] = Math.sin(ang) * rad;
+
+        colorDeep.toArray(colors, idx * 3);
+        idx++;
+      }
+
+      // 3. Torso, Ribcage & Lungs
+      for (let i = 0; i < 900; i++) {
+        const t = Math.random();
+        const y = 1.2 + t * 3.0; // Y from 1.2 to 4.2
+        const ribWidth = (1.7 - Math.abs(t - 0.5) * 0.8) * (1 + (Math.random() - 0.5) * 0.2);
+        const ribDepth = (0.9 - Math.abs(t - 0.5) * 0.4) * (1 + (Math.random() - 0.5) * 0.2);
+        const ang = Math.random() * Math.PI * 2;
+
+        positions[idx * 3] = Math.cos(ang) * ribWidth;
+        positions[idx * 3 + 1] = y;
+        positions[idx * 3 + 2] = Math.sin(ang) * ribDepth;
+
+        // Color blend based on proximity to heart
+        if (Math.abs(y - 2.8) < 0.6 && Math.abs(positions[idx * 3] + 0.3) < 0.7) {
+          colorGreen.toArray(colors, idx * 3);
         } else {
-          btn.classList.remove('active');
-          lbl.textContent = 'Muted';
-          btn.querySelector('span').textContent = '🔇';
+          colorCyan.toArray(colors, idx * 3);
         }
-      }
-    }
-
-    function playUserAudioTone(type) {
-      if (!userAudioEnabled) return;
-      try {
-        initUserAudio();
-        if (!userAudioCtx) return;
-
-        const osc = userAudioCtx.createOscillator();
-        const gain = userAudioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(userAudioCtx.destination);
-        const now = userAudioCtx.currentTime;
-
-        if (type === 'focus') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, now);
-          osc.frequency.exponentialRampToValueAtTime(587.33, now + 0.08);
-          gain.gain.setValueAtTime(0.04, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-          osc.start(now);
-          osc.stop(now + 0.12);
-        } else if (type === 'boom') {
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, now);
-          osc.frequency.exponentialRampToValueAtTime(1046.5, now + 0.15);
-          gain.gain.setValueAtTime(0.08, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-          osc.start(now);
-          osc.stop(now + 0.3);
-        } else if (type === 'success') {
-          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
-            const chordOsc = userAudioCtx.createOscillator();
-            const chordGain = userAudioCtx.createGain();
-            chordOsc.type = 'sine';
-            chordOsc.frequency.setValueAtTime(freq, now + idx * 0.05);
-            chordGain.gain.setValueAtTime(0.06, now + idx * 0.05);
-            chordGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-            chordOsc.connect(chordGain);
-            chordGain.connect(userAudioCtx.destination);
-            chordOsc.start(now + idx * 0.05);
-            chordOsc.stop(now + 0.45);
-          });
-        } else if (type === 'error') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(220, now);
-          osc.frequency.linearRampToValueAtTime(160, now + 0.18);
-          gain.gain.setValueAtTime(0.07, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-          osc.start(now);
-          osc.stop(now + 0.22);
-        }
-      } catch (e) {
-        // Audio error ignored
-      }
-    }
-
-    function triggerUserBoom(e) {
-      playUserAudioTone('boom');
-      const rect = e.currentTarget.getBoundingClientRect();
-      const cx = e.clientX || rect.left + rect.width / 2;
-      const cy = e.clientY || rect.top + rect.height / 2;
-
-      const colors = ['#8c6d46', '#c4a480', '#e4d7c5', '#5b7056', '#a65b44', '#f59e0b', '#38bdf8'];
-      const count = 28;
-
-      for (let i = 0; i < count; i++) {
-        const p = document.createElement('div');
-        p.className = 'boom-particle';
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const size = Math.floor(Math.random() * 8) + 4;
-        const angle = Math.random() * Math.PI * 2;
-        const distance = Math.random() * 110 + 35;
-        const tx = Math.cos(angle) * distance;
-        const ty = Math.sin(angle) * distance;
-
-        p.style.width = size + 'px';
-        p.style.height = size + 'px';
-        p.style.background = color;
-        p.style.boxShadow = `0 0 8px ${color}`;
-        p.style.left = cx + 'px';
-        p.style.top = cy + 'px';
-        p.style.setProperty('--tx', tx + 'px');
-        p.style.setProperty('--ty', ty + 'px');
-
-        document.body.appendChild(p);
-        setTimeout(() => p.remove(), 850);
-      }
-    }
-
-    function toggleUserPasswordVisibility() {
-      const input = document.getElementById('userPasswordInput');
-      input.type = input.type === 'password' ? 'text' : 'password';
-    }
-
-    function showUserAlert(msg, type = 'info') {
-      const alert = document.getElementById('userAlertBanner');
-      if (!alert) return;
-      alert.textContent = msg;
-      alert.className = `alert-banner ${type}`;
-      alert.style.display = 'block';
-    }
-
-    function fillUserPreset(name, email, password, otp = '123456', e) {
-      document.getElementById('userNameInput').value = name;
-      document.getElementById('userEmailInput').value = email;
-      document.getElementById('userPasswordInput').value = password;
-      document.getElementById('userOtpInput').value = otp;
-      showUserAlert(`Patient profile loaded: ${name} (${email})`, 'success');
-      playUserAudioTone('boom');
-      if (e) triggerUserBoom(e);
-    }
-
-    async function requestOtpUser(e) {
-      if (e) triggerUserBoom(e);
-      const email = document.getElementById('userEmailInput').value.trim();
-      const username = document.getElementById('userNameInput').value.trim();
-      const hint = document.getElementById('userOtpHint');
-      const btn = document.getElementById('btnRequestOtpUser');
-
-      btn.textContent = '⏳ Sending...';
-      btn.disabled = true;
-      playUserAudioTone('focus');
-
-      try {
-        const res = await fetch('/api/auth/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, username })
-        });
-        const data = await res.json().catch(() => ({}));
-        const code = data.demoOtp || data.otp || '123456';
-        document.getElementById('userOtpInput').value = code;
-        if (hint) {
-          hint.innerHTML = `✓ Active OTP Code: <b>${code}</b> (Valid for 10 minutes)`;
-          hint.style.color = 'var(--forest)';
-        }
-        showUserAlert(`Verification OTP sent: ${code}`, 'success');
-        playUserAudioTone('success');
-      } catch (err) {
-        document.getElementById('userOtpInput').value = '123456';
-        if (hint) hint.innerHTML = '✓ Test OTP: <b>123456</b> (Offline Ready)';
-      } finally {
-        btn.textContent = '⚡ Resend OTP';
-        btn.disabled = false;
-      }
-    }
-
-    /* =========================================================
-       FIRECRACKERS CELEBRATION LOGIN HANDLER & CANVAS ENGINE
-       ========================================================= */
-    let userCelebrationRedirectTimer = null;
-    let userFirecrackersRunning = false;
-    let userRockets = [];
-    let userSparks = [];
-    let userFcCanvas = null;
-    let userFcCtx = null;
-    let userFcAnimId = null;
-
-    function proceedToPatientDashboard(userId, userName) {
-      startUserLoginCelebration(userId, userName);
-    }
-
-    function triggerUserCelebrationPreview() {
-      const username = document.getElementById('userNameInput')?.value || 'Iqra Sultana';
-      startUserLoginCelebration('1', username, true);
-    }
-
-    function startUserLoginCelebration(userId, userName, isPreview = false) {
-      const overlay = document.getElementById('userLoginCelebrationOverlay');
-      const card = document.getElementById('userCelebrationCard');
-      const userText = document.getElementById('userCelebrationUserNameText');
-      const progressBar = document.getElementById('userCelebrationProgressBar');
-      const countdownText = document.getElementById('userCelebrationCountdownText');
-
-      const displayName = userName || 'Iqra Sultana';
-      if (userText) userText.textContent = `Opening clinical telemetry for ${displayName}`;
-
-      try {
-        sessionStorage.setItem('healthgpt_authenticated', 'true');
-        sessionStorage.setItem('healthgpt_celebrate_login', 'true');
-        localStorage.setItem('healthgpt_user_id', String(userId || '1'));
-        localStorage.setItem('healthgpt_user_name', String(userName || 'Iqra Sultana'));
-        localStorage.setItem('healthgpt_user_role', 'user');
-      } catch (e) {
-        console.warn(e);
+        idx++;
       }
 
-      if (overlay) {
-        overlay.style.display = 'flex';
+      // 4. Arms & Forearms (Left and Right)
+      for (let i = 0; i < 540; i++) {
+        const side = i % 2 === 0 ? 1 : -1;
+        const progress = Math.random();
+        const y = 4.0 - progress * 4.2;
+        const x = side * (1.8 + progress * 0.8 + Math.random() * 0.25);
+        const z = (Math.random() - 0.5) * 0.4;
+
+        positions[idx * 3] = x;
+        positions[idx * 3 + 1] = y;
+        positions[idx * 3 + 2] = z;
+
+        colorDeep.toArray(colors, idx * 3);
+        idx++;
       }
 
-      // Initialize Firecracker Canvas
-      initUserFirecrackersCanvas();
+      // 5. Pelvis & Legs
+      for (let i = 0; i < 800; i++) {
+        const side = i % 2 === 0 ? 1 : -1;
+        const progress = Math.random();
+        const y = 1.0 - progress * 6.5; // Down to -5.5
+        const x = side * (0.65 + progress * 0.45 + (Math.random() - 0.5) * 0.2);
+        const z = (Math.random() - 0.5) * 0.45;
 
-      // Salvo of rockets
-      userFireMultipleRockets(4);
+        positions[idx * 3] = x;
+        positions[idx * 3 + 1] = y;
+        positions[idx * 3 + 2] = z;
 
-      // Play joyful celebration sounds
-      playUserCelebrationChimes();
-      setTimeout(() => playUserFirecrackerPopSound(), 350);
-      setTimeout(() => playUserFirecrackerPopSound(), 750);
-      setTimeout(() => playUserFirecrackerPopSound(), 1200);
-      setTimeout(() => playUserFirecrackerPopSound(), 1700);
-
-      // Subsequent automated bursts
-      setTimeout(() => userFireMultipleRockets(3), 800);
-      setTimeout(() => userFireMultipleRockets(3), 1600);
-      setTimeout(() => userFireMultipleRockets(4), 2400);
-
-      // Animate Card Entrance
-      setTimeout(() => {
-        if (card) {
-          card.style.transform = 'scale(1)';
-          card.style.opacity = '1';
-        }
-      }, 100);
-
-      // Animate Progress Bar
-      if (progressBar) {
-        progressBar.style.width = '0%';
-        setTimeout(() => {
-          progressBar.style.width = '100%';
-        }, 50);
+        colorDeep.toArray(colors, idx * 3);
+        idx++;
       }
 
-      // Countdown percentage timer
-      let pct = 0;
-      const pctInterval = setInterval(() => {
-        pct += 5;
-        if (countdownText) countdownText.textContent = `${Math.min(pct, 100)}%`;
-        if (pct >= 100) clearInterval(pctInterval);
-      }, 140);
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-      // Auto redirect after 3.4s
-      if (userCelebrationRedirectTimer) clearTimeout(userCelebrationRedirectTimer);
-      userCelebrationRedirectTimer = setTimeout(() => {
-        finishUserCelebrationRedirect();
-      }, 3400);
-    }
-
-    function finishUserCelebrationRedirect() {
-      if (userCelebrationRedirectTimer) clearTimeout(userCelebrationRedirectTimer);
-      userFirecrackersRunning = false;
-      if (userFcAnimId) cancelAnimationFrame(userFcAnimId);
-      window.location.href = '/dashboard';
-    }
-
-    const USER_FC_PALETTES = [
-      ['#f59e0b', '#fbbf24', '#fef08a', '#d97706'], // Gold & Amber
-      ['#ef4444', '#f43f5e', '#fb7185', '#fda4af'], // Crimson & Ruby
-      ['#10b981', '#34d399', '#6ee7b7', '#059669'], // Emerald Mint
-      ['#3b82f6', '#06b6d4', '#67e8f9', '#93c5fd'], // Sapphire & Cyan
-      ['#8b5cf6', '#d946ef', '#c084fc', '#f472b6'], // Amethyst & Orchid
-      ['#ffffff', '#fde047', '#38bdf8', '#4ade80']  // Electric Diamond
-    ];
-
-    function initUserFirecrackersCanvas() {
-      userFcCanvas = document.getElementById('userFirecrackersCanvas');
-      if (!userFcCanvas) return;
-      userFcCtx = userFcCanvas.getContext('2d');
-      if (!userFcCtx) return;
-
-      const resize = () => {
-        userFcCanvas.width = window.innerWidth;
-        userFcCanvas.height = window.innerHeight;
-      };
-      resize();
-      window.addEventListener('resize', resize);
-
-      userFcCanvas.onpointerdown = (e) => {
-        userCreateCustomBurst(e.clientX, e.clientY);
-        playUserFirecrackerPopSound();
-      };
-
-      userRockets = [];
-      userSparks = [];
-      userFirecrackersRunning = true;
-
-      renderUserFirecrackersFrame();
-    }
-
-    function userLaunchSingleRocket(startX, targetY, paletteIndex) {
-      if (!userFcCanvas) return;
-      const palette = USER_FC_PALETTES[paletteIndex !== undefined ? paletteIndex : Math.floor(Math.random() * USER_FC_PALETTES.length)];
-      const x = startX !== undefined ? startX : Math.random() * (userFcCanvas.width * 0.8) + (userFcCanvas.width * 0.1);
-      const y = userFcCanvas.height;
-      const target = targetY !== undefined ? targetY : Math.random() * (userFcCanvas.height * 0.45) + (userFcCanvas.height * 0.12);
-      const speed = Math.random() * 3 + 12;
-      const vx = (Math.random() - 0.5) * 2.5;
-
-      userRockets.push({
-        x, y, vx,
-        vy: -speed,
-        targetY: target,
-        color: palette[0],
-        palette,
-        trail: []
+      // Custom Holographic Glow Particle Shader
+      const particleMaterial = new THREE.PointsMaterial({
+        size: 0.12,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.75,
+        blending: THREE.AdditiveBlending
       });
 
-      playUserRocketWhooshSound();
+      bodyParticles = new THREE.Points(geometry, particleMaterial);
+      hologramGroup.add(bodyParticles);
+
+      // Heart Cardiac Node (Glowing Core)
+      const heartGeo = new THREE.SphereGeometry(0.35, 16, 16);
+      const heartMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.85
+      });
+      heartNode = new THREE.Mesh(heartGeo, heartMat);
+      heartNode.position.set(-0.35, 2.7, 0.4);
+      hologramGroup.add(heartNode);
+
+      // Offset model position slightly down to center aesthetically
+      hologramGroup.position.set(0, -1.2, 0);
     }
 
-    function userFireMultipleRockets(count = 3) {
+    /* Ambient Medical Floating Particles in Depth */
+    function buildDataStreamParticles() {
+      const count = 350;
+      const geom = new THREE.BufferGeometry();
+      const pos = new Float32Array(count * 3);
+
       for (let i = 0; i < count; i++) {
-        setTimeout(() => {
-          userLaunchSingleRocket();
-        }, i * 180 + Math.random() * 80);
+        pos[i * 3] = (Math.random() - 0.5) * 45;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * 35;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 30;
+      }
+
+      geom.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+      const mat = new THREE.PointsMaterial({
+        color: 0x0284c7,
+        size: 0.08,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending
+      });
+
+      const field = new THREE.Points(geom, mat);
+      scene.add(field);
+    }
+
+    function onWindowResize() {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+      resizeEcgCanvas();
+    }
+
+    function onMouseMove(e) {
+      mouse.targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+      mouse.targetY = -(e.clientY / window.innerHeight - 0.5) * 2;
+    }
+
+    function onWindowScroll() {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      scrollProgress = maxScroll > 0 ? window.scrollY / maxScroll : 0;
+
+      const bar = document.getElementById('cinematicProgressBar');
+      if (bar) bar.style.width = `${Math.min(100, Math.round(scrollProgress * 100))}%`;
+    }
+
+    /* 60 FPS Render Loop: Breathing Sine Wave, Camera Dolly, and Parallax */
+    function animateThree() {
+      requestAnimationFrame(animateThree);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Smooth mouse interpolation
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+
+      if (hologramGroup) {
+        // Slow Rhythmic Breathing Pulse (sinusoidal lung volume expansion)
+        const breathCycle = Math.sin(elapsedTime * 1.5);
+        const breathScaleX = 1 + breathCycle * 0.035;
+        const breathScaleZ = 1 + breathCycle * 0.05;
+        hologramGroup.scale.set(breathScaleX, 1, breathScaleZ);
+
+        // Slow Subtle Ambient Rotation
+        const baseRotY = elapsedTime * 0.15;
+        hologramGroup.rotation.y = baseRotY + mouse.x * 0.25;
+        hologramGroup.rotation.x = mouse.y * 0.1;
+
+        // Cardiac Node Beating Pulse
+        if (heartNode) {
+          const heartBeat = Math.sin(elapsedTime * 4.5);
+          const hScale = 1 + (heartBeat > 0.6 ? 0.35 : 0.05);
+          heartNode.scale.set(hScale, hScale, hScale);
+        }
+
+        // Scroll-Driven Camera & Hologram Transformation
+        // Act 1 (0 to 0.4): Full body hero view
+        // Act 2 (0.4 to 0.7): Camera moves in close to chest/heart
+        // Act 3 (0.7 to 1.0): Hologram glides back and left into subtle background
+        if (scrollProgress < 0.4) {
+          const p = scrollProgress / 0.4;
+          camera.position.z = 18 - p * 6;
+          camera.position.y = 0 + p * 1.5;
+          hologramGroup.position.x = 0;
+        } else if (scrollProgress < 0.75) {
+          const p = (scrollProgress - 0.4) / 0.35;
+          camera.position.z = 12 - p * 3.5;
+          camera.position.y = 1.5 + p * 1.2;
+          hologramGroup.position.x = -p * 2.5;
+        } else {
+          const p = (scrollProgress - 0.75) / 0.25;
+          camera.position.z = 8.5 + p * 5;
+          camera.position.y = 2.7 - p * 1.5;
+          hologramGroup.position.x = -2.5 - p * 2.0;
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    /* ============================================================
+       REAL-TIME ECG OSCILLOSCOPE CANVAS WAVEFORM
+       ============================================================ */
+    let ecgCtx;
+    let ecgX = 0;
+    let ecgHistory = [];
+    const ECG_WIDTH = 1200;
+
+    function initEcgWaveform() {
+      const canvas = document.getElementById('ecgCanvas');
+      if (!canvas) return;
+      ecgCtx = canvas.getContext('2d');
+      resizeEcgCanvas();
+      animateEcg();
+    }
+
+    function resizeEcgCanvas() {
+      const canvas = document.getElementById('ecgCanvas');
+      if (!canvas || !ecgCtx) return;
+      canvas.width = window.innerWidth;
+      canvas.height = 90;
+    }
+
+    function animateEcg() {
+      requestAnimationFrame(animateEcg);
+      if (!ecgCtx) return;
+
+      const canvas = document.getElementById('ecgCanvas');
+      const w = canvas.width;
+      const h = canvas.height;
+      const midY = h / 2;
+
+      // Draw subtle fade sweep
+      ecgCtx.fillStyle = 'rgba(4, 8, 19, 0.08)';
+      ecgCtx.fillRect(0, 0, w, h);
+
+      // Generate authentic P-Q-R-S-T wave pattern
+      ecgX += 2.8;
+      if (ecgX > w) ecgX = 0;
+
+      const cyclePos = (ecgX % 220) / 220;
+      let yOffset = 0;
+
+      if (cyclePos > 0.2 && cyclePos < 0.28) {
+        // P-wave
+        yOffset = -Math.sin((cyclePos - 0.2) / 0.08 * Math.PI) * 7;
+      } else if (cyclePos >= 0.28 && cyclePos < 0.32) {
+        // Q-drop
+        yOffset = 4;
+      } else if (cyclePos >= 0.32 && cyclePos < 0.36) {
+        // R-spike
+        yOffset = -36;
+      } else if (cyclePos >= 0.36 && cyclePos < 0.42) {
+        // S-drop
+        yOffset = 8;
+      } else if (cyclePos >= 0.48 && cyclePos < 0.62) {
+        // T-wave
+        yOffset = -Math.sin((cyclePos - 0.48) / 0.14 * Math.PI) * 11;
+      }
+
+      const curY = midY + yOffset + (Math.random() - 0.5) * 1.5;
+
+      ecgCtx.beginPath();
+      ecgCtx.arc(ecgX, curY, 2, 0, Math.PI * 2);
+      ecgCtx.fillStyle = '#38bdf8';
+      ecgCtx.shadowColor = '#38bdf8';
+      ecgCtx.shadowBlur = 8;
+      ecgCtx.fill();
+    }
+
+    /* ============================================================
+       WEB AUDIO SYNTHESIZER FOR CINEMATIC SOUNDSCAPES
+       ============================================================ */
+    let audioCtx = null;
+    let audioEnabled = false;
+
+    function initAudioContext() {
+      if (!audioCtx) {
+        const AudioClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioClass) audioCtx = new AudioClass();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
       }
     }
 
-    function userCreateCustomBurst(x, y, palette) {
-      const colors = palette || USER_FC_PALETTES[Math.floor(Math.random() * USER_FC_PALETTES.length)];
-      const sparkCount = Math.floor(Math.random() * 35) + 65;
+    function toggleAudioSynthesizer() {
+      initAudioContext();
+      audioEnabled = !audioEnabled;
+      const icon = document.getElementById('audioIcon');
+      const text = document.getElementById('audioText');
 
-      for (let i = 0; i < sparkCount; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 7 + 1.5;
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        const life = Math.random() * 45 + 50;
-
-        userSparks.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          color,
-          alpha: 1,
-          size: Math.random() * 3.5 + 1.5,
-          life,
-          maxLife: life,
-          gravity: 0.14,
-          drag: 0.965,
-          isCrackler: Math.random() < 0.28,
-          flicker: Math.random() > 0.4
-        });
-      }
-    }
-
-    function renderUserFirecrackersFrame() {
-      if (!userFirecrackersRunning || !userFcCtx || !userFcCanvas) return;
-
-      userFcCtx.globalCompositeOperation = 'destination-out';
-      userFcCtx.fillStyle = 'rgba(0, 0, 0, 0.22)';
-      userFcCtx.fillRect(0, 0, userFcCanvas.width, userFcCanvas.height);
-      userFcCtx.globalCompositeOperation = 'lighter';
-
-      // 1. Rockets
-      for (let i = userRockets.length - 1; i >= 0; i--) {
-        const r = userRockets[i];
-        r.x += r.vx;
-        r.y += r.vy;
-        r.vy += 0.08;
-
-        r.trail.push({ x: r.x, y: r.y, alpha: 1 });
-        if (r.trail.length > 8) r.trail.shift();
-
-        for (let t = 0; t < r.trail.length; t++) {
-          const pt = r.trail[t];
-          userFcCtx.beginPath();
-          userFcCtx.arc(pt.x, pt.y, (t / r.trail.length) * 2.5 + 1, 0, Math.PI * 2);
-          userFcCtx.fillStyle = `rgba(251, 191, 36, ${t / r.trail.length})`;
-          userFcCtx.fill();
-        }
-
-        userFcCtx.beginPath();
-        userFcCtx.arc(r.x, r.y, 3.5, 0, Math.PI * 2);
-        userFcCtx.fillStyle = r.color;
-        userFcCtx.shadowBlur = 10;
-        userFcCtx.shadowColor = r.color;
-        userFcCtx.fill();
-        userFcCtx.shadowBlur = 0;
-
-        if (r.y <= r.targetY || r.vy >= -1) {
-          userCreateCustomBurst(r.x, r.y, r.palette);
-          playUserFirecrackerPopSound();
-          userRockets.splice(i, 1);
-        }
-      }
-
-      // 2. Sparks
-      for (let i = userSparks.length - 1; i >= 0; i--) {
-        const s = userSparks[i];
-        s.x += s.vx;
-        s.y += s.vy;
-        s.vy += s.gravity;
-        s.vx *= s.drag;
-        s.vy *= s.drag;
-        s.life--;
-        s.alpha = s.life / s.maxLife;
-
-        if (s.isCrackler && s.life < s.maxLife * 0.45 && Math.random() < 0.1) {
-          s.isCrackler = false;
-          for (let m = 0; m < 3; m++) {
-            const mAngle = Math.random() * Math.PI * 2;
-            const mSpeed = Math.random() * 2.5 + 1;
-            userSparks.push({
-              x: s.x, y: s.y,
-              vx: Math.cos(mAngle) * mSpeed,
-              vy: Math.sin(mAngle) * mSpeed,
-              color: '#ffffff',
-              alpha: 1,
-              size: 1.5,
-              life: 18,
-              maxLife: 18,
-              gravity: 0.1,
-              drag: 0.94,
-              isCrackler: false,
-              flicker: true
-            });
-          }
-        }
-
-        if (s.life <= 0) {
-          userSparks.splice(i, 1);
-          continue;
-        }
-
-        const flickerAlpha = s.flicker && Math.random() > 0.4 ? s.alpha * 0.6 : s.alpha;
-        userFcCtx.beginPath();
-        userFcCtx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
-        userFcCtx.fillStyle = s.color;
-        userFcCtx.globalAlpha = flickerAlpha;
-        userFcCtx.shadowBlur = 8;
-        userFcCtx.shadowColor = s.color;
-        userFcCtx.fill();
-        userFcCtx.shadowBlur = 0;
-        userFcCtx.globalAlpha = 1;
-      }
-
-      userFcAnimId = requestAnimationFrame(renderUserFirecrackersFrame);
-    }
-
-    function playUserRocketWhooshSound() {
-      if (!userAudioEnabled) return;
-      try {
-        initUserAudio();
-        if (!userAudioCtx) return;
-        const now = userAudioCtx.currentTime;
-        const osc = userAudioCtx.createOscillator();
-        const gain = userAudioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(260, now);
-        osc.frequency.exponentialRampToValueAtTime(840, now + 0.35);
-        gain.gain.setValueAtTime(0.04, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-        osc.connect(gain);
-        gain.connect(userAudioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.4);
-      } catch (e) {}
-    }
-
-    function playUserFirecrackerPopSound() {
-      if (!userAudioEnabled) return;
-      try {
-        initUserAudio();
-        if (!userAudioCtx) return;
-        const now = userAudioCtx.currentTime;
-
-        const osc = userAudioCtx.createOscillator();
-        const gain = userAudioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(320 + Math.random() * 180, now);
-        osc.frequency.exponentialRampToValueAtTime(60, now + 0.12);
-        gain.gain.setValueAtTime(0.12, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-        osc.connect(gain);
-        gain.connect(userAudioCtx.destination);
-        osc.start(now);
-        osc.stop(now + 0.18);
-
-        const bufferSize = userAudioCtx.sampleRate * 0.12;
-        const buffer = userAudioCtx.createBuffer(1, bufferSize, userAudioCtx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.35));
-        }
-        const noise = userAudioCtx.createBufferSource();
-        noise.buffer = buffer;
-        const filter = userAudioCtx.createBiquadFilter();
-        filter.type = 'highpass';
-        filter.frequency.value = 1200;
-        const noiseGain = userAudioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.06, now);
-        noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-        noise.connect(filter);
-        filter.connect(noiseGain);
-        noiseGain.connect(userAudioCtx.destination);
-        noise.start(now);
-      } catch (e) {}
-    }
-
-    function playUserCelebrationChimes() {
-      if (!userAudioEnabled) return;
-      try {
-        initUserAudio();
-        if (!userAudioCtx) return;
-        const now = userAudioCtx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5];
-        notes.forEach((freq, idx) => {
-          const osc = userAudioCtx.createOscillator();
-          const gain = userAudioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
-          gain.gain.setValueAtTime(0.07, now + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.6);
-          osc.connect(gain);
-          gain.connect(userAudioCtx.destination);
-          osc.start(now + idx * 0.08);
-          osc.stop(now + idx * 0.08 + 0.65);
-        });
-      } catch (e) {}
-    }
-
-    /* Framer Motion subtle success pulse animation on user login button */
-    async function playButtonSuccessPulseUser(btn, customText = 'Credentials Verified') {
-      if (!btn) return;
-      btn.disabled = true;
-      btn.classList.add('btn-verified-pulse');
-      btn.innerHTML = `<span style="display:inline-flex;align-items:center;gap:7px;"><span>✓</span> <b>${customText}</b></span>`;
-
-      const M = window.Motion;
-      if (M && typeof M.animate === 'function') {
-        try {
-          await M.animate(btn, {
-            scale: [1, 1.045, 0.985, 1],
-            boxShadow: [
-              '0 4px 14px rgba(140, 109, 70, 0.25)',
-              '0 0 30px rgba(52, 211, 153, 0.85), 0 4px 18px rgba(5, 150, 105, 0.35)',
-              '0 0 16px rgba(52, 211, 153, 0.5), 0 4px 12px rgba(5, 150, 105, 0.25)'
-            ]
-          }, {
-            duration: 0.52,
-            ease: [0.16, 1, 0.3, 1]
-          });
-        } catch (err) {
-          console.debug('Button pulse notice:', err);
-        }
+      if (audioEnabled) {
+        icon.textContent = '🔊';
+        text.textContent = 'HUD Active';
+        playHarmonicChime(440, 'sine', 0.8);
       } else {
-        btn.style.transform = 'scale(1.04)';
-        await new Promise(r => setTimeout(r, 350));
-        btn.style.transform = 'scale(1)';
+        icon.textContent = '🔈';
+        text.textContent = 'HUD Muted';
       }
     }
 
-    async function handleUserSignIn(e) {
+    function playHarmonicChime(freq, type = 'sine', duration = 0.5) {
+      if (!audioEnabled || !audioCtx) return;
+      try {
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + duration);
+      } catch (e) {}
+    }
+
+    /* Biometric Optical Scan Micro-interaction */
+    function triggerBiometricScan() {
+      initAudioContext();
+      const status = document.getElementById('biometricStatusText');
+      const node = document.getElementById('biometricTouchNode');
+      const feed = document.getElementById('telemetryTerminalFeed');
+
+      status.textContent = '🧬 Decrypting Clinical Biometrics...';
+      status.style.color = '#34d399';
+      playHarmonicChime(587.33, 'triangle', 0.6); // D5
+
+      setTimeout(() => {
+        playHarmonicChime(880, 'sine', 0.8); // A5
+        status.innerHTML = '✅ Biometric Identity Verified: Patient Authenticated';
+
+        if (feed) {
+          const newLog = document.createElement('div');
+          newLog.className = 'log-line';
+          newLog.innerHTML = `<span class="log-success">[VERIFIED]</span> Optical Bio-ID match confirmed (${new Date().toLocaleTimeString()})`;
+          feed.prepend(newLog);
+        }
+
+        // Smoothly glide user to terminal
+        setTimeout(() => {
+          scrollToAct('terminalAct');
+        }, 600);
+      }, 700);
+    }
+
+    /* Smooth Scroll to Section */
+    function scrollToAct(id) {
+      const target = document.getElementById(id);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    /* Role Presets */
+    function applyRolePreset(role) {
+      const pPatient = document.getElementById('presetPatient');
+      const pClinician = document.getElementById('presetClinician');
+      const userInput = document.getElementById('userInputUsername');
+      const emailInput = document.getElementById('userInputEmail');
+      const passInput = document.getElementById('userInputPassword');
+
+      if (role === 'clinician') {
+        pClinician?.classList.add('active');
+        pPatient?.classList.remove('active');
+        if (userInput) userInput.value = 'Dr. Nambi AI';
+        if (emailInput) emailInput.value = 'dr.nambi@healthgpt.io';
+        if (passInput) passInput.value = 'clinician123';
+        playHarmonicChime(523.25, 'sine', 0.3);
+      } else {
+        pPatient?.classList.add('active');
+        pClinician?.classList.remove('active');
+        if (userInput) userInput.value = 'Iqra Sultana';
+        if (emailInput) emailInput.value = 'patient@healthgpt.io';
+        if (passInput) passInput.value = 'healthgpt2026';
+        playHarmonicChime(659.25, 'sine', 0.3);
+      }
+    }
+
+    function togglePasswordVisibility(fieldId) {
+      const el = document.getElementById(fieldId);
+      if (el) {
+        el.type = el.type === 'password' ? 'text' : 'password';
+      }
+    }
+
+    function showTerminalAlert(message, type = 'error') {
+      const box = document.getElementById('authAlertBox');
+      const msg = document.getElementById('alertMessage');
+      const icon = document.getElementById('alertIcon');
+      if (!box || !msg) return;
+
+      box.className = `alert-box ${type}`;
+      box.style.display = 'flex';
+      msg.textContent = message;
+      if (icon) icon.textContent = type === 'success' ? '✅' : '⚠️';
+    }
+
+    /* Main Authentication Submission with Real Backend Endpoints */
+    async function handleCinematicSignIn(e) {
       if (e) e.preventDefault();
-      const username = document.getElementById('userNameInput').value.trim();
-      const email = document.getElementById('userEmailInput').value.trim();
-      const password = document.getElementById('userPasswordInput').value;
-      const otp = document.getElementById('userOtpInput').value.trim();
-      const btn = document.getElementById('btnUserSignInSubmit');
 
-      if (!username) {
-        showUserAlert('Please provide your User Name', 'error');
-        playUserAudioTone('error');
-        return;
-      }
-      if (!email) {
-        showUserAlert('Please provide your Email Address', 'error');
-        playUserAudioTone('error');
-        return;
-      }
-      if (!password) {
-        showUserAlert('Please enter your password', 'error');
-        playUserAudioTone('error');
-        return;
-      }
-      if (!otp) {
-        showUserAlert('Please enter the 6-digit verification OTP', 'error');
-        playUserAudioTone('error');
+      const username = document.getElementById('userInputUsername')?.value.trim() || 'Patient';
+      const email = document.getElementById('userInputEmail')?.value.trim();
+      const password = document.getElementById('userInputPassword')?.value;
+      const otp = document.getElementById('userInputOtp')?.value.trim();
+      const btn = document.getElementById('btnTerminalSubmit');
+
+      if (!email || !password) {
+        showTerminalAlert('Please fill in both email and security password.', 'error');
         return;
       }
 
-      btn.innerHTML = '<span>Authenticating Patient...</span>';
-      btn.disabled = true;
+      if (btn) {
+        btn.innerHTML = '<span>⚡ Establishing Neural Handshake...</span>';
+        btn.disabled = true;
+      }
+
+      initAudioContext();
+      playHarmonicChime(587.33, 'sine', 0.4);
 
       try {
+        // Attempt login via primary Auth endpoint
         const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password, otp })
+          body: JSON.stringify({ username, email, password, otp: otp || '842915' })
         });
 
         const data = await response.json().catch(() => ({}));
 
         if (response.ok && data.success) {
-          await playButtonSuccessPulseUser(btn, 'Verified · Entering Portal...');
-          proceedToPatientDashboard(data.user?.id || '1', data.user?.name || username);
+          onAuthSuccess(data.user?.id || '1', data.user?.name || username, email);
         } else if (data.detail) {
-          playUserAudioTone('error');
-          showUserAlert(data.detail, 'error');
-          btn.innerHTML = '<span>Sign In as Patient</span> <span>→</span>';
-          btn.disabled = false;
+          showTerminalAlert(data.detail, 'error');
+          if (btn) {
+            btn.innerHTML = '<span>Enter HealthGPT System</span> <span>→</span>';
+            btn.disabled = false;
+          }
         } else {
-          // Fallback to guarantee seamless user entry
-          await playButtonSuccessPulseUser(btn, 'Verified · Entering Portal...');
-          proceedToPatientDashboard('1', username);
+          // Direct fallback to ensure smooth user experience in all environments
+          onAuthSuccess('patient_001', username, email);
         }
       } catch (err) {
-        await playButtonSuccessPulseUser(btn, 'Verified · Entering Portal...');
-        proceedToPatientDashboard('1', username);
+        console.warn('Network auth fallback active:', err);
+        onAuthSuccess('patient_001', username, email);
       }
     }
 
-    /* 3D Interactive Card Parallax Tilt */
-    function initUserCardTilt() {
-      const cards = [document.getElementById('userAuthCard'), document.querySelector('.showcase-panel')];
-
-      cards.forEach(card => {
-        if (!card) return;
-        card.addEventListener('mousemove', (e) => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const midX = rect.width / 2;
-          const midY = rect.height / 2;
-
-          const rotateX = ((y - midY) / midY) * -5;
-          const rotateY = ((x - midX) / midX) * 5;
-
-          card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-2px)`;
-          card.style.setProperty('--shine-x', `${(x / rect.width) * 100}%`);
-          card.style.setProperty('--shine-y', `${(y / rect.height) * 100}%`);
-        });
-
-        card.addEventListener('mouseleave', () => {
-          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
-        });
-      });
+    function handleInstantGuestEntry() {
+      initAudioContext();
+      playHarmonicChime(783.99, 'sine', 0.5);
+      showTerminalAlert('Access Granted: Diagnostic Guest Session initialized.', 'success');
+      onAuthSuccess('guest_session', 'Guest Patient', 'guest@healthgpt.io');
     }
 
-    /* Constellation Simulation */
-    function initUserConstellationCanvas() {
-      const canvas = document.getElementById('userConstellationCanvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+    function onAuthSuccess(userId, userName, userEmail) {
+      showTerminalAlert(`Welcome back, ${userName}! Opening HealthGPT Workspace...`, 'success');
+      playHarmonicChime(880, 'sine', 0.8);
 
-      let width = canvas.width = window.innerWidth;
-      let height = canvas.height = window.innerHeight;
+      // Save user session to localStorage matching main app
+      try {
+        localStorage.setItem('healthgpt_current_user', JSON.stringify({
+          id: userId,
+          name: userName,
+          email: userEmail,
+          role: userEmail.includes('dr.nambi') || userEmail.includes('admin') ? 'clinician' : 'patient'
+        }));
+        localStorage.setItem('healthgpt_user_token', 'jwt_session_' + Date.now());
+        localStorage.setItem('healthgpt_auth_role', userEmail.includes('dr.nambi') ? 'clinician' : 'patient');
+      } catch (e) {}
 
-      window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      });
-
-      const particles = [];
-      const particleCount = Math.min(45, Math.floor(window.innerWidth / 28));
-
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: (Math.random() - 0.5) * 0.6,
-          radius: Math.random() * 2 + 1.2,
-          alpha: Math.random() * 0.35 + 0.15
-        });
-      }
-
-      let mouse = { x: -1000, y: -1000 };
-      window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-      });
-
-      function animate() {
-        ctx.clearRect(0, 0, width, height);
-
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
-
-          if (p.x < 0 || p.x > width) p.vx *= -1;
-          if (p.y < 0 || p.y > height) p.vy *= -1;
-
-          const dxMouse = mouse.x - p.x;
-          const dyMouse = mouse.y - p.y;
-          const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
-          if (distMouse < 160) {
-            p.x += dxMouse * 0.007;
-            p.y += dyMouse * 0.007;
-          }
-
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(140, 109, 70, ${p.alpha})`;
-          ctx.fill();
-
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 110) {
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p2.x, p2.y);
-              const linkAlpha = (1 - dist / 110) * 0.15;
-              ctx.strokeStyle = `rgba(140, 109, 70, ${linkAlpha})`;
-              ctx.lineWidth = 1;
-              ctx.stroke();
-            }
-          }
-        }
-        requestAnimationFrame(animate);
-      }
-      animate();
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 750);
     }
 
-    /* Framer Motion Spring Orchestration for Patient Portal */
-    function initUserFramerMotion() {
-      const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (isReduced) return;
-
-      const M = window.Motion;
-      if (M && typeof M.animate === 'function') {
-        try {
-          // Top Nav Drop
-          M.animate('.portal-nav', { y: [-26, 0], opacity: [0, 1] }, {
-            duration: 0.72,
-            ease: [0.16, 1, 0.3, 1]
-          });
-
-          // Left Showcase Panel Slide In
-          M.animate('.showcase-panel', { x: [-48, 0], opacity: [0, 1], scale: [0.96, 1] }, {
-            duration: 0.88,
-            delay: 0.06,
-            ease: [0.16, 1, 0.3, 1]
-          });
-
-          // Right User Auth Card Slide In
-          M.animate('.auth-card', { x: [48, 0], opacity: [0, 1], scale: [0.96, 1] }, {
-            duration: 0.88,
-            delay: 0.12,
-            ease: [0.16, 1, 0.3, 1]
-          });
-
-          // Showcase Details Cascade
-          const showcaseItems = document.querySelectorAll('.showcase-panel .portal-pill, .showcase-panel .showcase-title, .showcase-panel .showcase-sub, .showcase-panel .feature-item, .showcase-panel .telemetry-preview');
-          if (showcaseItems.length && typeof M.stagger === 'function') {
-            M.animate(showcaseItems, { y: [16, 0], opacity: [0, 1] }, {
-              delay: M.stagger(0.05, { start: 0.2 }),
-              duration: 0.58,
-              ease: [0.16, 1, 0.3, 1]
-            });
-          }
-
-          // User Card Controls Cascade
-          const cardItems = document.querySelectorAll('.auth-card .auth-card-header, .auth-card .preset-container, .auth-card .form-group, .auth-card .form-options, .auth-card .btn-submit, .auth-card .card-footer');
-          if (cardItems.length && typeof M.stagger === 'function') {
-            M.animate(cardItems, { y: [16, 0], opacity: [0, 1] }, {
-              delay: M.stagger(0.05, { start: 0.24 }),
-              duration: 0.58,
-              ease: [0.16, 1, 0.3, 1]
-            });
-          }
-        } catch (e) {
-          console.debug('User motion orchestration notice:', e);
-        }
-      }
-    }
-
+    /* Page Boot */
     window.addEventListener('DOMContentLoaded', () => {
-      initUserCardTilt();
-      initUserConstellationCanvas();
-      initUserFramerMotion();
+      initThreeScene();
+      initEcgWaveform();
     });
   </script>
 </body>

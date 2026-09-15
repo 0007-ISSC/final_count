@@ -927,3 +927,150 @@ export function searchJanAushadhiStores(params: {
 
   return stores;
 }
+
+/**
+ * Intelligent Jan Aushadhi generic alternative matcher for brand names and salts
+ */
+export function findJanAushadhiAlternative(medicineName: string, genericSalt?: string): JanAushadhiMedicine | null {
+  if (!medicineName && !genericSalt) return null;
+
+  const cleanName = (medicineName || '').toLowerCase().trim();
+  const cleanSalt = (genericSalt || '').toLowerCase().trim();
+
+  // 1. Direct match on popular brands
+  for (const item of JAN_AUSHADHI_MEDICINES) {
+    for (const brand of item.popularBrands) {
+      const b = brand.toLowerCase();
+      if (cleanName === b || cleanName.startsWith(b) || b.startsWith(cleanName)) {
+        return item;
+      }
+      // Substring without dosage numbers
+      const brandToken = b.replace(/[\d\s-mg]+/g, '').trim();
+      const nameToken = cleanName.replace(/[\d\s-mg]+/g, '').trim();
+      if (brandToken.length > 3 && nameToken.length > 3 && (brandToken === nameToken || nameToken.includes(brandToken))) {
+        return item;
+      }
+    }
+  }
+
+  // 2. Generic salt and composition matching
+  for (const item of JAN_AUSHADHI_MEDICINES) {
+    const itemSalt = item.saltComposition.toLowerCase();
+    const itemGeneric = item.genericName.toLowerCase();
+
+    if (cleanSalt && (itemSalt.includes(cleanSalt) || cleanSalt.includes(itemSalt) || itemGeneric.includes(cleanSalt))) {
+      return item;
+    }
+
+    if (cleanName && (itemSalt.includes(cleanName) || cleanName.includes(itemSalt) || itemGeneric.includes(cleanName))) {
+      return item;
+    }
+  }
+
+  // 3. Keyword / therapeutic token matching
+  const keywords = cleanName.split(/\s+/).filter(w => w.length > 3 && !['tablet', 'tablets', 'capsule', 'capsules', 'strip', 'syrup'].includes(w));
+  for (const kw of keywords) {
+    const match = JAN_AUSHADHI_MEDICINES.find(item => 
+      item.genericName.toLowerCase().includes(kw) ||
+      item.saltComposition.toLowerCase().includes(kw) ||
+      item.popularBrands.some(b => b.toLowerCase().includes(kw))
+    );
+    if (match) return match;
+  }
+
+  return null;
+}
+
+export interface JanAushadhiAlternativeItem {
+  originalName: string;
+  genericSalt: string;
+  isBrandName: boolean;
+  janAushadhiMedicine: JanAushadhiMedicine;
+  brandedPriceINR: number;
+  janAushadhiPriceINR: number;
+  savingsINR: number;
+  savingsPercent: number;
+  packSize: string;
+  cdscoStandards: string;
+  pmbjpCode: string;
+}
+
+export interface JanAushadhiPrescriptionSummary {
+  hasAlternatives: boolean;
+  totalMedicationsCount: number;
+  matchedMedicationsCount: number;
+  totalBrandedCostINR: number;
+  totalJanAushadhiCostINR: number;
+  totalMonthlySavingsINR: number;
+  totalAnnualSavingsINR: number;
+  averageSavingsPercent: number;
+  alternatives: JanAushadhiAlternativeItem[];
+}
+
+/**
+ * Automatically analyze a list of prescription medications and generate comprehensive Jan Aushadhi generic alternatives
+ */
+export function getJanAushadhiPrescriptionAlternatives(
+  medications: Array<string | { name: string; genericName?: string; dosage?: string; quantityPerMonth?: number }>
+): JanAushadhiPrescriptionSummary {
+  const safeMeds = Array.isArray(medications) ? medications : [];
+  const alternatives: JanAushadhiAlternativeItem[] = [];
+
+  let totalBrandedCost = 0;
+  let totalJanAushadhiCost = 0;
+
+  for (const rawMed of safeMeds) {
+    const med = typeof rawMed === 'string' ? { name: rawMed } : (rawMed || {});
+    const medName = String(med.name || '').trim();
+    const saltName = String(med.genericName || '').trim();
+    if (!medName && !saltName) continue;
+
+    const matched = findJanAushadhiAlternative(medName, saltName);
+    if (matched) {
+      const qty = Number(med.quantityPerMonth) || 1;
+      const brandedItemTotal = matched.brandedAvgPriceINR * qty;
+      const janAushadhiItemTotal = matched.janAushadhiPriceINR * qty;
+      const itemSavings = brandedItemTotal - janAushadhiItemTotal;
+
+      totalBrandedCost += brandedItemTotal;
+      totalJanAushadhiCost += janAushadhiItemTotal;
+
+      // Determine if original token was a brand name
+      const isBrand = matched.popularBrands.some(b => 
+        medName.toLowerCase().includes(b.toLowerCase()) || b.toLowerCase().includes(medName.toLowerCase())
+      ) || !medName.toLowerCase().includes('ip') && !medName.toLowerCase().includes('jan aushadhi');
+
+      alternatives.push({
+        originalName: medName,
+        genericSalt: matched.saltComposition,
+        isBrandName: isBrand,
+        janAushadhiMedicine: matched,
+        brandedPriceINR: brandedItemTotal,
+        janAushadhiPriceINR: janAushadhiItemTotal,
+        savingsINR: itemSavings,
+        savingsPercent: matched.savingsPercent,
+        packSize: matched.packSize,
+        cdscoStandards: matched.cdscoStandards,
+        pmbjpCode: matched.pmbjpCode
+      });
+    }
+  }
+
+  const monthlySavings = Math.max(0, totalBrandedCost - totalJanAushadhiCost);
+  const annualSavings = monthlySavings * 12;
+  const avgSavingsPct = alternatives.length > 0 
+    ? Math.round(alternatives.reduce((acc, a) => acc + a.savingsPercent, 0) / alternatives.length)
+    : 0;
+
+  return {
+    hasAlternatives: alternatives.length > 0,
+    totalMedicationsCount: safeMeds.length,
+    matchedMedicationsCount: alternatives.length,
+    totalBrandedCostINR: Math.round(totalBrandedCost * 10) / 10,
+    totalJanAushadhiCostINR: Math.round(totalJanAushadhiCost * 10) / 10,
+    totalMonthlySavingsINR: Math.round(monthlySavings * 10) / 10,
+    totalAnnualSavingsINR: Math.round(annualSavings * 10) / 10,
+    averageSavingsPercent: avgSavingsPct,
+    alternatives
+  };
+}

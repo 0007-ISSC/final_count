@@ -6728,6 +6728,74 @@ window.go = window.go || function(pageId, subParam) {
       </div>
     </div>
 
+    <!-- JAN AUSHADHI BRAND VS GENERIC COMPARISON MODAL -->
+    <div id="rxJaComparisonModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.72);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:16px;">
+      <div style="background:#ffffff;border-radius:18px;max-width:840px;width:100%;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);border:1px solid #cbd5e1;overflow:hidden;">
+        
+        <!-- Header -->
+        <div style="padding:18px 24px;background:linear-gradient(135deg, #065f46 0%, #047857 100%);color:white;display:flex;justify-content:space-between;align-items:center;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:22px;">🇮🇳</div>
+            <div>
+              <h3 style="margin:0;font-size:17px;font-weight:800;letter-spacing:-0.2px;">Pradhan Mantri Jan Aushadhi (PMBJP) Generic Comparison</h3>
+              <p style="margin:2px 0 0;font-size:12px;opacity:0.9;">CDSCO Bioequivalent Quality Standards · Department of Pharmaceuticals, Govt of India</p>
+            </div>
+          </div>
+          <button onclick="closeJanAushadhiComparisonModal()" style="background:rgba(255,255,255,0.15);border:none;color:white;width:32px;height:32px;border-radius:8px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding:20px 24px;overflow-y:auto;flex:1;">
+          <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:10px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+            <div>
+              <b style="color:#065f46;font-size:13.5px;">💡 Bioequivalence &amp; Efficacy Guarantee:</b>
+              <p style="margin:2px 0 0;font-size:12px;color:#047857;">
+                Jan Aushadhi generic medicines undergo rigorous NABL-accredited laboratory batch testing and contain identical therapeutic APIs (Active Pharmaceutical Ingredients) to leading commercial brands.
+              </p>
+            </div>
+            <button class="btn btn-sm" onclick="applyAllJanAushadhiAlternatives(); closeJanAushadhiComparisonModal();" style="background:#059669;color:white;font-weight:700;font-size:12px;padding:6px 14px;white-space:nowrap;cursor:pointer;">
+              🔄 Apply All Generic Substitutions
+            </button>
+          </div>
+
+          <!-- Comparison Table -->
+          <div style="overflow-x:auto;border:1px solid #e2e8f0;border-radius:10px;">
+            <table style="width:100%;border-collapse:collapse;font-size:12.5px;text-align:left;">
+              <thead>
+                <tr style="background:#f8fafc;border-bottom:1px solid #cbd5e1;color:#475569;font-size:11px;text-transform:uppercase;">
+                  <th style="padding:10px 14px;">Prescribed Brand</th>
+                  <th style="padding:10px 14px;">Jan Aushadhi Generic</th>
+                  <th style="padding:10px 14px;">Quality Standard</th>
+                  <th style="padding:10px 14px;text-align:right;">Brand Cost</th>
+                  <th style="padding:10px 14px;text-align:right;">PMBJP Cost</th>
+                  <th style="padding:10px 14px;text-align:right;">Savings</th>
+                </tr>
+              </thead>
+              <tbody id="rxJaModalTableBody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Total Summary Box -->
+          <div style="margin-top:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div>
+              <div style="font-size:11.5px;color:#64748b;">Annual Projected Out-of-Pocket Savings:</div>
+              <div style="font-size:22px;font-weight:900;color:#15803d;margin-top:2px;" id="rxJaModalAnnualSavings">₹0 / year</div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-secondary btn-sm" onclick="switchMedSubtab('generics'); closeJanAushadhiComparisonModal();" style="cursor:pointer;">
+                📍 Find Kendras Near Me
+              </button>
+              <button class="btn btn-sm" onclick="closeJanAushadhiComparisonModal();" style="background:#0284c7;color:white;cursor:pointer;">
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- SUPABASE CLOUD BACKEND MANAGEMENT MODAL -->
     <div id="supabaseModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:16px;">
       <div style="background:#ffffff;border-radius:20px;max-width:760px;width:100%;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 25px 50px -12px rgba(0,0,0,0.3);border:1px solid #cbd5e1;overflow:hidden;animation:fadeInChat 0.2s ease;">
@@ -7355,6 +7423,61 @@ window.go = window.go || function(pageId, subParam) {
                   <p id="rxMissingInfoList" style="margin:2px 0 0;font-size:12px;color:#b45309;line-height:1.4;">
                     Please confirm dosage for Item #2 and duration for Item #3.
                   </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- JAN AUSHADHI AUTOMATIC GENERIC ALTERNATIVES & SAVINGS PANEL -->
+            <div id="rxJanAushadhiSavingsCard" style="display:none;margin-bottom:16px;background:linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);border:1.5px solid #86efac;border-radius:12px;padding:16px 18px;box-shadow:0 2px 8px rgba(16,185,129,0.08);">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;align-items:flex-start;gap:10px;">
+                  <span style="font-size:26px;line-height:1;">🇮🇳</span>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                      <b style="font-size:15px;color:#065f46;">Jan Aushadhi Generic Savings Intelligence</b>
+                      <span class="pill" style="background:#10b981;color:white;font-size:10.5px;font-weight:700;padding:2px 8px;">PMBJP Bioequivalent</span>
+                      <span class="pill" style="background:#dcfce7;color:#166534;border:1px solid #86efac;font-size:10.5px;font-weight:700;padding:2px 8px;" id="rxJaSavingsPercentBadge">Save ~78%</span>
+                    </div>
+                    <p style="margin:4px 0 0;font-size:12px;color:#047857;line-height:1.45;" id="rxJaSavingsDesc">
+                      Detected brand-name medications. You can substitute with government-certified PMBJP generic equivalents to drastically reduce your pharmacy bill.
+                    </p>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                  <button class="btn btn-sm" id="rxApplyAllGenericsBtn" onclick="applyAllJanAushadhiAlternatives()" style="background:#059669;color:white;font-weight:700;font-size:12px;padding:6px 14px;box-shadow:0 1px 3px rgba(0,0,0,0.1);cursor:pointer;">
+                    🔄 Switch All to Jan Aushadhi Generics
+                  </button>
+                  <button class="btn btn-secondary btn-sm" onclick="switchMedSubtab('generics')" style="font-size:12px;padding:6px 12px;background:white;color:#047857;border-color:#86efac;cursor:pointer;">
+                    📍 Locate Nearest Kendras
+                  </button>
+                  <button class="btn btn-secondary btn-sm" onclick="openJanAushadhiComparisonModal()" style="font-size:12px;padding:6px 12px;background:white;color:#065f46;border-color:#86efac;cursor:pointer;">
+                    📊 Brand vs Generic Table
+                  </button>
+                </div>
+              </div>
+
+              <!-- Real-Time Pricing & Savings Comparison Metrics -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(160px, 1fr));gap:10px;margin-top:14px;" id="rxJaMetricsGrid">
+                <div style="background:white;border:1px solid #a7f3d0;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Branded Cost</div>
+                  <div style="font-size:18px;font-weight:800;color:#334155;margin-top:2px;" id="rxJaBrandedTotalText">₹0</div>
+                  <div style="font-size:10.5px;color:#94a3b8;">Current pharmacy estimate</div>
+                </div>
+                <div style="background:white;border:1px solid #86efac;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:700;color:#059669;text-transform:uppercase;">Jan Aushadhi Cost</div>
+                  <div style="font-size:18px;font-weight:800;color:#15803d;margin-top:2px;" id="rxJaGenericTotalText">₹0</div>
+                  <div style="font-size:10.5px;color:#16a34a;">PMBJP subsidized price</div>
+                </div>
+                <div style="background:#ecfdf5;border:1.5px solid #34d399;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:700;color:#047857;text-transform:uppercase;">Monthly Savings</div>
+                  <div style="font-size:18px;font-weight:800;color:#047857;margin-top:2px;" id="rxJaMonthlySavingsText">₹0</div>
+                  <div style="font-size:10.5px;color:#059669;font-weight:600;" id="rxJaSavingsPctLabel">0% cheaper</div>
+                </div>
+                <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:10px 12px;">
+                  <div style="font-size:11px;font-weight:700;color:#166534;text-transform:uppercase;">Annual Patient Savings</div>
+                  <div style="font-size:18px;font-weight:800;color:#15803d;margin-top:2px;" id="rxJaAnnualSavingsText">₹0 / yr</div>
+                  <div style="font-size:10.5px;color:#166534;">Direct chronic therapy benefit</div>
                 </div>
               </div>
             </div>
@@ -18818,7 +18941,10 @@ function renderRxResults(rx) {
     missingAlert.style.display = 'none';
   }
 
-  // Render Medications List with Tablet Reading & Safety Intelligence
+  // 4. Render Jan Aushadhi Generic Savings & Cost Optimization Intelligence Panel
+  renderJanAushadhiRxPanel(rx);
+
+  // Render Medications List with Tablet Reading, Safety Intelligence & Jan Aushadhi Generic Substitutes
   const listEl = document.getElementById('rxMedicationsList');
   if (listEl) {
     listEl.innerHTML = (rx.medications || []).map((m, idx) => {
@@ -18826,7 +18952,40 @@ function renderRxResults(rx) {
       const confColor = conf >= 85 ? '#10b981' : (conf >= 70 ? '#f59e0b' : '#ef4444');
       const confBg = conf >= 85 ? '#dcfce7' : (conf >= 70 ? '#fef3c7' : '#fee2e2');
 
-      const genericSav = m.cost_savings_estimate || (m.savingsPercent ? `Save ~${m.savingsPercent}% with Jan Aushadhi generic` : 'Jan Aushadhi Generic Match');
+      // Resolve Jan Aushadhi Alternative Details
+      let jaInfo = (m.janAushadhiDetails && m.janAushadhiDetails.matched) ? m.janAushadhiDetails : null;
+      if (!jaInfo && Array.isArray(jaMedicinesCache) && jaMedicinesCache.length > 0) {
+        const queryName = (m.name || '').toLowerCase();
+        const saltName = (m.genericSalt || m.genericName || '').toLowerCase();
+        const match = jaMedicinesCache.find(jm => 
+          (jm.popularBrands && jm.popularBrands.some(b => queryName.includes(b.toLowerCase()) || b.toLowerCase().includes(queryName))) ||
+          (jm.genericName && (queryName.includes(jm.genericName.toLowerCase()) || jm.genericName.toLowerCase().includes(queryName))) ||
+          (saltName && (jm.genericName.toLowerCase().includes(saltName) || saltName.includes(jm.genericName.toLowerCase())))
+        );
+        if (match) {
+          jaInfo = {
+            matched: true,
+            genericName: match.genericName,
+            pmbjpCode: match.pmbjpDrugCode,
+            packSize: match.unitSize,
+            brandedPriceINR: match.brandedAvgPriceINR,
+            janAushadhiPriceINR: match.janAushadhiPriceINR,
+            savingsPercent: match.savingsPercent,
+            savingsAmountINR: match.savingsAmountINR || (match.brandedAvgPriceINR - match.janAushadhiPriceINR),
+            therapeuticCategory: match.category,
+            cdscoStandards: 'CDSCO & NABL Batch Certified · IP/BP Pharmacopoeia Bioequivalent'
+          };
+          m.janAushadhiDetails = jaInfo;
+          m.genericPriceINR = jaInfo.janAushadhiPriceINR;
+          m.brandedPriceINR = jaInfo.brandedPriceINR;
+          m.savingsPercent = jaInfo.savingsPercent;
+        }
+      }
+
+      const isSubstituted = Boolean(m.isJanAushadhiSubstituted);
+      const genericSav = jaInfo 
+        ? `Save ~${jaInfo.savingsPercent}% (₹${jaInfo.savingsAmountINR || (jaInfo.brandedPriceINR - jaInfo.janAushadhiPriceINR)}) with PMBJP generic`
+        : (m.cost_savings_estimate || (m.savingsPercent ? `Save ~${m.savingsPercent}% with Jan Aushadhi generic` : 'Jan Aushadhi Generic Match Available'));
 
       // Tablet Safety Evaluation Rendering
       const safetyStat = m.safetyStatus || (m.isSafeToConsume === false ? 'POTENTIALLY_UNSAFE' : 'SAFE_TO_CONSUME');
@@ -18858,9 +19017,12 @@ function renderRxResults(rx) {
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="font-size:22px;">💊</span>
               <div>
-                <input type="text" class="form-control" value="${escapeHtml(m.name)}" 
-                       style="font-size:15px;font-weight:700;padding:4px 8px;width:260px;" 
-                       onchange="updateMedName(${idx}, this.value)">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <input type="text" class="form-control" value="${escapeHtml(m.name)}" 
+                         style="font-size:15px;font-weight:700;padding:4px 8px;width:260px;" 
+                         onchange="updateMedName(${idx}, this.value)">
+                  ${isSubstituted ? '<span class="pill" style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:800;border:1px solid #86efac;">✓ PMBJP Generic Active</span>' : ''}
+                </div>
                 <div style="font-size:11.5px;color:var(--muted);margin-top:3px;">
                   Generic Salt: <b style="color:#0f172a;">${escapeHtml(m.genericName || m.genericSalt || m.name)}</b> 
                   ${m.strength ? `· Strength: <b>${escapeHtml(m.strength)}</b>` : ''} 
@@ -18932,6 +19094,54 @@ function renderRxResults(rx) {
             </div>
           </div>
 
+          <!-- JAN AUSHADHI GENERIC ALTERNATIVE CARD (IF MATCHED) -->
+          ${jaInfo ? `
+            <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:10px;padding:12px 14px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:flex-start;gap:8px;">
+                  <span style="font-size:20px;line-height:1;">🇮🇳</span>
+                  <div>
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                      <span class="pill" style="background:#16a34a;color:white;font-size:10px;font-weight:800;padding:2px 7px;">
+                        PMBJP GENERIC EQUIVALENT
+                      </span>
+                      <span style="font-size:11px;color:#047857;font-weight:700;">Code: ${escapeHtml(jaInfo.pmbjpCode || 'PMBJP')}</span>
+                      ${isSubstituted ? '<span class="pill" style="background:#dbeafe;color:#1d4ed8;font-size:10px;font-weight:700;">✓ Substituted</span>' : ''}
+                    </div>
+                    <div style="font-size:13.5px;font-weight:800;color:#065f46;margin-top:4px;">
+                      ${escapeHtml(jaInfo.genericName)}
+                    </div>
+                    <div style="font-size:11.5px;color:#334155;margin-top:2px;">
+                      <b>Standard:</b> <span style="color:#047857;font-weight:600;">${escapeHtml(jaInfo.cdscoStandards || 'IP/BP Bioequivalent Pharmacopoeia Standard')}</span>
+                      · Pack: <b>${escapeHtml(jaInfo.packSize || '10 Tablets')}</b>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="text-align:right;">
+                  <div style="font-size:11px;color:#94a3b8;text-decoration:line-through;">Brand MRP: ₹${jaInfo.brandedPriceINR}</div>
+                  <div style="font-size:16px;font-weight:900;color:#15803d;margin-top:1px;">Jan Aushadhi: ₹${jaInfo.janAushadhiPriceINR}</div>
+                  <div style="font-size:11px;font-weight:750;color:#059669;">
+                    Save ${jaInfo.savingsPercent}% (₹${jaInfo.savingsAmountINR || (jaInfo.brandedPriceINR - jaInfo.janAushadhiPriceINR)} per strip)
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;border-top:1px dashed #bbf7d0;padding-top:8px;">
+                ${!isSubstituted ? `
+                  <button class="btn btn-sm" onclick="switchSingleMedToJanAushadhi(${idx})" style="background:#16a34a;color:white;font-weight:700;font-size:11.5px;padding:4px 12px;border-radius:6px;cursor:pointer;">
+                    🔄 Substitute with ${escapeHtml(jaInfo.genericName.split(' ')[0])} Generic
+                  </button>
+                ` : `
+                  <span style="color:#15803d;font-size:12px;font-weight:700;">✓ Generic Name Active on Prescription</span>
+                `}
+                <button class="btn btn-secondary btn-sm" onclick="switchMedSubtab('generics')" style="background:white;color:#047857;border-color:#86efac;font-size:11px;padding:3px 10px;cursor:pointer;">
+                  📍 Find Kendra Outlets
+                </button>
+              </div>
+            </div>
+          ` : ''}
+
           <!-- Precaution & Generic Alternative Banner -->
           <div style="display:flex;justify-content:space-between;align-items:center;background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:12px;flex-wrap:wrap;gap:8px;">
             <div style="color:var(--dark);">
@@ -18952,6 +19162,226 @@ function renderRxResults(rx) {
 
   // Render Medication Explanations
   renderExplanationModule(rx);
+}
+
+/**
+ * Render Jan Aushadhi Generic Savings & Cost Optimization Intelligence Panel
+ */
+function renderJanAushadhiRxPanel(rx) {
+  const panel = document.getElementById('rxJanAushadhiSavingsCard');
+  if (!panel || !rx || !Array.isArray(rx.medications) || rx.medications.length === 0) {
+    if (panel) panel.style.display = 'none';
+    return;
+  }
+
+  // Calculate summary based on current medications
+  let totalBranded = 0;
+  let totalGeneric = 0;
+  let matchedCount = 0;
+
+  rx.medications.forEach(m => {
+    let jaInfo = (m.janAushadhiDetails && m.janAushadhiDetails.matched) ? m.janAushadhiDetails : null;
+    if (!jaInfo && Array.isArray(jaMedicinesCache) && jaMedicinesCache.length > 0) {
+      const queryName = (m.name || '').toLowerCase();
+      const saltName = (m.genericSalt || m.genericName || '').toLowerCase();
+      const match = jaMedicinesCache.find(jm => 
+        (jm.popularBrands && jm.popularBrands.some(b => queryName.includes(b.toLowerCase()) || b.toLowerCase().includes(queryName))) ||
+        (jm.genericName && (queryName.includes(jm.genericName.toLowerCase()) || jm.genericName.toLowerCase().includes(queryName))) ||
+        (saltName && (jm.genericName.toLowerCase().includes(saltName) || saltName.includes(jm.genericName.toLowerCase())))
+      );
+      if (match) {
+        jaInfo = {
+          matched: true,
+          genericName: match.genericName,
+          pmbjpCode: match.pmbjpDrugCode,
+          packSize: match.unitSize,
+          brandedPriceINR: match.brandedAvgPriceINR,
+          janAushadhiPriceINR: match.janAushadhiPriceINR,
+          savingsPercent: match.savingsPercent,
+          savingsAmountINR: match.savingsAmountINR || (match.brandedAvgPriceINR - match.janAushadhiPriceINR),
+          therapeuticCategory: match.category,
+          cdscoStandards: 'CDSCO & NABL Batch Certified · IP/BP Bioequivalent'
+        };
+        m.janAushadhiDetails = jaInfo;
+      }
+    }
+
+    if (jaInfo && jaInfo.matched) {
+      matchedCount++;
+      totalBranded += jaInfo.brandedPriceINR || 120;
+      totalGeneric += jaInfo.janAushadhiPriceINR || 25;
+    }
+  });
+
+  const monthlySavings = Math.max(0, totalBranded - totalGeneric);
+  const annualSavings = monthlySavings * 12;
+  const savPercent = totalBranded > 0 ? Math.round((monthlySavings / totalBranded) * 100) : 78;
+
+  if (matchedCount > 0) {
+    panel.style.display = 'block';
+
+    const badge = document.getElementById('rxJaSavingsPercentBadge');
+    if (badge) badge.textContent = `Save ~${savPercent}% (${matchedCount}/${rx.medications.length} Generic Matches)`;
+
+    const desc = document.getElementById('rxJaSavingsDesc');
+    if (desc) {
+      desc.innerHTML = `Identified <b>${matchedCount}</b> brand-name medications with bio-equivalent PMBJP Jan Aushadhi generic substitutes. Switching saves <b>₹${monthlySavings.toLocaleString('en-IN')}</b> every month without altering your clinical efficacy.`;
+    }
+
+    const brandedEl = document.getElementById('rxJaBrandedTotalText');
+    if (brandedEl) brandedEl.textContent = `₹${totalBranded.toLocaleString('en-IN')}`;
+
+    const genericEl = document.getElementById('rxJaGenericTotalText');
+    if (genericEl) genericEl.textContent = `₹${totalGeneric.toLocaleString('en-IN')}`;
+
+    const monthlyEl = document.getElementById('rxJaMonthlySavingsText');
+    if (monthlyEl) monthlyEl.textContent = `₹${monthlySavings.toLocaleString('en-IN')}`;
+
+    const pctLabel = document.getElementById('rxJaSavingsPctLabel');
+    if (pctLabel) pctLabel.textContent = `${savPercent}% cheaper than commercial brands`;
+
+    const annualEl = document.getElementById('rxJaAnnualSavingsText');
+    if (annualEl) annualEl.textContent = `₹${annualSavings.toLocaleString('en-IN')} / yr`;
+  } else {
+    panel.style.display = 'none';
+  }
+}
+
+/**
+ * Switch a single prescribed medication to its Jan Aushadhi generic substitute
+ */
+function switchSingleMedToJanAushadhi(idx) {
+  if (!currentParsedRx || !currentParsedRx.medications || !currentParsedRx.medications[idx]) return;
+  const med = currentParsedRx.medications[idx];
+  const ja = med.janAushadhiDetails;
+  if (!ja || !ja.matched) return;
+
+  const originalBrand = med.name;
+  med.originalBrandName = originalBrand;
+  med.name = ja.genericName;
+  med.genericSalt = ja.genericName;
+  med.isJanAushadhiSubstituted = true;
+  med.verificationStatus = 'PMBJP Generic Substituted';
+
+  markRxModified();
+  renderRxResults(currentParsedRx);
+  toast(`Substituted "${originalBrand}" with PMBJP generic "${ja.genericName}". Saving ₹${ja.savingsAmountINR || (ja.brandedPriceINR - ja.janAushadhiPriceINR)} per strip!`);
+}
+
+/**
+ * Switch all detected branded medications to Jan Aushadhi generic substitutes in one click
+ */
+function applyAllJanAushadhiAlternatives() {
+  if (!currentParsedRx || !Array.isArray(currentParsedRx.medications)) {
+    toast('No prescription currently loaded in workspace.');
+    return;
+  }
+
+  let count = 0;
+  let totalSaved = 0;
+
+  currentParsedRx.medications.forEach(med => {
+    if (med.janAushadhiDetails && med.janAushadhiDetails.matched && !med.isJanAushadhiSubstituted) {
+      med.originalBrandName = med.name;
+      med.name = med.janAushadhiDetails.genericName;
+      med.genericSalt = med.janAushadhiDetails.genericName;
+      med.isJanAushadhiSubstituted = true;
+      med.verificationStatus = 'PMBJP Generic Substituted';
+      count++;
+      totalSaved += (med.janAushadhiDetails.savingsAmountINR || (med.janAushadhiDetails.brandedPriceINR - med.janAushadhiDetails.janAushadhiPriceINR));
+    }
+  });
+
+  if (count === 0) {
+    toast('All detected medications are already switched to PMBJP generic substitutes.');
+    return;
+  }
+
+  markRxModified();
+  renderRxResults(currentParsedRx);
+  toast(`✅ Replaced ${count} branded medications with Jan Aushadhi generic substitutes! Monthly savings: ~₹${totalSaved.toLocaleString('en-IN')}`);
+}
+
+/**
+ * Open Jan Aushadhi Brand vs Generic side-by-side comparison modal
+ */
+function openJanAushadhiComparisonModal() {
+  const modal = document.getElementById('rxJaComparisonModal');
+  const tbody = document.getElementById('rxJaModalTableBody');
+  const annualEl = document.getElementById('rxJaModalAnnualSavings');
+  if (!modal || !tbody) return;
+
+  if (!currentParsedRx || !Array.isArray(currentParsedRx.medications) || currentParsedRx.medications.length === 0) {
+    toast('Please scan or load a prescription first.');
+    return;
+  }
+
+  const meds = currentParsedRx.medications;
+  let totalAnnual = 0;
+
+  const rows = meds.map((m) => {
+    const ja = m.janAushadhiDetails;
+    const brandName = m.originalBrandName || m.name;
+    if (ja && ja.matched) {
+      const brandCost = ja.brandedPriceINR || 100;
+      const genCost = ja.janAushadhiPriceINR || 20;
+      const savPct = ja.savingsPercent || Math.round(((brandCost - genCost) / brandCost) * 100);
+      const monthlySav = brandCost - genCost;
+      totalAnnual += monthlySav * 12;
+
+      return `
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 14px;font-weight:700;color:#1e293b;">
+            ${escapeHtml(brandName)}
+            <div style="font-size:11px;color:#64748b;font-weight:400;">Salt: ${escapeHtml(m.genericSalt || m.genericName || ja.genericName)}</div>
+          </td>
+          <td style="padding:10px 14px;color:#065f46;font-weight:700;">
+            ${escapeHtml(ja.genericName)}
+            <div style="font-size:10.5px;color:#047857;">Code: ${escapeHtml(ja.pmbjpCode || 'PMBJP')} · Pack: ${escapeHtml(ja.packSize || '10 tabs')}</div>
+          </td>
+          <td style="padding:10px 14px;font-size:11.5px;color:#334155;">
+            <span class="pill" style="background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:700;">CDSCO Batch Tested</span>
+            <div style="margin-top:2px;">${escapeHtml(ja.cdscoStandards || 'IP / BP Bioequivalent')}</div>
+          </td>
+          <td style="padding:10px 14px;text-align:right;color:#64748b;text-decoration:line-through;font-weight:600;">
+            ₹${brandCost}
+          </td>
+          <td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:800;font-size:13.5px;">
+            ₹${genCost}
+          </td>
+          <td style="padding:10px 14px;text-align:right;color:#047857;font-weight:750;">
+            Save ${savPct}% (₹${monthlySav})
+          </td>
+        </tr>
+      `;
+    } else {
+      return `
+        <tr style="border-bottom:1px solid #f1f5f9;">
+          <td style="padding:10px 14px;font-weight:700;color:#1e293b;">
+            ${escapeHtml(m.name)}
+          </td>
+          <td style="padding:10px 14px;color:#64748b;" colspan="2">
+            Generic formulation or custom compounded formulation.
+          </td>
+          <td style="padding:10px 14px;text-align:right;color:#64748b;">—</td>
+          <td style="padding:10px 14px;text-align:right;color:#15803d;font-weight:700;">Standard</td>
+          <td style="padding:10px 14px;text-align:right;color:#64748b;">—</td>
+        </tr>
+      `;
+    }
+  }).join('');
+
+  tbody.innerHTML = rows || '<tr><td colspan="6" style="padding:16px;text-align:center;">No medications found.</td></tr>';
+  if (annualEl) annualEl.textContent = `₹${totalAnnual.toLocaleString('en-IN')} / year`;
+  modal.style.display = 'flex';
+}
+
+/**
+ * Close Jan Aushadhi comparison modal
+ */
+function closeJanAushadhiComparisonModal() {
+  const modal = document.getElementById('rxJaComparisonModal');
+  if (modal) modal.style.display = 'none';
 }
 
 /**
@@ -23059,6 +23489,13 @@ function switchMedTab(tab) {
       searchMedicineAI();
     }
   }
+}
+
+function switchMedSubtab(tab) {
+  if (typeof switchTab === 'function') {
+    switchTab('medicines');
+  }
+  switchMedTab(tab);
 }
 
 /* ============================================================
@@ -36793,6 +37230,9 @@ window.addEventListener('DOMContentLoaded', () => {
   updateSupabaseAuthUI();
   setTimeout(() => {
     initD3ClinicalTrends();
+    if (typeof loadJanAushadhiMedicines === 'function') {
+      loadJanAushadhiMedicines();
+    }
   }, 300);
 });
 
