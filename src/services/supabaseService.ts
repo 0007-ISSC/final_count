@@ -35,7 +35,8 @@ export const SUPABASE_TABLES = [
   'appointments',
   'period_logs',
   'conversations',
-  'messages'
+  'messages',
+  'doctors'
 ] as const;
 
 export type SupabaseTableName = typeof SUPABASE_TABLES[number];
@@ -219,6 +220,35 @@ CREATE TABLE IF NOT EXISTS public.messages (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS public.doctors (
+  id BIGINT PRIMARY KEY,
+  name TEXT NOT NULL,
+  specialty TEXT NOT NULL,
+  qualifications TEXT,
+  registration_number TEXT,
+  experience_years INTEGER DEFAULT 5,
+  hospital TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  address TEXT,
+  lat NUMERIC(9, 6),
+  lng NUMERIC(9, 6),
+  consultation_fee_inr INTEGER DEFAULT 600,
+  rating NUMERIC(3, 1) DEFAULT 4.8,
+  review_count INTEGER DEFAULT 50,
+  languages TEXT[] DEFAULT ARRAY['English', 'Hindi'],
+  modes TEXT[] DEFAULT ARRAY['video', 'in_clinic'],
+  available_now BOOLEAN DEFAULT true,
+  next_slot TEXT,
+  avatar_url TEXT,
+  bio TEXT,
+  phone TEXT,
+  whatsapp TEXT,
+  telehealth_url TEXT,
+  directions_url TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Enable public read/write permissions for publishable anon client demo
 ALTER TABLE public.users DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.emergency_profiles DISABLE ROW LEVEL SECURITY;
@@ -231,6 +261,7 @@ ALTER TABLE public.appointments DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.period_logs DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.conversations DISABLE ROW LEVEL SECURITY;
 ALTER TABLE public.messages DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.doctors DISABLE ROW LEVEL SECURITY;
 
 -- Grant permissions to public roles
 GRANT USAGE ON SCHEMA public TO anon, authenticated;

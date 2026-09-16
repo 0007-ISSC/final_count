@@ -1,6 +1,6 @@
 {
   "name": "HealthGPT",
-  "description": "Comprehensive AI healthcare platform featuring Supabase user authentication for secure access to personal health records and the 3D Human Digital Twin, interactive D3.js clinical analytics module with longitudinal health trends over time, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and emergency SOS beacons.",
+  "description": "Comprehensive clinical AI healthcare platform featuring Supabase user authentication for secure health records, an interactive 3D Human Digital Twin, a pan-India network of 10,000+ verified doctors across 18 medical specialties with instant telehealth and in-clinic booking, interactive D3.js clinical analytics, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and personalized preventive care telemetry.",
   "requestFramePermissions": [
     "camera",
     "microphone",

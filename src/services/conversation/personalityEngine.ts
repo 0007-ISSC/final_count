@@ -145,10 +145,9 @@ ${memoryContext}
       return true;
     }
 
-    if (
-      (text.includes('creator') || text.includes('owner') || text.includes('head') || text.includes('founder') || text.includes('maker') || text.includes('boss') || text.includes('developer') || text.includes('author') || text.includes('architect')) &&
-      (text.includes('who') || text.includes('ur') || text.includes('your') || text.includes('whose') || text.includes('tell me about') || text.includes('name of'))
-    ) {
+    const hasRoleWord = /\b(creator|owner|head|founder|maker|boss|developer|author|architect)\b/i.test(text);
+    const hasQuestionWord = /\b(who|ur|your|whose|tell\s+me\s+about|name\s+of)\b/i.test(text);
+    if (hasRoleWord && hasQuestionWord) {
       return true;
     }
 

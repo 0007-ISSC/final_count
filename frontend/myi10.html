@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>HealthGPT — AI Health Intelligence Platform</title>
-<meta name="description" content="Comprehensive AI healthcare platform connected to Supabase backend featuring an interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi and Alex, RxVision multimodal prescription OCR verification workspace with safety radar and Jan Aushadhi generic alternatives, world-class Period & Cycle health suite with 3D female reproductive anatomy, biological cycle wheel, symptom tracking, Period Academy, Product Lab, and BETA AI companion, emergency SOS beacons, and clinical analytics.">
+<meta name="description" content="Comprehensive clinical AI healthcare platform featuring Supabase user authentication for secure health records, an interactive 3D Human Digital Twin, a pan-India network of 10,000+ verified doctors across 18 medical specialties with instant telehealth and in-clinic booking, interactive D3.js clinical analytics, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and personalized preventive care telemetry.">
 <meta property="og:title" content="HealthGPT — AI Health Intelligence Platform">
-<meta property="og:description" content="Comprehensive AI healthcare platform connected to Supabase backend featuring an interactive 3D Human Digital Twin synchronized with AI companions Dr. Nambi and Alex, RxVision multimodal prescription OCR verification workspace with safety radar and Jan Aushadhi generic alternatives, world-class Period & Cycle health suite with 3D female reproductive anatomy, biological cycle wheel, symptom tracking, Period Academy, Product Lab, and BETA AI companion, emergency SOS beacons, and clinical analytics.">
+<meta property="og:description" content="Comprehensive clinical AI healthcare platform featuring Supabase user authentication for secure health records, an interactive 3D Human Digital Twin, a pan-India network of 10,000+ verified doctors across 18 medical specialties with instant telehealth and in-clinic booking, interactive D3.js clinical analytics, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and personalized preventive care telemetry.">
 
 <!-- Chart.js for data visualization -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -4993,23 +4993,10 @@ window.go = window.go || function(pageId, subParam) {
           </select>
         </div>
 
-        <!-- EMERGENCY VIEW TOGGLE BUTTON -->
-        <button class="btn btn-sm" id="topEmergencyViewToggleBtn" style="background:#09090b;color:#fca5a5;border:1.5px solid #ef4444;font-weight:800;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;box-shadow:0 2px 10px rgba(239,68,68,0.25);cursor:pointer;" onclick="toggleEmergencyView()" title="Toggle High-Contrast Paramedic Medical Profile (Alt+E)">
-          <span style="font-size:14px;">🪪</span>
-          <span>EMERGENCY VIEW</span>
-          <span class="pill" style="background:#ef4444;color:white;font-size:10px;padding:1px 6px;font-weight:800;border-radius:10px;">Alt+E</span>
-        </button>
-        <!-- DIRECT DEDICATED SOS HELPLINES BUTTON -->
-        <button class="btn btn-sm" id="topEmergencySosDirectBtn" style="background:#dc2626;color:white;font-weight:900;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:none;border-radius:20px;cursor:pointer;box-shadow:0 0 12px rgba(220,38,38,0.6);" onclick="go('sos')" title="Open Dedicated Emergency Helplines (112 / 108)">
-          <span>🚨 112 SOS</span>
-        </button>
-        <button class="btn btn-sm emergency-btn-pulse" id="topEmergencySosBtn" style="background:#e11d48;color:white;font-weight:800;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:none;border-radius:20px;" onclick="triggerOneTouchEmergencySOS()" title="Instant GPS Location & Emergency Contact Broadcast">
-          <span class="status-dot-pulse" style="background:#ffffff;"></span>
-          <span>BROADCAST BEACON</span>
-        </button>
-        <div class="system-badge">
-          <span class="status-dot-pulse"></span>
-          <span>HealthGPT AI v2.4</span>
+        <!-- CLINICAL INTELLIGENCE CONNECTED BADGE -->
+        <div id="topClinicalSystemBadge" style="display:inline-flex;align-items:center;gap:6px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.28);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;color:#059669;">
+          <span class="status-dot-pulse" style="background:#10b981;width:7px;height:7px;"></span>
+          <span>Clinical Telemetry Active</span>
         </div>
         <!-- USER / ADMIN SESSION PILL -->
         <div id="topUserProfileBadge" style="display:inline-flex;align-items:center;gap:6px;background:var(--card);padding:4px 10px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:12px;font-weight:700;">
@@ -5029,22 +5016,38 @@ window.go = window.go || function(pageId, subParam) {
     <section class="page active" id="dashboard">
       
       <!-- HERO BANNER -->
-      <div class="hero-banner">
-        <div class="hero-content">
-          <h2>Welcome to your Health Command Center 🌿</h2>
-          <p>
-            HealthGPT brings your biometric signals, unified AI clinical consultations, real-time doctor appointments in India, digital health twin telemetry, and prescription intelligence into one integrated platform.
+      <div class="hero-banner" style="display:flex;justify-content:space-between;align-items:center;padding:30px 34px;border-radius:20px;background:linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%);color:white;margin-bottom:24px;box-shadow:0 10px 30px -5px rgba(6,78,59,0.22);position:relative;overflow:hidden;">
+        <div class="hero-content" style="max-width:720px;z-index:2;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+            <h2 style="margin:0;font-size:26px;font-weight:800;letter-spacing:-0.5px;color:#ffffff;display:inline-flex;align-items:center;gap:8px;">
+              Personal Health Command Center 🌿
+            </h2>
+            <span class="pill" style="background:rgba(52,211,153,0.22);color:#a7f3d0;border:1px solid rgba(52,211,153,0.45);font-weight:800;font-size:11.5px;padding:3px 10px;">
+              ✨ Gemini 2.5 Clinical Engine
+            </span>
+          </div>
+          <p style="margin:0 0 16px;font-size:14.5px;line-height:1.6;color:#d1fae5;font-weight:450;">
+            Unified clinical health intelligence synthesizing continuous biometric telemetry, multi-organ physiological equilibrium, encrypted medical records, and instantaneous booking across 10,036 top medical specialists in India.
           </p>
-          <div class="hero-badges">
-            <span class="pill" style="background:rgba(45,212,191,0.2);color:#5eead4;">✨ Gemini Flash Connected</span>
-            <span class="pill" style="background:rgba(255,255,255,0.12);color:white;">🇮🇳 Real-Time Indian Clinics</span>
-            <span class="pill" style="background:rgba(255,255,255,0.12);color:white;">📄 Prescription OCR Bridge</span>
+          <div class="hero-badges" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <span class="pill" style="background:rgba(255,255,255,0.14);color:#ffffff;font-size:12px;font-weight:700;padding:5px 12px;border:1px solid rgba(255,255,255,0.22);">
+              👨‍⚕️ 10,036 Verified Specialists
+            </span>
+            <span class="pill" style="background:rgba(255,255,255,0.14);color:#ffffff;font-size:12px;font-weight:700;padding:5px 12px;border:1px solid rgba(255,255,255,0.22);">
+              🧬 3D Human Digital Twin
+            </span>
+            <span class="pill" style="background:rgba(255,255,255,0.14);color:#ffffff;font-size:12px;font-weight:700;padding:5px 12px;border:1px solid rgba(255,255,255,0.22);">
+              🔒 Supabase AES-256 Vault
+            </span>
+            <span class="pill" style="background:rgba(255,255,255,0.14);color:#ffffff;font-size:12px;font-weight:700;padding:5px 12px;border:1px solid rgba(255,255,255,0.22);">
+              📄 RxVision OCR Scanner
+            </span>
           </div>
         </div>
-        <div class="hero-gauge">
-          <div class="gauge-score">
-            <b id="dashScoreValue">96</b>
-            <span>Health Index</span>
+        <div class="hero-gauge" style="z-index:2;text-align:center;">
+          <div class="gauge-score" style="background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,0.25);border-radius:18px;padding:16px 24px;min-width:130px;box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+            <b id="dashScoreValue" style="font-size:38px;font-weight:900;color:#ffffff;display:block;line-height:1;">96</b>
+            <span style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#a7f3d0;display:block;margin-top:4px;">Vitality Index</span>
           </div>
         </div>
       </div>
@@ -5052,21 +5055,21 @@ window.go = window.go || function(pageId, subParam) {
       <!-- DYNAMIC HEALTH SCORE CARD (POWERED BY SUPABASE HEALTH_METRICS) -->
       <div class="card" id="supabaseHealthScoreCard" style="margin-bottom:24px;border:1.5px solid #a7f3d0;background:#ffffff;border-radius:16px;padding:24px;box-shadow:0 4px 20px -2px rgba(16,185,129,0.08);">
         
-        <!-- CARD HEADER -->
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:16px;">
+        <!-- CARD HEADER (PERFECTLY ALIGNED) -->
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:20px;border-bottom:1px solid #f1f5f9;padding-bottom:16px;">
           <div>
-            <div style="display:flex;align-items:center;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
               <span style="font-size:22px;">🌱</span>
-              <h3 style="margin:0;font-size:18px;font-weight:800;color:var(--ink-dark,#0f172a);letter-spacing:-0.3px;">
-                Health Score
+              <h3 style="margin:0;font-size:19px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;">
+                Holistic Vitality Index &amp; Physiological Equilibrium
               </h3>
               <span class="pill" style="background:#ecfdf5;color:#059669;font-weight:700;font-size:11px;border:1px solid #a7f3d0;display:inline-flex;align-items:center;gap:5px;">
                 <span style="width:7px;height:7px;border-radius:50%;background:#10b981;display:inline-block;"></span>
                 Supabase: health_metrics
               </span>
             </div>
-            <p style="margin:4px 0 0;font-size:13px;color:var(--ink-muted,#64748b);line-height:1.4;">
-              Dynamic physiological vitality index calculated from your latest BMI, resting heart rate & daily hydration telemetry fetched from Supabase.
+            <p style="margin:5px 0 0;font-size:13.5px;color:#64748b;line-height:1.5;">
+              Longitudinal composite score calculated from your latest BMI, resting sinus rhythm, and cellular hydration equilibrium fetched live from Supabase.
             </p>
           </div>
 
@@ -5421,11 +5424,11 @@ window.go = window.go || function(pageId, subParam) {
 
       <!-- QUICK ACTION TILES -->
       <div class="action-grid" style="grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));">
-        <div class="action-tile" onclick="triggerOneTouchEmergencySOS()" style="border-color:#fca5a5;background:#fff1f2;">
-          <div class="action-tile-icon" style="background:#fee2e2;color:#e11d48;">🚨</div>
+        <div class="action-tile" onclick="go('twinAnalytics')" style="border-color:#bbf7d0;background:#f0fdf4;">
+          <div class="action-tile-icon" style="background:#dcfce7;color:#15803d;">🧬</div>
           <div class="action-tile-text">
-            <h4>One-Touch SOS</h4>
-            <p>GPS broadcast & Medical ID</p>
+            <h4>3D Digital Twin</h4>
+            <p>Organ telemetry &amp; anatomy</p>
           </div>
         </div>
 
@@ -5441,15 +5444,15 @@ window.go = window.go || function(pageId, subParam) {
           <div class="action-tile-icon" style="background:#f3e8ff;color:#9333ea;">🧠</div>
           <div class="action-tile-text">
             <h4>AI Therapist Mode</h4>
-            <p>Mental calm & wellness</p>
+            <p>Mental calm &amp; wellness</p>
           </div>
         </div>
 
         <div class="action-tile" onclick="go('periodTracker')">
           <div class="action-tile-icon" style="background:#fce7f3;color:#db2777;">🌸</div>
           <div class="action-tile-text">
-            <h4>Period & Cycle AI</h4>
-            <p>Ovulation & phase tracking</p>
+            <h4>Period &amp; Cycle AI</h4>
+            <p>Ovulation &amp; phase tracking</p>
           </div>
         </div>
 
@@ -5457,7 +5460,7 @@ window.go = window.go || function(pageId, subParam) {
           <div class="action-tile-icon" style="background:#fef3c7;color:#d97706;">📄</div>
           <div class="action-tile-text">
             <h4>Scan Prescription</h4>
-            <p>Instant OCR & AI breakdown</p>
+            <p>Instant OCR &amp; AI breakdown</p>
           </div>
         </div>
 
@@ -5465,284 +5468,140 @@ window.go = window.go || function(pageId, subParam) {
           <div class="action-tile-icon" style="background:#dcfce7;color:#15803d;">👨‍⚕️</div>
           <div class="action-tile-text">
             <h4>Connect Doctors</h4>
-            <p>Book top Indian specialists</p>
+            <p>Book 10,036 Indian specialists</p>
           </div>
         </div>
       </div>
 
       <!-- ============================================================
-           EMERGENCY MEDICAL PROFILE & ONE-TOUCH SOS COMMAND CENTER
+           COMPREHENSIVE PREVENTIVE HEALTH INTELLIGENCE & CLINICAL ROADMAP
       ============================================================ -->
-      <div class="card emergency-card-hud" id="emergencyOverviewCard" style="margin-top:20px;border:2px solid #fecdd3;box-shadow:0 8px 30px rgba(225,29,72,0.12);padding:0;overflow:hidden;">
-        <!-- TOP SOS TRANSMISSION BANNER -->
-        <div style="background:linear-gradient(135deg, #be123c 0%, #9f1239 100%);color:white;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div style="font-size:32px;background:rgba(255,255,255,0.15);width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;">🚨</div>
+      <div class="card" id="dashPreventiveCareRoadmapCard" style="margin-top:20px;border:1.5px solid #e2e8f0;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 6px 24px rgba(15,23,42,0.06);padding:0;">
+        
+        <!-- CARD HEADER (PERFECTLY ALIGNED) -->
+        <div style="background:#fcfdfd;border-bottom:1px solid #f1f5f9;padding:18px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;background:#ecfdf5;color:#059669;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid #a7f3d0;">🎯</div>
             <div>
               <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                <h3 style="margin:0;font-size:20px;color:white;font-weight:800;">Emergency Medical Profile & One-Touch SOS</h3>
-                <span class="pill" style="background:#ffe4e6;color:#9f1239;font-weight:800;font-size:11px;">⚡ Telemetry Active</span>
+                <h3 style="margin:0;font-size:18px;font-weight:800;color:#0f172a;letter-spacing:-0.3px;">
+                  Personalized Preventive Health Roadmap &amp; Clinical Highlights
+                </h3>
+                <span class="pill" style="background:#ecfdf5;color:#059669;font-weight:700;font-size:11px;border:1px solid #a7f3d0;">
+                  ● Active Care Plan
+                </span>
               </div>
-              <p style="margin:4px 0 0;font-size:13px;color:#fecdd3;">
-                Instant GPS telemetry broadcast, first responder paramedic Medical ID, critical anaphylaxis alerts & next-of-kin dispatch.
+              <p style="margin:3px 0 0;font-size:13px;color:#64748b;">
+                Precision biomarkers, circadian rhythm synchronization, and instant coordination across 10,036 certified Indian specialists.
               </p>
             </div>
           </div>
-          
-          <!-- SOS BIG BUTTON & TEST TRIGGER -->
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-            <button class="btn emergency-btn-pulse" style="background:#ffffff;color:#be123c;font-weight:900;font-size:14px;padding:10px 22px;border-radius:24px;border:2px solid #ffe4e6;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 14px rgba(0,0,0,0.25);cursor:pointer;" onclick="triggerOneTouchEmergencySOS()" title="Broadcast live GPS coordinates and medical brief to all contacts">
-              <span class="radar-beacon"></span>
-              <span>🚨 ONE-TOUCH SOS</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button type="button" onclick="go('doctorConnect')" class="btn-secondary" style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;">
+              <span>👨‍⚕️ Explore Doctor Network ➔</span>
             </button>
-            <button class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.35);font-size:12px;" onclick="triggerOneTouchEmergencySOS(true)" title="Run safe emergency simulation without actual alerts">
-              ⚡ Test Simulation
-            </button>
-            <button class="btn btn-secondary btn-sm" style="background:#09090b;color:#fca5a5;border:1.5px solid #ef4444;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:5px;" onclick="toggleEmergencyView()" title="Open High-Contrast Medical Profile Overlay (Alt+E)">
-              <span>🚨</span>
-              <span>High-Contrast Emergency View</span>
-            </button>
-            <button class="btn btn-secondary btn-sm" style="background:rgba(255,255,255,0.18);color:white;border-color:rgba(255,255,255,0.35);font-size:12px;" onclick="openEmergencyModal()" title="Open Paramedic Medical ID HUD">
-              🪪 Paramedic HUD
+            <button type="button" onclick="go('twinAnalytics')" class="btn-primary" style="padding:6px 14px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;">
+              <span>🧬 Open 3D Twin &amp; D3 Analytics</span>
             </button>
           </div>
         </div>
 
-        <!-- TELEMETRY & HOTLINES STRIP -->
-        <div style="background:#fff1f2;border-bottom:1px solid #fecdd3;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;font-size:13px;">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-            <span style="font-weight:700;color:#9f1239;display:inline-flex;align-items:center;gap:6px;">
-              <span class="status-dot-pulse" style="background:#e11d48;"></span>
-              <span>GPS Telemetry:</span>
-            </span>
-            <span class="gps-coordinates-pill" id="pageGpsCoordinatesText">28.5355° N, 77.3910° E (Accuracy: ±8m)</span>
-            <a id="pageGpsMapLink" href="https://maps.google.com/?q=28.5355,77.3910" target="_blank" style="color:#be123c;font-weight:700;text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:4px;">
-              📍 View Pin on Map ➔
-            </a>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span style="font-size:11px;font-weight:750;color:#881337;text-transform:uppercase;">National Hotlines:</span>
-            <a href="tel:112" class="btn btn-sm" style="background:#be123c;color:white;text-decoration:none;padding:4px 10px;font-size:11px;font-weight:800;border-radius:6px;">📞 112 (National SOS)</a>
-            <a href="tel:108" class="btn btn-sm" style="background:#0284c7;color:white;text-decoration:none;padding:4px 10px;font-size:11px;font-weight:800;border-radius:6px;">🚑 108 (Ambulance)</a>
-            <a href="tel:102" class="btn btn-sm" style="background:#15803d;color:white;text-decoration:none;padding:4px 10px;font-size:11px;font-weight:800;border-radius:6px;">👶 102 (Maternity)</a>
-          </div>
-        </div>
-
-        <!-- MAIN BODY: PROFILE HUD & EMERGENCY CONTACTS -->
-        <div style="padding:20px;">
+        <!-- MAIN CONTENT: 2 HIGH-VALUE COLUMNS -->
+        <div style="padding:22px;">
           <div class="grid-2-even" style="gap:20px;align-items:start;">
             
-            <!-- LEFT COLUMN: MEDICAL ID PROFILE (VIEW / INLINE EDIT) -->
-            <div style="background:#ffffff;border:1px solid #fecdd3;border-radius:12px;padding:18px;box-shadow:var(--shadow-sm);">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;">
+            <!-- LEFT COLUMN: TODAY'S CLINICAL TARGETS & BIOMARKERS -->
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:var(--shadow-sm);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #f1f5f9;padding-bottom:10px;">
                 <div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:20px;">🪪</span>
-                  <h4 style="margin:0;color:var(--dark);font-size:16px;">Paramedic Medical ID Profile</h4>
+                  <span style="font-size:18px;">📊</span>
+                  <h4 style="margin:0;color:#0f172a;font-size:15px;font-weight:800;">Today's Clinical Vitality Targets</h4>
                 </div>
-                <div style="display:flex;gap:6px;">
-                  <button id="btnToggleProfileEdit" class="btn btn-secondary btn-sm" onclick="toggleProfileEditMode()" style="font-size:12px;padding:4px 10px;">
-                    ✏️ Edit Profile
-                  </button>
-                  <button class="btn btn-secondary btn-sm" onclick="copyEmergencyMedicalBrief()" style="font-size:12px;padding:4px 8px;" title="Copy Brief for SMS/Chat">
-                    📋 Copy
-                  </button>
-                  <button class="btn btn-secondary btn-sm" onclick="printEmergencyMedicalCard()" style="font-size:12px;padding:4px 8px;" title="Print Paramedic Card">
-                    🖨️ Print
-                  </button>
-                </div>
+                <span class="pill" style="background:#ecfdf5;color:#059669;font-size:10.5px;font-weight:700;">88% Completed</span>
               </div>
 
-              <!-- PROFILE DISPLAY VIEW (DEFAULT) -->
-              <div id="profileDisplayView">
-                <!-- HERO DEMOGRAPHICS & BLOOD GROUP -->
-                <div style="display:flex;justify-content:space-between;align-items:center;background:#fff1f2;border:1px solid #fecdd3;border-radius:10px;padding:12px 16px;margin-bottom:14px;">
-                  <div>
-                    <h3 id="viewProfileFullName" style="margin:0;color:#9f1239;font-size:17px;font-weight:800;">Priya Sharma</h3>
-                    <div id="viewProfileDemographics" style="color:#881337;font-size:12px;margin-top:2px;">Female · 34 Years · 62 kg · 165 cm</div>
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                
+                <!-- Target 1: Cardio & Steps -->
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:4px;">
+                    <span style="font-weight:700;color:#1e293b;">🏃 Daily Aerobic &amp; Step Volume</span>
+                    <span style="font-weight:800;color:#059669;">8,420 <span style="font-weight:500;color:#64748b;">/ 10,000 steps (84%)</span></span>
                   </div>
-                  <div class="hud-blood-badge" id="viewProfileBloodGroup">
-                    🩸 O+
-                  </div>
-                </div>
-
-                <!-- CRITICAL ALLERGIES & ANAPHYLAXIS -->
-                <div style="margin-bottom:14px;">
-                  <div style="font-size:12px;font-weight:750;text-transform:uppercase;color:#991b1b;margin-bottom:6px;letter-spacing:0.4px;">
-                    ⚠️ Critical Drug & Food Allergies:
-                  </div>
-                  <div id="viewProfileAllergiesList" style="display:flex;gap:6px;flex-wrap:wrap;">
-                    <span class="allergy-danger-tag">⚠️ Penicillin (Severe Anaphylaxis)</span>
-                    <span class="allergy-danger-tag">⚠️ Peanuts (Severe Swelling)</span>
+                  <div style="width:100%;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                    <div style="width:84%;height:100%;background:#10b981;border-radius:3px;"></div>
                   </div>
                 </div>
 
-                <!-- CHRONIC CONDITIONS & ACTIVE MEDICATIONS -->
-                <div class="grid-2-even" style="gap:12px;margin-bottom:14px;">
-                  <div style="background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px 12px;">
-                    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Chronic Conditions:</div>
-                    <div id="viewProfileConditions" style="font-size:13px;color:var(--dark);line-height:1.5;">
-                      • Stage 1 Hypertension<br>• Mild Dyslipidemia
-                    </div>
+                <!-- Target 2: Circadian Sleep -->
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:4px;">
+                    <span style="font-weight:700;color:#1e293b;">🌙 Circadian Restorative Sleep</span>
+                    <span style="font-weight:800;color:#0284c7;">7.6 <span style="font-weight:500;color:#64748b;">/ 8.0 hrs (95% Optimal)</span></span>
                   </div>
-                  <div style="background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px 12px;">
-                    <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Active Prescriptions:</div>
-                    <div id="viewProfileMedications" style="font-size:13px;color:var(--dark);line-height:1.5;">
-                      • <b>Telmisartan</b> 40mg (OD Morning)<br>• <b>Atorvastatin</b> 10mg (OD Night)
-                    </div>
+                  <div style="width:100%;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                    <div style="width:95%;height:100%;background:#0284c7;border-radius:3px;"></div>
                   </div>
                 </div>
 
-                <!-- PARAMEDIC DIRECTIVES -->
-                <div style="background:#fef3c7;border:1px solid #fde68a;border-radius:8px;padding:10px 12px;margin-bottom:14px;">
-                  <div style="font-size:11px;font-weight:750;color:#92400e;text-transform:uppercase;margin-bottom:3px;">📋 First Responder & Resuscitation Directives:</div>
-                  <div id="viewProfileDirectives" style="font-size:12.5px;color:#78350f;line-height:1.4;">
-                    Full code CPR authorized. Carry Epipen in handbag for acute nut exposure.
+                <!-- Target 3: Hydration -->
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:4px;">
+                    <span style="font-weight:700;color:#1e293b;">💧 Daily Cellular Hydration</span>
+                    <span style="font-weight:800;color:#0284c7;">2.2 <span style="font-weight:500;color:#64748b;">/ 2.5 L (88% Target)</span></span>
+                  </div>
+                  <div style="width:100%;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                    <div style="width:88%;height:100%;background:#06b6d4;border-radius:3px;"></div>
                   </div>
                 </div>
 
-                <!-- HOSPITAL & PHYSICIAN -->
-                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;font-size:12px;color:var(--ink-soft);padding-top:8px;border-top:1px dashed var(--line);">
-                  <div>👨‍⚕️ <b>Physician:</b> <span id="viewProfilePhysician">Dr. Rajesh Sharma, MD</span></div>
-                  <div>🏥 <b>Hospital:</b> <span id="viewProfileHospital">Apollo Hospital, Delhi</span></div>
-                  <div>🛡️ <b>Insurance:</b> <span id="viewProfileInsurance">Star Health Gold (POL-882194)</span></div>
+                <!-- Target 4: Metabolic Nutrition -->
+                <div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:4px;">
+                    <span style="font-weight:700;color:#1e293b;">🥗 Micronutrient &amp; Fiber Density</span>
+                    <span style="font-weight:800;color:#059669;">91% <span style="font-weight:500;color:#64748b;">(Anti-Inflammatory Index)</span></span>
+                  </div>
+                  <div style="width:100%;height:6px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                    <div style="width:91%;height:100%;background:#10b981;border-radius:3px;"></div>
+                  </div>
                 </div>
+
               </div>
-
-              <!-- PROFILE EDIT FORM (HIDDEN BY DEFAULT) -->
-              <form id="profileEditForm" style="display:none;" onsubmit="saveEmergencyProfileForm(event)">
-                <div class="grid-2-even" style="gap:10px;margin-bottom:10px;">
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Full Name *</label>
-                    <input id="editProfileFullName" value="Priya Sharma" required style="padding:7px 10px;font-size:12px;">
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Blood Group *</label>
-                    <select id="editProfileBloodGroup" style="padding:7px 10px;font-size:12px;">
-                      <option value="O+">O Positive (O+)</option>
-                      <option value="O-">O Negative (O-)</option>
-                      <option value="A+">A Positive (A+)</option>
-                      <option value="A-">A Negative (A-)</option>
-                      <option value="B+">B Positive (B+)</option>
-                      <option value="B-">B Negative (B-)</option>
-                      <option value="AB+">AB Positive (AB+)</option>
-                      <option value="AB-">AB Negative (AB-)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="grid-4" style="gap:8px;margin-bottom:10px;">
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Age</label>
-                    <input type="number" id="editProfileAge" value="34" style="padding:7px;font-size:12px;">
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Gender</label>
-                    <select id="editProfileGender" style="padding:7px;font-size:12px;">
-                      <option value="Female">Female</option>
-                      <option value="Male">Male</option>
-                      <option value="Other">Other</option>
-                    </select>
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Weight (kg)</label>
-                    <input type="number" id="editProfileWeight" value="62" style="padding:7px;font-size:12px;">
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Height (cm)</label>
-                    <input type="number" id="editProfileHeight" value="165" style="padding:7px;font-size:12px;">
-                  </div>
-                </div>
-
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label class="form-label" style="font-size:11px;">Critical Allergies (Comma-separated with severity)</label>
-                  <input id="editProfileAllergies" value="Penicillin (Severe), Peanuts (Severe)" style="padding:7px 10px;font-size:12px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label class="form-label" style="font-size:11px;">Chronic Conditions (Comma-separated)</label>
-                  <input id="editProfileConditions" value="Stage 1 Hypertension, Mild Dyslipidemia" style="padding:7px 10px;font-size:12px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label class="form-label" style="font-size:11px;">Active Medications & Dosage</label>
-                  <input id="editProfileMedications" value="Telmisartan 40mg (OD), Atorvastatin 10mg (OD)" style="padding:7px 10px;font-size:12px;">
-                </div>
-
-                <div class="form-group" style="margin-bottom:10px;">
-                  <label class="form-label" style="font-size:11px;">First Responder / Paramedic Directives</label>
-                  <input id="editProfileDirectives" value="Full code CPR authorized. Carry Epipen for nut exposure." style="padding:7px 10px;font-size:12px;">
-                </div>
-
-                <div class="grid-2-even" style="gap:10px;margin-bottom:10px;">
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Primary Physician</label>
-                    <input id="editProfilePhysician" value="Dr. Rajesh Sharma, MD" style="padding:7px 10px;font-size:12px;">
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Preferred Trauma Hospital</label>
-                    <input id="editProfileHospital" value="Apollo Hospital, Delhi" style="padding:7px 10px;font-size:12px;">
-                  </div>
-                </div>
-
-                <div class="grid-2-even" style="gap:10px;margin-bottom:12px;">
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Insurance Policy</label>
-                    <input id="editProfileInsurance" value="Star Health Gold (POL-882194)" style="padding:7px 10px;font-size:12px;">
-                  </div>
-                  <div class="form-group" style="margin-bottom:0;">
-                    <label class="form-label" style="font-size:11px;">Organ Donor</label>
-                    <select id="editProfileOrganDonor" style="padding:7px 10px;font-size:12px;">
-                      <option value="true">Yes (Registered Organ Donor)</option>
-                      <option value="false">No</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div style="display:flex;gap:8px;">
-                  <button type="submit" class="btn btn-sm" style="background:#be123c;color:white;flex:1;">
-                    ✓ Save Emergency Medical Profile
-                  </button>
-                  <button type="button" class="btn btn-secondary btn-sm" onclick="toggleProfileEditMode()">
-                    Cancel
-                  </button>
-                </div>
-              </form>
             </div>
 
-            <!-- RIGHT COLUMN: EMERGENCY CONTACTS & SOS BROADCAST LOG -->
-            <div style="display:flex;flex-direction:column;gap:16px;">
-              
-              <!-- CONTACTS MANAGER CARD -->
-              <div style="background:#ffffff;border:1px solid #fecdd3;border-radius:12px;padding:18px;box-shadow:var(--shadow-sm);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:10px;">
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <span style="font-size:20px;">👥</span>
-                    <h4 style="margin:0;color:var(--dark);font-size:16px;">Emergency Contacts & Next-of-Kin</h4>
-                    <span id="emergencyContactsCountPill" class="pill" style="background:#f1f5f9;color:var(--muted);font-size:11px;">2 Active</span>
-                  </div>
-                  <button class="btn btn-sm" onclick="openAddEmergencyContactModal()" style="background:#be123c;color:white;font-size:12px;padding:5px 12px;">
-                    + Add Contact
-                  </button>
+            <!-- RIGHT COLUMN: CLINICAL ECOSYSTEM HIGHLIGHTS -->
+            <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:18px;box-shadow:var(--shadow-sm);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;border-bottom:1px solid #f1f5f9;padding-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:18px;">🌿</span>
+                  <h4 style="margin:0;color:#0f172a;font-size:15px;font-weight:800;">Integrated Clinical Services</h4>
                 </div>
-
-                <div id="emergencyContactsListContainer" style="display:flex;flex-direction:column;gap:10px;">
-                  <!-- Populated dynamically -->
-                </div>
+                <span class="pill" style="background:#f1f5f9;color:#475569;font-size:10.5px;font-weight:600;">100% Synchronized</span>
               </div>
 
-              <!-- SOS BROADCAST HISTORY LOG -->
-              <div style="background:#ffffff;border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow-sm);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                  <div style="display:flex;align-items:center;gap:6px;">
-                    <span style="font-size:16px;">📡</span>
-                    <b style="font-size:13px;color:var(--dark);">Recent SOS Broadcast Transmissions</b>
-                  </div>
-                  <span class="pill" style="background:#dcfce7;color:#15803d;font-size:10px;font-weight:700;">● Network Ready</span>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                <div onclick="go('doctorConnect')" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                  <div style="font-size:22px;margin-bottom:4px;">👨‍⚕️</div>
+                  <b style="font-size:13px;color:#0f172a;display:block;">10,036 Specialists</b>
+                  <span style="font-size:11.5px;color:#64748b;">Instant teleconsult &amp; clinic booking across 18 Indian cities.</span>
                 </div>
 
-                <div id="sosBroadcastHistoryContainer" style="display:flex;flex-direction:column;gap:8px;">
-                  <!-- Populated dynamically -->
+                <div onclick="go('ocr')" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                  <div style="font-size:22px;margin-bottom:4px;">📄</div>
+                  <b style="font-size:13px;color:#0f172a;display:block;">RxVision OCR</b>
+                  <span style="font-size:11.5px;color:#64748b;">Scan prescriptions, verify dosage &amp; unlock Jan Aushadhi savings.</span>
+                </div>
+
+                <div onclick="go('twinAnalytics')" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                  <div style="font-size:22px;margin-bottom:4px;">🧬</div>
+                  <b style="font-size:13px;color:#0f172a;display:block;">3D Digital Twin</b>
+                  <span style="font-size:11.5px;color:#64748b;">Interactive 3D organ physiology with D3 longitudinal charts.</span>
+                </div>
+
+                <div onclick="go('periodTracker')" style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:transform 0.15s, border-color 0.15s;" onmouseover="this.style.borderColor='#10b981'" onmouseout="this.style.borderColor='#e2e8f0'">
+                  <div style="font-size:22px;margin-bottom:4px;">🌸</div>
+                  <b style="font-size:13px;color:#0f172a;display:block;">Cycle Intelligence</b>
+                  <span style="font-size:11.5px;color:#64748b;">Biological cycle wheel, fertility phase &amp; hormonal telemetry.</span>
                 </div>
               </div>
 
@@ -5815,89 +5674,6 @@ window.go = window.go || function(pageId, subParam) {
             <span>✨</span>
             <div><b>AI Health Insight:</b> Sleep regularity is up 18% this week. Maintain current evening wind-down rituals.</div>
           </div>
-        </div>
-      </div>
-
-      <!-- ============================================================
-           STANDARDIZED 24x7 EMERGENCY HELPLINES DIRECTORY (DASHBOARD ONLY)
-      ============================================================ -->
-      <div class="card" id="dashEmergencyHelplinesDirectory" style="margin-top:20px;border:1.5px solid #fecdd3;box-shadow:0 4px 24px rgba(225,29,72,0.06);">
-        <div class="card-header" style="border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:16px;">
-          <div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-              <span style="font-size:24px;">🚨</span>
-              <h3 style="margin:0;font-size:18px;color:var(--dark);">24x7 Emergency Helplines & Crisis Response Directory</h3>
-              <span class="pill" id="dashHelplinesCountBadge" style="background:#fee2e2;color:#be123c;font-weight:800;font-size:11px;">40 Verified Helplines (India)</span>
-              <span class="pill" style="background:#dcfce7;color:#15803d;font-weight:700;font-size:10.5px;">● Govt & Hospital Verified</span>
-            </div>
-            <p style="margin:4px 0 0;font-size:13px;color:var(--ink-soft);">
-              Instant 1-click calling and clipboard copy for national emergency hotlines, trauma ambulances, poison control centers, mental health crisis lifelines, disaster relief, and specialized hospital networks.
-            </p>
-          </div>
-
-          <!-- REGION SELECTOR TABS -->
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <button class="dash-sos-region-tab btn btn-sm" id="dashSosRegionBtn_in" onclick="switchDashSosRegion('in')" style="background:#dc2626;color:#ffffff;border:1px solid #dc2626;font-weight:700;font-size:12px;padding:5px 12px;">
-              🇮🇳 India
-            </button>
-            <button class="dash-sos-region-tab btn btn-sm" id="dashSosRegionBtn_us" onclick="switchDashSosRegion('us')" style="background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);font-size:12px;padding:5px 12px;">
-              🇺🇸 USA & CAN
-            </button>
-            <button class="dash-sos-region-tab btn btn-sm" id="dashSosRegionBtn_uk" onclick="switchDashSosRegion('uk')" style="background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);font-size:12px;padding:5px 12px;">
-              🇬🇧 UK
-            </button>
-            <button class="dash-sos-region-tab btn btn-sm" id="dashSosRegionBtn_eu" onclick="switchDashSosRegion('eu')" style="background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);font-size:12px;padding:5px 12px;">
-              🇪🇺 EU
-            </button>
-          </div>
-        </div>
-
-        <!-- SEARCH AND FILTER CONTROLS STRIP -->
-        <div style="background:#f8fafc;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:16px;">
-          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
-            <div style="flex:1;min-width:240px;position:relative;">
-              <input type="text" id="dashHelplinesSearchInput" placeholder="🔍 Search helplines by name, number, service, or keyword (e.g., Poison, 112, Ambulance, Mental, Women)..." oninput="renderDashEmergencyHelplines(undefined, this.value)" style="width:100%;padding:9px 14px;border:1px solid var(--line);border-radius:8px;font-size:13px;background:#ffffff;color:var(--dark);">
-            </div>
-            <button class="btn btn-secondary btn-sm" onclick="resetDashHelplineFilters()" style="padding:9px 14px;font-size:12px;">
-              🔄 Reset Filters
-            </button>
-          </div>
-
-          <!-- CATEGORY FILTER CHIPS -->
-          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;" id="dashHelplineFilterChips">
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="all" onclick="renderDashEmergencyHelplines('all', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:700;border-radius:16px;background:#dc2626;color:#ffffff;border:1px solid #dc2626;">
-              All Helplines
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="emergency" onclick="renderDashEmergencyHelplines('emergency', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🚨 Critical Emergency
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="ambulance" onclick="renderDashEmergencyHelplines('ambulance', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🚑 Ambulance & Trauma
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="mental" onclick="renderDashEmergencyHelplines('mental', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🧠 Mental Health & Crisis
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="poison" onclick="renderDashEmergencyHelplines('poison', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🧪 Poison & Burns
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="women" onclick="renderDashEmergencyHelplines('women', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🛡️ Women & Children
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="transit" onclick="renderDashEmergencyHelplines('transit', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🛣️ Highways & Railways
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="disaster" onclick="renderDashEmergencyHelplines('disaster', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🌊 Disaster & NDRF
-            </button>
-            <button type="button" class="dash-helpline-chip btn btn-sm" data-cat="specialized" onclick="renderDashEmergencyHelplines('specialized', undefined)" style="padding:4px 11px;font-size:11.5px;font-weight:600;border-radius:16px;background:var(--card-subtle);color:var(--ink-soft);border:1px solid var(--line);">
-              🩸 Blood & Specialized
-            </button>
-          </div>
-        </div>
-
-        <!-- DYNAMIC HELPLINES GRID -->
-        <div id="dashHelplinesGrid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));gap:14px;">
-          <!-- Rendered dynamically by renderDashEmergencyHelplines() -->
         </div>
       </div>
 
@@ -6911,10 +6687,11 @@ window.go = window.go || function(pageId, subParam) {
       <div class="card" style="margin-bottom:20px;">
         <div class="card-header">
           <div>
-            <h2>🇮🇳 Connect With Real-Time Doctors in India</h2>
-            <p>Verified clinical appointments across New Delhi, Bengaluru, Mumbai, Hyderabad, Chennai, Kolkata & Pune</p>
+            <h2>🇮🇳 Connect With 10,000+ Verified Doctors in India</h2>
+            <p>Pan-India Clinical Network · 10,036 Verified Doctors Across AIIMS, Apollo, Fortis, Max, Medanta & Manipal Hospitals</p>
           </div>
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;">
+            <span class="pill" style="background:#e0f2fe;color:#0369a1;font-weight:700;font-size:12px;">🏥 10,036 Active Connections</span>
             <button class="btn btn-secondary btn-sm" onclick="showAppointmentsTab()">📋 My Booked Slots (<span id="bookedCountBadge">1</span>)</button>
           </div>
         </div>
@@ -6923,7 +6700,7 @@ window.go = window.go || function(pageId, subParam) {
         <div class="map-container-wrap">
           <div class="map-header-overlay">
             <span>📍</span>
-            <span>Google Maps Medical Network · 10+ Multi-Speciality Clinics Across India</span>
+            <span>Google Maps Medical Network · 10,036 Verified Doctor Connections Across 18 Major Hubs in India</span>
           </div>
           <!-- Embedded Live Medical Map -->
           <iframe 
@@ -6942,29 +6719,45 @@ window.go = window.go || function(pageId, subParam) {
             <input id="docSearchQuery" placeholder="Search by doctor name, specialty, hospital (Apollo, AIIMS, Fortis)..." style="flex:2;min-width:260px;" oninput="filterDoctors()">
             
             <select id="docCityFilter" style="flex:1;min-width:160px;" onchange="filterDoctors()">
-              <option value="">All Indian Cities</option>
-              <option value="Delhi">New Delhi / NCR</option>
+              <option value="">All Indian Cities (10,000+)</option>
+              <option value="New Delhi">New Delhi / NCR</option>
               <option value="Bengaluru">Bengaluru</option>
               <option value="Mumbai">Mumbai</option>
               <option value="Hyderabad">Hyderabad</option>
               <option value="Chennai">Chennai</option>
               <option value="Kolkata">Kolkata</option>
               <option value="Pune">Pune</option>
+              <option value="Ahmedabad">Ahmedabad</option>
+              <option value="Jaipur">Jaipur</option>
+              <option value="Lucknow">Lucknow</option>
+              <option value="Chandigarh">Chandigarh</option>
+              <option value="Kochi">Kochi</option>
+              <option value="Indore">Indore</option>
+              <option value="Patna">Patna</option>
+              <option value="Bhubaneswar">Bhubaneswar</option>
+              <option value="Visakhapatnam">Visakhapatnam</option>
+              <option value="Guwahati">Guwahati</option>
             </select>
 
             <select id="docSpecialtyFilter" style="flex:1;min-width:180px;" onchange="filterDoctors()">
-              <option value="">All Specialties</option>
+              <option value="">All Specialties (18 Specialties)</option>
               <option value="General Physician">General Physician</option>
               <option value="Cardiologist">Cardiologist</option>
               <option value="Dermatologist">Dermatologist</option>
               <option value="Neurologist">Neurologist</option>
               <option value="Psychiatrist">Psychiatrist</option>
-              <option value="Orthopedic">Orthopedic</option>
+              <option value="Orthopedic">Orthopedic Surgeon</option>
               <option value="Pulmonologist">Pulmonologist</option>
-              <option value="Gynecologist">Gynecologist</option>
+              <option value="Obstetrician & Gynecologist">Obstetrician & Gynecologist</option>
+              <option value="Pediatrician">Pediatrician</option>
               <option value="Gastroenterologist">Gastroenterologist</option>
               <option value="Endocrinologist">Endocrinologist</option>
-              <option value="Oncologist">Oncologist</option>
+              <option value="Oncologist">Medical Oncologist</option>
+              <option value="Nephrologist">Nephrologist</option>
+              <option value="ENT Specialist">ENT Specialist</option>
+              <option value="Ophthalmologist">Ophthalmologist</option>
+              <option value="Rheumatologist">Rheumatologist</option>
+              <option value="Urologist">Urologist</option>
             </select>
           </div>
 
@@ -7007,6 +6800,18 @@ window.go = window.go || function(pageId, subParam) {
         <!-- DOCTORS DIRECTORY GRID -->
         <div class="grid-3" id="doctorsGrid">
           <!-- Rendered dynamically -->
+        </div>
+
+        <!-- DOCTORS PAGINATION & NETWORK SUMMARY -->
+        <div id="doctorsPaginationBar" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding:14px 20px;background:#f8fafc;border-radius:12px;border:1px solid var(--line);">
+          <div style="font-size:13px;color:var(--ink-soft);font-weight:600;">
+            Showing <b id="docRangeStart">1</b> - <b id="docRangeEnd">60</b> of <b id="docTotalCount">10,036</b> Verified Doctors
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <button class="btn btn-secondary btn-sm" id="btnDocPrevPage" onclick="changeDoctorPage(-1)" style="padding:6px 14px;font-weight:700;">◀ Previous</button>
+            <span style="font-size:13px;font-weight:700;color:var(--ink);" id="docPageIndicator">Page 1 of 168</span>
+            <button class="btn btn-secondary btn-sm" id="btnDocNextPage" onclick="changeDoctorPage(1)" style="padding:6px 14px;font-weight:700;">Next ▶</button>
+          </div>
         </div>
 
       </div>
@@ -12050,14 +11855,6 @@ window.go = window.go || function(pageId, subParam) {
   </div>
 </div>
 
-<!-- FLOATING QUICK-ACTION EMERGENCY VIEW BUTTON -->
-<button id="floatingEmergencyViewBtn" class="floating-emergency-view-btn" onclick="toggleEmergencyView()" title="Toggle High-Contrast Paramedic Medical Profile Overlay (Alt+E)">
-  <span class="pulse-beacon-dot"></span>
-  <span style="font-size:16px;">🚨</span>
-  <span class="floating-btn-text">EMERGENCY VIEW</span>
-  <span class="floating-btn-hotkey">Alt+E</span>
-</button>
-
 <!-- TOAST -->
 <div class="toast-notice" id="toastNotice"></div>
 
@@ -12889,6 +12686,11 @@ function go(pageId, subParam) {
     fetchPrescriptionsAndConflicts();
   }
   if (pageId === 'prescriptions') {
+    if (!isSupabaseAuthenticated) {
+      toast('Supabase Authentication Required to access Personal Prescriptions');
+      openSupabaseAuthModal('signin');
+      return;
+    }
     loadDigitalPrescriptionView(subParam);
   }
   if (pageId === 'medicine') {
@@ -17529,18 +17331,79 @@ function readLastAiMessage() {
 }
 
 /* ============================================================
-   CONNECT INDIAN DOCTORS & APPOINTMENTS
+   CONNECT INDIAN DOCTORS & APPOINTMENTS (10,036 VERIFIED DOCTORS)
 ============================================================ */
-async function loadDoctorsDirectory() {
+let currentDoctorPage = 1;
+let totalDoctorPages = 168;
+let totalDoctorCount = 10036;
+let doctorSearchDebounceTimer = null;
+
+async function loadDoctorsDirectory(page = 1) {
   try {
-    const res = await fetch('/api/doctors');
+    currentDoctorPage = page;
+    const q = (document.getElementById('docSearchQuery')?.value || '').trim();
+    const city = (document.getElementById('docCityFilter')?.value || '').trim();
+    const spec = (document.getElementById('docSpecialtyFilter')?.value || '').trim();
+    const mode = (document.getElementById('docModeFilter')?.value || '').trim();
+    const priceTier = (document.getElementById('docPriceTierFilter')?.value || 'all').trim();
+    const maxPrice = Number(document.getElementById('docMaxPriceRange')?.value || 2500);
+    const sortBy = document.getElementById('docSortFilter')?.value || 'rating';
+    const availableNow = document.getElementById('docAvailableNowCheck')?.checked || false;
+
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: '60',
+      q,
+      city,
+      specialty: spec,
+      mode,
+      price_tier: priceTier,
+      max_price: String(maxPrice),
+      sort: sortBy,
+      available_now: String(availableNow)
+    });
+
+    const res = await fetch(`/api/doctors?${params.toString()}`);
     const data = await res.json();
     if (data.success && data.doctors) {
       doctorsListCache = data.doctors;
+      currentDoctorPage = data.page || page;
+      totalDoctorPages = data.totalPages || 1;
+      totalDoctorCount = data.total || data.doctors.length;
       renderDoctorsGrid(data.doctors);
+      updateDoctorPaginationUI(data.total, data.page, data.limit || 60, data.totalPages || 1);
     }
   } catch (err) {
     console.error('Failed to load doctors', err);
+  }
+}
+
+function updateDoctorPaginationUI(total, page, limit, totalPages) {
+  const startEl = document.getElementById('docRangeStart');
+  const endEl = document.getElementById('docRangeEnd');
+  const totalEl = document.getElementById('docTotalCount');
+  const pageIndicator = document.getElementById('docPageIndicator');
+  const prevBtn = document.getElementById('btnDocPrevPage');
+  const nextBtn = document.getElementById('btnDocNextPage');
+
+  const start = total === 0 ? 0 : (page - 1) * limit + 1;
+  const end = Math.min(total, page * limit);
+
+  if (startEl) startEl.textContent = start.toLocaleString();
+  if (endEl) endEl.textContent = end.toLocaleString();
+  if (totalEl) totalEl.textContent = total.toLocaleString();
+  if (pageIndicator) pageIndicator.textContent = `Page ${page} of ${Math.max(1, totalPages)}`;
+
+  if (prevBtn) prevBtn.disabled = page <= 1;
+  if (nextBtn) nextBtn.disabled = page >= totalPages;
+}
+
+function changeDoctorPage(delta) {
+  const targetPage = currentDoctorPage + delta;
+  if (targetPage >= 1 && targetPage <= totalDoctorPages) {
+    loadDoctorsDirectory(targetPage);
+    const grid = document.getElementById('doctorsGrid');
+    if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
@@ -17730,44 +17593,10 @@ function consultAiOnDoctorSpecialty(docId) {
 }
 
 function filterDoctors() {
-  const q = (document.getElementById('docSearchQuery')?.value || '').toLowerCase().trim();
-  const city = (document.getElementById('docCityFilter')?.value || '').toLowerCase().trim();
-  const spec = (document.getElementById('docSpecialtyFilter')?.value || '').toLowerCase().trim();
-  const mode = (document.getElementById('docModeFilter')?.value || '').toLowerCase().trim();
-  const priceTier = (document.getElementById('docPriceTierFilter')?.value || 'all').toLowerCase().trim();
-  const maxPrice = Number(document.getElementById('docMaxPriceRange')?.value || 2500);
-  const sortBy = document.getElementById('docSortFilter')?.value || 'rating';
-  const availableNow = document.getElementById('docAvailableNowCheck')?.checked || false;
-
-  let filtered = doctorsListCache.filter(d => {
-    const matchQ = !q || 
-      d.name.toLowerCase().includes(q) || 
-      d.specialty.toLowerCase().includes(q) || 
-      d.hospital.toLowerCase().includes(q) ||
-      (Array.isArray(d.clinicalInterests) && d.clinicalInterests.some(ci => ci.toLowerCase().includes(q)));
-    
-    const matchCity = !city || d.city.toLowerCase().includes(city) || d.state.toLowerCase().includes(city);
-    const matchSpec = !spec || d.specialty.toLowerCase().includes(spec);
-    const matchMode = !mode || (Array.isArray(d.modes) && d.modes.includes(mode));
-    const matchTier = priceTier === 'all' || d.priceTier === priceTier;
-    const matchPrice = d.consultationFeeINR <= maxPrice;
-    const matchAvail = !availableNow || d.availableNow;
-
-    return matchQ && matchCity && matchSpec && matchMode && matchTier && matchPrice && matchAvail;
-  });
-
-  // Sorting
-  if (sortBy === 'price_low') {
-    filtered.sort((a, b) => a.consultationFeeINR - b.consultationFeeINR);
-  } else if (sortBy === 'price_high') {
-    filtered.sort((a, b) => b.consultationFeeINR - a.consultationFeeINR);
-  } else if (sortBy === 'experience') {
-    filtered.sort((a, b) => b.experienceYears - a.experienceYears);
-  } else if (sortBy === 'rating') {
-    filtered.sort((a, b) => b.rating - a.rating || (b.reviewCount || 0) - (a.reviewCount || 0));
-  }
-
-  renderDoctorsGrid(filtered);
+  clearTimeout(doctorSearchDebounceTimer);
+  doctorSearchDebounceTimer = setTimeout(() => {
+    loadDoctorsDirectory(1);
+  }, 120);
 }
 
 function openBookingModal(docId) {
@@ -36357,20 +36186,123 @@ async function updateSupabaseBiometrics(e) {
    Project: aympyxmjgbgmcvcdnzyt | Role-Based Access Control & Encrypted Gateway
    ========================================================================== */
 
-let currentSupabaseUser = {
-  id: 'usr_iqra_01',
-  email: 'iqrasultana0007@gmail.com',
-  name: 'Iqra Sultana',
-  role: 'verified_patient',
-  blood_group: 'O+',
-  age: 28,
-  gender: 'female',
-  isVerified: true
-};
+let isSupabaseAuthenticated = false;
+let isTwinLocked = true;
+let isPhrLocked = true;
+let currentSupabaseUser = null;
 
-let isSupabaseAuthenticated = true;
-let isTwinLocked = false;
-let isPhrLocked = false;
+async function checkSupabaseSession() {
+  const localAuth = localStorage.getItem('healthgpt_supabase_auth');
+  const localToken = localStorage.getItem('supabase_auth_token');
+  const localUserStr = localStorage.getItem('healthgpt_supabase_user');
+
+  if (localAuth === 'true' && localUserStr) {
+    try {
+      currentSupabaseUser = JSON.parse(localUserStr);
+      isSupabaseAuthenticated = true;
+      isPhrLocked = false;
+      isTwinLocked = false;
+      updateSupabaseAuthUI();
+      fetchEncryptedPersonalRecords();
+      return;
+    } catch (e) {
+      console.warn('Error parsing cached Supabase user session:', e);
+    }
+  }
+
+  try {
+    const headers = {};
+    if (localToken) {
+      headers['Authorization'] = `Bearer ${localToken}`;
+    }
+    const res = await fetch('/api/supabase/auth/session', { headers });
+    const data = await res.json();
+    if (data && data.authenticated && data.user) {
+      isSupabaseAuthenticated = true;
+      currentSupabaseUser = data.user;
+      isPhrLocked = false;
+      isTwinLocked = false;
+      localStorage.setItem('healthgpt_supabase_auth', 'true');
+      localStorage.setItem('healthgpt_supabase_user', JSON.stringify(data.user));
+      fetchEncryptedPersonalRecords();
+    } else {
+      isSupabaseAuthenticated = false;
+      currentSupabaseUser = null;
+      isPhrLocked = true;
+      isTwinLocked = true;
+    }
+  } catch (err) {
+    console.warn('Supabase session verification notice:', err);
+    isSupabaseAuthenticated = false;
+    currentSupabaseUser = null;
+    isPhrLocked = true;
+    isTwinLocked = true;
+  }
+  updateSupabaseAuthUI();
+}
+
+async function fetchEncryptedPersonalRecords() {
+  if (!isSupabaseAuthenticated) return;
+  try {
+    const token = localStorage.getItem('supabase_auth_token') || '';
+    const res = await fetch('/api/supabase/secure/personal-records', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (res.status === 401) {
+      isSupabaseAuthenticated = false;
+      isPhrLocked = true;
+      updateSupabaseAuthUI();
+      return;
+    }
+
+    const data = await res.json();
+    if (data && data.success) {
+      if (data.patient) {
+        currentSupabaseUser = { ...(currentSupabaseUser || {}), ...data.patient };
+        const nameEl = document.getElementById('phrPatientName');
+        const emailEl = document.getElementById('phrPatientEmail');
+        const avatarEl = document.getElementById('phrAvatarText');
+        if (nameEl) nameEl.textContent = data.patient.name || 'Iqra Sultana';
+        if (emailEl) emailEl.textContent = `${data.patient.email} • Blood Group: ${data.patient.bloodGroup || 'O+'} • Age: ${data.patient.age || 28}`;
+        if (avatarEl) avatarEl.textContent = (data.patient.name || 'IS').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      }
+
+      // Populate live encrypted prescriptions
+      if (Array.isArray(data.prescriptions) && data.prescriptions.length > 0) {
+        const listEl = document.getElementById('phrPrescriptionsList');
+        if (listEl) {
+          listEl.innerHTML = data.prescriptions.map(rx => `
+            <div style="padding:10px 14px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:13px;font-weight:700;color:#0f172a;">${escapeHtml(rx.medicineName || rx.name || 'Prescription Item')}</div>
+                <div style="font-size:11.5px;color:#64748b;">${escapeHtml(rx.dosage || rx.instructions || 'Daily as directed')} • ${escapeHtml(rx.timing || 'With meals')}</div>
+              </div>
+              <span class="pill" style="background:#ecfdf5;color:#059669;font-size:10px;font-weight:700;">Verified Active</span>
+            </div>
+          `).join('');
+        }
+      }
+
+      // Populate lab tests
+      if (Array.isArray(data.labTests) && data.labTests.length > 0) {
+        const labEl = document.getElementById('phrLabTestsList');
+        if (labEl) {
+          labEl.innerHTML = data.labTests.slice(0, 4).map(test => `
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:8px 0;border-bottom:1px solid #f1f5f9;">
+              <span style="color:#475569;">${escapeHtml(test.name || test.test_name)}</span>
+              <span style="font-weight:700;color:${test.status === 'optimal' || !test.status ? '#059669' : '#d97706'};">${escapeHtml(test.value || test.normal_range || 'Normal')}</span>
+            </div>
+          `).join('');
+        }
+      }
+    }
+  } catch (err) {
+    console.warn('Error fetching encrypted records:', err);
+  }
+}
 
 function openSupabaseAuthModal(defaultTab = 'signin') {
   const modal = document.getElementById('supabaseAuthModal');
@@ -36455,9 +36387,17 @@ async function loginWithSupabase(email, password, isDirect = false) {
         gender: 'female'
       };
 
+      if (data.token) {
+        localStorage.setItem('supabase_auth_token', data.token);
+      }
+      localStorage.setItem('healthgpt_supabase_auth', 'true');
+      localStorage.setItem('healthgpt_supabase_user', JSON.stringify(currentSupabaseUser));
+
       updateSupabaseAuthUI();
+      fetchEncryptedPersonalRecords();
+
       if (alertBox) {
-        alertBox.textContent = `✓ Successfully authenticated as ${currentSupabaseUser.name}!`;
+        alertBox.textContent = `✓ Successfully authenticated as ${currentSupabaseUser.name}! Health records unlocked.`;
         alertBox.style.background = '#ecfdf5';
         alertBox.style.color = '#047857';
         alertBox.style.display = 'block';
@@ -36475,12 +36415,13 @@ async function loginWithSupabase(email, password, isDirect = false) {
       }
     }
   } catch (err) {
-    console.warn('Supabase auth network error, maintaining patient session:', err);
-    isSupabaseAuthenticated = true;
-    isTwinLocked = false;
-    isPhrLocked = false;
-    updateSupabaseAuthUI();
-    closeSupabaseAuthModal();
+    console.warn('Supabase auth network error:', err);
+    if (alertBox) {
+      alertBox.textContent = 'Network error connecting to Supabase cloud auth.';
+      alertBox.style.background = '#fee2e2';
+      alertBox.style.color = '#b91c1c';
+      alertBox.style.display = 'block';
+    }
   }
 }
 
@@ -36522,7 +36463,15 @@ async function registerWithSupabase() {
       isTwinLocked = false;
       isPhrLocked = false;
       currentSupabaseUser = data.user;
+
+      if (data.token) {
+        localStorage.setItem('supabase_auth_token', data.token);
+      }
+      localStorage.setItem('healthgpt_supabase_auth', 'true');
+      localStorage.setItem('healthgpt_supabase_user', JSON.stringify(data.user));
+
       updateSupabaseAuthUI();
+      fetchEncryptedPersonalRecords();
 
       if (alertBox) {
         alertBox.textContent = `✓ Account created and verified in Supabase! Welcome, ${name}!`;
@@ -36553,21 +36502,45 @@ async function logoutFromSupabase() {
   } catch (e) {
     console.warn('Logout notice:', e);
   }
+  localStorage.removeItem('supabase_auth_token');
+  localStorage.removeItem('healthgpt_supabase_auth');
+  localStorage.removeItem('healthgpt_supabase_user');
   isSupabaseAuthenticated = false;
+  currentSupabaseUser = null;
   isTwinLocked = true;
   isPhrLocked = true;
   updateSupabaseAuthUI();
   closeSupabaseAuthModal();
+  toast('Signed out from Supabase. Personal health records locked.');
 }
 
 function togglePhrLockState() {
+  if (!isSupabaseAuthenticated) {
+    openSupabaseAuthModal('signin');
+    return;
+  }
   isPhrLocked = !isPhrLocked;
   updateSupabaseAuthUI();
+  if (!isPhrLocked) {
+    fetchEncryptedPersonalRecords();
+    toast('Personal health records unlocked');
+  } else {
+    toast('Personal health records locked');
+  }
 }
 
 function toggleTwinLockState() {
+  if (!isSupabaseAuthenticated) {
+    openSupabaseAuthModal('signin');
+    return;
+  }
   isTwinLocked = !isTwinLocked;
   updateSupabaseAuthUI();
+  if (!isTwinLocked) {
+    toast('3D Digital Twin unlocked');
+  } else {
+    toast('3D Digital Twin locked');
+  }
 }
 
 function updateSupabaseAuthUI() {
@@ -37227,7 +37200,7 @@ function updateD3Kpis() {
 
 // Ensure Supabase Auth and D3 Clinical Trends are booted on page load
 window.addEventListener('DOMContentLoaded', () => {
-  updateSupabaseAuthUI();
+  checkSupabaseSession();
   setTimeout(() => {
     initD3ClinicalTrends();
     if (typeof loadJanAushadhiMedicines === 'function') {

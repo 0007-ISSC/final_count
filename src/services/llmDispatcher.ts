@@ -68,6 +68,7 @@ export function getGeminiCandidateModels(): string[] {
   const custom = process.env.GEMINI_MODEL?.trim();
   const candidates = [
     custom,
+    'gemini-3.6-flash',
     'gemini-3.8-flash',
     'gemini-3.1-flash-lite',
     'gemini-3.1-pro-preview',
