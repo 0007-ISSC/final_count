@@ -12648,18 +12648,10 @@ function go(pageId, subParam) {
     go('medicine', 'translator');
     return;
   }
-  if (pageId === 'sos') {
+  if (pageId === 'sos' || pageId === 'emergencyProfile') {
     go('dashboard');
     setTimeout(() => {
-      const el = document.getElementById('dashEmergencyHelplinesDirectory');
-      if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 150);
-    return;
-  }
-  if (pageId === 'emergencyProfile') {
-    go('dashboard');
-    setTimeout(() => {
-      const el = document.getElementById('emergencyOverviewCard');
+      const el = document.getElementById('dashPreventiveCareRoadmapCard') || document.getElementById('dashboard');
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }, 100);
     return;
@@ -32816,27 +32808,41 @@ function renderEmergencyProfileView(p, contacts, broadcasts) {
   if (hospitalEl) hospitalEl.textContent = p.preferredHospital || 'Nearest Trauma Center';
   if (insuranceEl) insuranceEl.textContent = p.insurancePolicy || 'Not specified';
 
-  // Populate Edit Form Inputs
-  document.getElementById('editProfileFullName').value = p.fullName || '';
-  document.getElementById('editProfileBloodGroup').value = p.bloodGroup || 'O+';
-  document.getElementById('editProfileAge').value = p.age || 34;
-  document.getElementById('editProfileGender').value = p.gender || 'Female';
-  document.getElementById('editProfileWeight').value = p.weightKg || 62;
-  document.getElementById('editProfileHeight').value = p.heightCm || 165;
-  document.getElementById('editProfileAllergies').value = Array.isArray(p.allergies) 
+  // Populate Edit Form Inputs safely with null checks
+  const editFullName = document.getElementById('editProfileFullName');
+  if (editFullName) editFullName.value = p.fullName || '';
+  const editBloodGroup = document.getElementById('editProfileBloodGroup');
+  if (editBloodGroup) editBloodGroup.value = p.bloodGroup || 'O+';
+  const editAge = document.getElementById('editProfileAge');
+  if (editAge) editAge.value = p.age || 34;
+  const editGender = document.getElementById('editProfileGender');
+  if (editGender) editGender.value = p.gender || 'Female';
+  const editWeight = document.getElementById('editProfileWeight');
+  if (editWeight) editWeight.value = p.weightKg || 62;
+  const editHeight = document.getElementById('editProfileHeight');
+  if (editHeight) editHeight.value = p.heightCm || 165;
+  const editAllergies = document.getElementById('editProfileAllergies');
+  if (editAllergies) editAllergies.value = Array.isArray(p.allergies) 
     ? p.allergies.map(a => `${a.allergen} (${a.severity || 'Severe'})`).join(', ') 
     : '';
-  document.getElementById('editProfileConditions').value = Array.isArray(p.primaryConditions) 
+  const editConditions = document.getElementById('editProfileConditions');
+  if (editConditions) editConditions.value = Array.isArray(p.primaryConditions) 
     ? p.primaryConditions.join(', ') 
     : '';
-  document.getElementById('editProfileMedications').value = Array.isArray(p.activeMedications) 
+  const editMedications = document.getElementById('editProfileMedications');
+  if (editMedications) editMedications.value = Array.isArray(p.activeMedications) 
     ? p.activeMedications.map(m => `${m.name} ${m.dosage} (${m.timing})`).join(', ') 
     : '';
-  document.getElementById('editProfileDirectives').value = p.paramedicDirectives || '';
-  document.getElementById('editProfilePhysician').value = p.primaryPhysician || '';
-  document.getElementById('editProfileHospital').value = p.preferredHospital || '';
-  document.getElementById('editProfileInsurance').value = p.insurancePolicy || '';
-  document.getElementById('editProfileOrganDonor').value = p.isOrganDonor ? 'true' : 'false';
+  const editDirectives = document.getElementById('editProfileDirectives');
+  if (editDirectives) editDirectives.value = p.paramedicDirectives || '';
+  const editPhysician = document.getElementById('editProfilePhysician');
+  if (editPhysician) editPhysician.value = p.primaryPhysician || '';
+  const editHospital = document.getElementById('editProfileHospital');
+  if (editHospital) editHospital.value = p.preferredHospital || '';
+  const editInsurance = document.getElementById('editProfileInsurance');
+  if (editInsurance) editInsurance.value = p.insurancePolicy || '';
+  const editOrganDonor = document.getElementById('editProfileOrganDonor');
+  if (editOrganDonor) editOrganDonor.value = p.isOrganDonor ? 'true' : 'false';
 
   // Render Emergency Contacts List
   renderEmergencyContactsCards(contacts || []);
@@ -32953,11 +32959,16 @@ function toggleProfileEditMode() {
 }
 
 async function saveEmergencyProfileForm(e) {
-  e.preventDefault();
+  if (e && e.preventDefault) e.preventDefault();
+  
+  const getVal = (id) => {
+    const el = document.getElementById(id);
+    return el && el.value !== undefined ? el.value : '';
+  };
   
   // Parse allergies
-  const allergiesRaw = document.getElementById('editProfileAllergies').value;
-  const allergiesList = allergiesRaw.split(',').map(s => s.trim()).filter(Boolean).map(item => {
+  const allergiesRaw = getVal('editProfileAllergies');
+  const allergiesList = allergiesRaw ? allergiesRaw.split(',').map(s => s.trim()).filter(Boolean).map(item => {
     let severity = 'Severe';
     let allergen = item;
     if (item.includes('(')) {
@@ -32970,38 +32981,38 @@ async function saveEmergencyProfileForm(e) {
       severity,
       reaction: 'Anaphylaxis / Clinical Reaction'
     };
-  });
+  }) : [];
 
   // Parse conditions
-  const conditionsRaw = document.getElementById('editProfileConditions').value;
-  const conditionsList = conditionsRaw.split(',').map(s => s.trim()).filter(Boolean);
+  const conditionsRaw = getVal('editProfileConditions');
+  const conditionsList = conditionsRaw ? conditionsRaw.split(',').map(s => s.trim()).filter(Boolean) : [];
 
   // Parse medications
-  const medsRaw = document.getElementById('editProfileMedications').value;
-  const medsList = medsRaw.split(',').map(s => s.trim()).filter(Boolean).map(item => {
+  const medsRaw = getVal('editProfileMedications');
+  const medsList = medsRaw ? medsRaw.split(',').map(s => s.trim()).filter(Boolean).map(item => {
     return {
       name: item,
       dosage: 'As Prescribed',
       frequency: 'Daily',
       timing: 'Morning / Scheduled'
     };
-  });
+  }) : [];
 
   const updatedProfile = {
-    fullName: document.getElementById('editProfileFullName').value.trim(),
-    bloodGroup: document.getElementById('editProfileBloodGroup').value,
-    age: Number(document.getElementById('editProfileAge').value),
-    gender: document.getElementById('editProfileGender').value,
-    weightKg: Number(document.getElementById('editProfileWeight').value) || 62,
-    heightCm: Number(document.getElementById('editProfileHeight').value) || 165,
-    allergies: allergiesList,
-    primaryConditions: conditionsList,
-    activeMedications: medsList,
-    paramedicDirectives: document.getElementById('editProfileDirectives').value.trim(),
-    primaryPhysician: document.getElementById('editProfilePhysician').value.trim(),
-    preferredHospital: document.getElementById('editProfileHospital').value.trim(),
-    insurancePolicy: document.getElementById('editProfileInsurance').value.trim(),
-    isOrganDonor: document.getElementById('editProfileOrganDonor').value === 'true'
+    fullName: getVal('editProfileFullName').trim() || (emergencyProfileCache && emergencyProfileCache.fullName) || 'Priya Sharma',
+    bloodGroup: getVal('editProfileBloodGroup') || (emergencyProfileCache && emergencyProfileCache.bloodGroup) || 'O+',
+    age: Number(getVal('editProfileAge')) || (emergencyProfileCache && emergencyProfileCache.age) || 34,
+    gender: getVal('editProfileGender') || (emergencyProfileCache && emergencyProfileCache.gender) || 'Female',
+    weightKg: Number(getVal('editProfileWeight')) || (emergencyProfileCache && emergencyProfileCache.weightKg) || 62,
+    heightCm: Number(getVal('editProfileHeight')) || (emergencyProfileCache && emergencyProfileCache.heightCm) || 165,
+    allergies: allergiesList.length ? allergiesList : (emergencyProfileCache && emergencyProfileCache.allergies) || [],
+    primaryConditions: conditionsList.length ? conditionsList : (emergencyProfileCache && emergencyProfileCache.primaryConditions) || [],
+    activeMedications: medsList.length ? medsList : (emergencyProfileCache && emergencyProfileCache.activeMedications) || [],
+    paramedicDirectives: getVal('editProfileDirectives').trim() || (emergencyProfileCache && emergencyProfileCache.paramedicDirectives) || '',
+    primaryPhysician: getVal('editProfilePhysician').trim() || (emergencyProfileCache && emergencyProfileCache.primaryPhysician) || '',
+    preferredHospital: getVal('editProfileHospital').trim() || (emergencyProfileCache && emergencyProfileCache.preferredHospital) || '',
+    insurancePolicy: getVal('editProfileInsurance').trim() || (emergencyProfileCache && emergencyProfileCache.insurancePolicy) || '',
+    isOrganDonor: getVal('editProfileOrganDonor') === 'true'
   };
 
   try {
