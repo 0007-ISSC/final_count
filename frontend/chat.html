@@ -958,6 +958,12 @@
           <span class="tag-pill">Sleep Hygiene</span>
           <span class="tag-pill">Mindful Calm</span>
         </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--alex-border);display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:11.5px;color:var(--alex-dark);font-weight:700;">Live Mic Telemetry</span>
+          <a href="/alex-voice" onclick="event.stopPropagation();" style="background:#7c3aed;color:#ffffff;text-decoration:none;font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 6px rgba(124,58,237,0.35);transition:transform 0.15s ease;" title="Open Alex Microphone Voice Consultation Studio">
+            <span>🎙️</span> <span>Alex Voice Studio</span>
+          </a>
+        </div>
       </div>
 
       <!-- Engine & System Status -->
@@ -997,6 +1003,9 @@
         </div>
 
         <div class="chat-controls">
+          <a href="/alex-voice" class="ctrl-btn" id="btnLaunchAlexVoice" style="background:#f5f3ff;color:#6d28d9;border-color:#ddd6fe;text-decoration:none;font-weight:700;" title="Open Alex Microphone Voice Consultation Studio">
+            <span>🎙️</span> <span>Alex Voice Studio</span>
+          </a>
           <button class="ctrl-btn active" id="btnAudioToggle" onclick="toggleAudioSpeech()" title="Toggle text-to-speech audio for responses">
             <span id="audioIcon">🔊</span> <span id="audioLabel">Voice Read Aloud</span>
           </button>

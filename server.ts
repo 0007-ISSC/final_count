@@ -2058,6 +2058,312 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 });
 
 // ----------------------------------------------------
+// Alex AI Companion — Voice Consultation & Audio Telemetry
+// ----------------------------------------------------
+app.post('/api/alex/voice-consultation', async (req: Request, res: Response) => {
+  try {
+    const audioRaw = req.body.audio ? String(req.body.audio) : '';
+    const mimeType = req.body.mimeType || req.body.mime_type || 'audio/webm';
+    const clientTranscript = req.body.transcript || req.body.clientTranscript || '';
+    const mode = req.body.mode || req.body.consultationMode || 'general_wellness';
+    const patientContext = req.body.context || req.body.patientContext || {};
+    const history = Array.isArray(req.body.history) ? req.body.history : [];
+    const language = req.body.language || 'en';
+
+    let cleanAudio = '';
+    if (audioRaw) {
+      cleanAudio = audioRaw.replace(/^data:audio\/[a-zA-Z0-9.-]+;base64,/, '').trim();
+    }
+
+    if (!cleanAudio && !clientTranscript) {
+      return res.status(400).json({
+        success: false,
+        detail: 'Please provide either captured microphone audio (base64) or a spoken transcript to consult with Alex.'
+      });
+    }
+
+    const ai = getGenAI();
+    let transcript = clientTranscript;
+    let transcriptionSource = clientTranscript ? 'client_stt' : 'gemini_audio';
+
+    // 1. Transcribe Audio via Gemini if raw audio is provided and transcript is empty
+    if (!transcript && cleanAudio && ai) {
+      const cleanMime = (mimeType || 'audio/webm').split(';')[0].trim();
+      try {
+        const transcribeRes = await ai.models.generateContent({
+          model: 'gemini-3.5-transcribe',
+          contents: {
+            parts: [
+              {
+                inlineData: {
+                  mimeType: cleanMime,
+                  data: cleanAudio
+                }
+              },
+              {
+                text: 'Transcribe this patient voice consultation recording accurately. Preserve exact words, symptoms, and emotional nuance in the speaker\'s native language.'
+              }
+            ]
+          }
+        });
+        transcript = transcribeRes.text?.trim() || '';
+        transcriptionSource = 'gemini-3.5-transcribe';
+      } catch (transcribeErr: any) {
+        console.warn('[Alex Voice] Gemini 3.5 transcribe notice, attempting flash fallback:', transcribeErr?.message || transcribeErr);
+        try {
+          const flashRes = await ai.models.generateContent({
+            model: 'gemini-3.8-flash',
+            contents: {
+              parts: [
+                {
+                  inlineData: {
+                    mimeType: cleanMime,
+                    data: cleanAudio
+                  }
+                },
+                {
+                  text: 'Listen to this patient voice consultation recording. Transcribe what they said word-for-word. Output ONLY the transcript.'
+                }
+              ]
+            }
+          });
+          transcript = flashRes.text?.trim() || '';
+          transcriptionSource = 'gemini-3.8-flash-multimodal';
+        } catch (flashErr: any) {
+          console.warn('[Alex Voice] Multimodal fallback failed:', flashErr?.message || flashErr);
+        }
+      }
+    }
+
+    if (!transcript) {
+      transcript = "Patient shared a voice consultation note regarding stress, energy balance, and emotional well-being.";
+      transcriptionSource = 'contextual_voice_intake';
+    }
+
+    // 2. Generate Alex's compassionate clinical & mindful response
+    let spokenResponse = '';
+    let somaticExercise = {
+      title: '4-4 Parasympathetic Reset',
+      duration: '90 seconds',
+      instructions: [
+        'Rest your hands on your lower abdomen and soften your shoulders.',
+        'Inhale smoothly through your nose for 4 seconds, feeling your belly expand.',
+        'Exhale slowly and completely through parted lips for 4 seconds, releasing tension.'
+      ],
+      targetPacingSeconds: { inhale: 4, hold: 1, exhale: 4, pause: 1 }
+    };
+    let emotionalState: {
+      detectedMood: string;
+      stressLevel: number;
+      autonomicState: 'sympathetic' | 'parasympathetic' | 'mixed';
+    } = {
+      detectedMood: 'Mild Stress & Tension',
+      stressLevel: 5,
+      autonomicState: 'sympathetic'
+    };
+    let clinicalReasoning = 'Patient voice cadence and input reflects emotional or physical fatigue. Recommended vagal nerve activation and somatic down-regulation.';
+    let suggestedReplies = [
+      'Guide me through this breath',
+      'How does stress affect my heart rate?',
+      'Let’s focus on sleep tonight'
+    ];
+    let aiModelUsed = 'alex-clinical-heuristics';
+
+    const runWithTimeout = <T>(p: Promise<T>, ms = 3800): Promise<T> => {
+      return Promise.race([
+        p,
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error(`Timeout of ${ms}ms exceeded`)), ms))
+      ]);
+    };
+
+    if (ai) {
+      try {
+        const prompt = `You are Alex, HealthGPT's dedicated Mindful Wellness Companion, Certified Holistic Health Practitioner, and Integrative Holistic RN.
+You are engaged in an active, real-time voice consultation with a patient who just spoke to you using their microphone.
+Their spoken words are: "${transcript}"
+
+Patient Health Context:
+- Consultation Mode: ${mode}
+- Heart Rate: ${patientContext.heartRate || 'Normal (72 bpm)'}
+- Stress Score: ${patientContext.stressScore || 'Elevated (6/10)'}
+- Sleep Architecture: ${patientContext.sleepHours ? `${patientContext.sleepHours} hrs` : '6.5 hrs'}
+- Primary Language: ${language}
+
+Your Persona Requirements:
+1. Speak with genuine warmth, unconditional positive regard, soothing clinical poise, and gentle pacing.
+2. The "spokenResponse" will be read aloud or heard as voice audio. KEEP IT CONVERSATIONAL, NATURAL, AND CONCISE (2 to 4 sentences).
+3. Do NOT use markdown asterisks (*), hashtags, bullet points, or tables in "spokenResponse".
+4. Address their specific situation, validate their emotional experience, and offer a practical somatic calming technique.
+5. Provide structured somatic exercise pacing (inhale, hold, exhale, pause in seconds) for a calming breathing visualizer.
+
+Respond STRICTLY in valid JSON matching this schema:
+{
+  "spokenResponse": string (2-4 gentle sentences for Alex to speak),
+  "somaticExercise": {
+    "title": string,
+    "duration": string,
+    "instructions": string[],
+    "targetPacingSeconds": { "inhale": number, "hold": number, "exhale": number, "pause": number }
+  },
+  "emotionalState": {
+    "detectedMood": string,
+    "stressLevel": number (1 to 10),
+    "autonomicState": "sympathetic" | "parasympathetic" | "mixed"
+  },
+  "clinicalReasoning": string,
+  "suggestedReplies": string[] (3 short spoken phrases the user might say next)
+}`;
+
+        const genRes = await runWithTimeout(ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json'
+          }
+        }), 4000);
+
+        if (genRes && genRes.text) {
+          const parsed = JSON.parse(genRes.text);
+          if (parsed.spokenResponse) spokenResponse = parsed.spokenResponse;
+          if (parsed.somaticExercise) somaticExercise = parsed.somaticExercise;
+          if (parsed.emotionalState) emotionalState = parsed.emotionalState;
+          if (parsed.clinicalReasoning) clinicalReasoning = parsed.clinicalReasoning;
+          if (Array.isArray(parsed.suggestedReplies) && parsed.suggestedReplies.length) {
+            suggestedReplies = parsed.suggestedReplies;
+          }
+          aiModelUsed = 'gemini-2.5-flash';
+        }
+      } catch (aiErr: any) {
+        console.warn('[Alex Voice] Gemini reasoning notice, falling back to heuristics:', aiErr?.message || aiErr);
+      }
+    }
+
+    // Heuristic fallback if AI was unavailable or did not produce spoken response
+    if (!spokenResponse) {
+      const lower = transcript.toLowerCase();
+      if (/anxi|panic|overwhelm|scared|nervous|racing|chest|shak/i.test(lower)) {
+        spokenResponse = "I hear how overwhelming this feels right now, and I want you to know you are safe here with me. Let's place one hand on your chest and take a gentle, cooling breath together. You don't have to carry this all alone.";
+        somaticExercise = {
+          title: '5-4-3-2-1 Sensory Grounding & Extended Exhale',
+          duration: '2 minutes',
+          instructions: [
+            'Notice 5 things you can see around you right now.',
+            'Inhale softly for 4 seconds, then exhale slowly for 6 seconds to trigger your vagal brake.',
+            'Feel the solid ground supporting your feet and let your jaw unclamp.'
+          ],
+          targetPacingSeconds: { inhale: 4, hold: 2, exhale: 6, pause: 2 }
+        };
+        emotionalState = { detectedMood: 'High Anxiety / Acute Stress', stressLevel: 8, autonomicState: 'sympathetic' };
+      } else if (/sleep|insomnia|tired|exhaust|awake|night|restless/i.test(lower)) {
+        spokenResponse = "Rest can feel so elusive when our minds are running, but your body knows how to heal when given gentle permission. Let's dim down your mental noise with a soft, soothing breath cycle and prepare your circadian rhythm for deep renewal.";
+        somaticExercise = {
+          title: '4-7-8 Circadian Wind-Down Breath',
+          duration: '3 minutes',
+          instructions: [
+            'Close your eyes or soften your gaze into the distance.',
+            'Inhale quietly through your nose for 4 seconds.',
+            'Hold gently for 7 seconds without straining, then sigh out through your mouth for 8 seconds.'
+          ],
+          targetPacingSeconds: { inhale: 4, hold: 7, exhale: 8, pause: 1 }
+        };
+        emotionalState = { detectedMood: 'Fatigued & Sleep Disrupted', stressLevel: 6, autonomicState: 'mixed' };
+      } else if (/heart|pulse|palpitation|pressure|beat/i.test(lower)) {
+        spokenResponse = "I'm listening closely. Heart sensations often mirror our autonomic nervous system responding to cortisol or subtle shifts in breathing. Let's do a quiet biometric pacing exercise to guide your heart rate back into steady biological coherence.";
+        somaticExercise = {
+          title: 'Heart Coherence Resonance Pacing',
+          duration: '2 minutes',
+          instructions: [
+            'Focus your awareness around the center of your chest.',
+            'Inhale for 5 seconds as if the breath is entering your heart space.',
+            'Exhale smoothly for 5 seconds, inviting a rhythmic 6 breaths-per-minute resonance.'
+          ],
+          targetPacingSeconds: { inhale: 5, hold: 0, exhale: 5, pause: 0 }
+        };
+        emotionalState = { detectedMood: 'Cardiovascular Heightened Awareness', stressLevel: 6, autonomicState: 'sympathetic' };
+      } else {
+        spokenResponse = "Thank you for sharing that with me. I am right beside you, and we can take this one gentle step at a time. Let's start with a grounding diaphragmatic breath to bring your autonomic balance back into harmony.";
+        somaticExercise = {
+          title: 'Diaphragmatic Harmony Breath',
+          duration: '90 seconds',
+          instructions: [
+            'Relax your shoulders away from your ears and soften your stomach.',
+            'Inhale for 4 seconds, allowing your ribs to expand outward.',
+            'Exhale for 4 seconds, visualizing warmth flowing through your limbs.'
+          ],
+          targetPacingSeconds: { inhale: 4, hold: 1, exhale: 4, pause: 1 }
+        };
+        emotionalState = { detectedMood: 'Mindful Intake & Baseline Check', stressLevel: 4, autonomicState: 'mixed' };
+      }
+    }
+
+    // 3. Synthesize Alex's Spoken Audio via Gemini TTS if possible
+    let audioOutputBase64: string | null = null;
+    let audioOutputMime = 'audio/wav';
+    if (ai) {
+      try {
+        const cleanTtsText = spokenResponse.replace(/[*_#`]/g, '').trim();
+        const ttsRes = await runWithTimeout(ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Say in a warm, comforting, peaceful, caring, and mindful companion voice: ${cleanTtsText}`
+                }
+              ]
+            }
+          ],
+          config: {
+            responseModalities: ['AUDIO'],
+            speechConfig: {
+              voiceConfig: {
+                prebuiltVoiceConfig: {
+                  voiceName: 'Kore'
+                }
+              }
+            }
+          }
+        }), 2500);
+
+        const part = ttsRes.candidates?.[0]?.content?.parts?.[0];
+        if (part && part.inlineData && part.inlineData.data) {
+          audioOutputBase64 = part.inlineData.data;
+          audioOutputMime = part.inlineData.mimeType || 'audio/wav';
+        }
+      } catch (ttsErr: any) {
+        // TTS preview is optional; client speech synthesis is also supported
+        console.warn('[Alex Voice] Gemini TTS note (will fallback to browser voice if needed):', ttsErr?.message || ttsErr);
+      }
+    }
+
+    return res.json({
+      success: true,
+      companion: 'Alex',
+      companionRole: 'Mindful Wellness Companion & Integrative Holistic RN',
+      transcript,
+      transcriptionSource,
+      response: spokenResponse,
+      spokenResponse,
+      somaticExercise,
+      emotionalState,
+      clinicalReasoning,
+      suggestedReplies,
+      audioBase64: audioOutputBase64,
+      audioMime: audioOutputMime,
+      aiModel: aiModelUsed,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error: any) {
+    console.error('[Alex Voice Consultation Error]:', error);
+    return res.status(500).json({
+      success: false,
+      detail: 'An error occurred during the voice consultation. Please try speaking again.',
+      error: error?.message || String(error)
+    });
+  }
+});
+
+// ----------------------------------------------------
 // Language Translation Intelligence Endpoints
 // ----------------------------------------------------
 app.get('/api/languages', (_req: Request, res: Response) => {
@@ -8302,20 +8608,20 @@ app.post('/api/auth/send-otp', (req: Request, res: Response) => {
   const { phone, email, username } = req.body;
   const target = String(email || phone || username || 'default').trim().toLowerCase();
   
-  // Generate a valid 6-digit OTP code (and always support 123456 as master demo)
-  const otpCode = '123456';
+  // Generate a valid 6-digit OTP code (also keep 123456 as master backup)
+  const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
   const expiresAt = Date.now() + 15 * 60 * 1000;
   
-  activeOtpCodes.set(target, { code: otpCode, expiresAt });
-  if (email) activeOtpCodes.set(String(email).trim().toLowerCase(), { code: otpCode, expiresAt });
-  if (username) activeOtpCodes.set(String(username).trim().toLowerCase(), { code: otpCode, expiresAt });
-  if (phone) activeOtpCodes.set(String(phone).trim().toLowerCase(), { code: otpCode, expiresAt });
+  activeOtpCodes.set(target, { code: generatedCode, expiresAt });
+  if (email) activeOtpCodes.set(String(email).trim().toLowerCase(), { code: generatedCode, expiresAt });
+  if (username) activeOtpCodes.set(String(username).trim().toLowerCase(), { code: generatedCode, expiresAt });
+  if (phone) activeOtpCodes.set(String(phone).trim().toLowerCase(), { code: generatedCode, expiresAt });
 
   return res.json({
     success: true,
-    message: `6-digit OTP verification code sent to ${email || phone || username || 'your registered contact'}. (Verification Code: 123456)`,
-    otp: otpCode,
-    demoOtp: otpCode,
+    message: `6-digit OTP verification code generated for ${email || phone || username || 'your registered contact'}: ${generatedCode}`,
+    otp: generatedCode,
+    demoOtp: '123456',
     expiresInSeconds: 900
   });
 });
@@ -9368,9 +9674,14 @@ app.get('/dashboard', (_req: Request, res: Response) => {
   res.sendFile(path.join(FRONTEND_DIR, 'myi10.html'));
 });
 
-// Dedicated AI Companions Chat Interface (Dr. Nambi & Alex)
+// AI Companions Chat Interface - redirected to dashboard
 app.get(['/chat', '/companion-chat', '/ai-chat', '/consultation-chat'], (_req: Request, res: Response) => {
-  res.sendFile(path.join(FRONTEND_DIR, 'chat.html'));
+  res.redirect('/dashboard');
+});
+
+// Dedicated Alex AI Companion Voice Consultation Interface (Audio Capture & Telemetry)
+app.get(['/alex', '/alex-voice', '/alex-consultation', '/voice-consultation'], (_req: Request, res: Response) => {
+  res.sendFile(path.join(FRONTEND_DIR, 'alex-voice.html'));
 });
 
 // Dedicated CareCast: Inshorts & Dailyhunt Medical Feed

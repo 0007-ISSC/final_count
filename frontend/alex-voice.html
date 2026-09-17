@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex AI Companion — Voice Health Consultation | HealthGPT</title>
+  <meta name="description" content="Engage in real-time voice-based health and mindful wellness consultations with Alex, HealthGPT's AI companion. Captures live microphone audio for somatic stress relief, sleep guidance, and clinical support.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-canvas: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-subtle: #cbd5e1;
+
+      --ink-primary: #0f172a;
+      --ink-secondary: #334155;
+      --ink-muted: #64748b;
+
+      --alex-primary: #7c3aed;
+      --alex-dark: #6d28d9;
+      --alex-light: #f5f3ff;
+      --alex-border: #ddd6fe;
+      --alex-glow: rgba(124, 58, 237, 0.25);
+
+      --teal-primary: #0d9488;
+      --teal-light: #f0fdfa;
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --radius-pill: 9999px;
+
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 14px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 12px 28px -6px rgba(124, 58, 237, 0.12), 0 6px 12px -4px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation */
+    .top-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--alex-primary), #4f46e5);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      box-shadow: 0 4px 12px var(--alex-glow);
+    }
+
+    .brand-info h1 {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.2px;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-info p {
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--alex-light);
+      color: var(--alex-dark);
+      border: 1px solid var(--alex-border);
+      border-radius: var(--radius-pill);
+      padding: 3px 10px;
+      font-size: 11.5px;
+      font-weight: 700;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: pulse-dot 1.8s infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-outline {
+      background: var(--bg-surface);
+      border-color: var(--border-color);
+      color: var(--ink-secondary);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-subtle);
+      color: var(--ink-primary);
+    }
+
+    .btn-primary {
+      background: var(--alex-primary);
+      color: #ffffff;
+      box-shadow: 0 2px 8px var(--alex-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--alex-dark);
+      transform: translateY(-1px);
+    }
+
+    /* Main Container */
+    .studio-layout {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 24px;
+      flex: 1;
+    }
+
+    @media (max-width: 960px) {
+      .studio-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Main Voice Studio Stage */
+    .voice-stage-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Consultation Focus Mode Selector */
+    .mode-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-color);
+      background: var(--bg-subtle);
+      color: var(--ink-secondary);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .mode-pill.active {
+      background: var(--alex-light);
+      border-color: var(--alex-border);
+      color: var(--alex-dark);
+      font-weight: 700;
+    }
+
+    /* Central Voice Orb & Wave Stage */
+    .visualizer-stage {
+      background: radial-gradient(circle at center, #faf5ff 0%, #f1f5f9 100%);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 320px;
+      overflow: hidden;
+    }
+
+    /* Alex Orb */
+    .alex-orb-container {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .orb-ring {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 2px dashed rgba(124, 58, 237, 0.35);
+      animation: rotate-ring 18s linear infinite;
+    }
+
+    @keyframes rotate-ring {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .orb-glow {
+      position: absolute;
+      inset: -20px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124, 58, 237, 0.25) 0%, rgba(124, 58, 237, 0) 70%);
+      transition: transform 0.15s ease;
+    }
+
+    .alex-orb {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+      box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      color: #ffffff;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .visualizer-stage.recording .alex-orb {
+      animation: pulse-recording 1.2s infinite ease-in-out;
+    }
+
+    .visualizer-stage.speaking .alex-orb {
+      animation: pulse-speaking 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulse-recording {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+    }
+
+    @keyframes pulse-speaking {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.5); }
+      50% { transform: scale(1.08); box-shadow: 0 0 0 18px rgba(124, 58, 237, 0); }
+    }
+
+    /* Active Recording Indicator HUD */
+    .visualizer-stage.recording {
+      border-color: #f87171;
+      box-shadow: inset 0 0 32px rgba(239, 68, 68, 0.14), 0 0 0 2px rgba(239, 68, 68, 0.35);
+      background: radial-gradient(circle at center, #fef2f2 0%, #f8fafc 100%);
+    }
+
+    .active-recording-indicator {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 580px;
+      padding: 8px 16px;
+      background: #ffffff;
+      border: 1.5px solid #fecaca;
+      border-radius: var(--radius-pill);
+      box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
+      margin-bottom: 12px;
+      z-index: 10;
+      animation: fadeInRec 0.25s ease forwards;
+    }
+
+    .visualizer-stage.recording .active-recording-indicator {
+      display: flex;
+    }
+
+    @keyframes fadeInRec {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .rec-live-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #dc2626;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .rec-blinking-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 8px #ef4444;
+      animation: rec-blink 0.9s infinite alternate ease-in-out;
+    }
+
+    @keyframes rec-blink {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0.35; transform: scale(1.35); }
+    }
+
+    /* Live Equalizer Bars */
+    .live-equalizer-wrap {
+      display: flex;
+      align-items: center;
+      gap: 3.5px;
+      height: 22px;
+      padding: 0 8px;
+    }
+
+    .eq-col {
+      width: 3.5px;
+      height: 5px;
+      background: linear-gradient(180deg, #ef4444, #8b5cf6);
+      border-radius: 2px;
+      transition: height 0.06s ease;
+    }
+
+    .rec-telemetry-stats {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .telemetry-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      color: var(--ink-secondary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .telemetry-pill.live-state {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+      color: #166534;
+      transition: all 0.15s ease;
+    }
+
+    .telemetry-pill.live-clock {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #b91c1c;
+      font-weight: 800;
+    }
+
+    /* Waveform Display Mode Toolbar */
+    .waveform-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 560px;
+      margin-top: 6px;
+      margin-bottom: 2px;
+      z-index: 2;
+    }
+
+    .waveform-mode-switches {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-subtle);
+      padding: 3px 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-color);
+    }
+
+    .wf-mode-btn {
+      background: transparent;
+      border: none;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+
+    .wf-mode-btn.active {
+      background: #ffffff;
+      color: var(--alex-dark);
+      font-weight: 700;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    }
+
+    .wf-gain-meter-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Live Waveform Canvas */
+    .waveform-canvas {
+      width: 100%;
+      max-width: 560px;
+      height: 80px;
+      margin-top: 4px;
+      z-index: 2;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.45);
+    }
+
+    /* Audio Level Meter */
+    .audio-meter-bar {
+      width: 100%;
+      max-width: 420px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: var(--radius-pill);
+      margin-top: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .audio-meter-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #22c55e 0%, #eab308 65%, #ef4444 95%);
+      border-radius: var(--radius-pill);
+      transition: width 0.08s ease;
+    }
+
+    /* Stage Status Label */
+    .stage-status-caption {
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Microphone Interactive Console */
+    .mic-console {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mic-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .mic-main-btn {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg, var(--alex-primary), #6d28d9);
+      color: #ffffff;
+      font-size: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 20px var(--alex-glow);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .mic-main-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(124, 58, 237, 0.4);
+    }
+
+    .mic-main-btn:active {
+      transform: scale(0.96);
+    }
+
+    .mic-main-btn.is-recording {
+      background: #ef4444;
+      box-shadow: 0 8px 26px rgba(239, 68, 68, 0.55);
+      animation: record-glow 1.2s infinite ease-in-out;
+    }
+
+    .mic-main-btn.is-recording::before,
+    .mic-main-btn.is-recording::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid rgba(239, 68, 68, 0.6);
+      pointer-events: none;
+      animation: acoustic-ripple 1.8s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    }
+
+    .mic-main-btn.is-recording::after {
+      inset: -14px;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes acoustic-ripple {
+      0% { transform: scale(0.95); opacity: 0.9; }
+      100% { transform: scale(1.45); opacity: 0; }
+    }
+
+    @keyframes record-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+      50% { box-shadow: 0 0 0 16px rgba(239, 68, 68, 0); }
+    }
+
+    .action-circle-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--bg-surface);
+      color: var(--ink-secondary);
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .action-circle-btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-subtle);
+      color: var(--ink-primary);
+    }
+
+    .action-circle-btn.btn-confirm {
+      background: #10b981;
+      border-color: #10b981;
+      color: #ffffff;
+    }
+
+    .action-circle-btn.btn-confirm:hover {
+      background: #059669;
+    }
+
+    .mic-timer-pill {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-pill);
+      padding: 4px 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mic-instructions {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      text-align: center;
+      max-width: 440px;
+    }
+
+    /* Live Transcript & Conversation Flow */
+    .transcript-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 120px;
+    }
+
+    .transcript-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .transcript-body {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--ink-primary);
+    }
+
+    .transcript-body.placeholder {
+      color: var(--ink-muted);
+      font-style: italic;
+    }
+
+    /* Alex Spoken Dialogue Card */
+    .alex-response-card {
+      display: none;
+      background: var(--alex-light);
+      border: 1.5px solid var(--alex-border);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      position: relative;
+    }
+
+    .alex-response-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .alex-persona-tag {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alex-mini-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--alex-primary);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .alex-persona-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--alex-dark);
+    }
+
+    .audio-playback-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .audio-btn {
+      background: #ffffff;
+      border: 1px solid var(--alex-border);
+      color: var(--alex-dark);
+      border-radius: var(--radius-pill);
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+    }
+
+    .audio-btn:hover {
+      background: var(--alex-light);
+      border-color: var(--alex-primary);
+    }
+
+    .alex-spoken-text {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #3b0764;
+      font-weight: 500;
+    }
+
+    /* Somatic Guided Breathing Box */
+    .somatic-box {
+      margin-top: 14px;
+      background: #ffffff;
+      border: 1px solid var(--alex-border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .breath-pacer-visual {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #c4b5fd, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: transform 4s ease-in-out;
+    }
+
+    .somatic-info h4 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 3px;
+    }
+
+    .somatic-info p {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+
+    .suggested-prompts-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .prompt-chip {
+      background: #ffffff;
+      border: 1px solid var(--alex-border);
+      color: var(--alex-dark);
+      border-radius: var(--radius-pill);
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .prompt-chip:hover {
+      background: var(--alex-primary);
+      color: #ffffff;
+      border-color: var(--alex-primary);
+    }
+
+    /* Right Sidebar: Clinical Telemetry & Audio Settings */
+    .telemetry-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Emotional / Vitals Telemetry Gauges */
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .vital-stat-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+    }
+
+    .vital-stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      margin-bottom: 2px;
+    }
+
+    .vital-stat-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--ink-primary);
+    }
+
+    /* Autonomic Balance Bar */
+    .autonomic-meter {
+      margin-top: 12px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .autonomic-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      margin-bottom: 6px;
+    }
+
+    .autonomic-track {
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: var(--radius-pill);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .autonomic-fill {
+      height: 100%;
+      width: 65%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6, #10b981);
+      border-radius: var(--radius-pill);
+      transition: width 0.4s ease;
+    }
+
+    /* Settings & Fallback Toggles */
+    .setting-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .setting-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .setting-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+    }
+
+    .setting-sub {
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #cbd5e1;
+      transition: 0.2s;
+      border-radius: 22px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--alex-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+
+    /* Toast Notification */
+    .toast-popup {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--ink-primary);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      z-index: 100;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s ease;
+    }
+
+    .toast-popup.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="top-header" id="topNavHeader">
+    <a href="/dashboard" class="brand-group" id="brandGroupLink" title="Return to HealthGPT Dashboard">
+      <div class="brand-icon" id="brandIcon">🧠</div>
+      <div class="brand-info">
+        <h1>
+          <span>Alex AI Companion</span>
+          <span class="status-badge" id="alexStatusBadge">
+            <span class="status-dot"></span>
+            <span>Live Voice Studio</span>
+          </span>
+        </h1>
+        <p>Integrative Holistic RN · Mindful Wellness & Somatic Telemetry</p>
+      </div>
+    </a>
+
+    <div class="header-actions">
+      <a href="/chat" class="btn btn-outline" id="btnBackToChat" title="Open AI Companions Chat">
+        <span>💬</span> <span>Text Chat</span>
+      </a>
+      <a href="/dashboard" class="btn btn-outline" id="btnBackToDashboard" title="View 3D Digital Twin & Records">
+        <span>🏠</span> <span>Dashboard</span>
+      </a>
+      <button type="button" class="btn btn-primary" id="btnTestVoiceSimulation" onclick="runSampleVoiceConsultation()" title="Listen to sample consultation note without speaking">
+        <span>🎧</span> <span>Test Sample Audio</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Consultation Workspace Layout -->
+  <main class="studio-layout" id="studioMainLayout">
+
+    <!-- Left Column: Voice Visualizer & Controls -->
+    <section class="voice-stage-card" id="voiceStageCard">
+
+      <!-- Consultation Mode Selector -->
+      <div class="mode-bar" id="modeSelectorBar">
+        <button type="button" class="mode-pill active" id="modePill_stress" onclick="selectConsultationMode('stress_anxiety')">
+          <span>🧘</span> <span>Stress & Anxiety Relief</span>
+        </button>
+        <button type="button" class="mode-pill" id="modePill_sleep" onclick="selectConsultationMode('sleep_circadian')">
+          <span>🌙</span> <span>Sleep & Insomnia Wind-Down</span>
+        </button>
+        <button type="button" class="mode-pill" id="modePill_biometric" onclick="selectConsultationMode('biometric_vitals')">
+          <span>❤️</span> <span>Heart & Fatigue Check</span>
+        </button>
+        <button type="button" class="mode-pill" id="modePill_general" onclick="selectConsultationMode('general_wellness')">
+          <span>💭</span> <span>Emotional Grounding</span>
+        </button>
+      </div>
+
+      <!-- Central Audio Visualizer Stage -->
+      <div class="visualizer-stage" id="visualizerStage">
+        
+        <!-- Active Recording Live HUD Indicator -->
+        <div class="active-recording-indicator" id="activeRecordingIndicator">
+          <div class="rec-live-tag" id="recLiveTag">
+            <span class="rec-blinking-dot"></span>
+            <span id="recStatusBadgeText">REC LIVE · MIC ACTIVE</span>
+          </div>
+
+          <!-- Real-Time Voice Frequency Equalizer Bars -->
+          <div class="live-equalizer-wrap" id="liveEqualizerWrap" title="Real-time frequency telemetry">
+            <span class="eq-col" id="eqCol0"></span>
+            <span class="eq-col" id="eqCol1"></span>
+            <span class="eq-col" id="eqCol2"></span>
+            <span class="eq-col" id="eqCol3"></span>
+            <span class="eq-col" id="eqCol4"></span>
+            <span class="eq-col" id="eqCol5"></span>
+            <span class="eq-col" id="eqCol6"></span>
+            <span class="eq-col" id="eqCol7"></span>
+          </div>
+
+          <!-- Real-Time Decibel & Voice Activity Status -->
+          <div class="rec-telemetry-stats">
+            <span class="telemetry-pill" id="liveDecibelValue">Peak: -45 dB</span>
+            <span class="telemetry-pill live-state" id="liveVoiceStatePill">Listening</span>
+            <span class="telemetry-pill live-clock" id="liveHighPrecisionTimer">00:00.0</span>
+          </div>
+        </div>
+
+        <div class="alex-orb-container" id="alexOrbContainer">
+          <div class="orb-glow" id="orbGlow"></div>
+          <div class="orb-ring" id="orbRing"></div>
+          <div class="alex-orb" id="alexOrb">🧠</div>
+        </div>
+
+        <!-- Waveform Visualizer Toolbar (Switch Display Modes) -->
+        <div class="waveform-toolbar" id="waveformToolbar">
+          <div class="waveform-mode-switches" id="waveformModeSwitches">
+            <button type="button" class="wf-mode-btn active" id="btnWfMode_wave" onclick="setWaveformVisualMode('wave')">
+              <span>🌊</span> <span>Sine Wave</span>
+            </button>
+            <button type="button" class="wf-mode-btn" id="btnWfMode_bars" onclick="setWaveformVisualMode('bars')">
+              <span>📊</span> <span>Spectrum Bars</span>
+            </button>
+            <button type="button" class="wf-mode-btn" id="btnWfMode_hybrid" onclick="setWaveformVisualMode('hybrid')">
+              <span>✨</span> <span>Dual Layer</span>
+            </button>
+          </div>
+          <div class="wf-gain-meter-label" id="wfGainMeterLabel">FFT 256 · 60 FPS</div>
+        </div>
+
+        <!-- Live Audio Waveform Canvas -->
+        <canvas id="waveformCanvas" class="waveform-canvas" width="560" height="80"></canvas>
+
+        <!-- Decibel / Amplitude Peak Bar -->
+        <div class="audio-meter-bar" id="audioMeterBar" title="Microphone input level">
+          <div class="audio-meter-fill" id="audioMeterFill"></div>
+        </div>
+
+        <div class="stage-status-caption" id="stageStatusCaption">
+          <span id="stageStatusIcon">🎙️</span>
+          <span id="stageStatusText">Microphone ready. Tap the button below and speak with Alex.</span>
+        </div>
+      </div>
+
+      <!-- Microphone Controls Console -->
+      <div class="mic-console" id="micConsole">
+        <div class="mic-controls-row">
+          
+          <!-- Cancel / Reset Recording -->
+          <button type="button" class="action-circle-btn" id="btnCancelRecording" onclick="cancelVoiceRecording()" title="Cancel current recording" style="display:none;">
+            ✕
+          </button>
+
+          <!-- Primary Microphone Button -->
+          <button type="button" class="mic-main-btn" id="btnMainMic" onclick="toggleMicrophoneCapture()" title="Start/Stop voice consultation">
+            <span id="mainMicIcon">🎤</span>
+          </button>
+
+          <!-- Submit / Complete Recording -->
+          <button type="button" class="action-circle-btn btn-confirm" id="btnSubmitRecording" onclick="submitVoiceRecording()" title="Submit recording to Alex" style="display:none;">
+            ✓
+          </button>
+
+        </div>
+
+        <div class="mic-timer-pill" id="micTimerDisplay" style="display:none;">
+          00:00 / 01:00
+        </div>
+
+        <div class="mic-instructions" id="micInstructions">
+          Speak naturally about your symptoms, stress, or day. Alex listens with clinical compassion and responds with personalized somatic pacing.
+        </div>
+      </div>
+
+      <!-- Live Transcript Box -->
+      <div class="transcript-box" id="transcriptBox">
+        <div class="transcript-header">
+          <span>Patient Spoken Audio Transcript</span>
+          <span id="transcriptionEngineTag">Speech Recognition</span>
+        </div>
+        <div class="transcript-body placeholder" id="transcriptBodyText">
+          Your spoken words will be transcribed in real time as you speak into the microphone...
+        </div>
+      </div>
+
+      <!-- Alex Spoken Response Card -->
+      <div class="alex-response-card" id="alexResponseCard">
+        <div class="alex-response-header">
+          <div class="alex-persona-tag">
+            <div class="alex-mini-avatar">🧠</div>
+            <div>
+              <div class="alex-persona-title">Alex's Spoken Guidance</div>
+              <div style="font-size:11px;color:var(--ink-muted);" id="alexModelTag">Clinical AI Reasoning · Gemini Flash</div>
+            </div>
+          </div>
+
+          <div class="audio-playback-controls">
+            <button type="button" class="audio-btn" id="btnReplayAlexVoice" onclick="replayAlexAudio()" title="Replay Alex's spoken voice">
+              <span id="replayBtnIcon">🔊</span> <span>Replay</span>
+            </button>
+            <button type="button" class="audio-btn" id="btnStopAlexVoice" onclick="stopAlexAudio()" title="Stop audio">
+              <span>⏹️</span> <span>Stop</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="alex-spoken-text" id="alexSpokenText">
+          <!-- Populated dynamically -->
+        </div>
+
+        <!-- Somatic Breath Pacer Card -->
+        <div class="somatic-box" id="somaticBox">
+          <div class="breath-pacer-visual" id="breathPacerVisual">
+            <span id="breathPacerCount">4s</span>
+          </div>
+          <div class="somatic-info">
+            <h4 id="somaticTitle">4-4 Parasympathetic Reset</h4>
+            <p id="somaticInstructions">Inhale smoothly for 4 seconds, then exhale for 4 seconds to trigger vagal down-regulation.</p>
+          </div>
+        </div>
+
+        <!-- Suggested Spoken Replies -->
+        <div class="suggested-prompts-row" id="suggestedPromptsRow">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Right Column: Clinical Telemetry & Audio Settings -->
+    <aside class="telemetry-sidebar" id="telemetrySidebar">
+
+      <!-- Patient Biomarkers & Emotional State Card -->
+      <div class="panel-card" id="vitalsPanelCard">
+        <div class="panel-title">
+          <span>Emotional & Autonomic State</span>
+          <span style="font-size:12px;color:var(--alex-dark);" id="patientStateTag">Live Sync</span>
+        </div>
+
+        <div class="vitals-grid">
+          <div class="vital-stat-box">
+            <div class="vital-stat-label">Detected Mood</div>
+            <div class="vital-stat-value" id="valDetectedMood" style="font-size:13px;color:var(--alex-dark);">Calm Baseline</div>
+          </div>
+          <div class="vital-stat-box">
+            <div class="vital-stat-label">Stress Level</div>
+            <div class="vital-stat-value" id="valStressLevel">4 / 10</div>
+          </div>
+          <div class="vital-stat-box">
+            <div class="vital-stat-label">Heart Rate (HRV)</div>
+            <div class="vital-stat-value" id="valHeartRate">72 bpm</div>
+          </div>
+          <div class="vital-stat-box">
+            <div class="vital-stat-label">Circadian Sleep</div>
+            <div class="vital-stat-value" id="valSleepDuration">7.5 hrs</div>
+          </div>
+        </div>
+
+        <div class="autonomic-meter" id="autonomicMeter">
+          <div class="autonomic-labels">
+            <span>Parasympathetic (Rest)</span>
+            <span>Sympathetic (Fight/Flight)</span>
+          </div>
+          <div class="autonomic-track">
+            <div class="autonomic-fill" id="autonomicFill" style="width: 45%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio Configuration & Preferences -->
+      <div class="panel-card" id="audioSettingsCard">
+        <div class="panel-title">
+          <span>Voice & Audio Settings</span>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Voice Read-Aloud (TTS)</div>
+            <div class="setting-sub">Alex speaks responses aloud</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleTTS" checked onchange="toggleSpeechOutput(this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">High-Sensitivity Mic</div>
+            <div class="setting-sub">Echo cancellation & gain control</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleGain" checked onchange="toggleAudioProcessing(this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-item">
+          <div>
+            <div class="setting-label">Automatic Silence Cutoff</div>
+            <div class="setting-sub">Auto-submit after 2.5s pause</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="toggleAutoSubmit" onchange="toggleAutoSubmitFeature(this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Clinical Companion Profile -->
+      <div class="panel-card" id="companionProfileCard" style="background:var(--alex-light);border-color:var(--alex-border);">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--alex-primary);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;">🧠</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:var(--alex-dark);">Alex Holistic RN</div>
+            <div style="font-size:11px;color:var(--ink-muted);">Integrative Mindful Nursing</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--ink-secondary);line-height:1.5;">
+          Alex balances clinical physiology with mindfulness. Uses vagal nerve breathing, CBT re-framing, and sleep architecture telemetry to restore neurobiological equilibrium.
+        </p>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Toast Notification Popup -->
+  <div class="toast-popup" id="toastPopup">
+    Microphone connected
+  </div>
+
+  <script>
+    // ============================================================
+    // Alex Voice Consultation State & Audio Engine
+    // ============================================================
+    let audioContext = null;
+    let analyserNode = null;
+    let mediaStream = null;
+    let mediaRecorder = null;
+    let recordedAudioChunks = [];
+    let isRecording = false;
+    let recordingStartTime = 0;
+    let recordingTimerInterval = null;
+    let animationFrameId = null;
+
+    let speechRecognition = null;
+    let currentTranscript = '';
+    let currentMode = 'stress_anxiety';
+    let isTtsEnabled = true;
+    let isAutoSubmitEnabled = false;
+    let silenceTimer = null;
+
+    let activeAudioPlayer = null;
+    let breathPacerTimer = null;
+
+    // Toast notification helper
+    function showToast(msg) {
+      const toast = document.getElementById('toastPopup');
+      if (!toast) return;
+      toast.textContent = msg;
+      toast.classList.add('visible');
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3000);
+    }
+
+    // Mode Selector
+    function selectConsultationMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-pill').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`modePill_${mode.split('_')[0]}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const statusMap = {
+        'stress_anxiety': 'Stress & Anxiety Mode: Speak about whatever is weighing on your mind or body.',
+        'sleep_circadian': 'Sleep & Circadian Mode: Describe your rest patterns or difficulties unwinding.',
+        'biometric_vitals': 'Biometric & Heart Check: Describe any heart sensations, fatigue, or tension.',
+        'general_wellness': 'Emotional Grounding: Share how your day or energy feels right now.'
+      };
+      const caption = document.getElementById('stageStatusText');
+      if (caption) caption.textContent = statusMap[mode] || 'Microphone ready. Speak with Alex.';
+    }
+
+    // Toggle Audio Output Setting
+    function toggleSpeechOutput(val) {
+      isTtsEnabled = val;
+      showToast(val ? 'Voice Read-Aloud Enabled' : 'Voice Read-Aloud Muted');
+      if (!val && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function toggleAudioProcessing(val) {
+      showToast(val ? 'High-Sensitivity Microphone Active' : 'Standard Microphone Input Active');
+    }
+
+    function toggleAutoSubmitFeature(val) {
+      isAutoSubmitEnabled = val;
+      showToast(val ? 'Auto-Submit on Silence Enabled' : 'Manual Tap-to-Submit Active');
+    }
+
+    // ============================================================
+    // Web Audio Context & Visualizer Engine
+    // ============================================================
+    async function initAudioEngine() {
+      if (audioContext && mediaStream) return true;
+
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioContext = new AudioCtx();
+        if (audioContext.state === 'suspended') {
+          await audioContext.resume();
+        }
+
+        mediaStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
+
+        analyserNode = audioContext.createAnalyser();
+        analyserNode.fftSize = 256;
+        analyserNode.smoothingTimeConstant = 0.8;
+
+        const source = audioContext.createMediaStreamSource(mediaStream);
+        source.connect(analyserNode);
+
+        startWaveformAnimation();
+        initSpeechRecognition();
+        return true;
+      } catch (err) {
+        console.error('Audio initialization error:', err);
+        showToast('Microphone access notice. Click Test Sample Audio if mic is unavailable.');
+        return false;
+      }
+    }
+
+    function startWaveformAnimation() {
+      const canvas = document.getElementById('waveformCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const meterFill = document.getElementById('audioMeterFill');
+      const orbGlow = document.getElementById('orbGlow');
+
+      const bufferLength = analyserNode ? analyserNode.frequencyBinCount : 64;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function renderFrame() {
+        animationFrameId = requestAnimationFrame(renderFrame);
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        let sumSquares = 0;
+        if (analyserNode && isRecording) {
+          analyserNode.getByteTimeDomainData(dataArray);
+
+          // Draw dynamic sine waveform
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#7c3aed';
+          ctx.beginPath();
+
+          const sliceWidth = canvas.width / bufferLength;
+          let x = 0;
+
+          for (let i = 0; i < bufferLength; i++) {
+            const v = dataArray[i] / 128.0;
+            const y = (v * canvas.height) / 2;
+
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+
+            const deviation = Math.abs(dataArray[i] - 128);
+            sumSquares += deviation * deviation;
+
+            x += sliceWidth;
+          }
+          ctx.stroke();
+
+          // Audio level meter
+          const rms = Math.sqrt(sumSquares / bufferLength);
+          const percent = Math.min(100, Math.round((rms / 64) * 100));
+          if (meterFill) meterFill.style.width = `${percent}%`;
+
+          // Reactive orb glow
+          if (orbGlow) {
+            const scale = 1 + (percent / 150);
+            orbGlow.style.transform = `scale(${scale})`;
+          }
+
+          // Voice Activity Detection (Auto silence cutoff)
+          if (isAutoSubmitEnabled) {
+            if (percent < 5) {
+              if (!silenceTimer && isRecording && (Date.now() - recordingStartTime > 2500)) {
+                silenceTimer = setTimeout(() => {
+                  if (isRecording) submitVoiceRecording();
+                }, 2200);
+              }
+            } else {
+              if (silenceTimer) {
+                clearTimeout(silenceTimer);
+                silenceTimer = null;
+              }
+            }
+          }
+        } else {
+          // Idle gentle baseline wave
+          const time = Date.now() * 0.003;
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.beginPath();
+
+          for (let x = 0; x < canvas.width; x += 4) {
+            const y = (canvas.height / 2) + Math.sin(x * 0.03 + time) * 4;
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          if (meterFill) meterFill.style.width = '2%';
+          if (orbGlow) orbGlow.style.transform = 'scale(1)';
+        }
+      }
+
+      renderFrame();
+    }
+
+    // ============================================================
+    // Speech Recognition Setup (Client-side fast transcript)
+    // ============================================================
+    function initSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        const tag = document.getElementById('transcriptionEngineTag');
+        if (tag) tag.textContent = 'Gemini Server STT';
+        return;
+      }
+
+      speechRecognition = new SpeechRecognition();
+      speechRecognition.continuous = true;
+      speechRecognition.interimResults = true;
+      speechRecognition.lang = 'en-US';
+
+      speechRecognition.onresult = (event) => {
+        let interim = '';
+        let final = '';
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            final += event.results[i][0].transcript;
+          } else {
+            interim += event.results[i][0].transcript;
+          }
+        }
+
+        const text = (final || interim).trim();
+        if (text) {
+          currentTranscript = text;
+          const box = document.getElementById('transcriptBodyText');
+          if (box) {
+            box.textContent = text;
+            box.classList.remove('placeholder');
+          }
+        }
+      };
+
+      speechRecognition.onerror = (err) => {
+        console.warn('Speech recognition event:', err);
+      };
+    }
+
+    // ============================================================
+    // Microphone Recording Controls
+    // ============================================================
+    async function toggleMicrophoneCapture() {
+      if (isRecording) {
+        submitVoiceRecording();
+      } else {
+        startVoiceRecording();
+      }
+    }
+
+    async function startVoiceRecording() {
+      const ready = await initAudioEngine();
+      if (!ready) {
+        showToast('Microphone not available. Testing sample consultation audio...');
+        runSampleVoiceConsultation();
+        return;
+      }
+
+      try {
+        recordedAudioChunks = [];
+        const mime = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+          ? 'audio/webm;codecs=opus' 
+          : 'audio/webm';
+
+        mediaRecorder = new MediaRecorder(mediaStream, { mimeType: mime });
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            recordedAudioChunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.start(100);
+        if (speechRecognition) {
+          try { speechRecognition.start(); } catch(e) {}
+        }
+
+        isRecording = true;
+        recordingStartTime = Date.now();
+
+        // Update UI
+        const stage = document.getElementById('visualizerStage');
+        stage.classList.remove('speaking');
+        stage.classList.add('recording');
+
+        const micBtn = document.getElementById('btnMainMic');
+        micBtn.classList.add('is-recording');
+        document.getElementById('mainMicIcon').textContent = '⏹️';
+
+        document.getElementById('btnCancelRecording').style.display = 'flex';
+        document.getElementById('btnSubmitRecording').style.display = 'flex';
+        document.getElementById('micTimerDisplay').style.display = 'block';
+
+        const caption = document.getElementById('stageStatusText');
+        caption.textContent = 'Listening to your voice... Speak naturally.';
+
+        const transcriptBody = document.getElementById('transcriptBodyText');
+        transcriptBody.textContent = 'Listening...';
+        transcriptBody.classList.remove('placeholder');
+
+        // Timer interval
+        clearInterval(recordingTimerInterval);
+        recordingTimerInterval = setInterval(updateRecordingTimer, 200);
+
+        showToast('Microphone recording active');
+      } catch (err) {
+        console.error('Failed to start MediaRecorder:', err);
+        showToast('Could not start recording. Falling back to test audio.');
+      }
+    }
+
+    function updateRecordingTimer() {
+      const elapsedMs = Date.now() - recordingStartTime;
+      const totalSec = Math.floor(elapsedMs / 1000);
+      const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+      const secs = String(totalSec % 60).padStart(2, '0');
+      document.getElementById('micTimerDisplay').textContent = `${mins}:${secs} / 01:00`;
+
+      // 60-second limit auto-stop
+      if (totalSec >= 60) {
+        submitVoiceRecording();
+      }
+    }
+
+    function cancelVoiceRecording() {
+      if (!isRecording) return;
+      isRecording = false;
+      clearInterval(recordingTimerInterval);
+
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+      }
+      if (speechRecognition) {
+        try { speechRecognition.stop(); } catch(e) {}
+      }
+
+      resetRecordingControlsUI();
+      const caption = document.getElementById('stageStatusText');
+      caption.textContent = 'Recording cancelled. Ready when you are.';
+      showToast('Recording cancelled');
+    }
+
+    function resetRecordingControlsUI() {
+      const stage = document.getElementById('visualizerStage');
+      stage.classList.remove('recording');
+
+      const micBtn = document.getElementById('btnMainMic');
+      micBtn.classList.remove('is-recording');
+      document.getElementById('mainMicIcon').textContent = '🎤';
+
+      document.getElementById('btnCancelRecording').style.display = 'none';
+      document.getElementById('btnSubmitRecording').style.display = 'none';
+      document.getElementById('micTimerDisplay').style.display = 'none';
+    }
+
+    async function submitVoiceRecording() {
+      if (!isRecording) return;
+      isRecording = false;
+      clearInterval(recordingTimerInterval);
+
+      if (speechRecognition) {
+        try { speechRecognition.stop(); } catch(e) {}
+      }
+
+      const caption = document.getElementById('stageStatusText');
+      caption.textContent = 'Analyzing audio & consulting Alex...';
+
+      resetRecordingControlsUI();
+
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(recordedAudioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+          const base64Audio = await blobToBase64(audioBlob);
+          executeVoiceConsultation(base64Audio, mediaRecorder.mimeType, currentTranscript);
+        };
+      } else {
+        executeVoiceConsultation('', '', currentTranscript);
+      }
+    }
+
+    function blobToBase64(blob) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
+
+    // ============================================================
+    // Consult Alex API Backend
+    // ============================================================
+    async function executeVoiceConsultation(audioBase64, mimeType, transcriptText) {
+      showToast('Consulting Alex with your voice data...');
+
+      try {
+        const payload = {
+          audio: audioBase64 || '',
+          mimeType: mimeType || 'audio/webm',
+          transcript: transcriptText || '',
+          mode: currentMode,
+          context: {
+            heartRate: document.getElementById('valHeartRate').textContent,
+            stressScore: document.getElementById('valStressLevel').textContent,
+            sleepHours: 7.5
+          },
+          language: 'en'
+        };
+
+        const res = await fetch('/api/alex/voice-consultation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          throw new Error(data.detail || 'Consultation request failed.');
+        }
+
+        renderAlexConsultationResult(data);
+      } catch (err) {
+        console.error('Voice consultation failed:', err);
+        showToast('Notice: Voice processed with Alex heuristic fallback.');
+        renderAlexFallbackResult(transcriptText);
+      }
+    }
+
+    // ============================================================
+    // Render Consultation & Audio Playback
+    // ============================================================
+    function renderAlexConsultationResult(data) {
+      // 1. Update Transcript
+      const transcriptBox = document.getElementById('transcriptBodyText');
+      transcriptBox.textContent = data.transcript || currentTranscript || "Voice consultation recorded.";
+      transcriptBox.classList.remove('placeholder');
+
+      // 2. Update Alex Dialogue Card
+      const card = document.getElementById('alexResponseCard');
+      card.style.display = 'block';
+
+      const spokenTextEl = document.getElementById('alexSpokenText');
+      spokenTextEl.textContent = data.spokenResponse || data.response;
+
+      const modelTag = document.getElementById('alexModelTag');
+      modelTag.textContent = `${data.companionRole} · ${data.aiModel || 'Gemini Flash'}`;
+
+      // 3. Update Somatic Exercise & Breath Pacer
+      if (data.somaticExercise) {
+        document.getElementById('somaticTitle').textContent = data.somaticExercise.title || '4-4 Parasympathetic Reset';
+        const instrs = Array.isArray(data.somaticExercise.instructions) 
+          ? data.somaticExercise.instructions.join(' ') 
+          : (data.somaticExercise.instructions || '');
+        document.getElementById('somaticInstructions').textContent = instrs;
+
+        startBreathPacer(data.somaticExercise.targetPacingSeconds || { inhale: 4, hold: 1, exhale: 4, pause: 1 });
+      }
+
+      // 4. Update Telemetry Gauges
+      if (data.emotionalState) {
+        document.getElementById('valDetectedMood').textContent = data.emotionalState.detectedMood || 'Calm Shift';
+        document.getElementById('valStressLevel').textContent = `${data.emotionalState.stressLevel || 4} / 10`;
+
+        const autonomicFill = document.getElementById('autonomicFill');
+        if (data.emotionalState.autonomicState === 'sympathetic') {
+          autonomicFill.style.width = '75%';
+        } else if (data.emotionalState.autonomicState === 'parasympathetic') {
+          autonomicFill.style.width = '30%';
+        } else {
+          autonomicFill.style.width = '50%';
+        }
+      }
+
+      // 5. Update Suggested Replies
+      const promptsRow = document.getElementById('suggestedPromptsRow');
+      promptsRow.innerHTML = '';
+      const suggestions = data.suggestedReplies || [
+        'Guide me through another breath',
+        'How can I sleep better tonight?',
+        'I feel a bit calmer now'
+      ];
+      suggestions.forEach(s => {
+        const chip = document.createElement('button');
+        chip.type = 'button';
+        chip.className = 'prompt-chip';
+        chip.textContent = `🗣️ "${s}"`;
+        chip.onclick = () => {
+          document.getElementById('transcriptBodyText').textContent = s;
+          executeVoiceConsultation('', '', s);
+        };
+        promptsRow.appendChild(chip);
+      });
+
+      // 6. Audio Playback of Alex's Voice
+      if (isTtsEnabled) {
+        playAlexSpokenAudio(data.audioBase64, data.audioMime, data.spokenResponse || data.response);
+      }
+
+      const caption = document.getElementById('stageStatusText');
+      caption.textContent = 'Alex responded with clinical guidance. Tap Speak to continue.';
+    }
+
+    function renderAlexFallbackResult(userText) {
+      const fallbackData = {
+        transcript: userText || "I've been feeling stressed and having a hard time unwinding.",
+        spokenResponse: "I hear the weight you are carrying right now, and I want you to know you are safe here. Let's soften your shoulders and take a slow, diaphragmatic breath together to invite your nervous system back into peace.",
+        somaticExercise: {
+          title: "4-4 Diaphragmatic Harmony Breath",
+          instructions: "Inhale smoothly through your nose for 4 seconds, feeling your stomach expand. Exhale slowly for 4 seconds through your mouth, letting go of built-up tension.",
+          targetPacingSeconds: { inhale: 4, hold: 1, exhale: 4, pause: 1 }
+        },
+        emotionalState: {
+          detectedMood: "Stress & Physical Tension",
+          stressLevel: 6,
+          autonomicState: "sympathetic"
+        },
+        companionRole: "Mindful Wellness RN",
+        aiModel: "Alex Clinical Engine"
+      };
+      renderAlexConsultationResult(fallbackData);
+    }
+
+    // ============================================================
+    // Audio Playback Engine (Gemini TTS Base64 or Web Speech)
+    // ============================================================
+    function playAlexSpokenAudio(audioBase64, mimeType, fallbackText) {
+      stopAlexAudio();
+
+      const stage = document.getElementById('visualizerStage');
+      stage.classList.add('speaking');
+
+      if (audioBase64) {
+        try {
+          const audioSrc = `data:${mimeType || 'audio/wav'};base64,${audioBase64}`;
+          activeAudioPlayer = new Audio(audioSrc);
+          activeAudioPlayer.onended = () => {
+            stage.classList.remove('speaking');
+          };
+          activeAudioPlayer.play();
+          return;
+        } catch (err) {
+          console.warn('Audio element play error, falling back to speech synthesis:', err);
+        }
+      }
+
+      // Browser Web Speech API Fallback
+      if ('speechSynthesis' in window && fallbackText) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(fallbackText.replace(/[*_#`]/g, ''));
+        utterance.rate = 0.92; // Serene, gentle cadence
+        utterance.pitch = 1.05;
+
+        utterance.onend = () => {
+          stage.classList.remove('speaking');
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } else {
+        stage.classList.remove('speaking');
+      }
+    }
+
+    function stopAlexAudio() {
+      if (activeAudioPlayer) {
+        activeAudioPlayer.pause();
+        activeAudioPlayer = null;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      const stage = document.getElementById('visualizerStage');
+      if (stage) stage.classList.remove('speaking');
+    }
+
+    function replayAlexAudio() {
+      const text = document.getElementById('alexSpokenText').textContent;
+      if (text) {
+        playAlexSpokenAudio(null, null, text);
+      }
+    }
+
+    // ============================================================
+    // Guided Breath Pacer Animation
+    // ============================================================
+    function startBreathPacer(pacing) {
+      clearInterval(breathPacerTimer);
+      const circle = document.getElementById('breathPacerVisual');
+      const countEl = document.getElementById('breathPacerCount');
+      if (!circle || !countEl) return;
+
+      const inhaleTime = pacing.inhale || 4;
+      const exhaleTime = pacing.exhale || 4;
+      let phase = 'inhale';
+      let secRemaining = inhaleTime;
+
+      circle.style.transform = 'scale(1.28)';
+      countEl.textContent = `${secRemaining}s Inhale`;
+
+      breathPacerTimer = setInterval(() => {
+        secRemaining--;
+        if (secRemaining <= 0) {
+          if (phase === 'inhale') {
+            phase = 'exhale';
+            secRemaining = exhaleTime;
+            circle.style.transform = 'scale(0.88)';
+            countEl.textContent = `${secRemaining}s Exhale`;
+          } else {
+            phase = 'inhale';
+            secRemaining = inhaleTime;
+            circle.style.transform = 'scale(1.28)';
+            countEl.textContent = `${secRemaining}s Inhale`;
+          }
+        } else {
+          countEl.textContent = `${secRemaining}s ${phase === 'inhale' ? 'Inhale' : 'Exhale'}`;
+        }
+      }, 1000);
+    }
+
+    // ============================================================
+    // Pre-Recorded Voice Simulation for Demonstration
+    // ============================================================
+    function runSampleVoiceConsultation() {
+      const samples = [
+        "Alex, I've had a really overwhelming week at work. My heart feels like it's racing slightly, my shoulders are tight, and I'm having trouble unwinding for sleep.",
+        "Hi Alex, I've been feeling exhausted but every time I lay down in bed my mind starts spinning about tomorrow's schedule.",
+        "I feel an acute wave of anxiety right now. Could you please guide me through a calming exercise to steady my breathing?"
+      ];
+      const randomSample = samples[Math.floor(Math.random() * samples.length)];
+
+      const transcriptBody = document.getElementById('transcriptBodyText');
+      transcriptBody.textContent = `[Sample Voice Input]: "${randomSample}"`;
+      transcriptBody.classList.remove('placeholder');
+
+      executeVoiceConsultation('', '', randomSample);
+    }
+
+    // Initialize Canvas on Page Load
+    window.addEventListener('DOMContentLoaded', () => {
+      startWaveformAnimation();
+    });
+  </script>
+</body>
+</html>
