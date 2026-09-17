@@ -4936,6 +4936,346 @@ th {
     color: #000000 !important;
   }
 }
+
+/* ========================================================
+   FRAMER MOTION & CSS KEYFRAME PAGE TRANSITION ENGINE
+   Ultra-smooth spring curves, entrance stagger, portal overlay
+   ======================================================== */
+@keyframes framerDashboardSpringIn {
+  0% {
+    opacity: 0;
+    transform: translateY(24px) scale(0.985);
+    filter: blur(8px);
+  }
+  60% {
+    opacity: 0.98;
+    transform: translateY(-2px) scale(1.002);
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes framerSidebarSpring {
+  0% {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  70% {
+    transform: translateX(3px);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes framerTopBarDrop {
+  0% {
+    transform: translateY(-22px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes framerCardStagger {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes framerDashboardExit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scale(1.03);
+    filter: blur(12px);
+  }
+}
+
+@keyframes portalIrisWipe {
+  0% {
+    clip-path: circle(0% at 50% 50%);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: circle(150% at 50% 50%);
+    opacity: 1;
+  }
+}
+
+@keyframes portalLaserSweep {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+@keyframes ringGyroOuter {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ringGyroInner {
+  0% { transform: rotate(360deg); }
+  100% { transform: rotate(0deg); }
+}
+
+@keyframes pulseGlowRing {
+  0%, 100% { transform: scale(1); opacity: 0.35; }
+  50% { transform: scale(1.18); opacity: 0.8; }
+}
+
+@keyframes cyberGridDrift {
+  0% { background-position: 0 0; }
+  100% { background-position: 36px 36px; }
+}
+
+@keyframes bannerFloatIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -30px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, 2px) scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+  }
+}
+
+/* Staged entrance classes */
+.app-layout {
+  animation: framerDashboardSpringIn 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.top-bar {
+  animation: framerTopBarDrop 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sidebar {
+  animation: framerSidebarSpring 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Stagger entrance for initial dashboard elements */
+.stagger-in {
+  animation: framerCardStagger 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Exit Transition trigger class */
+.framer-dashboard-exit {
+  animation: framerDashboardExit 0.65s cubic-bezier(0.7, 0, 0.84, 0) forwards !important;
+  pointer-events: none !important;
+}
+
+/* Neural Transition Overlay */
+.neural-transition-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, rgba(10, 24, 48, 0.96) 0%, rgba(4, 8, 19, 0.98) 75%);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  animation: portalIrisWipe 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  overflow: hidden;
+}
+
+.transition-grid-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(to right, rgba(14, 165, 233, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(14, 165, 233, 0.07) 1px, transparent 1px);
+  background-size: 36px 36px;
+  animation: cyberGridDrift 20s linear infinite;
+  pointer-events: none;
+}
+
+.transition-laser-line {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.9) 30%, rgba(52, 211, 153, 1) 50%, rgba(56, 189, 248, 0.9) 70%, transparent 100%);
+  box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 10px rgba(52, 211, 153, 0.8);
+  animation: portalLaserSweep 0.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  pointer-events: none;
+}
+
+.transition-modal-card {
+  position: relative;
+  z-index: 10;
+  background: rgba(11, 22, 44, 0.92);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(14, 165, 233, 0.25);
+  border-radius: 20px;
+  padding: 32px 40px;
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  animation: framerDashboardSpringIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.transition-gyroscope {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 20px;
+}
+
+.gyro-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.gyro-outer {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-top-color: #38bdf8;
+  border-bottom-color: #0284c7;
+  animation: ringGyroOuter 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.gyro-inner {
+  top: 10px;
+  left: 10px;
+  width: 52px;
+  height: 52px;
+  border-left-color: #34d399;
+  border-right-color: #10b981;
+  animation: ringGyroInner 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+
+.gyro-center-core {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #38bdf8 0%, #0369a1 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.9);
+  animation: pulseGlowRing 1.2s ease-in-out infinite;
+}
+
+.transition-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(14, 165, 233, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.transition-heading {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+.transition-subtext {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 22px;
+  line-height: 1.45;
+}
+
+.transition-bar-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.transition-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #34d399 100%);
+  border-radius: 4px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+  transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Neural Arrival Toast Banner */
+.neural-arrival-banner {
+  position: fixed;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 99990;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3), 0 0 20px rgba(56, 189, 248, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  backdrop-filter: blur(10px);
+  animation: bannerFloatIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 </style>
 
 <script>
@@ -4963,6 +5303,32 @@ window.go = window.go || function(pageId, subParam) {
 </script>
 </head>
 <body>
+
+  <!-- FULLSCREEN FRAMER-MOTION INSPIRED NEURAL PAGE TRANSITION OVERLAY -->
+  <div id="neuralPageTransitionOverlay" class="neural-transition-overlay" style="display:none;">
+    <div class="transition-grid-bg"></div>
+    <div class="transition-laser-line"></div>
+    <div class="transition-modal-card">
+      <div class="transition-gyroscope">
+        <div class="gyro-ring gyro-outer"></div>
+        <div class="gyro-ring gyro-inner"></div>
+        <div class="gyro-center-core">⚡</div>
+      </div>
+      <div class="transition-chip" id="transitionChipText">SECURE CLINICAL HANDSHAKE</div>
+      <h2 class="transition-heading" id="transitionTargetHeading">Switching Session...</h2>
+      <p class="transition-subtext" id="transitionTargetSubtext">Routing across secure authenticated workspace nodes...</p>
+      <div class="transition-bar-track">
+        <div class="transition-bar-fill" id="transitionProgressBarFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEURAL ARRIVAL HUD BANNER -->
+  <div id="neuralArrivalToastBanner" class="neural-arrival-banner" style="display:none;">
+    <span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#38bdf8;box-shadow:0 0 10px #38bdf8;"></span>
+    <span id="neuralArrivalBannerText">⚡ Neural Telemetry Synced · Welcome to Clinical Command Dashboard</span>
+    <button type="button" onclick="document.getElementById('neuralArrivalToastBanner').style.display='none'" style="background:transparent;border:none;color:#94a3b8;font-size:16px;cursor:pointer;line-height:1;padding:0 4px;">×</button>
+  </div>
 
 <div class="app-layout">
 
@@ -5108,6 +5474,12 @@ window.go = window.go || function(pageId, subParam) {
         <a href="/#intro" class="btn btn-sm" style="background:#f8fafc;border:1px solid var(--line);color:var(--ink-soft);font-weight:700;display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;text-decoration:none;cursor:pointer;" title="View Platform Introduction Showcase">
           <span>✨ Intro Page</span>
         </a>
+
+        <!-- DEDICATED LOGIN / SWITCH PORTAL WITH CINEMATIC TRANSITION -->
+        <button type="button" class="btn btn-sm" onclick="triggerDashboardExitTransition('/login', 'Switching to Dedicated Login Terminal', 'Locking current session and opening futuristic 3D login view...')" style="background:rgba(56, 189, 248, 0.12);border:1.5px solid rgba(56, 189, 248, 0.4);color:#0284c7;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;cursor:pointer;" title="Smooth Transition to Dedicated User Login Terminal">
+          <span>⚡</span>
+          <span>Login Terminal</span>
+        </button>
 
         <!-- GLOBAL LANGUAGE SELECTOR -->
         <div style="display:flex;align-items:center;gap:6px;background:white;padding:5px 10px;border-radius:var(--radius-sm);border:1px solid var(--line);box-shadow:var(--shadow-sm);">
@@ -35645,18 +36017,18 @@ function speakCurrentMedicineDossier() {
    DASHBOARD THEME SWITCHER & THEME STUDIO
 ============================================================ */
 const ALL_APP_THEMES = [
-  { id: 'emerald', name: '🌿 Emerald Clinical', desc: 'Teal & Sage on crisp clinical white', bg: '#f8fafc', bgAlt: '#f1f5f9', card: '#ffffff', cardSubtle: '#f0fdfa', primary: '#0d9488', primaryHover: '#0f766e', primaryLight: 'rgba(13, 148, 136, 0.15)', secondary: '#2563eb', sidebarBg: '#0b1f1d', heroGradient: 'linear-gradient(135deg, #042f2e 0%, #0d9488 50%, #115e59 100%)', ink: '#0f172a', line: '#e2e8f0', isDark: false },
-  { id: 'obsidian', name: '🌑 Obsidian Midnight', desc: 'Deep dark OLED with cyan & teal pulse', bg: '#090d16', bgAlt: '#101726', card: '#131c2e', cardSubtle: '#1a263d', primary: '#38bdf8', primaryHover: '#0ea5e9', primaryLight: 'rgba(56, 189, 248, 0.18)', secondary: '#2dd4bf', sidebarBg: '#06090e', heroGradient: 'linear-gradient(135deg, #06090e 0%, #0f2438 50%, #0284c7 100%)', ink: '#f8fafc', line: '#22324d', isDark: true },
-  { id: 'sapphire', name: '💎 Sapphire Medical', desc: 'Clinical Navy & Azure Blue on ice white', bg: '#f0f7ff', bgAlt: '#e0effe', card: '#ffffff', cardSubtle: '#f8fbff', primary: '#2563eb', primaryHover: '#1d4ed8', primaryLight: 'rgba(37, 99, 235, 0.14)', secondary: '#0284c7', sidebarBg: '#081426', heroGradient: 'linear-gradient(135deg, #071933 0%, #1d4ed8 50%, #0284c7 100%)', ink: '#0b1e36', line: '#dbeafe', isDark: false },
-  { id: 'warm-dusk', name: '🌅 Warm Dusk', desc: 'Warm Sand, Terracotta & Amber warmth', bg: '#fcf8f2', bgAlt: '#f5ede1', card: '#ffffff', cardSubtle: '#fbf6ee', primary: '#ea580c', primaryHover: '#c2410c', primaryLight: 'rgba(234, 88, 12, 0.14)', secondary: '#d97706', sidebarBg: '#1e130c', heroGradient: 'linear-gradient(135deg, #1e130c 0%, #c2410c 50%, #b45309 100%)', ink: '#291c13', line: '#ede2d1', isDark: false },
-  { id: 'amethyst', name: '🔮 Amethyst Royal', desc: 'Deep Violet & Radiant Lavender accents', bg: '#fbf7ff', bgAlt: '#f3e8ff', card: '#ffffff', cardSubtle: '#faf5ff', primary: '#8b5cf6', primaryHover: '#7c3aed', primaryLight: 'rgba(139, 92, 246, 0.14)', secondary: '#a855f7', sidebarBg: '#170b28', heroGradient: 'linear-gradient(135deg, #170b28 0%, #6d28d9 50%, #9333ea 100%)', ink: '#2e1065', line: '#ede0ff', isDark: false },
-  { id: 'rose-gold', name: '🌸 Rose Serenity', desc: 'Soft Blossom & Gentle Coral Quartz', bg: '#fff3f5', bgAlt: '#ffe4e6', card: '#ffffff', cardSubtle: '#fff1f2', primary: '#f43f5e', primaryHover: '#e11d48', primaryLight: 'rgba(244, 63, 94, 0.14)', secondary: '#fb7185', sidebarBg: '#230713', heroGradient: 'linear-gradient(135deg, #230713 0%, #be123c 50%, #e11d48 100%)', ink: '#4c0519', line: '#fed7dc', isDark: false },
-  { id: 'cyber-neon', name: '⚡ Cyber Matrix', desc: 'High-contrast Onyx with Vivid Mint neon', bg: '#04080e', bgAlt: '#0a1118', card: '#0f1a24', cardSubtle: '#162433', primary: '#10b981', primaryHover: '#059669', primaryLight: 'rgba(16, 185, 129, 0.2)', secondary: '#06b6d4', sidebarBg: '#030708', heroGradient: 'linear-gradient(135deg, #020507 0%, #064e3b 50%, #065f46 100%)', ink: '#f0fdf4', line: '#1b2e2b', isDark: true },
-  { id: 'nordic-frost', name: '❄️ Nordic Frost', desc: 'Arctic Glacier & Clean Mint Coolness', bg: '#f0fbfb', bgAlt: '#def7f8', card: '#ffffff', cardSubtle: '#f3fcfc', primary: '#0284c7', primaryHover: '#0369a1', primaryLight: 'rgba(2, 132, 199, 0.14)', secondary: '#0d9488', sidebarBg: '#071e26', heroGradient: 'linear-gradient(135deg, #071e26 0%, #0284c7 50%, #0d9488 100%)', ink: '#042f2e', line: '#b2ebed', isDark: false },
-  { id: 'crimson-vital', name: '❤️ Crimson Vital', desc: 'High-Urgency Clinical Ruby Red', bg: '#fff5f5', bgAlt: '#fee2e2', card: '#ffffff', cardSubtle: '#fff1f1', primary: '#ef4444', primaryHover: '#dc2626', primaryLight: 'rgba(239, 68, 68, 0.14)', secondary: '#e11d48', sidebarBg: '#220608', heroGradient: 'linear-gradient(135deg, #220608 0%, #dc2626 50%, #991b1b 100%)', ink: '#450a0a', line: '#fecaca', isDark: false },
-  { id: 'solar-gold', name: '☀️ Solar Vitality', desc: 'Radiant Warm Honey, Amber & Gold', bg: '#fffcf0', bgAlt: '#fef3c7', card: '#ffffff', cardSubtle: '#fffdf5', primary: '#f59e0b', primaryHover: '#d97706', primaryLight: 'rgba(245, 158, 11, 0.16)', secondary: '#f97316', sidebarBg: '#201204', heroGradient: 'linear-gradient(135deg, #201204 0%, #d97706 50%, #b45309 100%)', ink: '#451a03', line: '#fde68a', isDark: false },
-  { id: 'forest-haven', name: '🌲 Forest Haven', desc: 'Deep Evergreen, Botanical Pine & Moss', bg: '#f2fbf5', bgAlt: '#dcfce7', card: '#ffffff', cardSubtle: '#f5fdf7', primary: '#16a34a', primaryHover: '#15803d', primaryLight: 'rgba(22, 163, 74, 0.15)', secondary: '#0d9488', sidebarBg: '#071c11', heroGradient: 'linear-gradient(135deg, #071c11 0%, #15803d 50%, #166534 100%)', ink: '#052e16', line: '#bbf7d0', isDark: false },
-  { id: 'monochrome', name: '🎩 Monochrome Minimal', desc: 'Slate Gray, Carbon & Pure Minimalist High Contrast', bg: '#f6f6f8', bgAlt: '#e4e4e7', card: '#ffffff', cardSubtle: '#fbfbfd', primary: '#27272a', primaryHover: '#18181b', primaryLight: 'rgba(39, 39, 42, 0.12)', secondary: '#52525b', sidebarBg: '#121214', heroGradient: 'linear-gradient(135deg, #121214 0%, #27272a 50%, #3f3f46 100%)', ink: '#09090b', line: '#d4d4d8', isDark: false }
+  { id: 'emerald', name: '🌿 Emerald Clinical', desc: 'Teal & Sage on crisp clinical mint canvas', bg: '#f4faf7', bgAlt: '#e6f5ef', card: '#ffffff', cardSubtle: '#eef9f4', primary: '#0d9488', primaryHover: '#0f766e', primaryLight: 'rgba(13, 148, 136, 0.15)', secondary: '#0284c7', sidebarBg: '#072421', heroGradient: 'linear-gradient(135deg, #042f2e 0%, #0d9488 50%, #14b8a6 100%)', ink: '#0f172a', inkSoft: '#334155', muted: '#64748b', line: '#ccede3', lineStrong: '#99dbc7', isDark: false },
+  { id: 'obsidian', name: '🌑 Obsidian Midnight', desc: 'Deep dark OLED with cyan & teal pulse', bg: '#06090f', bgAlt: '#0d131f', card: '#111827', cardSubtle: '#1a2337', primary: '#38bdf8', primaryHover: '#0ea5e9', primaryLight: 'rgba(56, 189, 248, 0.2)', secondary: '#2dd4bf', sidebarBg: '#030508', heroGradient: 'linear-gradient(135deg, #020814 0%, #0c2d48 50%, #0284c7 100%)', ink: '#f8fafc', inkSoft: '#cbd5e1', muted: '#94a3b8', line: '#1e293b', lineStrong: '#334155', isDark: true },
+  { id: 'sapphire', name: '💎 Sapphire Medical', desc: 'Clinical Navy & Azure Blue on ice white canvas', bg: '#f0f5ff', bgAlt: '#e0ebff', card: '#ffffff', cardSubtle: '#f5f8ff', primary: '#2563eb', primaryHover: '#1d4ed8', primaryLight: 'rgba(37, 99, 235, 0.15)', secondary: '#0284c7', sidebarBg: '#07152b', heroGradient: 'linear-gradient(135deg, #07152b 0%, #1e40af 50%, #3b82f6 100%)', ink: '#0f172a', inkSoft: '#1e293b', muted: '#64748b', line: '#c7d9fc', lineStrong: '#93c5fd', isDark: false },
+  { id: 'warm-dusk', name: '🌅 Warm Dusk', desc: 'Warm Sand, Terracotta & Amber warmth', bg: '#fdf9f3', bgAlt: '#f7efe4', card: '#ffffff', cardSubtle: '#faf4ec', primary: '#ea580c', primaryHover: '#c2410c', primaryLight: 'rgba(234, 88, 12, 0.15)', secondary: '#d97706', sidebarBg: '#1f140e', heroGradient: 'linear-gradient(135deg, #1f140e 0%, #9a3412 50%, #ea580c 100%)', ink: '#291c13', inkSoft: '#574435', muted: '#8c7360', line: '#ebd8c3', lineStrong: '#d9be9e', isDark: false },
+  { id: 'amethyst', name: '🔮 Amethyst Royal', desc: 'Deep Violet & Radiant Lavender accents', bg: '#faf5ff', bgAlt: '#f3e8ff', card: '#ffffff', cardSubtle: '#f8f0ff', primary: '#8b5cf6', primaryHover: '#7c3aed', primaryLight: 'rgba(139, 92, 246, 0.15)', secondary: '#a855f7', sidebarBg: '#170b28', heroGradient: 'linear-gradient(135deg, #170b28 0%, #5b21b6 50%, #8b5cf6 100%)', ink: '#2e1065', inkSoft: '#4c1d95', muted: '#7e22ce', line: '#e4d4f7', lineStrong: '#d8b4fe', isDark: false },
+  { id: 'rose-gold', name: '🌸 Rose Serenity', desc: 'Soft Blossom & Gentle Coral Quartz', bg: '#fff5f7', bgAlt: '#ffe4e8', card: '#ffffff', cardSubtle: '#fff0f3', primary: '#f43f5e', primaryHover: '#e11d48', primaryLight: 'rgba(244, 63, 94, 0.15)', secondary: '#fb7185', sidebarBg: '#240612', heroGradient: 'linear-gradient(135deg, #240612 0%, #9f1239 50%, #f43f5e 100%)', ink: '#4c0519', inkSoft: '#881337', muted: '#be123c', line: '#fecdd6', lineStrong: '#fda4af', isDark: false },
+  { id: 'cyber-neon', name: '⚡ Cyber Matrix', desc: 'High-contrast Onyx with Vivid Mint neon', bg: '#03070b', bgAlt: '#081119', card: '#0c1824', cardSubtle: '#122233', primary: '#10b981', primaryHover: '#059669', primaryLight: 'rgba(16, 185, 129, 0.22)', secondary: '#06b6d4', sidebarBg: '#020508', heroGradient: 'linear-gradient(135deg, #010406 0%, #064e3b 50%, #059669 100%)', ink: '#f0fdf4', inkSoft: '#86efac', muted: '#4ade80', line: '#13382c', lineStrong: '#1c5241', isDark: true },
+  { id: 'nordic-frost', name: '❄️ Nordic Frost', desc: 'Arctic Glacier & Clean Mint Coolness', bg: '#f0fbfb', bgAlt: '#def5f5', card: '#ffffff', cardSubtle: '#eef9f9', primary: '#0284c7', primaryHover: '#0369a1', primaryLight: 'rgba(2, 132, 199, 0.15)', secondary: '#0d9488', sidebarBg: '#071d24', heroGradient: 'linear-gradient(135deg, #071d24 0%, #075985 50%, #0284c7 100%)', ink: '#082f49', inkSoft: '#0369a1', muted: '#0284c7', line: '#bfe8e8', lineStrong: '#94d8d8', isDark: false },
+  { id: 'crimson-vital', name: '❤️ Crimson Vital', desc: 'High-Urgency Clinical Ruby Red', bg: '#fff5f5', bgAlt: '#fed7d7', card: '#ffffff', cardSubtle: '#fff0f0', primary: '#ef4444', primaryHover: '#dc2626', primaryLight: 'rgba(239, 68, 68, 0.15)', secondary: '#e11d48', sidebarBg: '#220608', heroGradient: 'linear-gradient(135deg, #220608 0%, #991b1b 50%, #ef4444 100%)', ink: '#450a0a', inkSoft: '#7f1d1d', muted: '#b91c1c', line: '#fed2d2', lineStrong: '#fca5a5', isDark: false },
+  { id: 'solar-gold', name: '☀️ Solar Vitality', desc: 'Radiant Warm Honey, Amber & Gold', bg: '#fffdf2', bgAlt: '#fef9db', card: '#ffffff', cardSubtle: '#fffbee', primary: '#d97706', primaryHover: '#b45309', primaryLight: 'rgba(217, 119, 6, 0.16)', secondary: '#ea580c', sidebarBg: '#1f1303', heroGradient: 'linear-gradient(135deg, #1f1303 0%, #92400e 50%, #d97706 100%)', ink: '#451a03', inkSoft: '#78350f', muted: '#92400e', line: '#fde89c', lineStrong: '#fcd34d', isDark: false },
+  { id: 'forest-haven', name: '🌲 Forest Haven', desc: 'Deep Evergreen, Botanical Pine & Moss', bg: '#f2fbf4', bgAlt: '#daf5df', card: '#ffffff', cardSubtle: '#edf9f0', primary: '#16a34a', primaryHover: '#15803d', primaryLight: 'rgba(22, 163, 74, 0.16)', secondary: '#0d9488', sidebarBg: '#071c11', heroGradient: 'linear-gradient(135deg, #071c11 0%, #166534 50%, #16a34a 100%)', ink: '#052e16', inkSoft: '#14532d', muted: '#166534', line: '#b7ecc7', lineStrong: '#86efac', isDark: false },
+  { id: 'monochrome', name: '🎩 Monochrome Minimal', desc: 'Slate Gray, Carbon & Pure Minimalist High Contrast', bg: '#f4f4f6', bgAlt: '#e4e4e7', card: '#ffffff', cardSubtle: '#fafafc', primary: '#18181b', primaryHover: '#09090b', primaryLight: 'rgba(24, 24, 27, 0.12)', secondary: '#52525b', sidebarBg: '#0f0f11', heroGradient: 'linear-gradient(135deg, #09090b 0%, #27272a 50%, #52525b 100%)', ink: '#09090b', inkSoft: '#27272a', muted: '#52525b', line: '#d4d4d8', lineStrong: '#a1a1aa', isDark: false }
 ];
 
 function applyAppTheme(themeName, showToast = true) {
@@ -35686,6 +36058,227 @@ function applyAppTheme(themeName, showToast = true) {
   root.style.setProperty('--ink', themeData.ink);
   root.style.setProperty('--line', themeData.line);
 
+  // Build Comprehensive Dynamic Overriding Stylesheet to change ENTIRE APPLICATION THEME
+  let dynamicStyleEl = document.getElementById('dynamicGlobalThemeStylesheet');
+  if (!dynamicStyleEl) {
+    dynamicStyleEl = document.createElement('style');
+    dynamicStyleEl.id = 'dynamicGlobalThemeStylesheet';
+    document.head.appendChild(dynamicStyleEl);
+  }
+
+  const isDark = !!themeData.isDark;
+  const cardBg = themeData.card;
+  const canvasBg = themeData.bg;
+  const canvasBgAlt = themeData.bgAlt;
+  const subtleCard = themeData.cardSubtle;
+  const textColor = themeData.ink;
+  const textMuted = isDark ? '#94a3b8' : (themeData.muted || '#64748b');
+  const textSubtle = isDark ? '#cbd5e1' : (themeData.inkSoft || '#475569');
+  const borderColor = themeData.line;
+  const borderStrong = isDark ? '#334155' : (themeData.lineStrong || themeData.line);
+  const sidebarBg = themeData.sidebarBg;
+  const primaryColor = themeData.primary;
+  const primaryHover = themeData.primaryHover;
+  const primaryLight = themeData.primaryLight;
+  const heroGrad = themeData.heroGradient;
+
+  dynamicStyleEl.innerHTML = `
+    /* ========================================================
+       TOTAL APPLICATION THEME ENGINE [${themeData.name}]
+       Ensures entire UI (backgrounds, cards, sidebars, borders)
+       responds to theme change, not just text color.
+       ======================================================== */
+    :root {
+      --bg: ${canvasBg} !important;
+      --bg-alt: ${canvasBgAlt} !important;
+      --card: ${cardBg} !important;
+      --card-subtle: ${subtleCard} !important;
+      --primary: ${primaryColor} !important;
+      --primary-hover: ${primaryHover} !important;
+      --primary-light: ${primaryLight} !important;
+      --secondary: ${themeData.secondary} !important;
+      --sidebar-bg: ${sidebarBg} !important;
+      --hero-gradient: ${heroGrad} !important;
+      --ink: ${textColor} !important;
+      --line: ${borderColor} !important;
+    }
+
+    /* 1. Global Viewports & Structural Canvas */
+    html, body, .app-layout, .main-content, main, .page, section.page, .dashboard-container {
+      background-color: ${canvasBg} !important;
+      color: ${textColor} !important;
+      transition: background-color 0.25s ease, color 0.2s ease !important;
+    }
+
+    /* 2. Top Navigation Bar & Sub-Headers */
+    .top-bar, header.top-bar, .app-header {
+      background-color: ${isDark ? cardBg : '#ffffff'} !important;
+      border-bottom: 1.5px solid ${borderColor} !important;
+      color: ${textColor} !important;
+    }
+
+    /* 3. Universal Navigation Sidebar */
+    .sidebar, aside.sidebar, .nav-sidebar {
+      background: ${sidebarBg} !important;
+      border-right: 1px solid ${isDark ? '#1e293b' : 'rgba(0,0,0,0.12)'} !important;
+    }
+    .sidebar .logo-icon {
+      background: ${primaryColor} !important;
+      box-shadow: 0 4px 14px ${primaryLight} !important;
+    }
+    .sidebar .nav button.active, .sidebar-nav button.active {
+      background: linear-gradient(90deg, ${primaryLight} 0%, rgba(255,255,255,0.02) 100%) !important;
+      border-left: 3.5px solid ${primaryColor} !important;
+      color: #ffffff !important;
+    }
+
+    /* 4. Complete Card & Container Overrides */
+    .card, .response-card, .dashboard-card, .metric-card, .stat-card,
+    .vital-card, .panel, .section-card, .overview-card, .clinical-card,
+    .analytics-card, .telehealth-card, .ai-card, .prescription-card,
+    .consult-card, .record-card, .triage-card, .ehr-card {
+      background-color: ${cardBg} !important;
+      color: ${textColor} !important;
+      border: 1px solid ${borderColor} !important;
+      box-shadow: ${isDark ? '0 4px 20px rgba(0,0,0,0.45)' : '0 2px 8px rgba(0,0,0,0.04)'} !important;
+    }
+
+    /* Override inline hardcoded white / slate backgrounds */
+    [style*="background:#ffffff"],
+    [style*="background: #ffffff"],
+    [style*="background:white"],
+    [style*="background: white"],
+    [style*="background: rgb(255, 255, 255)"],
+    [style*="background-color:#ffffff"],
+    [style*="background-color: #ffffff"],
+    [style*="background-color:white"],
+    [style*="background-color: white"] {
+      background-color: ${cardBg} !important;
+      color: ${textColor} !important;
+      border-color: ${borderColor} !important;
+    }
+
+    [style*="background:#f8fafc"],
+    [style*="background: #f8fafc"],
+    [style*="background-color:#f8fafc"],
+    [style*="background-color: #f8fafc"] {
+      background-color: ${canvasBg} !important;
+      color: ${textColor} !important;
+    }
+
+    [style*="background:#f1f5f9"],
+    [style*="background: #f1f5f9"],
+    [style*="background-color:#f1f5f9"],
+    [style*="background-color: #f1f5f9"] {
+      background-color: ${canvasBgAlt} !important;
+      color: ${textColor} !important;
+    }
+
+    /* 5. Hero & Accent Headers */
+    .hero-banner, .gradient-hero, .clinical-hero, [class*="hero-banner"] {
+      background: ${heroGrad} !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+    }
+
+    /* 6. Buttons & Interactive Controls */
+    .btn-primary, button.btn-primary, .btn-submit, [class*="btn-primary"] {
+      background: ${primaryColor} !important;
+      border-color: ${primaryColor} !important;
+      color: #ffffff !important;
+      box-shadow: 0 3px 10px ${primaryLight} !important;
+    }
+    .btn-primary:hover, button.btn-primary:hover {
+      background: ${primaryHover} !important;
+      border-color: ${primaryHover} !important;
+    }
+
+    .btn-secondary, button.btn-secondary {
+      background: ${subtleCard} !important;
+      color: ${textColor} !important;
+      border: 1px solid ${borderColor} !important;
+    }
+
+    /* 7. Inputs, Forms & Select Boxes */
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]),
+    select, textarea {
+      background-color: ${isDark ? subtleCard : '#ffffff'} !important;
+      color: ${textColor} !important;
+      border: 1.5px solid ${borderColor} !important;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: ${primaryColor} !important;
+      box-shadow: 0 0 0 3px ${primaryLight} !important;
+      outline: none !important;
+    }
+
+    /* 8. Tabs, Pills & Badges */
+    .tab.active, .sub-tab.active, .pill.active, .nav-pill.active {
+      background-color: ${primaryColor} !important;
+      color: #ffffff !important;
+      border-color: ${primaryColor} !important;
+    }
+    .badge-primary, .tag-primary {
+      background-color: ${primaryLight} !important;
+      color: ${primaryColor} !important;
+      border: 1px solid ${primaryLight} !important;
+    }
+
+    /* 9. Modals & Drawers */
+    .modal-content, .drawer-content, [class*="modal-dialog"] {
+      background-color: ${cardBg} !important;
+      color: ${textColor} !important;
+      border: 1.5px solid ${borderStrong} !important;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.5) !important;
+    }
+    .modal-header {
+      background-color: ${isDark ? subtleCard : canvasBgAlt} !important;
+      border-bottom: 1px solid ${borderColor} !important;
+      color: ${textColor} !important;
+    }
+
+    /* 10. Data Tables */
+    table, .table {
+      border-color: ${borderColor} !important;
+    }
+    table th, .table th {
+      background-color: ${isDark ? subtleCard : canvasBgAlt} !important;
+      color: ${textSubtle} !important;
+      border-color: ${borderColor} !important;
+    }
+    table td, .table td {
+      border-color: ${borderColor} !important;
+      color: ${textColor} !important;
+      background-color: ${cardBg} !important;
+    }
+    table tr:hover td {
+      background-color: ${subtleCard} !important;
+    }
+
+    /* 11. Text Typography Harmonization */
+    h1, h2, h3, h4, h5, h6, .card-title, .section-title {
+      color: ${textColor} !important;
+    }
+    p, span.text-muted, .text-muted, .desc {
+      color: ${textMuted} !important;
+    }
+    ${isDark ? `
+    /* Dark Mode Text Readability Safeguards */
+    [style*="color:#0f172a"], [style*="color: #0f172a"],
+    [style*="color:#1e293b"], [style*="color: #1e293b"],
+    [style*="color:#334155"], [style*="color: #334155"],
+    [style*="color:#09090b"], [style*="color: #09090b"],
+    [style*="color:black"], [style*="color: black"],
+    [style*="color:#000000"], [style*="color: #000000"] {
+      color: #f1f5f9 !important;
+    }
+    [style*="color:#64748b"], [style*="color: #64748b"],
+    [style*="color:#475569"], [style*="color: #475569"] {
+      color: #94a3b8 !important;
+    }
+    ` : ''}
+  `;
+
   // Update browser meta theme-color tag
   let metaTheme = document.querySelector('meta[name="theme-color"]');
   if (!metaTheme) {
@@ -35693,7 +36286,7 @@ function applyAppTheme(themeName, showToast = true) {
     metaTheme.name = 'theme-color';
     document.head.appendChild(metaTheme);
   }
-  metaTheme.setAttribute('content', themeData.sidebarBg || themeData.primary);
+  metaTheme.setAttribute('content', sidebarBg || primaryColor);
 
   try {
     localStorage.setItem('healthgpt_theme', theme);
@@ -35735,23 +36328,23 @@ function renderThemeStudioGrid() {
   grid.innerHTML = ALL_APP_THEMES.map(t => {
     const isActive = t.id === currentTheme;
     return `
-      <div class="theme-card-option" id="themeCard_${t.id}" onclick="applyAppTheme('${t.id}')" style="background:${t.card};border:2px solid ${isActive ? t.primary : 'var(--line)'};border-radius:12px;padding:14px;cursor:pointer;transition:all 0.2s ease;box-shadow:${isActive ? '0 4px 14px rgba(0,0,0,0.12)' : 'var(--shadow-sm)'};position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:120px;">
+      <div class="theme-card-option" id="themeCard_${t.id}" onclick="applyAppTheme('${t.id}')" style="background:${t.card};border:2px solid ${isActive ? t.primary : (t.isDark ? '#334155' : '#e2e8f0')};border-radius:14px;padding:16px;cursor:pointer;transition:all 0.25s ease;box-shadow:${isActive ? '0 6px 18px rgba(0,0,0,0.18)' : '0 2px 6px rgba(0,0,0,0.04)'};position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:130px;">
         <div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-            <span style="font-weight:800;font-size:13.5px;color:${t.isDark ? '#f8fafc' : '#0f172a'};">${t.name}</span>
-            ${isActive ? `<span style="background:${t.primary};color:white;font-size:10px;font-weight:800;padding:2px 7px;border-radius:12px;">ACTIVE</span>` : (t.isDark ? `<span style="background:#334155;color:#e2e8f0;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;">DARK</span>` : `<span style="background:#f1f5f9;color:#475569;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;">LIGHT</span>`)}
+            <span style="font-weight:800;font-size:14px;color:${t.isDark ? '#f8fafc' : '#0f172a'};">${t.name}</span>
+            ${isActive ? `<span style="background:${t.primary};color:white;font-size:10px;font-weight:800;padding:3px 8px;border-radius:12px;box-shadow:0 2px 6px ${t.primaryLight};">ACTIVE</span>` : (t.isDark ? `<span style="background:#334155;color:#e2e8f0;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">DARK</span>` : `<span style="background:#f1f5f9;color:#475569;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;">LIGHT</span>`)}
           </div>
-          <p style="font-size:11.5px;color:${t.isDark ? '#94a3b8' : '#64748b'};margin:0 0 12px;line-height:1.4;">${t.desc}</p>
+          <p style="font-size:12px;color:${t.isDark ? '#94a3b8' : '#64748b'};margin:0 0 14px;line-height:1.45;">${t.desc}</p>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;">
           <!-- Swatches preview -->
           <div style="display:flex;align-items:center;gap:6px;">
-            <span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${t.primary};border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="Primary"></span>
-            <span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${t.secondary};border:1.5px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.2);" title="Secondary"></span>
-            <span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:${t.bg};border:1.5px solid #cbd5e1;" title="Canvas"></span>
+            <span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${t.primary};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.25);" title="Primary Accent: ${t.primary}"></span>
+            <span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${t.sidebarBg};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.25);" title="Sidebar: ${t.sidebarBg}"></span>
+            <span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:${t.bg};border:2px solid ${t.isDark ? '#334155' : '#cbd5e1'};box-shadow:0 1px 4px rgba(0,0,0,0.15);" title="App Canvas: ${t.bg}"></span>
           </div>
-          <button style="background:${isActive ? t.primary : 'transparent'};color:${isActive ? '#ffffff' : (t.isDark ? '#cbd5e1' : 'var(--ink)')};border:1px solid ${isActive ? t.primary : 'var(--line)'};padding:4px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;">
-            ${isActive ? '✓ Selected' : 'Apply'}
+          <button style="background:${isActive ? t.primary : 'transparent'};color:${isActive ? '#ffffff' : (t.isDark ? '#cbd5e1' : '#0f172a')};border:1.5px solid ${isActive ? t.primary : (t.isDark ? '#334155' : '#cbd5e1')};padding:5px 12px;border-radius:8px;font-size:11.5px;font-weight:800;cursor:pointer;transition:all 0.15s ease;">
+            ${isActive ? '✓ Selected' : 'Apply Theme'}
           </button>
         </div>
       </div>
@@ -35764,8 +36357,8 @@ function updateThemeStudioActiveCards(activeTheme) {
     const card = document.getElementById(`themeCard_${t.id}`);
     if (card) {
       const isActive = t.id === activeTheme;
-      card.style.borderColor = isActive ? t.primary : 'var(--line)';
-      card.style.boxShadow = isActive ? '0 4px 14px rgba(0,0,0,0.12)' : 'var(--shadow-sm)';
+      card.style.borderColor = isActive ? t.primary : (t.isDark ? '#334155' : '#e2e8f0');
+      card.style.boxShadow = isActive ? '0 6px 18px rgba(0,0,0,0.18)' : '0 2px 6px rgba(0,0,0,0.04)';
     }
   });
 }
@@ -37381,9 +37974,73 @@ function updateD3Kpis() {
   }
 }
 
+/* ========================================================
+   FRAMER MOTION & CSS KEYFRAME TRANSITION ENGINE
+   Ultra-smooth page exit & arrival synchronization
+   ======================================================== */
+function triggerDashboardExitTransition(targetUrl = '/login', heading = 'Switching to Dedicated Login Terminal', subtext = 'Locking session and routing to futuristic clinical terminal...') {
+  const layout = document.querySelector('.app-layout');
+  if (layout) {
+    layout.classList.add('framer-dashboard-exit');
+  }
+
+  const overlay = document.getElementById('neuralPageTransitionOverlay');
+  const chip = document.getElementById('transitionChipText');
+  const headingEl = document.getElementById('transitionTargetHeading');
+  const subtextEl = document.getElementById('transitionTargetSubtext');
+  const bar = document.getElementById('transitionProgressBarFill');
+
+  if (chip) chip.textContent = targetUrl === '/' ? 'PORTAL DISCONNECT' : 'SECURE CLINICAL HANDSHAKE';
+  if (headingEl) headingEl.textContent = heading;
+  if (subtextEl) subtextEl.textContent = subtext;
+
+  if (overlay) {
+    overlay.style.display = 'flex';
+  }
+
+  if (bar) {
+    bar.style.width = '0%';
+    requestAnimationFrame(() => {
+      bar.style.width = '100%';
+    });
+  }
+
+  try {
+    sessionStorage.setItem('healthgpt_transition_source', 'dashboard');
+    sessionStorage.setItem('healthgpt_transition_time', Date.now().toString());
+  } catch(e){}
+
+  setTimeout(() => {
+    window.location.href = targetUrl;
+  }, 720);
+}
+
+function checkNeuralArrivalTransition() {
+  try {
+    const source = sessionStorage.getItem('healthgpt_transition_source');
+    if (source) {
+      sessionStorage.removeItem('healthgpt_transition_source');
+      const banner = document.getElementById('neuralArrivalToastBanner');
+      const bannerText = document.getElementById('neuralArrivalBannerText');
+      const userName = localStorage.getItem('healthgpt_user_name') || 'Iqra Sultana';
+      if (banner && bannerText) {
+        bannerText.textContent = `⚡ Neural Biometrics Synced · Welcome to Clinical Dashboard, ${userName}`;
+        banner.style.display = 'flex';
+        setTimeout(() => {
+          banner.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+          banner.style.opacity = '0';
+          banner.style.transform = 'translate(-50%, -20px)';
+          setTimeout(() => { banner.style.display = 'none'; }, 650);
+        }, 4200);
+      }
+    }
+  } catch (e) {}
+}
+
 // Ensure Supabase Auth and D3 Clinical Trends are booted on page load
 window.addEventListener('DOMContentLoaded', () => {
   checkSupabaseSession();
+  checkNeuralArrivalTransition();
   setTimeout(() => {
     initD3ClinicalTrends();
     if (typeof loadJanAushadhiMedicines === 'function') {
@@ -37986,6 +38643,15 @@ function confirmEndTelehealthCall() {
 }
 </script>
 
+<!-- FLOATING QUICK THEME LAUNCHER BUTTON -->
+<div id="floatingThemeLauncherBtn" style="position:fixed;bottom:24px;left:24px;z-index:9990;display:flex;align-items:center;gap:8px;">
+  <button type="button" onclick="openThemeStudioModal()" style="background:var(--card);border:2px solid var(--primary);color:var(--ink);padding:9px 15px;border-radius:30px;font-weight:800;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.18);transition:all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" title="Customize Full Application Theme & Colors">
+    <span style="font-size:16px;">🎨</span>
+    <span id="quickThemeBadgeName">Theme: Emerald Clinical</span>
+    <span style="background:var(--primary);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:900;">12 Palettes</span>
+  </button>
+</div>
+
 <div id="themeStudioModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:16px;" onclick="if(event.target===this)closeThemeStudioModal()">
   <div class="modal-content" style="background:var(--card);max-width:840px;width:100%;max-height:90vh;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
     <!-- Modal Header -->
@@ -38138,6 +38804,10 @@ function confirmEndTelehealthCall() {
 
         <button type="button" onclick="logoutFromSupabase()" style="width:100%;padding:9px;background:#f8fafc;color:#ef4444;border:1.5px solid #fecdd3;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;">
           <span>🚪 Sign Out &amp; Lock Protected Records</span>
+        </button>
+
+        <button type="button" onclick="triggerDashboardExitTransition('/login', 'Redirecting to Dedicated Login Terminal', 'Locking session and launching futuristic 3D login view...')" style="width:100%;padding:9px;background:#f0f9ff;color:#0284c7;border:1.5px solid #bae6fd;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;">
+          <span>⚡ Switch to Dedicated Login Terminal</span>
         </button>
       </div>
 

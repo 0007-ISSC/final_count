@@ -1087,6 +1087,234 @@
       animation: fmRoleSwitchFadeSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
     }
 
+    /* ========================================================
+       FRAMER MOTION & CSS KEYFRAME PAGE TRANSITION ENGINE
+       ======================================================== */
+    @keyframes framerIndexExit {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-28px) scale(1.04);
+        filter: blur(12px);
+      }
+    }
+
+    @keyframes portalIrisWipe {
+      0% {
+        clip-path: circle(0% at 50% 50%);
+        opacity: 0;
+      }
+      15% {
+        opacity: 1;
+      }
+      100% {
+        clip-path: circle(150% at 50% 50%);
+        opacity: 1;
+      }
+    }
+
+    @keyframes portalLaserSweep {
+      0% {
+        top: -10%;
+        opacity: 0;
+      }
+      25% {
+        opacity: 1;
+      }
+      75% {
+        opacity: 1;
+      }
+      100% {
+        top: 110%;
+        opacity: 0;
+      }
+    }
+
+    @keyframes ringGyroOuter {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes ringGyroInner {
+      0% { transform: rotate(360deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    @keyframes pulseGlowRing {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(1.18); opacity: 0.8; }
+    }
+
+    @keyframes cyberGridDrift {
+      0% { background-position: 0 0; }
+      100% { background-position: 36px 36px; }
+    }
+
+    .framer-index-exit {
+      animation: framerIndexExit 0.65s cubic-bezier(0.7, 0, 0.84, 0) forwards !important;
+      pointer-events: none !important;
+    }
+
+    /* Fullscreen Futuristic Neural Transition Overlay */
+    .neural-transition-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 50%, rgba(10, 24, 48, 0.96) 0%, rgba(4, 8, 19, 0.98) 75%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: portalIrisWipe 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      overflow: hidden;
+    }
+
+    .transition-grid-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(to right, rgba(14, 165, 233, 0.07) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(14, 165, 233, 0.07) 1px, transparent 1px);
+      background-size: 36px 36px;
+      animation: cyberGridDrift 20s linear infinite;
+      pointer-events: none;
+    }
+
+    .transition-laser-line {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.9) 30%, rgba(52, 211, 153, 1) 50%, rgba(56, 189, 248, 0.9) 70%, transparent 100%);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.9), 0 0 10px rgba(52, 211, 153, 0.8);
+      animation: portalLaserSweep 0.9s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+      pointer-events: none;
+    }
+
+    .transition-modal-card {
+      position: relative;
+      z-index: 10;
+      background: rgba(11, 22, 44, 0.92);
+      border: 1.5px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(14, 165, 233, 0.25);
+      border-radius: 20px;
+      padding: 32px 40px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      animation: fmRoleSwitchFadeSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .transition-gyroscope {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+    }
+
+    .gyro-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 2px solid transparent;
+    }
+
+    .gyro-outer {
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-top-color: #38bdf8;
+      border-bottom-color: #0284c7;
+      animation: ringGyroOuter 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    .gyro-inner {
+      top: 10px;
+      left: 10px;
+      width: 52px;
+      height: 52px;
+      border-left-color: #34d399;
+      border-right-color: #10b981;
+      animation: ringGyroInner 1.1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    .gyro-center-core {
+      position: absolute;
+      top: 22px;
+      left: 22px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #38bdf8 0%, #0369a1 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.9);
+      animation: pulseGlowRing 1.2s ease-in-out infinite;
+    }
+
+    .transition-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .transition-heading {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 6px;
+      letter-spacing: -0.02em;
+    }
+
+    .transition-subtext {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 22px;
+      line-height: 1.45;
+    }
+
+    .transition-bar-track {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .transition-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #0284c7 0%, #38bdf8 50%, #34d399 100%);
+      border-radius: 4px;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+      transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .top-header,
       .visual-showcase,
@@ -1102,6 +1330,25 @@
   </style>
 </head>
 <body>
+
+  <!-- FULLSCREEN FRAMER-MOTION INSPIRED NEURAL PAGE TRANSITION OVERLAY -->
+  <div id="neuralPageTransitionOverlay" class="neural-transition-overlay" style="display:none;">
+    <div class="transition-grid-bg"></div>
+    <div class="transition-laser-line"></div>
+    <div class="transition-modal-card">
+      <div class="transition-gyroscope">
+        <div class="gyro-ring gyro-outer"></div>
+        <div class="gyro-ring gyro-inner"></div>
+        <div class="gyro-center-core">⚡</div>
+      </div>
+      <div class="transition-chip" id="transitionChipText">NEURAL HANDSHAKE VERIFIED</div>
+      <h2 class="transition-heading" id="transitionTargetHeading">Opening Clinical Dashboard</h2>
+      <p class="transition-subtext" id="transitionTargetSubtext">Calibrating digital twin, EHR telemetry & live consult session...</p>
+      <div class="transition-bar-track">
+        <div class="transition-bar-fill" id="transitionProgressBarFill"></div>
+      </div>
+    </div>
+  </div>
 
   <!-- Ambient Organic Warm Background Canvas Blobs & Interactive Constellation Web -->
   <div class="ambient-canvas-wrap">
@@ -1221,6 +1468,17 @@
       <!-- Live Notification Banner -->
       <div class="alert-banner" id="alertBanner" style="display:none;"></div>
 
+      <!-- Cross-Portal Live Synchronization Status Bar -->
+      <div id="indexSyncStatusBar" style="margin-bottom:14px;padding:9px 13px;border-radius:12px;background:rgba(2,132,199,0.07);border:1px solid rgba(2,132,199,0.22);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#0284c7;font-weight:700;transition:all 0.3s ease;">
+        <span id="indexSyncStatusText" style="display:flex;align-items:center;gap:7px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;display:inline-block;animation:pulseDot 1.6s infinite;"></span>
+          <span>🔄 Dual-Portal Sync Active</span>
+        </span>
+        <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" style="background:#0284c7;color:#ffffff;text-decoration:none;font-size:11px;font-weight:800;padding:4px 9px;border-radius:6px;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(2,132,199,0.25);" title="Switch to full-screen holographic terminal">
+          <span>Dedicated Portal</span> <span>↗</span>
+        </a>
+      </div>
+
       <!-- 1. PATIENT / USER LOGIN FORM -->
       <div id="patientFormWrapper">
         <form id="unifiedLoginForm" onsubmit="handleUnifiedSignIn(event)" style="display:flex;flex-direction:column;gap:14px;">
@@ -1229,7 +1487,7 @@
           <div class="input-group">
             <label class="input-label" for="usernameInput">User Name</label>
             <div class="input-wrapper">
-              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name" onfocus="playInteractiveTone('focus')">
+              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name" oninput="handleIndexUsernameInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">👤</span>
             </div>
           </div>
@@ -1238,9 +1496,11 @@
           <div class="input-group">
             <label class="input-label" for="emailInput">Email Address</label>
             <div class="input-wrapper">
-              <input type="email" id="emailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email" onfocus="playInteractiveTone('focus')">
+              <input type="email" id="emailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email" oninput="handleIndexEmailInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">✉</span>
             </div>
+            <!-- Dynamic Gmail Auto-OTP Detection Badge -->
+            <div id="indexEmailStatusBadge" style="display:none;margin-top:6px;font-size:11.5px;font-weight:700;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;transition:all 0.2s ease;"></div>
           </div>
 
           <!-- 3. PASSWORD -->
@@ -1257,35 +1517,64 @@
           <div class="input-group">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
               <label class="input-label" for="otpInput" style="margin-bottom:0;">OTP (One-Time Password)</label>
-              <button type="button" id="btnRequestOtp" onclick="requestOtpCode()" style="background:none;border:none;color:var(--accent-warm);font-size:12px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px;">
+              <button type="button" id="btnRequestOtp" onclick="requestOtpCode(false)" style="background:none;border:none;color:var(--accent-warm);font-size:12px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px;">
                 <span>⚡ Send / Get OTP</span>
               </button>
             </div>
             <div class="input-wrapper">
-              <input type="text" id="otpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playInteractiveTone('focus')">
+              <input type="text" id="otpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" oninput="handleIndexOtpInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🔑</span>
             </div>
+            
+            <!-- Dynamic High-Tech OTP Digits Banner -->
+            <div id="indexDynamicOtpBox" style="display:flex;margin-top:8px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg, rgba(13,148,136,0.08) 0%, rgba(2,132,199,0.08) 100%);border:1.5px solid rgba(13,148,136,0.3);flex-direction:column;gap:6px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:11.5px;color:#0d9488;font-weight:800;display:flex;align-items:center;gap:5px;">
+                  <span>⚡ Active Verification Passcode:</span>
+                </span>
+                <span id="indexOtpTimerBadge" style="font-size:10px;background:#0d9488;color:#fff;padding:2px 7px;border-radius:6px;font-weight:800;">Valid 60s</span>
+              </div>
+              <div id="indexOtpDigitsDisplay" style="display:flex;gap:6px;justify-content:center;margin:4px 0;">
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">1</span>
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">2</span>
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">3</span>
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">4</span>
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">5</span>
+                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">6</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:11px;color:#64748b;" id="indexOtpDispatchedTo">Auto-generated for iqrasultana0007@gmail.com</span>
+                <button type="button" onclick="copyIndexOtpCode()" id="btnCopyIndexOtp" style="background:#0d9488;color:#ffffff;border:none;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(13,148,136,0.25);">📋 Copy Code</button>
+              </div>
+            </div>
+
             <div id="otpStatusHint" style="margin-top:5px;font-size:11.5px;color:var(--forest);font-weight:600;display:flex;align-items:center;gap:4px;">
-              <span>✓ Test OTP: <b>123456</b> (or click "Send / Get OTP")</span>
+              <span>✓ Test OTP: <b>123456</b> (or typing valid email auto-generates code)</span>
             </div>
           </div>
 
           <!-- 5. SIGN IN (AFTER THAT SIGN IN) -->
-          <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:12px;" onclick="triggerButtonBoom(event)">
+          <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:10px;" onclick="triggerButtonBoom(event)">
             <span>Sign In as Patient</span>
             <span>→</span>
           </button>
 
+          <!-- DEDICATED USER LOGIN PORTAL BUTTON -->
+          <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" class="btn-warm-primary" id="btnOpenDedicatedPortal" style="margin-top:4px;background:linear-gradient(135deg, #0284c7 0%, #0d9488 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(2,132,199,0.28);border:none;">
+            <span>🧬 Open Dedicated Holographic User Login Page</span>
+            <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">3D Terminal ↗</span>
+          </a>
+
           <!-- CELEBRATION LOGIN ANIMATION PREVIEW TRIGGER -->
-          <button type="button" class="btn-warm-primary" onclick="triggerCelebrationPreview()" style="margin-top:8px;background:linear-gradient(135deg, #0d9488 0%, #2563eb 100%);border:none;box-shadow:0 4px 14px rgba(13,148,136,0.32);">
+          <button type="button" class="btn-warm-primary" onclick="triggerCelebrationPreview()" style="margin-top:4px;background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%);border:1px solid #334155;color:#e2e8f0;box-shadow:0 4px 14px rgba(0,0,0,0.2);">
             <span>🎆 Login Animation with Firecrackers</span>
-            <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">Celebration</span>
+            <span style="font-size:11px;background:rgba(255,255,255,0.15);padding:2px 8px;border-radius:10px;font-weight:800;">Preview</span>
           </button>
         </form>
 
         <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--card-border-subtle);text-align:center;font-size:12px;color:var(--ink-secondary);">
           <p>
-            Prefer standalone page? <a href="/user-login" style="color:var(--accent-warm);font-weight:700;text-decoration:none;">Open Dedicated User Login Page &rarr;</a>
+            Prefer dedicated full-screen experience? <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" style="color:var(--accent-warm);font-weight:800;text-decoration:none;">Open Dedicated User Login Page &rarr;</a>
           </p>
         </div>
       </div>
@@ -1482,22 +1771,344 @@
       alert.style.display = 'block';
     }
 
+    /* =========================================================
+       CROSS-PORTAL DUAL SYNCHRONIZATION & AUTO-OTP ENGINE
+       Keeps INDEX.HTML and user-login.html completely in sync
+       ========================================================= */
+    let indexAuthChannel = null;
+    let indexEmailDebounceTimer = null;
+    let indexOtpCountdownInterval = null;
+    let lastGeneratedIndexOtp = null;
+
+    function initIndexAuthSyncEngine() {
+      // 1. Initialize BroadcastChannel
+      try {
+        if ('BroadcastChannel' in window) {
+          indexAuthChannel = new BroadcastChannel('healthgpt_auth_channel');
+          indexAuthChannel.onmessage = (event) => {
+            handleIncomingSyncMessage(event.data);
+          };
+        }
+      } catch (e) {
+        console.warn('BroadcastChannel not available on INDEX.HTML:', e);
+      }
+
+      // 2. Storage event listener for cross-tab fallback
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'healthgpt_sync_event' && e.newValue) {
+          try {
+            const data = JSON.parse(e.newValue);
+            handleIncomingSyncMessage(data);
+          } catch(err){}
+        }
+      });
+
+      // 3. Hydrate state from localStorage or query params
+      hydrateIndexFromStorage();
+    }
+
+    function handleIncomingSyncMessage(data) {
+      if (!data || typeof data !== 'object') return;
+
+      const syncStatus = document.getElementById('indexSyncStatusText');
+      if (syncStatus) {
+        syncStatus.innerHTML = `
+          <span style="width:8px;height:8px;border-radius:50%;background:#38bdf8;box-shadow:0 0 10px #38bdf8;display:inline-block;"></span>
+          <span style="color:#0284c7;">⚡ Synced from Dedicated Terminal</span>
+        `;
+        setTimeout(() => {
+          if (syncStatus) {
+            syncStatus.innerHTML = `
+              <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;display:inline-block;"></span>
+              <span>🔄 Dual-Portal Sync Active</span>
+            `;
+          }
+        }, 2200);
+      }
+
+      if (data.type === 'NAME_CHANGED' && data.name) {
+        const userInput = document.getElementById('usernameInput');
+        if (userInput && userInput.value !== data.name) {
+          userInput.value = data.name;
+        }
+      }
+
+      if (data.type === 'EMAIL_CHANGED' && data.email) {
+        const emailInput = document.getElementById('emailInput');
+        if (emailInput && emailInput.value !== data.email) {
+          emailInput.value = data.email;
+          updateIndexEmailBadge(data.email);
+        }
+      }
+
+      if (data.type === 'OTP_CHANGED' && data.otp) {
+        const otpInput = document.getElementById('otpInput');
+        if (otpInput && otpInput.value !== data.otp) {
+          otpInput.value = data.otp;
+          renderIndexOtpCards(data.otp);
+        }
+      }
+
+      if (data.type === 'OTP_GENERATED' && data.otp) {
+        const otpInput = document.getElementById('otpInput');
+        if (otpInput) otpInput.value = data.otp;
+        renderIndexOtpCards(data.otp);
+        startOtpTimer(60);
+        showAlert(`⚡ Authentic OTP (${data.otp}) received from Dedicated Terminal!`, 'success');
+      }
+
+      if (data.type === 'LOGIN_SUCCESS') {
+        sessionStorage.setItem('healthgpt_authenticated', 'true');
+        triggerIndexTransition('/dashboard', 'Verified in Terminal · Opening Dashboard', 'Switching to clinical telemetry dashboard...');
+      }
+    }
+
+    function triggerIndexTransition(targetUrl = '/dashboard', heading = 'Opening Clinical Dashboard', subtext = 'Calibrating digital twin, EHR telemetry & live consult session...') {
+      const card = document.querySelector('.auth-card') || document.querySelector('.auth-card-luxury');
+      if (card) {
+        card.classList.add('framer-index-exit');
+      }
+
+      const celebrationOverlay = document.getElementById('loginCelebrationOverlay');
+      if (celebrationOverlay && celebrationOverlay.style.display !== 'none') {
+        celebrationOverlay.style.transition = 'opacity 0.4s ease';
+        celebrationOverlay.style.opacity = '0';
+        setTimeout(() => { celebrationOverlay.style.display = 'none'; }, 400);
+      }
+
+      const overlay = document.getElementById('neuralPageTransitionOverlay');
+      const chip = document.getElementById('transitionChipText');
+      const headingEl = document.getElementById('transitionTargetHeading');
+      const subtextEl = document.getElementById('transitionTargetSubtext');
+      const bar = document.getElementById('transitionProgressBarFill');
+
+      if (chip) chip.textContent = targetUrl.includes('user-login') ? 'SWITCHING WORKSPACE' : 'NEURAL HANDSHAKE VERIFIED';
+      if (headingEl) headingEl.textContent = heading;
+      if (subtextEl) subtextEl.textContent = subtext;
+
+      if (overlay) {
+        overlay.style.display = 'flex';
+      }
+
+      if (bar) {
+        bar.style.width = '0%';
+        requestAnimationFrame(() => {
+          bar.style.width = '100%';
+        });
+      }
+
+      try {
+        sessionStorage.setItem('healthgpt_transition_source', 'index_portal');
+        sessionStorage.setItem('healthgpt_transition_time', Date.now().toString());
+      } catch(e){}
+
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 720);
+    }
+
+    function broadcastIndexSync(payload) {
+      if (!payload) return;
+      payload.timestamp = Date.now();
+      payload.source = 'INDEX_HTML';
+
+      if (indexAuthChannel) {
+        try { indexAuthChannel.postMessage(payload); } catch(e){}
+      }
+      try {
+        localStorage.setItem('healthgpt_sync_event', JSON.stringify(payload));
+      } catch(e){}
+    }
+
+    function hydrateIndexFromStorage() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const qName = urlParams.get('name');
+        const qEmail = urlParams.get('email');
+        const qOtp = urlParams.get('otp');
+
+        const savedName = qName || localStorage.getItem('healthgpt_sync_username');
+        const savedEmail = qEmail || localStorage.getItem('healthgpt_sync_email');
+        const savedOtp = qOtp || localStorage.getItem('healthgpt_sync_otp');
+
+        if (savedName) {
+          const u = document.getElementById('usernameInput');
+          if (u) u.value = savedName;
+        }
+        if (savedEmail) {
+          const em = document.getElementById('emailInput');
+          if (em) {
+            em.value = savedEmail;
+            updateIndexEmailBadge(savedEmail);
+          }
+        }
+        if (savedOtp) {
+          const o = document.getElementById('otpInput');
+          if (o) {
+            o.value = savedOtp;
+            renderIndexOtpCards(savedOtp);
+          }
+        }
+      } catch(e){}
+    }
+
+    function handleIndexUsernameInput(val) {
+      try { localStorage.setItem('healthgpt_sync_username', val); } catch(e){}
+      broadcastIndexSync({ type: 'NAME_CHANGED', name: val });
+    }
+
+    function handleIndexEmailInput(val) {
+      const email = (val || '').trim();
+      try { localStorage.setItem('healthgpt_sync_email', email); } catch(e){}
+      broadcastIndexSync({ type: 'EMAIL_CHANGED', email });
+      updateIndexEmailBadge(email);
+
+      // Debounce authentic OTP generation
+      clearTimeout(indexEmailDebounceTimer);
+      if (isValidGmailOrEmail(email)) {
+        indexEmailDebounceTimer = setTimeout(() => {
+          requestOtpCode(true);
+        }, 600);
+      }
+    }
+
+    function handleIndexOtpInput(val) {
+      const otp = (val || '').trim();
+      try { localStorage.setItem('healthgpt_sync_otp', otp); } catch(e){}
+      broadcastIndexSync({ type: 'OTP_CHANGED', otp });
+      renderIndexOtpCards(otp);
+    }
+
+    function isValidGmailOrEmail(email) {
+      if (!email) return false;
+      const lower = email.toLowerCase().trim();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower) && (lower.includes('@gmail.com') || lower.length >= 8);
+    }
+
+    function updateIndexEmailBadge(email) {
+      const badge = document.getElementById('indexEmailStatusBadge');
+      if (!badge) return;
+
+      if (!email) {
+        badge.style.display = 'none';
+        return;
+      }
+
+      badge.style.display = 'flex';
+      const isGmail = email.toLowerCase().endsWith('@gmail.com');
+      const isValid = isValidGmailOrEmail(email);
+
+      if (isGmail) {
+        badge.style.background = 'rgba(16, 185, 129, 0.12)';
+        badge.style.color = '#059669';
+        badge.style.border = '1px solid rgba(16, 185, 129, 0.3)';
+        badge.innerHTML = `<span>✓ Verified Google Workspace (${email}) • Auto-OTP Armed</span>`;
+      } else if (isValid) {
+        badge.style.background = 'rgba(2, 132, 199, 0.1)';
+        badge.style.color = '#0284c7';
+        badge.style.border = '1px solid rgba(2, 132, 199, 0.3)';
+        badge.innerHTML = `<span>✓ Clinical Email Detected • Ready for OTP Verification</span>`;
+      } else {
+        badge.style.background = 'rgba(245, 158, 11, 0.1)';
+        badge.style.color = '#d97706';
+        badge.style.border = '1px solid rgba(245, 158, 11, 0.3)';
+        badge.innerHTML = `<span>⏳ Complete your email to automatically dispatch OTP</span>`;
+      }
+    }
+
+    function renderIndexOtpCards(otpStr) {
+      const container = document.getElementById('indexOtpDigitsDisplay');
+      if (!container) return;
+      const padded = (otpStr || '').padEnd(6, '•').slice(0, 6);
+      container.innerHTML = padded.split('').map(digit => {
+        const isFilled = digit !== '•';
+        return `
+          <span class="index-otp-card" style="width:34px;height:38px;background:${isFilled ? '#ffffff' : '#f8fafc'};border:1.5px solid ${isFilled ? '#0d9488' : '#cbd5e1'};border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:${isFilled ? '#0f766e' : '#94a3b8'};box-shadow:${isFilled ? '0 2px 6px rgba(13,148,136,0.18)' : 'none'};transition:all 0.2s ease;">
+            ${digit}
+          </span>
+        `;
+      }).join('');
+    }
+
+    function startOtpTimer(seconds = 60) {
+      clearInterval(indexOtpCountdownInterval);
+      const timerBadge = document.getElementById('indexOtpTimerBadge');
+      let remaining = seconds;
+      if (timerBadge) timerBadge.textContent = `Valid ${remaining}s`;
+
+      indexOtpCountdownInterval = setInterval(() => {
+        remaining--;
+        if (remaining <= 0) {
+          clearInterval(indexOtpCountdownInterval);
+          if (timerBadge) {
+            timerBadge.textContent = 'Expired';
+            timerBadge.style.background = '#ef4444';
+          }
+        } else {
+          if (timerBadge) {
+            timerBadge.textContent = `Valid ${remaining}s`;
+            timerBadge.style.background = remaining <= 10 ? '#ef4444' : '#0d9488';
+          }
+        }
+      }, 1000);
+    }
+
+    function copyIndexOtpCode() {
+      const otp = document.getElementById('otpInput')?.value || lastGeneratedIndexOtp || '123456';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(otp);
+      }
+      const btn = document.getElementById('btnCopyIndexOtp');
+      if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✓ Copied!';
+        btn.style.background = '#059669';
+        setTimeout(() => {
+          btn.innerHTML = orig;
+          btn.style.background = '#0d9488';
+        }, 1800);
+      }
+      showAlert(`Copied OTP ${otp} to clipboard!`, 'success');
+    }
+
+    function openDedicatedLoginFromIndex(e) {
+      if (e) e.preventDefault();
+      const name = document.getElementById('usernameInput')?.value || 'Iqra Sultana';
+      const email = document.getElementById('emailInput')?.value || 'iqrasultana0007@gmail.com';
+      const otp = document.getElementById('otpInput')?.value || '123456';
+
+      try {
+        localStorage.setItem('healthgpt_sync_username', name);
+        localStorage.setItem('healthgpt_sync_email', email);
+        localStorage.setItem('healthgpt_sync_otp', otp);
+      } catch(err){}
+
+      const targetUrl = `/user-login?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`;
+      triggerIndexTransition(targetUrl, 'Opening Dedicated 3D Terminal', 'Transferring verified patient credentials & biometrics...');
+    }
+
     function fillPreset(name, email, password) {
       document.getElementById('usernameInput').value = name;
       document.getElementById('emailInput').value = email;
       document.getElementById('passwordInput').value = password;
-      document.getElementById('otpInput').value = '123456';
+      updateIndexEmailBadge(email);
+      handleIndexUsernameInput(name);
+      handleIndexEmailInput(email);
+      requestOtpCode(true);
       showAlert(`Profile loaded: ${name} (${email})`, 'success');
     }
 
-    async function requestOtpCode() {
+    async function requestOtpCode(isAuto = false) {
       const email = document.getElementById('emailInput').value.trim();
       const username = document.getElementById('usernameInput').value.trim();
       const hint = document.getElementById('otpStatusHint');
       const btn = document.getElementById('btnRequestOtp');
+      const dispatchedText = document.getElementById('indexOtpDispatchedTo');
       
-      btn.innerHTML = '<span>⏳ Sending...</span>';
-      btn.disabled = true;
+      if (btn && !isAuto) {
+        btn.innerHTML = '<span>⏳ Sending...</span>';
+        btn.disabled = true;
+      }
 
       try {
         const res = await fetch('/api/auth/send-otp', {
@@ -1506,21 +2117,46 @@
           body: JSON.stringify({ email, username })
         });
         const data = await res.json().catch(() => ({}));
-        const otpCode = data.demoOtp || data.otp || '123456';
+        const otpCode = String(data.demoOtp || data.otp || '123456');
+        lastGeneratedIndexOtp = otpCode;
+
         document.getElementById('otpInput').value = otpCode;
+        renderIndexOtpCards(otpCode);
+        startOtpTimer(60);
+
+        if (dispatchedText) {
+          dispatchedText.textContent = `Dispatched to ${email || username || 'Gmail'}`;
+        }
+
         if (hint) {
           hint.innerHTML = `<span>✓ Verification OTP: <b>${otpCode}</b> (Sent to ${email || username})</span>`;
-          hint.style.color = 'var(--forest)';
+          hint.style.color = '#059669';
         }
-        showAlert(`Verification code sent: ${otpCode}`, 'success');
+
+        // Broadcast to dedicated terminal
+        broadcastIndexSync({
+          type: 'OTP_GENERATED',
+          otp: otpCode,
+          email: email,
+          name: username
+        });
+
+        showAlert(`Verification code generated: ${otpCode}`, 'success');
+        playInteractiveTone('focus');
       } catch (err) {
-        document.getElementById('otpInput').value = '123456';
+        const fallbackOtp = '123456';
+        lastGeneratedIndexOtp = fallbackOtp;
+        document.getElementById('otpInput').value = fallbackOtp;
+        renderIndexOtpCards(fallbackOtp);
+        startOtpTimer(60);
         if (hint) {
           hint.innerHTML = '<span>✓ Verification OTP: <b>123456</b> (Offline Ready)</span>';
         }
       } finally {
-        btn.innerHTML = '<span>⚡ Resend OTP</span>';
-        btn.disabled = false;
+        if (btn) {
+          btn.innerHTML = '<span>⚡ Resend OTP</span>';
+          btn.disabled = false;
+        }
       }
     }
 
@@ -1620,7 +2256,7 @@
       if (celebrationRedirectTimer) clearTimeout(celebrationRedirectTimer);
       firecrackersRunning = false;
       if (fcAnimId) cancelAnimationFrame(fcAnimId);
-      window.location.href = '/dashboard';
+      triggerIndexTransition('/dashboard', 'Launching Clinical Dashboard', 'Synchronizing digital twin, EHR telemetry & live consult session...');
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -2485,6 +3121,7 @@
       initCardTilt();
       initConstellationCanvas();
       initFramerMotionEntrance();
+      initIndexAuthSyncEngine();
 
       const params = new URLSearchParams(window.location.search);
       if (params.get('role') === 'admin' || window.location.hash === '#admin') {
