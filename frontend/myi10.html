@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>HealthGPT — AI Health Intelligence Platform</title>
+<link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
+<link rel="alternate icon" type="image/jpeg" href="/healthgpt-logo.jpg">
+<link rel="apple-touch-icon" href="/healthgpt-logo.jpg">
 <meta name="description" content="Comprehensive clinical AI healthcare platform featuring Supabase user authentication for secure health records, an interactive 3D Human Digital Twin, a pan-India network of 10,000+ verified doctors across 18 medical specialties with instant telehealth and in-clinic booking, interactive D3.js clinical analytics, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and personalized preventive care telemetry.">
 <meta property="og:title" content="HealthGPT — AI Health Intelligence Platform">
 <meta property="og:description" content="Comprehensive clinical AI healthcare platform featuring Supabase user authentication for secure health records, an interactive 3D Human Digital Twin, a pan-India network of 10,000+ verified doctors across 18 medical specialties with instant telehealth and in-clinic booking, interactive D3.js clinical analytics, Dr. Nambi and Alex AI companions, RxVision prescription OCR verification, Jan Aushadhi generic alternatives, and personalized preventive care telemetry.">
@@ -5337,11 +5340,11 @@ window.go = window.go || function(pageId, subParam) {
 
   <!-- SIDEBAR NAVIGATION -->
   <aside class="sidebar" id="appSidebar">
-    <div class="logo">
-      <div class="logo-icon">✚</div>
-      <div class="logo-text">
-        <h2>HealthGPT</h2>
-        <small>Next-Gen Health AI</small>
+    <div class="logo" style="display:flex;align-items:center;gap:12px;padding:6px 8px 18px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:16px;">
+      <img src="/healthgpt-logo.svg" alt="HealthGPT Logo" class="logo-icon-img" style="width:44px;height:44px;border-radius:12px;object-fit:cover;flex-shrink:0;box-shadow:0 4px 14px rgba(0,229,255,0.28);border:1px solid rgba(56,189,248,0.35);background:#0c1929;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
+      <div class="logo-text" style="overflow:hidden;line-height:1.2;">
+        <h2 style="margin:0;font-size:19px;font-weight:800;letter-spacing:-0.4px;color:#ffffff;">HealthGPT</h2>
+        <small style="display:block;margin-top:3px;font-size:9.5px;letter-spacing:0.3px;font-weight:750;color:#5eead4;text-transform:none;white-space:nowrap;">Where AI Meets HealthCare</small>
       </div>
     </div>
 
@@ -5423,12 +5426,6 @@ window.go = window.go || function(pageId, subParam) {
           <span>Talk to Nambi & Alex</span>
           <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 6px #4ade80;"></span>
         </button>
-
-        <!-- DEDICATED ALEX VOICE CONSULTATION STUDIO -->
-        <a href="/alex-voice" class="btn btn-sm" id="topNavAlexVoiceStudioBtn" style="background:#7c3aed;border:none;color:#ffffff;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;text-decoration:none;box-shadow:0 2px 8px rgba(124,58,237,0.35);transition:all 0.2s;" title="Open Alex Microphone Voice Consultation Studio">
-          <span>🧠</span>
-          <span>Alex Voice Studio</span>
-        </a>
 
         <!-- SUPABASE CLOUD BACKEND BADGE & MODAL TRIGGER -->
         <button class="btn btn-sm" id="supabaseStatusBadgeBtn" onclick="openSupabaseModal()" style="background:#ecfdf5;border:1.5px solid #86efac;color:#15803d;font-weight:700;display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,0.05);transition:all 0.2s;" title="Supabase Cloud Backend (Project: aympyxmjgbgmcvcdnzyt)">
@@ -6220,9 +6217,6 @@ window.go = window.go || function(pageId, subParam) {
             <p style="margin:4px 0 0;font-size:13px;color:var(--ink-soft);">Experience natural voice conversations as if talking directly to a doctor. Crisp, sweet, and caring dialogue.</p>
           </div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <a href="/alex-voice" class="btn btn-sm" id="btnAlexVoiceConsultLaunch" style="background:#7e22ce;border:none;color:#ffffff;font-weight:700;display:inline-flex;align-items:center;gap:7px;border-radius:20px;padding:7px 16px;box-shadow:0 2px 8px rgba(126,34,206,0.35);text-decoration:none;" title="Open Alex Microphone Voice Consultation Studio">
-              <span>🧠</span> <span>Alex Voice Studio</span>
-            </a>
             <button class="btn btn-sm" id="btnDoctorVoiceCall" onclick="openEndlessVoiceRoom()" style="background:linear-gradient(135deg, #0d9488, #0284c7);border:none;color:#ffffff;font-weight:700;display:inline-flex;align-items:center;gap:7px;border-radius:20px;padding:7px 18px;box-shadow:0 2px 8px rgba(2,132,199,0.35);cursor:pointer;">
               <span id="voiceCallPulseIcon">🎙️</span> <span id="voiceCallBtnLabel">Talk to Nambi & Alex (Endless Voice)</span>
             </button>
@@ -6629,8 +6623,28 @@ window.go = window.go || function(pageId, subParam) {
             🎙️ Listening to you... Speak naturally into your microphone.
           </div>
 
+          <!-- INTERACTIVE QUICK TOPICS & VOICE PROMPTS CAROUSEL -->
+          <div style="margin-top:12px;width:100%;text-align:left;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
+              <span style="font-size:11px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;">
+                💡 Interactive Quick Topics (Tap to Ask & Speak):
+              </span>
+              <!-- Voice Playback Pace Toggle -->
+              <div style="display:inline-flex;align-items:center;gap:4px;font-size:11px;background:var(--card-subtle, #f1f5f9);padding:2px 8px;border-radius:14px;border:1px solid var(--line, #e2e8f0);">
+                <span style="color:var(--muted);font-weight:700;">⚡ Voice Speed:</span>
+                <button type="button" onclick="setVoiceSpeedRate(1.0)" id="voiceSpeed1x" class="voice-speed-pill active" style="border:none;background:#0d9488;color:#fff;font-size:10.5px;font-weight:750;padding:2px 7px;border-radius:10px;cursor:pointer;">1.0x</button>
+                <button type="button" onclick="setVoiceSpeedRate(1.15)" id="voiceSpeed115x" class="voice-speed-pill" style="border:none;background:transparent;color:var(--muted);font-size:10.5px;font-weight:750;padding:2px 7px;border-radius:10px;cursor:pointer;">1.15x</button>
+                <button type="button" onclick="setVoiceSpeedRate(0.9)" id="voiceSpeed09x" class="voice-speed-pill" style="border:none;background:transparent;color:var(--muted);font-size:10.5px;font-weight:750;padding:2px 7px;border-radius:10px;cursor:pointer;">0.9x</button>
+              </div>
+            </div>
+            <!-- Scrollable chips container -->
+            <div id="voiceQuickPromptChips" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;">
+              <!-- Dynamically populated chips -->
+            </div>
+          </div>
+
           <!-- LIVE SPEECH TRANSCRIPT / SPOKEN DIALOGUE BUBBLE -->
-          <div class="voice-transcript-bubble-box" id="voiceTranscriptBubbleBox" style="margin-top:14px;width:100%;background:var(--card-subtle, #f8fafc);border:1px solid var(--line, #e2e8f0);border-radius:14px;padding:14px;text-align:left;max-height:160px;overflow-y:auto;">
+          <div class="voice-transcript-bubble-box" id="voiceTranscriptBubbleBox" style="margin-top:10px;width:100%;background:var(--card-subtle, #f8fafc);border:1px solid var(--line, #e2e8f0);border-radius:14px;padding:14px;text-align:left;max-height:160px;overflow-y:auto;">
             <div id="voiceTranscriptUserRow" style="display:flex;align-items:flex-start;gap:10px;">
               <span style="font-size:15px;">👤</span>
               <div style="flex:1;">
@@ -6649,6 +6663,14 @@ window.go = window.go || function(pageId, subParam) {
                 </div>
               </div>
             </div>
+          </div>
+
+          <!-- IN-ROOM INSTANT TEXT & VOICE HYBRID INPUT -->
+          <div style="margin-top:12px;width:100%;display:flex;gap:8px;align-items:center;">
+            <input type="text" id="voiceRoomDirectInput" placeholder="Type or speak a question to Dr. Nambi / Alex..." onkeydown="if(event.key==='Enter') sendVoiceRoomDirectMessage()" style="flex:1;background:var(--card, #ffffff);border:1.5px solid var(--line, #cbd5e1);border-radius:24px;padding:9px 16px;font-size:13px;color:var(--dark, #0f172a);outline:none;transition:border 0.2s;" onfocus="this.style.borderColor='var(--primary, #0d9488)'" onblur="this.style.borderColor='var(--line, #cbd5e1)'"/>
+            <button type="button" onclick="sendVoiceRoomDirectMessage()" class="btn" style="background:linear-gradient(135deg, #0d9488, #0284c7);color:#ffffff;border:none;border-radius:24px;padding:9px 18px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(13,148,136,0.3);white-space:nowrap;">
+              <span>Send</span> <span>➔</span>
+            </button>
           </div>
 
           <!-- HANDS-FREE HINT -->
@@ -16559,6 +16581,124 @@ let isEndlessVoiceActive = false;
 let isVoicePaused = false;
 let isVoiceMuted = false;
 let voiceLoopTimer = null;
+let currentVoiceSpeedRate = 1.0;
+let voiceBarsAnimTimer = null;
+
+function setVoiceSpeedRate(rate) {
+  currentVoiceSpeedRate = Number(rate) || 1.0;
+  const p1 = document.getElementById('voiceSpeed1x');
+  const p115 = document.getElementById('voiceSpeed115x');
+  const p09 = document.getElementById('voiceSpeed09x');
+  
+  [p1, p115, p09].forEach(p => {
+    if (p) {
+      p.style.background = 'transparent';
+      p.style.color = 'var(--muted)';
+      p.classList.remove('active');
+    }
+  });
+
+  const activePill = rate === 1.15 ? p115 : (rate === 0.9 ? p09 : p1);
+  if (activePill) {
+    const isDoc = currentPersona === 'doctor';
+    activePill.style.background = isDoc ? '#0d9488' : '#7e22ce';
+    activePill.style.color = '#fff';
+    activePill.classList.add('active');
+  }
+  toast(`⚡ Voice pace set to ${rate}x`);
+}
+
+function startVoiceWaveAnimation() {
+  stopVoiceWaveAnimation();
+  const bars = document.querySelectorAll('#voiceWaveBarsRow .vbar');
+  if (!bars.length) return;
+  voiceBarsAnimTimer = setInterval(() => {
+    bars.forEach(bar => {
+      const h = Math.floor(Math.random() * 24) + 6;
+      bar.style.height = `${h}px`;
+    });
+  }, 120);
+}
+
+function stopVoiceWaveAnimation() {
+  if (voiceBarsAnimTimer) {
+    clearInterval(voiceBarsAnimTimer);
+    voiceBarsAnimTimer = null;
+  }
+  const bars = document.querySelectorAll('#voiceWaveBarsRow .vbar');
+  bars.forEach(bar => {
+    bar.style.height = '8px';
+  });
+}
+
+function renderVoiceQuickPrompts(personaKey = currentPersona) {
+  const container = document.getElementById('voiceQuickPromptChips');
+  if (!container) return;
+  
+  const isDoc = personaKey === 'doctor';
+  const doctorPrompts = [
+    { icon: '🩺', label: 'Check Vitals & Digital Twin', text: 'Can you evaluate my current biometric vitals and sync with my 3D digital human twin?' },
+    { icon: '⚡', label: 'Sudden Headache Relief', text: 'I have a throbbing headache since this morning. What are safe immediate steps?' },
+    { icon: '💊', label: 'Medicine & Drug Safety', text: 'Are there any interactions or side effects between Paracetamol and Amoxicillin?' },
+    { icon: '🫀', label: 'Chest Pressure & SpO2', text: 'I notice a slight tightness in my chest when inhaling deeply. What red flags should I watch for?' },
+    { icon: '🧪', label: 'HbA1c & Fasting Sugar', text: 'My fasting blood glucose is 118 mg/dL and HbA1c is 6.0%. What does this suggest?' },
+    { icon: '🥗', label: 'Anti-Inflammatory Nutrition', text: 'What evidence-based clinical diet and nutrition habits will reduce fatigue and inflammation?' }
+  ];
+
+  const therapistPrompts = [
+    { icon: '🧘', label: '4-4 Diaphragmatic Breathing', text: 'Alex, please guide me through a calming 4-4 diaphragmatic breathing session step-by-step.' },
+    { icon: '🌙', label: 'Insomnia & Racing Thoughts', text: 'I cannot fall asleep and my mind is racing with worry. Please help me calm down.' },
+    { icon: '💆', label: 'Shoulder & Neck Tension Body Scan', text: 'I am holding severe tension in my shoulders and neck. Can we do a gentle body scan?' },
+    { icon: '🌱', label: '5-4-3-2-1 Sensory Grounding', text: 'I feel sudden anxiety. Please guide me through 5-4-3-2-1 sensory grounding right now.' },
+    { icon: '💖', label: 'CBT Cognitive Reframing', text: 'I am feeling overwhelmed with stress. Help me reframe this thought calmly and gently.' },
+    { icon: '☕', label: 'Mindful Energy Reset', text: 'Can you share a 2-minute mindful reset ritual to recharge my emotional energy?' }
+  ];
+
+  const prompts = isDoc ? doctorPrompts : therapistPrompts;
+  const chipBg = isDoc ? 'rgba(13,148,136,0.08)' : 'rgba(126,34,206,0.08)';
+  const chipBorder = isDoc ? 'rgba(13,148,136,0.3)' : 'rgba(126,34,206,0.3)';
+  const chipColor = isDoc ? '#0f766e' : '#7e22ce';
+
+  container.innerHTML = prompts.map(p => `
+    <button type="button" onclick="triggerQuickVoicePrompt('${p.text.replace(/'/g, "\\'")}')" class="voice-chip-btn" style="border:1px solid ${chipBorder};background:${chipBg};color:${chipColor};border-radius:18px;padding:5px 12px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;transition:all 0.18s ease;">
+      <span>${p.icon}</span>
+      <span>${p.label}</span>
+    </button>
+  `).join('');
+}
+
+function triggerQuickVoicePrompt(promptText) {
+  if (!promptText) return;
+  const transcriptUserEl = document.getElementById('voiceTranscriptUserText');
+  if (transcriptUserEl) transcriptUserEl.textContent = `"${promptText}"`;
+  
+  const ta = document.getElementById('consultInputArea') || document.getElementById('consultInput');
+  if (ta) {
+    ta.value = promptText;
+    if (typeof autoResizeConsultTextarea === 'function') autoResizeConsultTextarea();
+  }
+
+  const conf = PERSONAS_CONFIG[currentPersona] || PERSONAS_CONFIG.doctor;
+  const liveStatus = document.getElementById('voiceCallLiveStatus');
+  if (liveStatus) liveStatus.textContent = `Thinking about "${promptText}"...`;
+  updateVoiceRoomVisualState('listening', `🤔 ${conf.name} is reasoning about your question...`);
+  
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (recognitionInstance) {
+    try { recognitionInstance.stop(); } catch(e){}
+  }
+
+  sendConsultMessage();
+}
+
+function sendVoiceRoomDirectMessage() {
+  const input = document.getElementById('voiceRoomDirectInput');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  triggerQuickVoicePrompt(text);
+}
 
 function openEndlessVoiceRoom() {
   const modal = document.getElementById('endlessVoiceRoomModal');
@@ -16571,8 +16711,9 @@ function openEndlessVoiceRoom() {
   const chatLang = document.getElementById('chatLanguageSelect')?.value || currentAppLanguage || 'en';
   if (langSelect) langSelect.value = chatLang;
 
-  // Sync active persona UI
+  // Sync active persona UI & quick prompt chips
   updateEndlessVoicePersonaUI(currentPersona || 'doctor');
+  renderVoiceQuickPrompts(currentPersona || 'doctor');
 
   // If not already in an active voice call, start it
   if (!isDoctorVoiceCallActive) {
@@ -16657,6 +16798,7 @@ function switchEndlessPersona(personaKey) {
   }
 
   updateEndlessVoicePersonaUI(personaKey);
+  renderVoiceQuickPrompts(personaKey);
 
   // If call is active, announce switch
   if (isDoctorVoiceCallActive) {
@@ -17072,21 +17214,34 @@ function speakDoctorCallResponse(rawText, langCode) {
 
   updateVoiceRoomVisualState('speaking', msg);
 
+  // Show full clean text in transcript box for reading
   const aiTextEl = document.getElementById('voiceTranscriptAiText');
   if (aiTextEl) {
     aiTextEl.textContent = clean;
   }
 
-  const targetLocale = LANGUAGE_VOICE_MAP[langCode] || langCode || 'en-US';
+  // Optimize spoken phrasing for conversational voice-on-voice realism
+  let spokenText = clean;
+  const sentences = clean.match(/[^.!?]+[.!?]+(\s|$)/g);
+  if (sentences && sentences.length > 3) {
+    const firstTwo = sentences.slice(0, 2).map(s => s.trim()).join(' ');
+    const lastQuestionOrAction = sentences[sentences.length - 1].trim();
+    spokenText = `${firstTwo} ${lastQuestionOrAction}`;
+  }
 
-  WebSpeechManager.speak(clean, {
+  const targetLocale = LANGUAGE_VOICE_MAP[langCode] || langCode || 'en-US';
+  const voiceRate = currentVoiceSpeedRate || 1.0;
+
+  WebSpeechManager.speak(spokenText, {
     lang: targetLocale,
-    rate: 1.0,
-    pitch: currentPersona === 'therapist' ? 1.05 : 0.98,
+    rate: voiceRate,
+    pitch: currentPersona === 'therapist' ? 1.04 : 0.98,
     onStart: () => {
+      startVoiceWaveAnimation();
       updateVoiceRoomVisualState('speaking', `🩺 ${conf.name} is speaking...`);
     },
     onEnd: () => {
+      stopVoiceWaveAnimation();
       if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
         const listenMsg = `🎙️ ${conf.name} finished speaking. Listening to you... Speak now!`;
         if (liveStatus) liveStatus.textContent = listenMsg;
@@ -17095,10 +17250,11 @@ function speakDoctorCallResponse(rawText, langCode) {
           if (isDoctorVoiceCallActive && !isVoicePaused && !isVoiceMuted) {
             startDoctorVoiceListening();
           }
-        }, 400);
+        }, 350);
       }
     },
     onError: (errCode) => {
+      stopVoiceWaveAnimation();
       const isInterrupted = errCode === 'interrupted' || errCode === 'canceled';
       if (isInterrupted) {
         WebSpeechManager.logDiagnostic('TTS', 'lifecycle', { event: 'doctor_call_tts_interrupted', error: errCode });
@@ -38642,15 +38798,6 @@ function confirmEndTelehealthCall() {
   toast('Consultation ended. Digital prescription and clinical summary synced.');
 }
 </script>
-
-<!-- FLOATING QUICK THEME LAUNCHER BUTTON -->
-<div id="floatingThemeLauncherBtn" style="position:fixed;bottom:24px;left:24px;z-index:9990;display:flex;align-items:center;gap:8px;">
-  <button type="button" onclick="openThemeStudioModal()" style="background:var(--card);border:2px solid var(--primary);color:var(--ink);padding:9px 15px;border-radius:30px;font-weight:800;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.18);transition:all 0.2s ease;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" title="Customize Full Application Theme & Colors">
-    <span style="font-size:16px;">🎨</span>
-    <span id="quickThemeBadgeName">Theme: Emerald Clinical</span>
-    <span style="background:var(--primary);color:#fff;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:900;">12 Palettes</span>
-  </button>
-</div>
 
 <div id="themeStudioModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,23,42,0.7);z-index:99999;align-items:center;justify-content:center;backdrop-filter:blur(5px);padding:16px;" onclick="if(event.target===this)closeThemeStudioModal()">
   <div class="modal-content" style="background:var(--card);max-width:840px;width:100%;max-height:90vh;border-radius:18px;border:1px solid var(--line);box-shadow:var(--shadow-lg);display:flex;flex-direction:column;overflow:hidden;" onclick="event.stopPropagation()">
