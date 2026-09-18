@@ -8570,7 +8570,264 @@ app.post('/api/chat/summarize', async (req: Request, res: Response) => {
   });
 });
 
+// ----------------------------------------------------
+// Clinical & Patient Experience Feedback System
+// ----------------------------------------------------
+interface FeedbackItem {
+  id: string;
+  rating: number; // 1 to 5
+  category: string;
+  categoryLabel: string;
+  title?: string;
+  comment: string;
+  userName?: string;
+  userEmail?: string;
+  userRole?: string;
+  recommendScore?: 'yes' | 'maybe' | 'no';
+  platform?: string;
+  timestamp: string;
+  status: 'new' | 'reviewed' | 'addressed';
+  sentiment: 'positive' | 'neutral' | 'constructive';
+  tags?: string[];
+}
+
+const feedbackStore: FeedbackItem[] = [
+  {
+    id: 'fb-seed-1',
+    rating: 5,
+    category: 'voice_companion',
+    categoryLabel: 'Dr. Nambi & Alex Voice Companion',
+    title: 'Dr. Nambi bedside voice is remarkably calming',
+    comment: 'The endless voice conversation with Dr. Nambi answered my questions about hypertension medications without rush. The speed controls (1.15x) are also very convenient!',
+    userName: 'Iqra Sultana',
+    userEmail: 'iqrasultana0007@gmail.com',
+    userRole: 'Patient',
+    recommendScore: 'yes',
+    platform: 'Web Desktop',
+    timestamp: new Date(Date.now() - 3600000 * 5).toISOString(),
+    status: 'reviewed',
+    sentiment: 'positive',
+    tags: ['Dr. Nambi', 'Endless Voice', 'Cardio']
+  },
+  {
+    id: 'fb-seed-2',
+    rating: 5,
+    category: 'rx_ocr',
+    categoryLabel: 'RxVision OCR & Jan Aushadhi',
+    title: 'Saved 65% on generic prescription alternatives',
+    comment: 'RxVision scanned my clinic slip and identified Jan Aushadhi generic substitutes immediately. Excellent tool for middle-class Indian families.',
+    userName: 'Rajesh K. Verma',
+    userEmail: 'rajesh.verma@example.in',
+    userRole: 'Caregiver',
+    recommendScore: 'yes',
+    platform: 'Mobile Chrome',
+    timestamp: new Date(Date.now() - 3600000 * 18).toISOString(),
+    status: 'addressed',
+    sentiment: 'positive',
+    tags: ['Jan Aushadhi', 'RxVision', 'Generics']
+  },
+  {
+    id: 'fb-seed-3',
+    rating: 4,
+    category: 'digital_twin',
+    categoryLabel: '3D Digital Human Twin & Biometrics',
+    title: 'Holographic organs are super intuitive',
+    comment: 'The 3D interactive human model is engaging. Clicking on the heart shows real-time telemetry. Would love to see more kidney biomarker correlations in future updates.',
+    userName: 'Dr. Anita Desai',
+    userEmail: 'dr.anita@delhiclinic.org',
+    userRole: 'Physician',
+    recommendScore: 'yes',
+    platform: 'Web Desktop',
+    timestamp: new Date(Date.now() - 3600000 * 28).toISOString(),
+    status: 'new',
+    sentiment: 'positive',
+    tags: ['3D Twin', 'Biomarkers', 'Physician Review']
+  },
+  {
+    id: 'fb-seed-4',
+    rating: 5,
+    category: 'ui_speed',
+    categoryLabel: 'UI Responsiveness & Ease of Use',
+    title: 'Smooth multi-theme interface and clean layout',
+    comment: 'The new logo and slogan Where AI Meets HealthCare look sleek. The dark and warm dusk themes are easy on the eyes during late night symptom checks.',
+    userName: 'Farhan Sheikh',
+    userEmail: 'farhan.s@example.com',
+    userRole: 'Patient',
+    recommendScore: 'yes',
+    platform: 'Tablet',
+    timestamp: new Date(Date.now() - 3600000 * 42).toISOString(),
+    status: 'reviewed',
+    sentiment: 'positive',
+    tags: ['UI', 'Branding', 'Themes']
+  }
+];
+
+function calculateFeedbackStats() {
+  const total = feedbackStore.length;
+  if (total === 0) {
+    return {
+      total: 0,
+      averageRating: 5.0,
+      ratingCounts: { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 },
+      recommendRate: 100,
+      categoryCounts: {},
+      sentimentBreakdown: { positive: 0, neutral: 0, constructive: 0 }
+    };
+  }
+
+  const sum = feedbackStore.reduce((acc, f) => acc + (f.rating || 5), 0);
+  const avg = Number((sum / total).toFixed(1));
+
+  const ratingCounts: Record<number, number> = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  const categoryCounts: Record<string, number> = {};
+  const sentimentBreakdown = { positive: 0, neutral: 0, constructive: 0 };
+  let recommendYes = 0;
+
+  feedbackStore.forEach((f) => {
+    const r = Math.min(5, Math.max(1, Math.round(f.rating || 5)));
+    ratingCounts[r] = (ratingCounts[r] || 0) + 1;
+
+    categoryCounts[f.category] = (categoryCounts[f.category] || 0) + 1;
+
+    if (f.sentiment in sentimentBreakdown) {
+      sentimentBreakdown[f.sentiment as keyof typeof sentimentBreakdown]++;
+    }
+
+    if (f.recommendScore === 'yes') recommendYes++;
+  });
+
+  const recommendRate = Math.round((recommendYes / total) * 100);
+
+  return {
+    total,
+    averageRating: avg,
+    ratingCounts,
+    recommendRate,
+    categoryCounts,
+    sentimentBreakdown
+  };
+}
+
 const chatFeedbackLog: Array<{ conversationId: string; messageId?: string; rating?: string | number; comment?: string; timestamp: string }> = [];
+
+// POST /api/feedback - Universal user feedback submission
+app.post('/api/feedback', (req: Request, res: Response) => {
+  try {
+    const {
+      rating,
+      category = 'general',
+      categoryLabel,
+      title,
+      comment,
+      userName,
+      userEmail,
+      userRole = 'Patient',
+      recommendScore = 'yes',
+      platform = 'Web Application',
+      tags = []
+    } = req.body;
+
+    const numericRating = Math.min(5, Math.max(1, Number(rating) || 5));
+    const trimmedComment = String(comment || '').trim();
+
+    if (!trimmedComment) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide feedback comments describing your experience or suggestions.'
+      });
+    }
+
+    let sentiment: 'positive' | 'neutral' | 'constructive' = 'neutral';
+    if (numericRating >= 4) sentiment = 'positive';
+    else if (numericRating <= 2) sentiment = 'constructive';
+
+    const categoryMap: Record<string, string> = {
+      clinical_accuracy: 'Clinical & Medical Accuracy',
+      voice_companion: 'Dr. Nambi & Alex Voice Companion',
+      ui_speed: 'UI Responsiveness & Ease of Use',
+      digital_twin: '3D Digital Human Twin & Biometrics',
+      rx_ocr: 'RxVision OCR & Jan Aushadhi',
+      feature_idea: 'Feature Suggestion / Idea',
+      bug_issue: 'Bug / Issue Report',
+      general: 'General HealthGPT Experience'
+    };
+
+    const resolvedCategoryLabel = categoryLabel || categoryMap[category] || 'General Experience';
+
+    const newFeedback: FeedbackItem = {
+      id: `fb-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+      rating: numericRating,
+      category: String(category),
+      categoryLabel: resolvedCategoryLabel,
+      title: title ? String(title).trim() : `${resolvedCategoryLabel} Feedback`,
+      comment: trimmedComment,
+      userName: userName ? String(userName).trim() : 'Anonymous Patient',
+      userEmail: userEmail ? String(userEmail).trim() : undefined,
+      userRole: String(userRole || 'Patient'),
+      recommendScore: recommendScore === 'no' ? 'no' : recommendScore === 'maybe' ? 'maybe' : 'yes',
+      platform: String(platform),
+      timestamp: new Date().toISOString(),
+      status: 'new',
+      sentiment,
+      tags: Array.isArray(tags) ? tags : [resolvedCategoryLabel]
+    };
+
+    // Store in-memory
+    feedbackStore.unshift(newFeedback);
+
+    // Keep log in sync
+    chatFeedbackLog.push({
+      conversationId: 'feedback-hub',
+      rating: numericRating,
+      comment: trimmedComment,
+      timestamp: newFeedback.timestamp
+    });
+
+    console.log(`[HealthGPT Feedback] New ${numericRating}★ feedback received from ${newFeedback.userName}: "${trimmedComment.substring(0, 60)}..."`);
+
+    return res.json({
+      success: true,
+      message: 'Thank you for your valuable feedback! It has been recorded to help us enhance HealthGPT clinical intelligence.',
+      feedback: newFeedback,
+      stats: calculateFeedbackStats()
+    });
+  } catch (err: any) {
+    console.error('[HealthGPT Feedback Error]:', err);
+    return res.status(500).json({ success: false, error: 'Failed to record feedback. Please try again.' });
+  }
+});
+
+// GET /api/feedback - Retrieve all feedbacks & summary metrics
+app.get('/api/feedback', (_req: Request, res: Response) => {
+  return res.json({
+    success: true,
+    feedbacks: feedbackStore,
+    stats: calculateFeedbackStats()
+  });
+});
+
+// DELETE /api/feedback/:id - Remove or archive feedback
+app.delete('/api/feedback/:id', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const index = feedbackStore.findIndex(f => f.id === id);
+  if (index !== -1) {
+    feedbackStore.splice(index, 1);
+    return res.json({ success: true, message: 'Feedback removed successfully.', stats: calculateFeedbackStats() });
+  }
+  return res.status(404).json({ success: false, error: 'Feedback not found.' });
+});
+
+// PATCH /api/feedback/:id/status - Update review status (new, reviewed, addressed)
+app.patch('/api/feedback/:id/status', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const target = feedbackStore.find(f => f.id === id);
+  if (target) {
+    target.status = ['new', 'reviewed', 'addressed'].includes(status) ? status : 'reviewed';
+    return res.json({ success: true, feedback: target });
+  }
+  return res.status(404).json({ success: false, error: 'Feedback not found.' });
+});
 
 app.post('/api/chat/feedback', (req: Request, res: Response) => {
   const { conversation_id, conversationId, message_id, rating, comment } = req.body;

@@ -385,6 +385,17 @@
           <span>All channels standby</span>
         </div>
       </div>
+
+      <div class="kpi-card">
+        <div class="kpi-header">
+          <span>Patient Satisfaction</span>
+          <span>⭐</span>
+        </div>
+        <div class="kpi-value" id="kpiFeedbackScore" style="color:var(--amber);">4.8 ★</div>
+        <div class="kpi-sub">
+          <span style="color:var(--emerald);" id="kpiFeedbackRecommend">100% Recommend Rate</span>
+        </div>
+      </div>
     </div>
 
     <!-- SECTION 1: USER & PATIENT REGISTRY TABLE -->
@@ -415,6 +426,41 @@
           <tbody id="userTableBody">
             <tr>
               <td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading registered patients...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 2: PATIENT & CLINICAL FEEDBACK OVERSIGHT -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">
+          <span>💬</span>
+          <span>Patient &amp; Clinical Feedback Oversight</span>
+        </div>
+        <div style="display:flex;gap:10px;align-items:center;">
+          <span class="pill pill-active" id="adminFeedbackCountBadge">4 Reviews</span>
+          <button onclick="loadAdminFeedback()" class="btn-sm-action">🔄 Refresh</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Rating</th>
+              <th>Patient / Clinician</th>
+              <th>Category</th>
+              <th>Feedback Comments</th>
+              <th>Recommend</th>
+              <th>Date</th>
+              <th>Status / Action</th>
+            </tr>
+          </thead>
+          <tbody id="feedbackTableBody">
+            <tr>
+              <td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;">Loading feedback stream...</td>
             </tr>
           </tbody>
         </table>
@@ -462,6 +508,7 @@
 
   <script>
     let registeredUsers = [];
+    let adminFeedbacks = [];
 
     async function loadAdminData() {
       try {
@@ -476,6 +523,107 @@
         }
       } catch (err) {
         fallbackRenderUsers();
+      }
+
+      // Also load feedback telemetry
+      loadAdminFeedback();
+    }
+
+    async function loadAdminFeedback() {
+      try {
+        const res = await fetch('/api/feedback');
+        const data = await res.json().catch(() => ({}));
+        if (data.success) {
+          adminFeedbacks = data.feedbacks || [];
+          renderFeedbackTable(adminFeedbacks);
+          
+          if (data.stats) {
+            const scoreEl = document.getElementById('kpiFeedbackScore');
+            if (scoreEl) scoreEl.textContent = `${data.stats.averageRating} ★`;
+            const recEl = document.getElementById('kpiFeedbackRecommend');
+            if (recEl) recEl.textContent = `${data.stats.recommendRate}% Recommend Rate`;
+            const badgeEl = document.getElementById('adminFeedbackCountBadge');
+            if (badgeEl) badgeEl.textContent = `${data.stats.total} Reviews`;
+          }
+        }
+      } catch (err) {
+        console.warn('Admin feedback fetch error:', err);
+      }
+    }
+
+    function renderFeedbackTable(feedbacks) {
+      const tbody = document.getElementById('feedbackTableBody');
+      if (!tbody) return;
+      if (!feedbacks || feedbacks.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted);">No feedbacks recorded yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = feedbacks.map(f => {
+        const starsStr = '★'.repeat(f.rating) + '☆'.repeat(5 - f.rating);
+        const dateFormatted = f.timestamp ? new Date(f.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Recent';
+        const statusBadge = f.status === 'addressed' ? 'pill-active' : f.status === 'reviewed' ? 'pill-admin' : '';
+        const statusText = f.status === 'addressed' ? 'Addressed' : f.status === 'reviewed' ? 'Reviewed' : 'New';
+
+        return `
+          <tr>
+            <td>
+              <div style="color:var(--amber);font-weight:800;font-size:13px;">${starsStr}</div>
+              <span style="font-size:11px;color:var(--text-muted);">${f.rating}.0 / 5.0</span>
+            </td>
+            <td>
+              <b>${escapeHtml(f.userName || 'Anonymous')}</b>
+              <div style="font-size:11px;color:var(--text-muted);">${escapeHtml(f.userRole || 'Patient')} · ${escapeHtml(f.userEmail || '')}</div>
+            </td>
+            <td>
+              <span class="pill pill-admin" style="font-size:11px;">${escapeHtml(f.categoryLabel || f.category)}</span>
+            </td>
+            <td style="max-width:320px;">
+              ${f.title ? `<div style="font-weight:700;color:#fff;font-size:12.5px;margin-bottom:2px;">${escapeHtml(f.title)}</div>` : ''}
+              <div style="font-size:12px;color:var(--text-main);line-height:1.4;">${escapeHtml(f.comment)}</div>
+            </td>
+            <td>
+              ${f.recommendScore === 'yes' ? '<span style="color:var(--emerald);font-weight:700;font-size:12px;">👍 Yes</span>' : f.recommendScore === 'no' ? '<span style="color:var(--rose);font-weight:700;font-size:12px;">👎 No</span>' : '<span style="color:var(--amber);font-size:12px;">🤔 Maybe</span>'}
+            </td>
+            <td style="font-size:11.5px;color:var(--text-muted);white-space:nowrap;">
+              ${dateFormatted}
+            </td>
+            <td>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button class="btn-sm-action" onclick="cycleFeedbackStatus('${f.id}', '${f.status}')" title="Change review status">
+                  ${statusText}
+                </button>
+                <button class="btn-sm-action" onclick="deleteAdminFeedback('${f.id}')" style="color:var(--rose);" title="Remove feedback">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function cycleFeedbackStatus(id, currentStatus) {
+      const nextStatus = currentStatus === 'new' ? 'reviewed' : currentStatus === 'reviewed' ? 'addressed' : 'new';
+      try {
+        await fetch(`/api/feedback/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: nextStatus })
+        });
+        loadAdminFeedback();
+      } catch (err) {
+        console.error('Status update failed:', err);
+      }
+    }
+
+    async function deleteAdminFeedback(id) {
+      if (!confirm('Are you sure you want to remove this feedback?')) return;
+      try {
+        await fetch(`/api/feedback/${id}`, { method: 'DELETE' });
+        loadAdminFeedback();
+      } catch (err) {
+        console.error('Delete feedback failed:', err);
       }
     }
 
