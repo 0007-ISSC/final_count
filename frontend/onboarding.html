@@ -1752,50 +1752,101 @@
         <div class="page-header">
           <div class="page-badge">⚡ Stage 03 of 05 · Clinical Capabilities</div>
           <h1 class="page-title">Select Your Primary Care Tools</h1>
-          <p class="page-subtitle">Enable the interactive healthcare suites you want prioritized across your main command center.</p>
+          <p class="page-subtitle">Choose the healthcare tools and suites you want active. Your personal dashboard will only show your selected tools.</p>
+        </div>
+
+        <!-- Presets and Live Selection Bar -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:12px;font-weight:700;color:var(--ink-secondary);">Quick Presets:</span>
+            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('all')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">✨ Select All (9 Tools)</button>
+            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('core')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">🎯 Core Medical</button>
+            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('wellness')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">🌸 Holistic & Wellness</button>
+            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('clear')" style="background:#fff;border:1px dashed #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;">🧹 Deselect All</button>
+          </div>
+          <div class="page-badge" id="step3SelectedCounter" style="background:#f0fdf4;border-color:#bbf7d0;color:#15803d;font-size:12px;font-weight:800;margin-bottom:0;">
+            ⚡ 6 of 9 Tools Selected · Personalized Dashboard
+          </div>
         </div>
 
         <div class="modules-matrix">
-          <div class="module-item selected" onclick="toggleModule(this, 'rxvision')">
+          <!-- 1. AI Clinical Consult -->
+          <div class="module-item selected" data-module-key="aiConsult" onclick="toggleModule(this, 'aiConsult')">
             <span class="module-checkbox">✓</span>
-            <span class="module-icon">📄</span>
-            <div class="module-name">RxVision OCR & Radar</div>
-            <p class="module-desc">Multimodal prescription analysis, contraindication scanner & Jan Aushadhi generic alternatives.</p>
+            <span class="module-icon">🩺</span>
+            <div class="module-name">AI Clinical Consult</div>
+            <p class="module-desc">Dual-specialist AI consultations with Dr. Nambi (Chief MD) and Alex (Mental Wellness).</p>
           </div>
 
-          <div class="module-item selected" onclick="toggleModule(this, 'twin')">
+          <!-- 2. RxVision OCR -->
+          <div class="module-item selected" data-module-key="rxvision" onclick="toggleModule(this, 'rxvision')">
             <span class="module-checkbox">✓</span>
-            <span class="module-icon">🫀</span>
+            <span class="module-icon">🔬</span>
+            <div class="module-name">RxVision OCR & Prescriptions</div>
+            <p class="module-desc">Prescription scanner, chemical conflict radar & Jan Aushadhi generic alternatives.</p>
+          </div>
+
+          <!-- 3. 3D Digital Twin -->
+          <div class="module-item selected" data-module-key="twin" onclick="toggleModule(this, 'twin')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🧬</span>
             <div class="module-name">3D Human Digital Twin</div>
-            <p class="module-desc">Interactive WebGL anatomical organ simulations with real-time biometric heatmaps.</p>
+            <p class="module-desc">Interactive WebGL anatomical organ simulations with real-time biometric telemetry.</p>
           </div>
 
-          <div class="module-item selected" onclick="toggleModule(this, 'cycle')">
+          <!-- 4. Connect Indian Doctors -->
+          <div class="module-item selected" data-module-key="doctorConnect" onclick="toggleModule(this, 'doctorConnect')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">👨‍⚕️</span>
+            <div class="module-name">Connect Indian Doctors</div>
+            <p class="module-desc">10,036 verified hospital specialists across 18 Indian cities with video & OPD clinic booking.</p>
+          </div>
+
+          <!-- 5. Cycle & Period Suite -->
+          <div class="module-item selected" data-module-key="cycle" onclick="toggleModule(this, 'cycle')">
             <span class="module-checkbox">✓</span>
             <span class="module-icon">🌸</span>
             <div class="module-name">Cycle & Hormone Suite</div>
-            <p class="module-desc">Ovulation tracking, follicular phase intelligence & female reproductive 3D model.</p>
+            <p class="module-desc">Menstrual AI forecasting, 4-phase biological cycle wheel & hormonal telemetry.</p>
           </div>
 
-          <div class="module-item selected" onclick="toggleModule(this, 'carecast')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">📰</span>
-            <div class="module-name">CareCast Inshorts Feed</div>
-            <p class="module-desc">Bite-sized 60-word medical briefings, audio podcasts, and peer-reviewed journals.</p>
-          </div>
-
-          <div class="module-item selected" onclick="toggleModule(this, 'sos')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🚨</span>
-            <div class="module-name">Emergency SOS Beacons</div>
-            <p class="module-desc">1-tap geolocation beacon with instant paramedic telemetry and nearest hospital routing.</p>
-          </div>
-
-          <div class="module-item" onclick="toggleModule(this, 'metabolic')">
+          <!-- 6. Metabolic & Nutrition -->
+          <div class="module-item" data-module-key="metabolic" onclick="toggleModule(this, 'metabolic')">
             <span class="module-checkbox">✓</span>
             <span class="module-icon">🥗</span>
             <div class="module-name">Metabolic & Nutrition</div>
-            <p class="module-desc">Macronutrient glycemic curves, meal scanning, and insulin sensitivity telemetry.</p>
+            <p class="module-desc">Indian regional glycemic load meal tracker, micronutrients & anti-inflammatory diet.</p>
+          </div>
+
+          <!-- 7. CareCast Feed -->
+          <div class="module-item selected" data-module-key="carecast" onclick="toggleModule(this, 'carecast')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">📡</span>
+            <div class="module-name">CareCast Outbreak Radar</div>
+            <p class="module-desc">IDSP state outbreak tracking, seasonal dengue/flu surge monitor & medical inshorts.</p>
+          </div>
+
+          <!-- 8. Explore Pharmacopoeia -->
+          <div class="module-item" data-module-key="medicine" onclick="toggleModule(this, 'medicine')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🧭</span>
+            <div class="module-name">Explore Pharmacopoeia</div>
+            <p class="module-desc">CDSCO verified drug safety, CYP450 liver enzyme conflict checker & 30+ language translation.</p>
+          </div>
+
+          <!-- 9. Emergency SOS -->
+          <div class="module-item selected" data-module-key="sos" onclick="toggleModule(this, 'sos')">
+            <span class="module-checkbox">✓</span>
+            <span class="module-icon">🚨</span>
+            <div class="module-name">Emergency SOS & Paramedic ID</div>
+            <p class="module-desc">1-tap geolocation beacon with instant paramedic telemetry and nearest hospital routing.</p>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding:12px 16px;background:rgba(2,132,199,0.06);border:1px solid rgba(2,132,199,0.18);border-radius:12px;font-size:12.5px;color:#0369a1;display:flex;align-items:flex-start;gap:10px;">
+          <span style="font-size:16px;">💡</span>
+          <div>
+            <b>Personalized Care Suite Filtering:</b> Your personal dashboard will only show the primary care tools you select above. Unselected tools are filtered out. (Clinician/Admin consoles retain 100% full access to all suites).
           </div>
         </div>
       </section>
@@ -2031,7 +2082,7 @@
       avatar: '👩‍⚕️',
       doctor: 'nambi',
       bpm: 72,
-      modules: ['rxvision', 'twin', 'cycle', 'carecast', 'sos'],
+      modules: ['aiConsult', 'rxvision', 'twin', 'doctorConnect', 'cycle', 'carecast', 'sos'],
       telemetry: {
         hr: true,
         spo2: true,
@@ -2463,8 +2514,33 @@
     }
 
     /* ══════════════════════════════════════════════════
-       STEP 3: CLINICAL CAPABILITIES RADAR
+       STEP 3: CLINICAL CAPABILITIES RADAR & CARE TOOLS
        ══════════════════════════════════════════════════ */
+    const MODULE_LABELS = {
+      aiConsult: 'AI Clinical Consult',
+      rxvision: 'RxVision OCR',
+      ocr: 'RxVision OCR',
+      twin: '3D Human Twin',
+      doctorConnect: 'Connect Indian Doctors',
+      cycle: 'Cycle & Hormones',
+      metabolic: 'Metabolic Nutrition',
+      carecast: 'CareCast Feed',
+      medicine: 'Explore Pharmacopoeia',
+      sos: 'Emergency SOS'
+    };
+
+    function updateModulesUI() {
+      const count = onboardingState.modules.length;
+      const counterBadge = document.getElementById('step3SelectedCounter');
+      if (counterBadge) {
+        counterBadge.textContent = `⚡ ${count} of 9 Tools Selected · Personalized Dashboard`;
+      }
+      const sumModEl = document.getElementById('sumModules');
+      if (sumModEl) {
+        sumModEl.textContent = onboardingState.modules.map(m => MODULE_LABELS[m] || m).join(', ') || 'None selected';
+      }
+    }
+
     function toggleModule(el, moduleKey) {
       el.classList.toggle('selected');
       const isSelected = el.classList.contains('selected');
@@ -2476,6 +2552,34 @@
         onboardingState.modules = onboardingState.modules.filter(m => m !== moduleKey);
         playTone('blip');
       }
+      updateModulesUI();
+    }
+
+    function selectModulesPreset(preset) {
+      let targetModules = [];
+      if (preset === 'all') {
+        targetModules = ['aiConsult', 'rxvision', 'twin', 'doctorConnect', 'cycle', 'metabolic', 'carecast', 'medicine', 'sos'];
+      } else if (preset === 'core') {
+        targetModules = ['aiConsult', 'rxvision', 'doctorConnect', 'sos'];
+      } else if (preset === 'wellness') {
+        targetModules = ['aiConsult', 'twin', 'cycle', 'metabolic'];
+      } else if (preset === 'clear') {
+        targetModules = [];
+      }
+
+      onboardingState.modules = [...targetModules];
+
+      document.querySelectorAll('.modules-matrix .module-item').forEach(card => {
+        const key = card.getAttribute('data-module-key');
+        if (targetModules.includes(key)) {
+          card.classList.add('selected');
+        } else {
+          card.classList.remove('selected');
+        }
+      });
+
+      updateModulesUI();
+      playTone('celebrate');
     }
 
     /* ══════════════════════════════════════════════════
@@ -2515,15 +2619,7 @@
       document.getElementById('sumName').textContent = `${onboardingState.fullName} (${onboardingState.age} yrs, ${onboardingState.blood})`;
       document.getElementById('sumDoc').textContent = onboardingState.doctor === 'nambi' ? 'Dr. Nambi, MD (Internal Medicine)' : 'Alex, Holistic RN (Integrative Wellness)';
 
-      const moduleLabels = {
-        rxvision: 'RxVision OCR',
-        twin: '3D Human Twin',
-        cycle: 'Cycle Health',
-        carecast: 'CareCast Feed',
-        sos: 'Emergency SOS',
-        metabolic: 'Metabolic Tracker'
-      };
-      document.getElementById('sumModules').textContent = onboardingState.modules.map(m => moduleLabels[m] || m).join(', ');
+      document.getElementById('sumModules').textContent = onboardingState.modules.map(m => MODULE_LABELS[m] || m).join(', ') || 'General Practice';
 
       const activeSensors = [];
       if (onboardingState.telemetry.hr) activeSensors.push('Heart Rate');
@@ -2630,6 +2726,9 @@
         localStorage.setItem('healthgpt_user_avatar', onboardingState.avatar);
         localStorage.setItem('healthgpt_preferred_doctor', onboardingState.doctor);
         localStorage.setItem('healthgpt_active_modules', JSON.stringify(onboardingState.modules));
+        localStorage.setItem('healthgpt_user_care_tools', JSON.stringify(onboardingState.modules));
+        localStorage.setItem('healthgpt_personalized_mode', 'true');
+        localStorage.setItem('healthgpt_view_mode', 'user');
         localStorage.setItem('healthgpt_telemetry_prefs', JSON.stringify(onboardingState.telemetry));
       } catch (err) {
         console.warn('LocalStorage save notice:', err);
