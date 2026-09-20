@@ -1513,15 +1513,349 @@
     .terminal-container {
       transform-style: preserve-3d;
       transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      position: relative;
     }
 
     .terminal-container.interactive-surge {
-      box-shadow: 0 0 50px rgba(56, 189, 248, 0.5), 0 0 90px rgba(52, 211, 153, 0.35) !important;
+      box-shadow: 0 0 55px var(--vfx-glow, rgba(56, 189, 248, 0.6)), 0 0 100px rgba(52, 211, 153, 0.4) !important;
+      border-color: var(--vfx-primary, #38bdf8) !important;
+    }
+
+    /* ============================================================
+       NEXT-GENERATION ADVANCED VFX SUITE STYLING
+       ============================================================ */
+
+    /* 1. Volumetric Aurora Nebula Glow */
+    .aurora-nebula-vfx {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.55;
+      background: 
+        radial-gradient(ellipse at 20% 30%, rgba(2, 132, 199, 0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 70%, rgba(16, 185, 129, 0.2) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+      filter: blur(45px);
+      animation: auroraNebulaBreathe 18s ease-in-out infinite alternate;
+    }
+
+    @keyframes auroraNebulaBreathe {
+      0% { transform: scale(1) rotate(0deg); opacity: 0.45; }
+      50% { transform: scale(1.08) rotate(2deg); opacity: 0.65; }
+      100% { transform: scale(1) rotate(-1deg); opacity: 0.5; }
+    }
+
+    /* 2. Cascading Bio-Matrix Genetic Telemetry Rain Canvas */
+    #bioMatrixRainCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.38;
+      transition: opacity 0.4s ease;
+    }
+
+    /* 3. Cybernetic Precision Targeting Reticle Cursor Tracker */
+    .cyber-reticle-tracker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 44px;
+      height: 44px;
+      pointer-events: none;
+      z-index: 999;
+      transform: translate(-50%, -50%);
+      transition: width 0.22s cubic-bezier(0.16, 1, 0.3, 1), height 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+      opacity: 0;
+    }
+
+    .cyber-reticle-tracker.visible {
+      opacity: 1;
+    }
+
+    .cyber-reticle-tracker.locked {
+      width: 58px;
+      height: 58px;
+    }
+
+    .reticle-bracket {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-color: var(--vfx-primary, #38bdf8);
+      border-style: solid;
+      box-shadow: 0 0 8px var(--vfx-primary, #38bdf8);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .reticle-bracket.top-left { top: 0; left: 0; border-width: 2px 0 0 2px; }
+    .reticle-bracket.top-right { top: 0; right: 0; border-width: 2px 2px 0 0; }
+    .reticle-bracket.bottom-left { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+    .reticle-bracket.bottom-right { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+    .reticle-crosshair-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 4px;
+      background: var(--vfx-primary, #38bdf8);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 8px var(--vfx-primary, #38bdf8);
+    }
+
+    .reticle-telemetry {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: var(--vfx-primary, #38bdf8);
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .reticle-telemetry-tag {
+      background: rgba(3, 10, 24, 0.75);
+      padding: 1px 5px;
+      border-radius: 3px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* 4. Rotating Luminous Perimeter Light Beam around Terminal Card */
+    .card-perimeter-beam {
+      position: absolute;
+      inset: -2px;
+      border-radius: 26px;
+      padding: 2px;
+      background: conic-gradient(from 0deg, transparent 0deg, var(--vfx-primary, #38bdf8) 40deg, var(--vfx-secondary, #34d399) 80deg, transparent 120deg);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: rotatePerimeterBeam 4.8s linear infinite;
+      opacity: 0.65;
+      z-index: 1;
+      transition: opacity 0.3s;
+    }
+
+    .terminal-container:hover .card-perimeter-beam,
+    .terminal-container.interactive-surge .card-perimeter-beam {
+      opacity: 1;
+      animation-duration: 2.2s;
+    }
+
+    @keyframes rotatePerimeterBeam {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 5. Floating Interactive VFX Studio Controller Dock */
+    .vfx-hud-bar {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 95;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(8, 16, 32, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 36px;
+      padding: 6px 14px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.75), 0 0 25px rgba(56, 189, 248, 0.25);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 95vw;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .vfx-hud-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .vfx-hud-bar:hover {
+      border-color: rgba(56, 189, 248, 0.6);
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.85), 0 0 35px rgba(56, 189, 248, 0.35);
+    }
+
+    .vfx-hud-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      white-space: nowrap;
+    }
+
+    .vfx-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #38bdf8;
+      box-shadow: 0 0 8px #38bdf8;
+      animation: pulseVfxDot 1.4s infinite alternate;
+    }
+
+    @keyframes pulseVfxDot {
+      0% { transform: scale(0.85); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #34d399; }
+    }
+
+    .vfx-hud-divider {
+      width: 1px;
+      height: 18px;
+      background: rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+    }
+
+    .vfx-theme-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .vfx-theme-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .vfx-theme-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .vfx-theme-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .vfx-theme-btn[data-theme="emerald"].active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: #34d399;
+      color: #34d399;
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+    }
+
+    .vfx-theme-btn[data-theme="amethyst"].active {
+      background: rgba(168, 85, 247, 0.2);
+      border-color: #c084fc;
+      color: #c084fc;
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+    }
+
+    .vfx-theme-btn[data-theme="amber"].active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #fbbf24;
+      color: #fbbf24;
+      box-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+    }
+
+    .vfx-action-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .vfx-action-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .vfx-action-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .vfx-surge-btn {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.4) 0%, rgba(16, 185, 129, 0.4) 100%) !important;
       border-color: #38bdf8 !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.45);
+      animation: pulseSurgeBtn 2.2s ease-in-out infinite alternate;
+    }
+
+    .vfx-surge-btn:hover {
+      box-shadow: 0 0 28px rgba(56, 189, 248, 0.75), 0 0 40px rgba(52, 211, 153, 0.5);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    @keyframes pulseSurgeBtn {
+      0% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.35); }
+      100% { box-shadow: 0 0 22px rgba(52, 211, 153, 0.6), 0 0 32px rgba(56, 189, 248, 0.4); }
+    }
+
+    /* Screen Flash Shockwave Overlay on Quantum Surge */
+    .quantum-surge-screen-flash {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(56, 189, 248, 0.4) 0%, rgba(52, 211, 153, 0.2) 50%, transparent 80%);
+      pointer-events: none;
+      z-index: 98;
+      opacity: 0;
+      mix-blend-mode: screen;
+      transition: opacity 0.15s ease-out;
+    }
+
+    .quantum-surge-screen-flash.active {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
+
+  <!-- QUANTUM SURGE FULLSCREEN BLEND FLASH -->
+  <div id="quantumSurgeFlash" class="quantum-surge-screen-flash"></div>
 
   <!-- FULLSCREEN FRAMER-MOTION INSPIRED NEURAL PAGE TRANSITION OVERLAY -->
   <div id="neuralPageTransitionOverlay" class="neural-transition-overlay" style="display:none;">
@@ -1542,13 +1876,28 @@
     </div>
   </div>
 
-  <!-- FIXED STAGE: THREE.JS 3D HUMAN SILHOUETTE + ECG OSCILLOSCOPE + BIOPHOTONIC VFX -->
+  <!-- FIXED STAGE: THREE.JS 3D HUMAN SILHOUETTE + ECG OSCILLOSCOPE + BIOPHOTONIC VFX + BIO-MATRIX RAIN -->
   <div id="cinematicStage">
+    <div class="aurora-nebula-vfx" id="auroraNebulaVfx"></div>
+    <canvas id="bioMatrixRainCanvas"></canvas>
     <canvas id="threeCanvas"></canvas>
     <canvas id="ecgCanvas"></canvas>
     <canvas id="biophotonicCursorCanvas"></canvas>
   </div>
   <div class="viewport-overlay"></div>
+
+  <!-- CYBERNETIC TARGETING RETICLE HUD TRACKER -->
+  <div id="cyberReticleTracker" class="cyber-reticle-tracker">
+    <div class="reticle-bracket top-left"></div>
+    <div class="reticle-bracket top-right"></div>
+    <div class="reticle-bracket bottom-left"></div>
+    <div class="reticle-bracket bottom-right"></div>
+    <div class="reticle-crosshair-center"></div>
+    <div class="reticle-telemetry">
+      <span class="reticle-telemetry-tag" id="reticleCoords">X:000 Y:000</span>
+      <span class="reticle-telemetry-tag" id="reticleStatus">BIO-SCAN</span>
+    </div>
+  </div>
 
   <!-- FLOATING 3D HOLOGRAPHIC VIEWPORT TELEMETRY HUD -->
   <div id="floatingHoloHud" class="floating-holo-hud">
@@ -1797,6 +2146,8 @@
     <!-- ACT 3: CLINICAL ACCESS TERMINAL -->
     <section class="cinematic-section" id="terminalAct">
       <div class="terminal-container" id="userAuthCard">
+        <!-- Rotating Holographic Perimeter Light Beam -->
+        <div class="card-perimeter-beam"></div>
         <!-- Visual Cyber Laser Sweep -->
         <div class="laser-scanner" id="terminalLaserScanner"></div>
         <!-- In-Terminal VFX Sparkles Canvas -->
@@ -1958,6 +2309,33 @@
 
   </main>
 
+  <!-- FLOATING INTERACTIVE VFX STUDIO CONTROLLER HUD -->
+  <aside class="vfx-hud-bar" id="vfxHudBar" aria-label="Visual Effects Studio">
+    <div class="vfx-hud-label">
+      <span class="vfx-pulse-dot"></span>
+      <span>VFX STUDIO</span>
+    </div>
+    <div class="vfx-hud-divider"></div>
+    <!-- Quantum Spectrum Color Themes -->
+    <div class="vfx-theme-group" title="Select Holographic Color Spectrum">
+      <button type="button" class="vfx-theme-btn active" data-theme="cyan" onclick="setVfxColorTheme('cyan')" title="Neural Cyan Spectrum">🧬 Cyan</button>
+      <button type="button" class="vfx-theme-btn" data-theme="emerald" onclick="setVfxColorTheme('emerald')" title="Bio-Cellular Emerald">🌿 Emerald</button>
+      <button type="button" class="vfx-theme-btn" data-theme="amethyst" onclick="setVfxColorTheme('amethyst')" title="Quantum Amethyst Violet">🔮 Violet</button>
+      <button type="button" class="vfx-theme-btn" data-theme="amber" onclick="setVfxColorTheme('amber')" title="Solar Vital Amber">⚡ Amber</button>
+    </div>
+    <div class="vfx-hud-divider"></div>
+    <!-- Interactive VFX Toggles -->
+    <button type="button" class="vfx-action-btn active" id="btnToggleMatrixRain" onclick="toggleBioMatrixRain()" title="Toggle Background Genetic Telemetry Rain">
+      <span id="matrixRainIcon">🌧️</span> <span id="matrixRainText">Data Rain</span>
+    </button>
+    <button type="button" class="vfx-action-btn active" id="btnToggleReticle" onclick="toggleCyberReticle()" title="Toggle Holographic Targeting Reticle">
+      <span id="reticleIcon">🎯</span> <span id="reticleText">Reticle</span>
+    </button>
+    <button type="button" class="vfx-action-btn vfx-surge-btn" onclick="triggerQuantumVfxSurge(true)" title="Fire Full-Spectrum Quantum Energy Burst">
+      <span>💥</span> <span>Quantum Surge</span>
+    </button>
+  </aside>
+
   <script>
     /* ============================================================
        CINEMATIC 3D ENGINE — THREE.JS HOLOGRAPHIC HUMAN SILHOUETTE
@@ -1966,6 +2344,12 @@
     let hologramGroup, bodyParticles, neuralLines, heartNode;
     let dnaGroup, orbitalRingsGroup, ringOuter, ringMid, ringInner, satelliteNode1, satelliteNode2;
     let cyberGrid, laserScanPlane;
+    let neuralSynapseGroup, neuralPhotonsPoints, neuralPhotonData = [];
+    let bioEnergyVortexGroup, vortexParticlesMesh;
+    let quantumShieldGroup, shieldRingA, shieldRingB, shieldRingC;
+    let floatingHoloPlatesGroup;
+    let heartShockwaveMesh;
+    let currentVfxTheme = 'cyan';
     let clock = new THREE.Clock();
     let mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
     let scrollProgress = 0;
@@ -1996,6 +2380,10 @@
       buildGyroscopicTelemetryRings();
       buildCyberneticGroundGrid();
       buildLaserScanningPlane();
+      buildNeuralSynapseNetwork();
+      buildBioEnergyVortex();
+      buildQuantumShieldRings();
+      buildFloatingTelemetryHoloPlates();
 
       window.addEventListener('resize', onWindowResize);
       window.addEventListener('mousemove', onMouseMove);
@@ -2300,6 +2688,245 @@
       hologramGroup.add(laserScanPlane);
     }
 
+    /* 1. 3D Neural Synapse Axon Network with Travelling Luminous Action-Potentials */
+    function buildNeuralSynapseNetwork() {
+      neuralSynapseGroup = new THREE.Group();
+      hologramGroup.add(neuralSynapseGroup);
+
+      const axonLines = [];
+      const rootCranial = new THREE.Vector3(0, 5.5, 0.1);
+      const spinalNodes = [
+        new THREE.Vector3(0, 4.8, 0),
+        new THREE.Vector3(0, 3.8, 0),
+        new THREE.Vector3(0, 2.8, -0.05),
+        new THREE.Vector3(0, 1.8, -0.05),
+        new THREE.Vector3(0, 0.8, -0.05)
+      ];
+
+      // Cranial cortex radiating dendrites
+      const cranialDendrites = [
+        new THREE.Vector3(0.55, 5.8, 0.3),
+        new THREE.Vector3(-0.55, 5.8, 0.3),
+        new THREE.Vector3(0.65, 5.3, -0.2),
+        new THREE.Vector3(-0.65, 5.3, -0.2),
+        new THREE.Vector3(0.3, 6.2, 0.1),
+        new THREE.Vector3(-0.3, 6.2, 0.1),
+        new THREE.Vector3(0, 6.35, -0.1),
+        new THREE.Vector3(0.8, 5.1, 0.1),
+        new THREE.Vector3(-0.8, 5.1, 0.1)
+      ];
+
+      cranialDendrites.forEach(pt => {
+        axonLines.push(rootCranial.clone(), pt);
+        neuralPhotonData.push({
+          start: rootCranial.clone(),
+          end: pt.clone(),
+          progress: Math.random(),
+          speed: 0.012 + Math.random() * 0.015
+        });
+      });
+
+      // Spinal cord ladder connections
+      for (let i = 0; i < spinalNodes.length; i++) {
+        if (i === 0) {
+          axonLines.push(rootCranial.clone(), spinalNodes[0]);
+        } else {
+          axonLines.push(spinalNodes[i - 1], spinalNodes[i]);
+        }
+
+        // Peripheral nerve branches into ribcage / limbs
+        const leftBranch = spinalNodes[i].clone().add(new THREE.Vector3(-0.9 - i * 0.15, -0.2, 0.2));
+        const rightBranch = spinalNodes[i].clone().add(new THREE.Vector3(0.9 + i * 0.15, -0.2, 0.2));
+        axonLines.push(spinalNodes[i], leftBranch);
+        axonLines.push(spinalNodes[i], rightBranch);
+
+        neuralPhotonData.push({
+          start: spinalNodes[i].clone(),
+          end: leftBranch,
+          progress: Math.random(),
+          speed: 0.009 + Math.random() * 0.012
+        });
+        neuralPhotonData.push({
+          start: spinalNodes[i].clone(),
+          end: rightBranch,
+          progress: Math.random(),
+          speed: 0.009 + Math.random() * 0.012
+        });
+      }
+
+      const lineGeo = new THREE.BufferGeometry().setFromPoints(axonLines);
+      const lineMat = new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.45,
+        blending: THREE.AdditiveBlending
+      });
+      const synapseMesh = new THREE.LineSegments(lineGeo, lineMat);
+      synapseMesh.name = "synapseLines";
+      neuralSynapseGroup.add(synapseMesh);
+
+      // Action-potential travelling photons (Points)
+      const photonCount = neuralPhotonData.length;
+      const photonGeo = new THREE.BufferGeometry();
+      const photonPositions = new Float32Array(photonCount * 3);
+      for (let i = 0; i < photonCount; i++) {
+        photonPositions[i * 3] = neuralPhotonData[i].start.x;
+        photonPositions[i * 3 + 1] = neuralPhotonData[i].start.y;
+        photonPositions[i * 3 + 2] = neuralPhotonData[i].start.z;
+      }
+      photonGeo.setAttribute('position', new THREE.BufferAttribute(photonPositions, 3));
+      const photonMat = new THREE.PointsMaterial({
+        color: 0x7dd3fc,
+        size: 0.26,
+        transparent: true,
+        opacity: 0.95,
+        blending: THREE.AdditiveBlending
+      });
+      neuralPhotonsPoints = new THREE.Points(photonGeo, photonMat);
+      neuralSynapseGroup.add(neuralPhotonsPoints);
+    }
+
+    /* 2. 3D Bioluminescent Energy Vortex / Ascending Aura Spiral */
+    function buildBioEnergyVortex() {
+      bioEnergyVortexGroup = new THREE.Group();
+      hologramGroup.add(bioEnergyVortexGroup);
+
+      const pCount = 520;
+      const positions = new Float32Array(pCount * 3);
+      const colors = new Float32Array(pCount * 3);
+      const colorCyan = new THREE.Color(0x38bdf8);
+      const colorEmerald = new THREE.Color(0x34d399);
+
+      for (let i = 0; i < pCount; i++) {
+        const t = i / pCount;
+        const y = -6.5 + t * 13.5;
+        const angle = t * Math.PI * 14;
+        const radius = 1.6 + Math.sin(t * Math.PI) * 1.8;
+
+        positions[i * 3] = Math.cos(angle) * radius;
+        positions[i * 3 + 1] = y;
+        positions[i * 3 + 2] = Math.sin(angle) * radius;
+
+        const mixed = colorCyan.clone().lerp(colorEmerald, Math.random());
+        colors[i * 3] = mixed.r;
+        colors[i * 3 + 1] = mixed.g;
+        colors[i * 3 + 2] = mixed.b;
+      }
+
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+      const mat = new THREE.PointsMaterial({
+        size: 0.09,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.55,
+        blending: THREE.AdditiveBlending
+      });
+
+      vortexParticlesMesh = new THREE.Points(geo, mat);
+      bioEnergyVortexGroup.add(vortexParticlesMesh);
+    }
+
+    /* 3. Multi-Tiered Gyroscopic Quantum Shield Rings */
+    function buildQuantumShieldRings() {
+      quantumShieldGroup = new THREE.Group();
+      quantumShieldGroup.position.set(0, 1.8, 0);
+      hologramGroup.add(quantumShieldGroup);
+
+      // Ring A - Inclined 40deg
+      const ringAGeo = new THREE.RingGeometry(3.6, 3.65, 64);
+      const ringAMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.35,
+        blending: THREE.AdditiveBlending
+      });
+      shieldRingA = new THREE.Mesh(ringAGeo, ringAMat);
+      shieldRingA.rotation.x = Math.PI / 4.5;
+      quantumShieldGroup.add(shieldRingA);
+
+      // Ring B - Opposing 35deg
+      const ringBGeo = new THREE.RingGeometry(4.2, 4.25, 64);
+      const ringBMat = new THREE.MeshBasicMaterial({
+        color: 0x34d399,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.3,
+        blending: THREE.AdditiveBlending
+      });
+      shieldRingB = new THREE.Mesh(ringBGeo, ringBMat);
+      shieldRingB.rotation.y = Math.PI / 3;
+      shieldRingB.rotation.z = Math.PI / 6;
+      quantumShieldGroup.add(shieldRingB);
+
+      // Expanding volumetric heart shockwave ring
+      const shockGeo = new THREE.RingGeometry(0.2, 0.28, 48);
+      const shockMat = new THREE.MeshBasicMaterial({
+        color: 0x38bdf8,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending
+      });
+      heartShockwaveMesh = new THREE.Mesh(shockGeo, shockMat);
+      heartShockwaveMesh.position.set(0.25, 2.7, 0.4);
+      hologramGroup.add(heartShockwaveMesh);
+    }
+
+    /* 4. 3D Floating Diagnostic Telemetry Hologram Plates */
+    function buildFloatingTelemetryHoloPlates() {
+      floatingHoloPlatesGroup = new THREE.Group();
+      hologramGroup.add(floatingHoloPlatesGroup);
+
+      const plateData = [
+        { x: -3.2, y: 5.2, z: 0.5 },
+        { x: 3.2, y: 2.8, z: 0.8 },
+        { x: -3.4, y: 0.5, z: 0.2 },
+        { x: 3.2, y: -2.2, z: 0.4 }
+      ];
+
+      plateData.forEach((item, idx) => {
+        const plate = new THREE.Group();
+        plate.position.set(item.x, item.y, item.z);
+
+        // Frame
+        const frameGeo = new THREE.PlaneGeometry(1.6, 0.65);
+        const frameEdges = new THREE.EdgesGeometry(frameGeo);
+        const lineMat = new THREE.LineBasicMaterial({
+          color: 0x38bdf8,
+          transparent: true,
+          opacity: 0.65,
+          blending: THREE.AdditiveBlending
+        });
+        const wire = new THREE.LineSegments(frameEdges, lineMat);
+        plate.add(wire);
+
+        // Plane backing
+        const backMat = new THREE.MeshBasicMaterial({
+          color: 0x0284c7,
+          transparent: true,
+          opacity: 0.12,
+          blending: THREE.AdditiveBlending,
+          side: THREE.DoubleSide
+        });
+        const backMesh = new THREE.Mesh(frameGeo, backMat);
+        plate.add(backMesh);
+
+        // Small indicator node
+        const dotGeo = new THREE.SphereGeometry(0.05, 8, 8);
+        const dotMat = new THREE.MeshBasicMaterial({ color: 0x34d399 });
+        const dot = new THREE.Mesh(dotGeo, dotMat);
+        dot.position.set(-0.6, 0.18, 0.02);
+        plate.add(dot);
+
+        plate.userData = { baseY: item.y, phase: idx * 1.5 };
+        floatingHoloPlatesGroup.add(plate);
+      });
+    }
+
     function onWindowResize() {
       const width = window.innerWidth;
       const height = window.innerHeight;
@@ -2393,6 +3020,68 @@
           heartNode.scale.set(hScale, hScale, hScale);
         }
 
+        // Animate Neural Synapse Action Potential Photons
+        if (neuralPhotonsPoints && neuralPhotonData && neuralPhotonData.length > 0) {
+          const posAttr = neuralPhotonsPoints.geometry.attributes.position;
+          const boost = hologramSurge > 0.05 ? 2.8 : 1.0;
+          for (let i = 0; i < neuralPhotonData.length; i++) {
+            const p = neuralPhotonData[i];
+            p.progress += p.speed * boost;
+            if (p.progress > 1.0) p.progress = 0;
+            const curX = p.start.x + (p.end.x - p.start.x) * p.progress;
+            const curY = p.start.y + (p.end.y - p.start.y) * p.progress;
+            const curZ = p.start.z + (p.end.z - p.start.z) * p.progress;
+            posAttr.setXYZ(i, curX, curY, curZ);
+          }
+          posAttr.needsUpdate = true;
+        }
+
+        // Animate Bio-Energy Ascending Vortex
+        if (vortexParticlesMesh) {
+          vortexParticlesMesh.rotation.y = -elapsedTime * 0.45;
+          const vPos = vortexParticlesMesh.geometry.attributes.position;
+          const vCount = vPos.count;
+          for (let i = 0; i < vCount; i++) {
+            let y = vPos.getY(i) + 0.038;
+            if (y > 7.0) y = -6.5;
+            vPos.setY(i, y);
+          }
+          vPos.needsUpdate = true;
+        }
+
+        // Animate Quantum Shield Rings & Nutation
+        if (shieldRingA) {
+          shieldRingA.rotation.z = elapsedTime * 0.28;
+          shieldRingA.rotation.y = Math.sin(elapsedTime * 0.4) * 0.15;
+        }
+        if (shieldRingB) {
+          shieldRingB.rotation.x = -elapsedTime * 0.32;
+          shieldRingB.rotation.z = Math.cos(elapsedTime * 0.45) * 0.2;
+        }
+
+        // Animate Floating Telemetry Holo Plates
+        if (floatingHoloPlatesGroup) {
+          floatingHoloPlatesGroup.children.forEach(plate => {
+            const d = plate.userData;
+            if (d) {
+              plate.position.y = d.baseY + Math.sin(elapsedTime * 2.0 + d.phase) * 0.16;
+              plate.rotation.y = Math.sin(elapsedTime * 0.8 + d.phase) * 0.1;
+            }
+          });
+        }
+
+        // Animate Heart Shockwave Mesh on Pulse
+        if (heartShockwaveMesh) {
+          if (hologramSurge > 0.05) {
+            const shockProgress = Math.min(1.0, (1.8 - hologramSurge) / 1.8);
+            const shockScale = 1.0 + shockProgress * 9.0;
+            heartShockwaveMesh.scale.set(shockScale, shockScale, shockScale);
+            heartShockwaveMesh.material.opacity = Math.max(0, (1 - shockProgress) * 0.85);
+          } else {
+            heartShockwaveMesh.material.opacity = 0;
+          }
+        }
+
         // Scroll-Driven Camera & Hologram Transformation
         if (scrollProgress < 0.4) {
           const p = scrollProgress / 0.4;
@@ -2417,7 +3106,355 @@
 
     let hologramSurge = 0;
     function triggerHologramSurgeEffect() {
-      hologramSurge = 1.25;
+      hologramSurge = 1.6;
+    }
+
+    /* ============================================================
+       DYNAMIC QUANTUM SPECTRUM COLOR THEME SWITCHER
+       ============================================================ */
+    const VFX_THEMES = {
+      cyan: {
+        primary: '#38bdf8',
+        secondary: '#34d399',
+        glow: 'rgba(56, 189, 248, 0.65)',
+        hexPrimary: 0x38bdf8,
+        hexSecondary: 0x34d399,
+        hexPhoton: 0x7dd3fc,
+        ecgColor: '#38bdf8',
+        name: 'Neural Cyan'
+      },
+      emerald: {
+        primary: '#34d399',
+        secondary: '#10b981',
+        glow: 'rgba(52, 211, 153, 0.65)',
+        hexPrimary: 0x34d399,
+        hexSecondary: 0x10b981,
+        hexPhoton: 0xa7f3d0,
+        ecgColor: '#34d399',
+        name: 'Bio Emerald'
+      },
+      amethyst: {
+        primary: '#c084fc',
+        secondary: '#a855f7',
+        glow: 'rgba(192, 132, 252, 0.65)',
+        hexPrimary: 0xc084fc,
+        hexSecondary: 0xa855f7,
+        hexPhoton: 0xf3e8ff,
+        ecgColor: '#c084fc',
+        name: 'Quantum Violet'
+      },
+      amber: {
+        primary: '#fbbf24',
+        secondary: '#f59e0b',
+        glow: 'rgba(251, 191, 36, 0.65)',
+        hexPrimary: 0xfbbf24,
+        hexSecondary: 0xf59e0b,
+        hexPhoton: 0xfef3c7,
+        ecgColor: '#fbbf24',
+        name: 'Solar Amber'
+      }
+    };
+
+    function setVfxColorTheme(themeKey) {
+      const theme = VFX_THEMES[themeKey];
+      if (!theme) return;
+      currentVfxTheme = themeKey;
+
+      // Update CSS variables
+      document.documentElement.style.setProperty('--vfx-primary', theme.primary);
+      document.documentElement.style.setProperty('--vfx-secondary', theme.secondary);
+      document.documentElement.style.setProperty('--vfx-glow', theme.glow);
+
+      // Update active state in HUD buttons
+      document.querySelectorAll('.vfx-theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-theme') === themeKey);
+      });
+
+      // Update Three.js element colors
+      if (laserScanPlane && laserScanPlane.material) {
+        laserScanPlane.material.color.setHex(theme.hexPrimary);
+      }
+      if (shieldRingA && shieldRingA.material) {
+        shieldRingA.material.color.setHex(theme.hexPrimary);
+      }
+      if (shieldRingB && shieldRingB.material) {
+        shieldRingB.material.color.setHex(theme.hexSecondary);
+      }
+      if (neuralPhotonsPoints && neuralPhotonsPoints.material) {
+        neuralPhotonsPoints.material.color.setHex(theme.hexPhoton);
+      }
+      if (heartShockwaveMesh && heartShockwaveMesh.material) {
+        heartShockwaveMesh.material.color.setHex(theme.hexPrimary);
+      }
+      if (ringOuter && ringOuter.material) {
+        ringOuter.material.color.setHex(theme.hexPrimary);
+      }
+
+      // Update body point cloud colors
+      if (bodyParticles && bodyParticles.geometry) {
+        const colors = bodyParticles.geometry.attributes.color;
+        const baseC = new THREE.Color(theme.hexPrimary);
+        const secondC = new THREE.Color(theme.hexSecondary);
+        for (let i = 0; i < colors.count; i++) {
+          const mixed = baseC.clone().lerp(secondC, (i % 5) / 5);
+          colors.setXYZ(i, mixed.r, mixed.g, mixed.b);
+        }
+        colors.needsUpdate = true;
+      }
+
+      // Update ECG stroke color
+      ecgStrokeColor = theme.ecgColor;
+
+      // Trigger a gentle hologram energy wave
+      triggerHologramSurgeEffect();
+
+      // Play thematic audio harmonic chord
+      if (typeof playSynthesizerHarmonicTone === 'function' && isAudioActive) {
+        const chordMap = {
+          cyan: [440, 554, 659],
+          emerald: [392, 493, 587],
+          amethyst: [523, 659, 783],
+          amber: [349, 440, 523]
+        };
+        const freqs = chordMap[themeKey] || [440, 554, 659];
+        freqs.forEach((freq, idx) => {
+          setTimeout(() => playSynthesizerHarmonicTone(freq, 0.45), idx * 70);
+        });
+      }
+    }
+
+    /* ============================================================
+       CASCADING BIO-MATRIX GENETIC TELEMETRY RAIN ENGINE
+       ============================================================ */
+    let matrixRainActive = true;
+    let matrixRainCanvas, matrixRainCtx;
+    let matrixColumns = [];
+    const MATRIX_CHARS = 'ACGT0123456789·🧬⚡🫀98.6°F 120/80 SpO2 99% CDSCO-256 AES-256 HEALTH-GPT NEURAL·BIO';
+
+    function initBioMatrixRain() {
+      matrixRainCanvas = document.getElementById('bioMatrixRainCanvas');
+      if (!matrixRainCanvas) return;
+      matrixRainCtx = matrixRainCanvas.getContext('2d');
+      resizeBioMatrixRain();
+      window.addEventListener('resize', resizeBioMatrixRain);
+      renderBioMatrixLoop();
+    }
+
+    function resizeBioMatrixRain() {
+      if (!matrixRainCanvas || !matrixRainCtx) return;
+      matrixRainCanvas.width = window.innerWidth;
+      matrixRainCanvas.height = window.innerHeight;
+
+      const colWidth = 24;
+      const totalCols = Math.floor(window.innerWidth / colWidth);
+      matrixColumns = [];
+      for (let i = 0; i < totalCols; i++) {
+        matrixColumns.push({
+          x: i * colWidth,
+          y: Math.random() * -window.innerHeight,
+          speed: 1.5 + Math.random() * 3.5,
+          chars: []
+        });
+      }
+    }
+
+    function renderBioMatrixLoop() {
+      if (!matrixRainCanvas || !matrixRainCtx) return;
+
+      if (matrixRainActive) {
+        matrixRainCtx.fillStyle = 'rgba(4, 8, 19, 0.12)';
+        matrixRainCtx.fillRect(0, 0, matrixRainCanvas.width, matrixRainCanvas.height);
+
+        const currentTheme = VFX_THEMES[currentVfxTheme] || VFX_THEMES.cyan;
+        matrixRainCtx.font = '11px "Space Grotesk", monospace';
+
+        matrixColumns.forEach(col => {
+          const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+          col.y += col.speed;
+
+          // Head character is glowing brighter
+          matrixRainCtx.fillStyle = '#ffffff';
+          matrixRainCtx.shadowColor = currentTheme.primary;
+          matrixRainCtx.shadowBlur = 8;
+          matrixRainCtx.fillText(char, col.x, col.y);
+
+          // Second character behind
+          matrixRainCtx.fillStyle = currentTheme.primary;
+          matrixRainCtx.shadowBlur = 4;
+          matrixRainCtx.fillText(char, col.x, col.y - 14);
+
+          // Reset when falling past screen bottom
+          if (col.y > matrixRainCanvas.height && Math.random() > 0.975) {
+            col.y = 0;
+            col.speed = 1.5 + Math.random() * 3.5;
+          }
+        });
+        matrixRainCtx.shadowBlur = 0;
+      } else {
+        matrixRainCtx.clearRect(0, 0, matrixRainCanvas.width, matrixRainCanvas.height);
+      }
+
+      requestAnimationFrame(renderBioMatrixLoop);
+    }
+
+    function toggleBioMatrixRain() {
+      matrixRainActive = !matrixRainActive;
+      const btn = document.getElementById('btnToggleMatrixRain');
+      const text = document.getElementById('matrixRainText');
+      if (btn) btn.classList.toggle('active', matrixRainActive);
+      if (text) text.textContent = matrixRainActive ? 'Data Rain: ON' : 'Data Rain: OFF';
+    }
+
+    /* ============================================================
+       CYBERNETIC PRECISION TARGETING RETICLE HUD ENGINE
+       ============================================================ */
+    let reticleActive = true;
+    let reticleEl, reticleCoordsEl, reticleStatusEl;
+    let reticleTargetX = -100, reticleTargetY = -100;
+    let reticleCurrentX = -100, reticleCurrentY = -100;
+
+    function initCyberReticle() {
+      reticleEl = document.getElementById('cyberReticleTracker');
+      reticleCoordsEl = document.getElementById('reticleCoords');
+      reticleStatusEl = document.getElementById('reticleStatus');
+      if (!reticleEl) return;
+
+      window.addEventListener('mousemove', (e) => {
+        reticleTargetX = e.clientX;
+        reticleTargetY = e.clientY;
+        if (!reticleEl.classList.contains('visible') && reticleActive) {
+          reticleEl.classList.add('visible');
+        }
+      });
+
+      // Target lock listeners on inputs, buttons, and cards
+      document.addEventListener('mouseover', (e) => {
+        if (!reticleActive) return;
+        const target = e.target.closest('input, button, a, .role-card, .btn-generate-otp');
+        if (target && reticleEl) {
+          reticleEl.classList.add('locked');
+          if (reticleStatusEl) {
+            const tagName = target.getAttribute('placeholder') || target.getAttribute('title') || target.textContent.trim().slice(0, 15) || 'TARGET LOCKED';
+            reticleStatusEl.textContent = `LOCKED: ${tagName.toUpperCase()}`;
+          }
+        }
+      });
+
+      document.addEventListener('mouseout', (e) => {
+        const target = e.target.closest('input, button, a, .role-card, .btn-generate-otp');
+        if (target && reticleEl) {
+          reticleEl.classList.remove('locked');
+          if (reticleStatusEl) reticleStatusEl.textContent = 'BIO-SCAN';
+        }
+      });
+
+      renderReticleLoop();
+    }
+
+    function renderReticleLoop() {
+      if (reticleActive && reticleEl) {
+        // Smooth interpolation
+        reticleCurrentX += (reticleTargetX - reticleCurrentX) * 0.18;
+        reticleCurrentY += (reticleTargetY - reticleCurrentY) * 0.18;
+
+        reticleEl.style.transform = `translate(${reticleCurrentX}px, ${reticleCurrentY}px)`;
+
+        if (reticleCoordsEl) {
+          reticleCoordsEl.textContent = `X:${Math.round(reticleCurrentX)} Y:${Math.round(reticleCurrentY)}`;
+        }
+      }
+      requestAnimationFrame(renderReticleLoop);
+    }
+
+    function toggleCyberReticle() {
+      reticleActive = !reticleActive;
+      if (reticleEl) {
+        reticleEl.style.display = reticleActive ? 'block' : 'none';
+      }
+      const btn = document.getElementById('btnToggleReticle');
+      const text = document.getElementById('reticleText');
+      if (btn) btn.classList.toggle('active', reticleActive);
+      if (text) text.textContent = reticleActive ? 'Reticle: ON' : 'Reticle: OFF';
+    }
+
+    /* ============================================================
+       QUANTUM SURGE FULL-SPECTRUM VFX BURST TRIGGER
+       ============================================================ */
+    function triggerQuantumVfxSurge(withAudio = true) {
+      // 1. Hologram 3D Surge
+      hologramSurge = 1.8;
+
+      // 2. Fullscreen Light Flash
+      const flashEl = document.getElementById('quantumSurgeFlash');
+      if (flashEl) {
+        flashEl.classList.add('active');
+        setTimeout(() => flashEl.classList.remove('active'), 280);
+      }
+
+      // 3. Terminal Card Surge
+      const card = document.getElementById('userAuthCard');
+      if (card) {
+        card.classList.add('interactive-surge');
+        setTimeout(() => card.classList.remove('interactive-surge'), 850);
+      }
+
+      // 4. Radiating Biophotonic Sparks explosion from screen center
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      for (let i = 0; i < 36; i++) {
+        const angle = (i / 36) * Math.PI * 2;
+        const speed = 4 + Math.random() * 8;
+        if (typeof biophotonicParticles !== 'undefined') {
+          biophotonicParticles.push({
+            x: centerX,
+            y: centerY,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            radius: 2.2 + Math.random() * 3.5,
+            color: i % 2 === 0 ? (VFX_THEMES[currentVfxTheme]?.primary || '#38bdf8') : '#ffffff',
+            life: 1.0,
+            decay: 0.016 + Math.random() * 0.018
+          });
+        }
+      }
+
+      // 5. Expand Biophotonic Shockwaves
+      if (typeof biophotonicShockwaves !== 'undefined') {
+        biophotonicShockwaves.push({
+          x: centerX,
+          y: centerY,
+          radius: 10,
+          maxRadius: Math.max(window.innerWidth, window.innerHeight) * 0.65,
+          color: VFX_THEMES[currentVfxTheme]?.primary || '#38bdf8',
+          opacity: 0.95
+        });
+      }
+
+      // 6. ECG Waveform Spike
+      if (typeof ecgHistory !== 'undefined') {
+        for (let k = 0; k < 6; k++) {
+          ecgHistory.push(-65 + (k % 2 === 0 ? 120 : -30));
+        }
+      }
+
+      // 7. Futuristic Polyphonic Audio Chord Chime
+      if (withAudio && typeof playSynthesizerHarmonicTone === 'function') {
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+          setTimeout(() => playSynthesizerHarmonicTone(f, 0.35), i * 65);
+        });
+      }
+
+      // 8. Temporary HUD Surge Feedback in Status Chip
+      const hudDna = document.getElementById('hudDnaVal');
+      if (hudDna) {
+        const prevText = hudDna.textContent;
+        hudDna.textContent = '⚡ QUANTUM SURGE ACTIVATED';
+        hudDna.style.color = '#ffffff';
+        setTimeout(() => {
+          hudDna.textContent = prevText;
+          hudDna.style.color = '';
+        }, 1400);
+      }
     }
 
     /* ============================================================
@@ -2426,6 +3463,7 @@
     let ecgCtx;
     let ecgX = 0;
     let ecgHistory = [];
+    let ecgStrokeColor = '#38bdf8';
     const ECG_WIDTH = 1200;
 
     function initEcgWaveform() {
@@ -2482,10 +3520,11 @@
 
       const curY = midY + yOffset + (Math.random() - 0.5) * 1.5;
 
+      const stroke = ecgStrokeColor || '#38bdf8';
       ecgCtx.beginPath();
       ecgCtx.arc(ecgX, curY, 2, 0, Math.PI * 2);
-      ecgCtx.fillStyle = '#38bdf8';
-      ecgCtx.shadowColor = '#38bdf8';
+      ecgCtx.fillStyle = stroke;
+      ecgCtx.shadowColor = stroke;
       ecgCtx.shadowBlur = 8;
       ecgCtx.fill();
     }
@@ -3563,6 +4602,8 @@
     window.addEventListener('DOMContentLoaded', () => {
       initThreeScene();
       initEcgWaveform();
+      initBioMatrixRain();
+      initCyberReticle();
       initAuthSyncEngine();
       initBiophotonicCursor();
       initKeystrokeVfx();

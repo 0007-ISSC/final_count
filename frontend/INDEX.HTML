@@ -14,6 +14,8 @@
 
   <!-- Framer Motion Core Engine -->
   <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
+  <!-- Three.js 3D WebGL Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
   <style>
     :root {
@@ -378,18 +380,49 @@
       color: var(--ink-muted);
     }
 
-    /* Right Side: Luxury White & Beige Login Card */
+    /* Right Side: Modern Glassmorphic Login Card with Soft Blur & Border Glow */
     .auth-card {
-      background: var(--bg-card);
-      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.74);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1.5px solid rgba(255, 255, 255, 0.85);
       border-radius: var(--radius-xl);
       padding: 36px 32px;
-      box-shadow: var(--shadow-luxury);
+      box-shadow: 
+        0 24px 60px -15px rgba(80, 60, 40, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.85) inset,
+        0 0 35px rgba(200, 165, 120, 0.25),
+        0 1px 2px rgba(255, 255, 255, 0.9) inset;
       position: relative;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+      overflow: hidden;
+    }
+
+    /* Subtle Glass Surface Reflection Specular Highlight */
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 48%;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-radius: inherit;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-card:hover {
+      border-color: rgba(200, 165, 120, 0.55);
+      box-shadow: 
+        0 32px 75px -12px rgba(80, 60, 40, 0.16),
+        0 0 0 1.5px rgba(255, 255, 255, 0.95) inset,
+        0 0 45px rgba(200, 165, 120, 0.38);
     }
 
     .auth-card-header {
+      position: relative;
+      z-index: 1;
       margin-bottom: 24px;
       text-align: center;
     }
@@ -409,12 +442,16 @@
 
     /* Animated Mode Tabs */
     .auth-tabs {
+      position: relative;
+      z-index: 1;
       display: flex;
-      background: var(--bg-warm-sand);
+      background: rgba(243, 236, 226, 0.65);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
       padding: 4px;
       border-radius: var(--radius-md);
       margin-bottom: 22px;
-      position: relative;
     }
 
     .auth-tab {
@@ -432,13 +469,15 @@
     }
 
     .auth-tab.active {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.95);
       color: var(--ink-primary);
-      box-shadow: 0 2px 6px rgba(80, 60, 40, 0.08);
+      box-shadow: 0 2px 8px rgba(80, 60, 40, 0.08);
     }
 
     /* Input Field Groups */
     .input-group {
+      position: relative;
+      z-index: 1;
       margin-bottom: 16px;
       text-align: left;
     }
@@ -449,6 +488,7 @@
       font-weight: 700;
       color: var(--ink-primary);
       margin-bottom: 6px;
+      transition: color 0.2s ease;
     }
 
     .input-wrapper {
@@ -459,21 +499,24 @@
 
     .input-field {
       width: 100%;
-      background: #faf7f2;
-      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1.5px solid rgba(232, 222, 210, 0.85);
       border-radius: var(--radius-md);
       padding: 11px 14px 11px 38px;
       font-size: 14px;
       font-family: inherit;
       color: var(--ink-primary);
       outline: none;
-      transition: all 0.2s ease;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 1px 3px rgba(80, 60, 40, 0.03) inset;
     }
 
     .input-field:focus {
-      background: #ffffff;
+      background: rgba(255, 255, 255, 0.96);
       border-color: var(--accent-warm);
-      box-shadow: 0 0 0 3.5px var(--gold-glow);
+      box-shadow: 0 0 0 3.5px var(--gold-glow), 0 0 20px rgba(200, 165, 120, 0.32);
     }
 
     .input-icon {
@@ -1013,6 +1056,29 @@
       }
     }
 
+    /* Form Elements Stagger Slide-Up with Cream-Colored Soft Glow */
+    @keyframes fmFormItemStaggerGlow {
+      0% {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+        filter: drop-shadow(0 0 22px rgba(200, 165, 120, 0.75)) drop-shadow(0 0 8px rgba(245, 238, 228, 0.9));
+      }
+      50% {
+        opacity: 0.85;
+        filter: drop-shadow(0 0 14px rgba(200, 165, 120, 0.45));
+      }
+      75% {
+        opacity: 0.96;
+        transform: translateY(-2px) scale(1.002);
+        filter: drop-shadow(0 0 6px rgba(200, 165, 120, 0.2));
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 0 0px rgba(200, 165, 120, 0));
+      }
+    }
+
     @keyframes fmRoleSwitchFadeSlide {
       0% {
         opacity: 0;
@@ -1054,36 +1120,48 @@
       animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
     }
 
-    /* Cascading stagger entrance for auth card items */
+    /* Cascading stagger entrance for auth card items with cream soft glow */
     .auth-card .role-switcher-bar {
-      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
     }
     .auth-card .auth-card-header {
-      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
     }
-    #patientFormWrapper .input-group:nth-child(1) {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.34s both;
+    .auth-card #indexSyncStatusBar {
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
     }
-    #patientFormWrapper .input-group:nth-child(2) {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.40s both;
+    #patientFormWrapper .input-group:nth-of-type(1) {
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
     }
-    #patientFormWrapper .input-group:nth-child(3) {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.46s both;
+    #patientFormWrapper .input-group:nth-of-type(2) {
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.38s both;
     }
-    #patientFormWrapper .input-group:nth-child(4) {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.52s both;
+    #patientFormWrapper .input-group:nth-of-type(3) {
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.44s both;
+    }
+    #patientFormWrapper .input-group:nth-of-type(4) {
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.50s both;
     }
     #patientFormWrapper .form-meta-row {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.56s both;
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
     }
     #patientFormWrapper .btn-warm-primary {
-      animation: fmSpringItemUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.60s both;
+      animation: fmFormItemStaggerGlow 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.58s both;
+    }
+    #patientFormWrapper #btnOpenDedicatedPortal {
+      animation: fmFormItemStaggerGlow 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.62s both;
+    }
+    #patientFormWrapper #btnOpenAppTourIndex {
+      animation: fmFormItemStaggerGlow 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.66s both;
+    }
+    #patientFormWrapper button[onclick="triggerCelebrationPreview()"] {
+      animation: fmFormItemStaggerGlow 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.70s both;
     }
     #patientFormWrapper .ornament-divider {
-      animation: fmSpringItemUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.64s both;
+      animation: fmFormItemStaggerGlow 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0.74s both;
     }
     #patientFormWrapper .quick-profiles-list {
-      animation: fmSpringItemUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.68s both;
+      animation: fmFormItemStaggerGlow 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.78s both;
     }
 
     .fm-switch-in {
@@ -1318,6 +1396,364 @@
       transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
+    /* ========================================================
+       LUXURY CREAM THEME TREMENDOUS VFX SYSTEM STYLES
+       ======================================================== */
+    /* Perimeter Liquid Golden Light Beam on Luxury Cards */
+    .visual-showcase, .auth-card {
+      position: relative;
+    }
+    .card-border-beam {
+      position: absolute;
+      inset: -1.5px;
+      border-radius: inherit;
+      padding: 1.5px;
+      background: conic-gradient(from 0deg, transparent 0deg, var(--accent-warm, #8c6d46) 35deg, rgba(200, 165, 120, 0.9) 70deg, transparent 110deg);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: cardBeamRotate 9s linear infinite;
+      opacity: 0.65;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+    .visual-showcase:hover .card-border-beam, .auth-card:hover .card-border-beam {
+      opacity: 1;
+      animation-duration: 5s;
+    }
+    @keyframes cardBeamRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* 3D Holographic Twin Viewport */
+    .hologram-twin-widget {
+      position: relative;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,238,228,0.85) 100%);
+      border: 1px solid var(--card-border, #e8ded2);
+      border-radius: var(--radius-lg, 16px);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 25px -8px rgba(140,109,70,0.1);
+      overflow: hidden;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .hologram-twin-widget:hover {
+      box-shadow: 0 16px 35px -8px rgba(140,109,70,0.18);
+      border-color: var(--accent-warm, #8c6d46);
+    }
+    #hologramCanvasContainer {
+      position: relative;
+      width: 100%;
+      height: 185px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 50%, rgba(253,250,245,0.98) 0%, rgba(240,230,216,0.9) 100%);
+      border: 1px solid rgba(140,109,70,0.18);
+      cursor: grab;
+      user-select: none;
+    }
+    #hologramCanvasContainer:active {
+      cursor: grabbing;
+    }
+
+    /* Floating Cream Theme VFX Studio HUD Bar */
+    .cream-vfx-hud {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 99990;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border, #e8ded2);
+      border-radius: 32px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px -5px rgba(80, 60, 40, 0.14), 0 0 1px 1px rgba(80, 60, 40, 0.05);
+      animation: fmSpringItemUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both;
+    }
+    @media (max-width: 768px) {
+      .cream-vfx-hud {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        border-radius: 18px;
+        padding: 8px 10px;
+      }
+    }
+    .cream-vfx-hud-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--accent-warm, #8c6d46);
+    }
+    .cream-vfx-pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-warm, #8c6d46);
+      animation: pulseDot 1.6s infinite ease-in-out;
+    }
+    .cream-vfx-hud-divider {
+      width: 1px;
+      height: 18px;
+      background: var(--card-border-subtle, #f0e9df);
+    }
+    .cream-palette-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .cream-theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      border: 1px solid transparent;
+      background: transparent;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-secondary, #5c524e);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .cream-theme-btn:hover {
+      background: var(--accent-warm-light, #f5eee4);
+      color: var(--ink-primary, #2c2523);
+    }
+    .cream-theme-btn.active {
+      background: #ffffff;
+      border-color: var(--card-border, #e8ded2);
+      color: var(--ink-primary, #2c2523);
+      box-shadow: 0 2px 6px rgba(80, 60, 40, 0.08);
+    }
+    .cream-swatch {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      box-shadow: 0 0 3px rgba(0,0,0,0.15);
+    }
+    .cream-toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cream-fx-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #ffffff;
+      border: 1px solid var(--card-border, #e8ded2);
+      color: var(--ink-secondary, #5c524e);
+      transition: all 0.2s ease;
+    }
+    .cream-fx-btn:hover {
+      border-color: var(--accent-warm, #8c6d46);
+      color: var(--accent-warm, #8c6d46);
+      background: var(--accent-warm-light, #f5eee4);
+    }
+    .cream-fx-btn.active {
+      border-color: var(--accent-warm, #8c6d46);
+      color: var(--accent-warm, #8c6d46);
+    }
+    .cream-fx-btn.surge-btn {
+      background: linear-gradient(135deg, #c4a480 0%, #8c6d46 100%);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 2px 8px rgba(140, 109, 70, 0.35);
+    }
+    .cream-fx-btn.surge-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 4px 14px rgba(140, 109, 70, 0.45);
+    }
+
+    /* Fullscreen Golden Surge Flash */
+    .golden-surge-flash {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 248, 230, 0.85) 0%, rgba(200, 165, 120, 0.4) 60%, transparent 100%);
+      pointer-events: none;
+      z-index: 999998;
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .golden-surge-flash.active {
+      opacity: 1;
+    }
+
+    /* Click ripple pulse */
+    .cream-click-ripple {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99997;
+      border: 1.5px solid var(--accent-warm, #8c6d46);
+      box-shadow: 0 0 14px var(--accent-warm, #8c6d46);
+      animation: creamRippleExpand 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    @keyframes creamRippleExpand {
+      0% {
+        transform: translate(-50%, -50%) scale(0.1);
+        opacity: 0.85;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+      }
+    }
+
+    /* Keystroke spark particles */
+    .keystroke-spark {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0%, var(--accent-warm, #c4a480) 100%);
+      box-shadow: 0 0 6px var(--accent-warm, #c4a480);
+      animation: keystrokeSparkFly 0.5s ease-out forwards;
+    }
+    @keyframes keystrokeSparkFly {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--kx), var(--ky)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    /* High-Performance Floating Health Nodes & Flowing Sparkles Layer */
+    .floating-health-nodes-layer {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+      will-change: transform;
+    }
+
+    .health-node-item {
+      position: absolute;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      will-change: transform, opacity;
+      animation: floatHealthNodeAnimation var(--duration, 16s) cubic-bezier(0.35, 0, 0.25, 1) infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .health-node-inner {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 11px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(200, 165, 120, 0.45);
+      box-shadow: 
+        0 4px 16px rgba(140, 109, 70, 0.12),
+        0 0 22px rgba(200, 165, 120, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+      color: var(--accent-warm, #8c6d46);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      gap: 5px;
+      transition: transform 0.3s ease;
+    }
+
+    .health-node-orbit-ring {
+      position: absolute;
+      inset: -5px;
+      border-radius: inherit;
+      border: 1px dashed rgba(200, 165, 120, 0.35);
+      animation: healthOrbitRotate 12s linear infinite;
+    }
+
+    .flowing-sparkle-item {
+      position: absolute;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4af37;
+      text-shadow: 0 0 12px rgba(212, 175, 55, 0.85), 0 0 24px rgba(200, 165, 120, 0.5);
+      font-size: var(--size, 14px);
+      will-change: transform, opacity;
+      animation: floatSparkleAnimation var(--duration, 12s) cubic-bezier(0.25, 1, 0.5, 1) infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    @keyframes floatHealthNodeAnimation {
+      0% {
+        transform: translate3d(var(--startX), 105vh, 0) rotate(0deg) scale(0.75);
+        opacity: 0;
+      }
+      15% {
+        opacity: 0.88;
+      }
+      50% {
+        transform: translate3d(calc(var(--startX) + var(--driftX)), 50vh, 0) rotate(var(--midRot, 6deg)) scale(1.05);
+        opacity: 0.8;
+      }
+      85% {
+        opacity: 0.88;
+      }
+      100% {
+        transform: translate3d(calc(var(--startX) + var(--driftX) * 1.6), -80px, 0) rotate(var(--endRot, 12deg)) scale(0.7);
+        opacity: 0;
+      }
+    }
+
+    @keyframes floatSparkleAnimation {
+      0% {
+        transform: translate3d(var(--startX), 105vh, 0) scale(0.5);
+        opacity: 0;
+      }
+      20% {
+        opacity: 0.95;
+        transform: translate3d(calc(var(--startX) + var(--driftX) * 0.3), 75vh, 0) scale(1.25);
+      }
+      70% {
+        opacity: 0.85;
+        transform: translate3d(calc(var(--startX) + var(--driftX) * 0.8), 30vh, 0) scale(0.9);
+      }
+      100% {
+        transform: translate3d(calc(var(--startX) + var(--driftX) * 1.3), -40px, 0) scale(0.4);
+        opacity: 0;
+      }
+    }
+
+    @keyframes healthOrbitRotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .top-header,
       .visual-showcase,
@@ -1333,6 +1769,12 @@
   </style>
 </head>
 <body>
+
+  <!-- FULLSCREEN GOLDEN SURGE FLASH VFX -->
+  <div id="goldenSurgeFlash" class="golden-surge-flash"></div>
+
+  <!-- INTERACTIVE BIOPHOTONIC CURSOR STARDUST TRAIL CANVAS -->
+  <canvas id="creamCursorStardustCanvas" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:99998;"></canvas>
 
   <!-- FULLSCREEN FRAMER-MOTION INSPIRED NEURAL PAGE TRANSITION OVERLAY -->
   <div id="neuralPageTransitionOverlay" class="neural-transition-overlay" style="display:none;">
@@ -1356,6 +1798,8 @@
   <!-- Ambient Organic Warm Background Canvas Blobs & Interactive Constellation Web -->
   <div class="ambient-canvas-wrap">
     <canvas id="ambientConstellationCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
+    <!-- High-Performance Floating Health Nodes & Flowing Sparkles Layer -->
+    <div class="floating-health-nodes-layer" id="floatingHealthNodesLayer" aria-hidden="true"></div>
     <div class="blob blob-1"></div>
     <div class="blob blob-2"></div>
     <div class="blob blob-3"></div>
@@ -1398,6 +1842,7 @@
 
     <!-- Left Visual Showcase (Atmospheric Warm Sanctuary) -->
     <section class="visual-showcase" id="visualShowcase">
+      <div class="card-border-beam"></div>
       <div class="card-shine"></div>
       <div>
         <div class="showcase-eyebrow">
@@ -1411,6 +1856,31 @@
           Continuous AI vitals monitoring, personalized therapeutic guidance, verified pharmaceutical safety, and unified longitudinal health records.
         </p>
 
+        <!-- 3D Interactive Biomorphic Digital Twin Hologram Core -->
+        <div class="hologram-twin-widget" id="hologramTwinWidget">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--ink-primary);">
+              <span style="font-size:15px;">🧬</span>
+              <span>3D Biomorphic Hologram Core</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span id="hologramModePill" style="font-size:10.5px;font-weight:750;color:var(--accent-warm);background:var(--accent-warm-light);padding:3px 9px;border-radius:12px;border:1px solid rgba(140,109,70,0.22);display:flex;align-items:center;gap:4px;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;animation:pulseDot 1.5s infinite;"></span>
+                <span>Live 3D Telemetry</span>
+              </span>
+            </div>
+          </div>
+          <div id="hologramCanvasContainer" title="Drag to rotate 3D twin or click to pulse">
+            <canvas id="creamBiomorphicCanvas"></canvas>
+            <div class="hologram-hud-overlay" style="position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-secondary);font-weight:700;pointer-events:none;background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);padding:4px 8px;border-radius:6px;border:1px solid rgba(140,109,70,0.14);">
+              <span style="display:flex;align-items:center;gap:5px;color:var(--accent-sage);">
+                <span>● Double-Helix Resonance</span>
+              </span>
+              <span style="font-family:'Space Grotesk',monospace;color:var(--accent-warm);" id="hologramTelemetryTxt">HRV 82ms · Optimal</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Live Vitality Card Widget -->
         <div class="vitality-card">
           <div class="vitality-header">
@@ -1419,6 +1889,11 @@
               <span>Live Biomarker Telemetry</span>
             </div>
             <div class="vitality-badge">Optimal Range</div>
+          </div>
+
+          <!-- Live Real-Time Glowing Canvas ECG -->
+          <div style="position:relative;margin:6px 0 10px;height:44px;background:rgba(250,247,242,0.92);border-radius:8px;border:1px solid rgba(140,109,70,0.18);overflow:hidden;">
+            <canvas id="creamEcgCanvas" style="width:100%;height:100%;display:block;"></canvas>
           </div>
 
           <!-- Animated Rhythm Wave Bars -->
@@ -1451,6 +1926,7 @@
 
     <!-- Right: Warm White & Beige Interactive Login Card -->
     <section class="auth-card" id="authCard">
+      <div class="card-border-beam"></div>
       <div class="card-shine"></div>
 
       <!-- Role Switcher Tabs -->
@@ -1653,6 +2129,47 @@
 
     </section>
   </main>
+
+  <!-- LUXURY CREAM THEME VFX STUDIO CONTROLLER HUD -->
+  <aside class="cream-vfx-hud" id="creamVfxHud" aria-label="Visual Effects Studio">
+    <div class="cream-vfx-hud-label">
+      <span class="cream-vfx-pulse-dot"></span>
+      <span>CREAM VFX STUDIO</span>
+    </div>
+    <div class="cream-vfx-hud-divider"></div>
+    <!-- Quantum Spectrum Color Presets -->
+    <div class="cream-palette-group" title="Select Luxury Visual Atmosphere">
+      <button type="button" class="cream-theme-btn active" id="btnThemeChampagne" data-theme="champagne" onclick="setCreamTheme('champagne')" title="Champagne Gold Luxury">
+        <span class="cream-swatch" style="background:#c4a480;"></span>
+        <span>Champagne</span>
+      </button>
+      <button type="button" class="cream-theme-btn" id="btnThemeRose" data-theme="rose" onclick="setCreamTheme('rose')" title="Rose Terracotta Warmth">
+        <span class="cream-swatch" style="background:#a65b44;"></span>
+        <span>Terracotta</span>
+      </button>
+      <button type="button" class="cream-theme-btn" id="btnThemeSage" data-theme="sage" onclick="setCreamTheme('sage')" title="Sage & Eucalyptus Serenity">
+        <span class="cream-swatch" style="background:#5b7056;"></span>
+        <span>Bio Sage</span>
+      </button>
+      <button type="button" class="cream-theme-btn" id="btnThemeOpal" data-theme="opal" onclick="setCreamTheme('opal')" title="Celestial Opal Azure">
+        <span class="cream-swatch" style="background:#0284c7;"></span>
+        <span>Opal</span>
+      </button>
+    </div>
+    <div class="cream-vfx-hud-divider"></div>
+    <!-- Quick FX Toggles -->
+    <div class="cream-toggle-group">
+      <button type="button" class="cream-fx-btn active" id="btnToggleStardust" onclick="toggleStardustTrail()" title="Toggle golden cursor sparkle trail">
+        <span>✨</span> <span id="stardustText">Stardust: ON</span>
+      </button>
+      <button type="button" class="cream-fx-btn active" id="btnToggleCoreNerve" onclick="toggleHologramWireframe()" title="Toggle 3D core wireframe & pulse">
+        <span>🧬</span> <span id="wireframeText">3D Core: Pulse</span>
+      </button>
+      <button type="button" class="cream-fx-btn surge-btn" onclick="triggerCreamGoldenSurge()" title="Trigger Full-Screen Golden Vitality Surge">
+        <span>⚡</span> <span>Golden Surge</span>
+      </button>
+    </div>
+  </aside>
 
   <!-- FIRECRACKERS CELEBRATION LOGIN ANIMATION OVERLAY -->
   <div id="loginCelebrationOverlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:999999;background:radial-gradient(circle at center, rgba(15,23,42,0.92) 0%, rgba(3,7,18,0.98) 100%);backdrop-filter:blur(8px);flex-direction:column;align-items:center;justify-content:center;overflow:hidden;user-select:none;">
@@ -2988,7 +3505,642 @@
       });
     }
 
-    /* Constellation Web Particle Simulation */
+    /* ========================================================
+       LUXURY CREAM THEME TREMENDOUS VFX ENGINES
+       ======================================================== */
+
+    // Global VFX State
+    let creamCurrentTheme = 'champagne';
+    let creamStardustEnabled = true;
+    let creamWireframeActive = true;
+    let threeBiomorphicInstance = null;
+    let ecgThemeColor = '#8c6d46';
+
+    const CREAM_THEME_PALETTES = {
+      champagne: {
+        accent: '#8c6d46',
+        accentHover: '#735735',
+        accentLight: '#f5eee4',
+        cardBorder: '#e8ded2',
+        glow: 'rgba(200, 165, 120, 0.25)',
+        threeCore: 0xc4a480,
+        threeNucleus: 0x8c6d46,
+        threeRings: 0xd4af37,
+        threeParticles: 0xdfc29f
+      },
+      rose: {
+        accent: '#a65b44',
+        accentHover: '#874734',
+        accentLight: '#faeee9',
+        cardBorder: '#f0ded8',
+        glow: 'rgba(220, 140, 120, 0.25)',
+        threeCore: 0xdf8d74,
+        threeNucleus: 0xa65b44,
+        threeRings: 0xf59e0b,
+        threeParticles: 0xe8a593
+      },
+      sage: {
+        accent: '#5b7056',
+        accentHover: '#475843',
+        accentLight: '#edf2eb',
+        cardBorder: '#dde5da',
+        glow: 'rgba(91, 112, 86, 0.25)',
+        threeCore: 0x82a37c,
+        threeNucleus: 0x5b7056,
+        threeRings: 0x10b981,
+        threeParticles: 0x9cb897
+      },
+      opal: {
+        accent: '#0284c7',
+        accentHover: '#0369a1',
+        accentLight: '#e0f2fe',
+        cardBorder: '#bae6fd',
+        glow: 'rgba(2, 132, 199, 0.25)',
+        threeCore: 0x38bdf8,
+        threeNucleus: 0x0284c7,
+        threeRings: 0x06b6d4,
+        threeParticles: 0x7dd3fc
+      }
+    };
+
+    /* 1. THREE.JS 3D BIOMORPHIC DIGITAL TWIN HOLOGRAM CORE */
+    function initThreeBiomorphicCore() {
+      if (!window.THREE) {
+        console.warn('Three.js library not loaded yet; skipping 3D core.');
+        return;
+      }
+
+      const container = document.getElementById('hologramCanvasContainer');
+      const canvas = document.getElementById('creamBiomorphicCanvas');
+      if (!container || !canvas) return;
+
+      const rect = container.getBoundingClientRect();
+      const width = rect.width || 320;
+      const height = rect.height || 185;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(48, width / height, 0.1, 1000);
+      camera.position.z = 4.8;
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      } catch (err) {
+        console.warn('WebGL initialization note:', err);
+        return;
+      }
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffeedd, 1.1);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 1.4);
+      dirLight.position.set(4, 6, 5);
+      scene.add(dirLight);
+
+      const pointLight = new THREE.PointLight(0xd4af37, 2.2, 20);
+      pointLight.position.set(0, 0, 1.5);
+      scene.add(pointLight);
+
+      const masterGroup = new THREE.Group();
+      scene.add(masterGroup);
+
+      // Structure A: Geodesic Icosahedron Wireframe
+      const icoGeo = new THREE.IcosahedronGeometry(1.25, 1);
+      const palette = CREAM_THEME_PALETTES[creamCurrentTheme] || CREAM_THEME_PALETTES.champagne;
+
+      const icoMat = new THREE.MeshStandardMaterial({
+        color: palette.threeCore,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.72,
+        roughness: 0.3,
+        metalness: 0.7
+      });
+      const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+      masterGroup.add(icoMesh);
+
+      // Structure B: Luminous Pulsing Inner Nucleus
+      const nucleusGeo = new THREE.SphereGeometry(0.68, 32, 32);
+      const nucleusMat = new THREE.MeshStandardMaterial({
+        color: palette.threeNucleus,
+        roughness: 0.25,
+        metalness: 0.5,
+        emissive: palette.threeNucleus,
+        emissiveIntensity: 0.45
+      });
+      const nucleusMesh = new THREE.Mesh(nucleusGeo, nucleusMat);
+      masterGroup.add(nucleusMesh);
+
+      // Structure C: DNA Double Helix Structure
+      const helixGroup = new THREE.Group();
+      const nodeCount = 28;
+      const helixRadius = 1.05;
+      const helixHeight = 2.4;
+      const sphereGeo = new THREE.SphereGeometry(0.045, 12, 12);
+      const nodeMatA = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+      const nodeMatB = new THREE.MeshBasicMaterial({ color: palette.threeCore });
+      const rungMat = new THREE.LineBasicMaterial({ color: palette.threeRings, transparent: true, opacity: 0.45 });
+
+      for (let i = 0; i < nodeCount; i++) {
+        const t = (i / nodeCount) * Math.PI * 3.5;
+        const y = ((i / nodeCount) - 0.5) * helixHeight;
+        const x1 = Math.cos(t) * helixRadius;
+        const z1 = Math.sin(t) * helixRadius;
+        const x2 = Math.cos(t + Math.PI) * helixRadius;
+        const z2 = Math.sin(t + Math.PI) * helixRadius;
+
+        const sphereA = new THREE.Mesh(sphereGeo, nodeMatA);
+        sphereA.position.set(x1, y, z1);
+        helixGroup.add(sphereA);
+
+        const sphereB = new THREE.Mesh(sphereGeo, nodeMatB);
+        sphereB.position.set(x2, y, z2);
+        helixGroup.add(sphereB);
+
+        // Connector rung every 2 nodes
+        if (i % 2 === 0) {
+          const rungGeo = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(x1, y, z1),
+            new THREE.Vector3(x2, y, z2)
+          ]);
+          const rungLine = new THREE.Line(rungGeo, rungMat);
+          helixGroup.add(rungLine);
+        }
+      }
+      masterGroup.add(helixGroup);
+
+      // Structure D: Double Golden Gyroscopic Orbital Rings
+      const ringGeoA = new THREE.TorusGeometry(1.85, 0.02, 16, 90);
+      const ringMatA = new THREE.MeshStandardMaterial({
+        color: palette.threeRings,
+        roughness: 0.2,
+        metalness: 0.85
+      });
+      const ringMeshA = new THREE.Mesh(ringGeoA, ringMatA);
+      ringMeshA.rotation.x = Math.PI / 3;
+      masterGroup.add(ringMeshA);
+
+      const ringGeoB = new THREE.TorusGeometry(2.15, 0.016, 16, 90);
+      const ringMatB = new THREE.MeshStandardMaterial({
+        color: palette.threeCore,
+        roughness: 0.3,
+        metalness: 0.75,
+        transparent: true,
+        opacity: 0.8
+      });
+      const ringMeshB = new THREE.Mesh(ringGeoB, ringMatB);
+      ringMeshB.rotation.y = Math.PI / 4;
+      ringMeshB.rotation.z = Math.PI / 6;
+      masterGroup.add(ringMeshB);
+
+      // Structure E: Swarm of Floating Golden Biophotonic Dust Motes
+      const particleCount = 280;
+      const particlesGeo = new THREE.BufferGeometry();
+      const posArray = new Float32Array(particleCount * 3);
+
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        const r = 1.3 + Math.random() * 2.2;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(Math.random() * 2 - 1);
+        posArray[i] = r * Math.sin(phi) * Math.cos(theta);
+        posArray[i + 1] = r * Math.sin(phi) * Math.sin(theta);
+        posArray[i + 2] = r * Math.cos(phi);
+      }
+      particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+      const particlesMat = new THREE.PointsMaterial({
+        color: palette.threeParticles,
+        size: 0.055,
+        transparent: true,
+        opacity: 0.8
+      });
+      const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+      masterGroup.add(particlesMesh);
+
+      // Interactive State
+      let isDragging = false;
+      let prevMouseX = 0;
+      let prevMouseY = 0;
+      let mouseParallaxX = 0;
+      let mouseParallaxY = 0;
+      let pulseScale = 1;
+
+      container.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        prevMouseX = e.clientX;
+        prevMouseY = e.clientY;
+      });
+
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      window.addEventListener('mousemove', (e) => {
+        if (isDragging) {
+          const deltaX = e.clientX - prevMouseX;
+          const deltaY = e.clientY - prevMouseY;
+          masterGroup.rotation.y += deltaX * 0.008;
+          masterGroup.rotation.x += deltaY * 0.008;
+          prevMouseX = e.clientX;
+          prevMouseY = e.clientY;
+        } else {
+          const contRect = container.getBoundingClientRect();
+          const centerX = contRect.left + contRect.width / 2;
+          const centerY = contRect.top + contRect.height / 2;
+          mouseParallaxX = ((e.clientX - centerX) / contRect.width) * 0.4;
+          mouseParallaxY = ((e.clientY - centerY) / contRect.height) * 0.4;
+        }
+      });
+
+      // Interactive Click on 3D Container: Triggers Biomorphic Energy Shockwave
+      container.addEventListener('click', () => {
+        pulseScale = 1.28;
+        playInteractiveTone('focus');
+        const txt = document.getElementById('hologramTelemetryTxt');
+        if (txt) {
+          txt.textContent = '✨ Pulse Synchronized';
+          setTimeout(() => { if (txt) txt.textContent = 'HRV 82ms · Optimal'; }, 1800);
+        }
+      });
+
+      // Resize handling with ResizeObserver
+      const ro = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          const w = entry.contentRect.width;
+          const h = entry.contentRect.height;
+          if (w && h) {
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+          }
+        }
+      });
+      ro.observe(container);
+
+      // Main Render Loop
+      let clock = new THREE.Clock();
+      function animateThree() {
+        requestAnimationFrame(animateThree);
+        const elapsed = clock.getElapsedTime();
+
+        // Organic Breathing & Rotations
+        masterGroup.rotation.y += 0.006;
+        helixGroup.rotation.y += 0.012;
+        ringMeshA.rotation.z += 0.009;
+        ringMeshB.rotation.x += 0.007;
+        particlesMesh.rotation.y -= 0.003;
+
+        // Pulse decay
+        if (pulseScale > 1) {
+          pulseScale = Math.max(1, pulseScale - 0.015);
+        }
+        const breath = (1 + Math.sin(elapsed * 2.2) * 0.045) * pulseScale;
+        nucleusMesh.scale.set(breath, breath, breath);
+
+        // Camera gentle parallax
+        camera.position.x += (mouseParallaxX - camera.position.x) * 0.05;
+        camera.position.y += (-mouseParallaxY - camera.position.y) * 0.05;
+        camera.lookAt(0, 0, 0);
+
+        renderer.render(scene, camera);
+      }
+      animateThree();
+
+      // Store references for runtime palette updates
+      threeBiomorphicInstance = {
+        updatePalette: (pal) => {
+          icoMat.color.setHex(pal.threeCore);
+          nucleusMat.color.setHex(pal.threeNucleus);
+          nucleusMat.emissive.setHex(pal.threeNucleus);
+          nodeMatB.color.setHex(pal.threeCore);
+          rungMat.color.setHex(pal.threeRings);
+          ringMatA.color.setHex(pal.threeRings);
+          ringMatB.color.setHex(pal.threeCore);
+          particlesMat.color.setHex(pal.threeParticles);
+          pointLight.color.setHex(pal.threeRings);
+        },
+        toggleWireframe: () => {
+          creamWireframeActive = !creamWireframeActive;
+          icoMesh.visible = creamWireframeActive;
+          return creamWireframeActive;
+        },
+        triggerPulse: () => {
+          pulseScale = 1.38;
+        }
+      };
+    }
+
+    /* 2. REAL-TIME GLOWING CANVAS ECG WAVEFORM ENGINE */
+    function initRealtimeEcg() {
+      const canvas = document.getElementById('creamEcgCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = canvas.width = canvas.parentElement.clientWidth || 300;
+      let height = canvas.height = canvas.parentElement.clientHeight || 44;
+
+      window.addEventListener('resize', () => {
+        if (canvas.parentElement) {
+          width = canvas.width = canvas.parentElement.clientWidth;
+          height = canvas.height = canvas.parentElement.clientHeight;
+        }
+      });
+
+      const points = [];
+      let step = 0;
+      const midY = height / 2;
+
+      function getEcgY(t) {
+        // Precise P-Q-R-S-T cardiac cycle calculation
+        const cycle = t % 100;
+        if (cycle > 15 && cycle < 25) {
+          // P Wave (atrial depolarization)
+          return midY - Math.sin((cycle - 15) / 10 * Math.PI) * 5;
+        } else if (cycle >= 35 && cycle < 38) {
+          // Q Dip
+          return midY + 4;
+        } else if (cycle >= 38 && cycle < 44) {
+          // R Peak (ventricular depolarization)
+          return midY - 18;
+        } else if (cycle >= 44 && cycle < 48) {
+          // S Dip
+          return midY + 7;
+        } else if (cycle > 55 && cycle < 72) {
+          // T Wave (ventricular repolarization)
+          return midY - Math.sin((cycle - 55) / 17 * Math.PI) * 7;
+        }
+        return midY + (Math.sin(t * 0.1) * 0.7);
+      }
+
+      function renderEcg() {
+        ctx.clearRect(0, 0, width, height);
+
+        // Add newest sample
+        step += 1.3;
+        points.push({ x: width, y: getEcgY(step) });
+
+        // Shift existing points leftward
+        for (let i = 0; i < points.length; i++) {
+          points[i].x -= 1.8;
+        }
+
+        // Remove offscreen points
+        while (points.length > 0 && points[0].x < 0) {
+          points.shift();
+        }
+
+        if (points.length < 2) {
+          requestAnimationFrame(renderEcg);
+          return;
+        }
+
+        // Render Waveform Line
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(points[i].x, points[i].y);
+        }
+
+        ctx.strokeStyle = ecgThemeColor;
+        ctx.lineWidth = 2;
+        ctx.shadowColor = ecgThemeColor;
+        ctx.shadowBlur = 8;
+        ctx.stroke();
+
+        // Glowing Pulse Node at the leading tip
+        const last = points[points.length - 1];
+        if (last) {
+          ctx.beginPath();
+          ctx.arc(last.x, last.y, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.shadowColor = '#10b981';
+          ctx.shadowBlur = 12;
+          ctx.fill();
+        }
+        ctx.restore();
+
+        requestAnimationFrame(renderEcg);
+      }
+      renderEcg();
+    }
+
+    /* 3. BIOPHOTONIC GOLDEN CURSOR STARDUST & RIPPLE SHOCKWAVE */
+    function initCreamCursorStardust() {
+      const canvas = document.getElementById('creamCursorStardustCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const stardustParticles = [];
+      const colors = ['#d4af37', '#c4a480', '#faebd7', '#8c6d46', '#f59e0b'];
+
+      let lastX = 0;
+      let lastY = 0;
+
+      window.addEventListener('mousemove', (e) => {
+        if (!creamStardustEnabled) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        const speed = Math.sqrt(dx * dx + dy * dy);
+
+        // Spawn golden stardust motes based on cursor speed
+        const count = Math.min(4, Math.floor(speed / 8) + 1);
+        for (let i = 0; i < count; i++) {
+          stardustParticles.push({
+            x: e.clientX + (Math.random() - 0.5) * 8,
+            y: e.clientY + (Math.random() - 0.5) * 8,
+            vx: (Math.random() - 0.5) * 1.2,
+            vy: (Math.random() - 0.5) * 1.2 + 0.3,
+            radius: Math.random() * 2.2 + 1,
+            alpha: 0.85,
+            decay: Math.random() * 0.025 + 0.02,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+
+      // Click Ripple Shockwave on click anywhere
+      window.addEventListener('click', (e) => {
+        const ripple = document.createElement('div');
+        ripple.className = 'cream-click-ripple';
+        ripple.style.left = e.clientX + 'px';
+        ripple.style.top = e.clientY + 'px';
+        ripple.style.width = '70px';
+        ripple.style.height = '70px';
+        document.body.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 750);
+
+        // Spawn burst of 12 sparkles
+        if (creamStardustEnabled) {
+          for (let i = 0; i < 12; i++) {
+            const angle = (i / 12) * Math.PI * 2;
+            const spd = Math.random() * 2.8 + 1.2;
+            stardustParticles.push({
+              x: e.clientX,
+              y: e.clientY,
+              vx: Math.cos(angle) * spd,
+              vy: Math.sin(angle) * spd,
+              radius: Math.random() * 2.4 + 1.2,
+              alpha: 1,
+              decay: 0.024,
+              color: colors[Math.floor(Math.random() * colors.length)]
+            });
+          }
+        }
+      });
+
+      function animateStardust() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = stardustParticles.length - 1; i >= 0; i--) {
+          const p = stardustParticles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.alpha -= p.decay;
+
+          if (p.alpha <= 0) {
+            stardustParticles.splice(i, 1);
+            continue;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = p.alpha;
+          ctx.shadowColor = p.color;
+          ctx.shadowBlur = 6;
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
+
+        requestAnimationFrame(animateStardust);
+      }
+      animateStardust();
+    }
+
+    /* 4. KEYSTROKE TACTILE SPARKS FEEDBACK */
+    function initKeystrokeSparks() {
+      const inputs = document.querySelectorAll('input.input-field');
+      inputs.forEach(input => {
+        input.addEventListener('keydown', (e) => {
+          if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') {
+            const rect = input.getBoundingClientRect();
+            const sparkX = rect.left + Math.random() * rect.width;
+            const sparkY = rect.bottom - 4;
+
+            for (let i = 0; i < 3; i++) {
+              const spark = document.createElement('div');
+              spark.className = 'keystroke-spark';
+              spark.style.left = sparkX + 'px';
+              spark.style.top = sparkY + 'px';
+              spark.style.width = '4px';
+              spark.style.height = '4px';
+              const kx = (Math.random() - 0.5) * 28 + 'px';
+              const ky = (-Math.random() * 20 - 6) + 'px';
+              spark.style.setProperty('--kx', kx);
+              spark.style.setProperty('--ky', ky);
+              document.body.appendChild(spark);
+              setTimeout(() => spark.remove(), 500);
+            }
+          }
+        });
+      });
+    }
+
+    /* 5. DYNAMIC CREAM THEME SPECTRUM SWITCHER */
+    function setCreamTheme(themeName) {
+      const palette = CREAM_THEME_PALETTES[themeName];
+      if (!palette) return;
+
+      creamCurrentTheme = themeName;
+      ecgThemeColor = palette.accent;
+
+      // Update Root CSS Custom Properties
+      const root = document.documentElement;
+      root.style.setProperty('--accent-warm', palette.accent);
+      root.style.setProperty('--accent-warm-hover', palette.accentHover);
+      root.style.setProperty('--accent-warm-light', palette.accentLight);
+      root.style.setProperty('--card-border', palette.cardBorder);
+      root.style.setProperty('--gold-glow', palette.glow);
+
+      // Update Active HUD button
+      document.querySelectorAll('.cream-theme-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === themeName);
+      });
+
+      // Update Three.js Core materials
+      if (threeBiomorphicInstance) {
+        threeBiomorphicInstance.updatePalette(palette);
+      }
+
+      playInteractiveTone('focus');
+    }
+
+    /* 6. TOGGLES & ACTIONS */
+    function toggleStardustTrail() {
+      creamStardustEnabled = !creamStardustEnabled;
+      const btn = document.getElementById('btnToggleStardust');
+      const txt = document.getElementById('stardustText');
+      if (btn && txt) {
+        btn.classList.toggle('active', creamStardustEnabled);
+        txt.textContent = creamStardustEnabled ? 'Stardust: ON' : 'Stardust: OFF';
+      }
+      playInteractiveTone('focus');
+    }
+
+    function toggleHologramWireframe() {
+      if (threeBiomorphicInstance) {
+        const active = threeBiomorphicInstance.toggleWireframe();
+        const btn = document.getElementById('btnToggleCoreNerve');
+        const txt = document.getElementById('wireframeText');
+        if (btn && txt) {
+          btn.classList.toggle('active', active);
+          txt.textContent = active ? '3D Core: Pulse' : '3D Core: Solid';
+        }
+        playInteractiveTone('focus');
+      }
+    }
+
+    function triggerCreamGoldenSurge() {
+      const flash = document.getElementById('goldenSurgeFlash');
+      if (flash) {
+        flash.classList.add('active');
+        setTimeout(() => flash.classList.remove('active'), 550);
+      }
+
+      if (threeBiomorphicInstance) {
+        threeBiomorphicInstance.triggerPulse();
+      }
+
+      // Audible harmonic chime
+      playInteractiveTone('success');
+
+      // Click ripple in center
+      const ripple = document.createElement('div');
+      ripple.className = 'cream-click-ripple';
+      ripple.style.left = (window.innerWidth / 2) + 'px';
+      ripple.style.top = (window.innerHeight / 2) + 'px';
+      ripple.style.width = '140px';
+      ripple.style.height = '140px';
+      document.body.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 750);
+    }
+
+    /* 7. CONSTELLATION WEB PARTICLE SIMULATION (ENHANCED) */
     function initConstellationCanvas() {
       const canvas = document.getElementById('ambientConstellationCanvas');
       if (!canvas) return;
@@ -3004,7 +4156,7 @@
       });
 
       const particles = [];
-      const particleCount = Math.min(55, Math.floor(window.innerWidth / 24));
+      const particleCount = Math.min(65, Math.floor(window.innerWidth / 22));
 
       for (let i = 0; i < particleCount; i++) {
         particles.push({
@@ -3012,8 +4164,8 @@
           y: Math.random() * height,
           vx: (Math.random() - 0.5) * 0.7,
           vy: (Math.random() - 0.5) * 0.7,
-          radius: Math.random() * 2 + 1.2,
-          alpha: Math.random() * 0.4 + 0.2
+          radius: Math.random() * 2.2 + 1.2,
+          alpha: Math.random() * 0.45 + 0.25
         });
       }
 
@@ -3034,13 +4186,13 @@
           if (p.x < 0 || p.x > width) p.vx *= -1;
           if (p.y < 0 || p.y > height) p.vy *= -1;
 
-          // Mouse gentle attraction
+          // Mouse gentle gravitational reaction
           const dxMouse = mouse.x - p.x;
           const dyMouse = mouse.y - p.y;
           const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
-          if (distMouse < 160) {
-            p.x += dxMouse * 0.008;
-            p.y += dyMouse * 0.008;
+          if (distMouse < 180) {
+            p.x += dxMouse * 0.012;
+            p.y += dyMouse * 0.012;
           }
 
           // Draw particle
@@ -3049,18 +4201,18 @@
           ctx.fillStyle = `rgba(140, 109, 70, ${p.alpha})`;
           ctx.fill();
 
-          // Connect nearby particles
+          // Connect nearby particles with delicate golden filaments
           for (let j = i + 1; j < particles.length; j++) {
             const p2 = particles[j];
             const dx = p.x - p2.x;
             const dy = p.y - p2.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
 
-            if (dist < 110) {
+            if (dist < 120) {
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(p2.x, p2.y);
-              const linkAlpha = (1 - dist / 110) * 0.18;
+              const linkAlpha = (1 - dist / 120) * 0.22;
               ctx.strokeStyle = `rgba(140, 109, 70, ${linkAlpha})`;
               ctx.lineWidth = 1;
               ctx.stroke();
@@ -3110,12 +4262,31 @@
             });
           }
 
-          // Staggered Auth Card Details
-          const cardItems = document.querySelectorAll('.role-switcher-bar, .auth-card-header, #patientFormWrapper .input-group, #patientFormWrapper .form-meta-row, #patientFormWrapper .btn-warm-primary, #patientFormWrapper .ornament-divider, #patientFormWrapper .quick-profiles-list');
+          // Staggered Auth Card Details with cream-colored soft glow effect
+          const cardItems = document.querySelectorAll(
+            '.role-switcher-bar, ' +
+            '.auth-card-header, ' +
+            '#indexSyncStatusBar, ' +
+            '#patientFormWrapper .input-group, ' +
+            '#patientFormWrapper .form-meta-row, ' +
+            '#patientFormWrapper .btn-warm-primary, ' +
+            '#patientFormWrapper #btnOpenDedicatedPortal, ' +
+            '#patientFormWrapper #btnOpenAppTourIndex, ' +
+            '#patientFormWrapper .ornament-divider, ' +
+            '#patientFormWrapper .quick-profiles-list'
+          );
           if (cardItems.length && typeof M.stagger === 'function') {
-            M.animate(cardItems, { y: [18, 0], opacity: [0, 1] }, {
-              delay: M.stagger(0.05, { start: 0.24 }),
-              duration: 0.6,
+            M.animate(cardItems, {
+              y: [24, 0],
+              opacity: [0, 1],
+              scale: [0.97, 1],
+              filter: [
+                'drop-shadow(0 0 24px rgba(200, 165, 120, 0.75))',
+                'drop-shadow(0 0 0px rgba(200, 165, 120, 0))'
+              ]
+            }, {
+              delay: M.stagger(0.055, { start: 0.22 }),
+              duration: 0.75,
               ease: [0.16, 1, 0.3, 1]
             });
           }
@@ -3125,10 +4296,119 @@
       }
     }
 
+    /* 8. HIGH-PERFORMANCE FLOATING HEALTH NODES & FLOWING SPARKLES PARTICLE SYSTEM */
+    function initFloatingHealthNodesSystem() {
+      const container = document.getElementById('floatingHealthNodesLayer');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      const nodeGlyphs = [
+        { icon: '＋', label: 'Vital Core' },
+        { icon: '♥', label: '72 BPM' },
+        { icon: '🧬', label: 'DNA Sync' },
+        { icon: '⚡', label: 'AI Ready' },
+        { icon: '●', label: '98.6°F' },
+        { icon: '🩺', label: 'EHR Linked' },
+        { icon: '✦', label: 'Active' },
+        { icon: '📈', label: 'Stable' }
+      ];
+
+      const sparkleGlyphs = ['✦', '✧', '⋆', '✦', '·', '✧'];
+
+      const nodeCount = 18;
+      const sparkleCount = 22;
+
+      // Spawn Floating Health Nodes
+      for (let i = 0; i < nodeCount; i++) {
+        const item = document.createElement('div');
+        item.className = 'health-node-item';
+
+        const glyphData = nodeGlyphs[i % nodeGlyphs.length];
+        const startX = Math.floor(Math.random() * 92 + 4);
+        const driftX = Math.floor((Math.random() - 0.5) * 160);
+        const duration = (Math.random() * 8 + 14).toFixed(1);
+        const delay = (-(Math.random() * 18)).toFixed(1);
+        const midRot = (Math.random() * 20 - 10).toFixed(1);
+        const endRot = (Math.random() * 30 - 15).toFixed(1);
+
+        item.style.setProperty('--startX', `${startX}vw`);
+        item.style.setProperty('--driftX', `${driftX}px`);
+        item.style.setProperty('--duration', `${duration}s`);
+        item.style.setProperty('--delay', `${delay}s`);
+        item.style.setProperty('--midRot', `${midRot}deg`);
+        item.style.setProperty('--endRot', `${endRot}deg`);
+
+        item.innerHTML = `
+          <div class="health-node-inner">
+            <span class="health-node-orbit-ring"></span>
+            <span style="font-size:12px;">${glyphData.icon}</span>
+            <span>${glyphData.label}</span>
+          </div>
+        `;
+        container.appendChild(item);
+      }
+
+      // Spawn Flowing Sparkles
+      for (let j = 0; j < sparkleCount; j++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'flowing-sparkle-item';
+
+        const char = sparkleGlyphs[j % sparkleGlyphs.length];
+        const startX = Math.floor(Math.random() * 94 + 3);
+        const driftX = Math.floor((Math.random() - 0.5) * 140);
+        const duration = (Math.random() * 6 + 9).toFixed(1);
+        const delay = (-(Math.random() * 14)).toFixed(1);
+        const size = Math.floor(Math.random() * 10 + 10);
+
+        sparkle.style.setProperty('--startX', `${startX}vw`);
+        sparkle.style.setProperty('--driftX', `${driftX}px`);
+        sparkle.style.setProperty('--duration', `${duration}s`);
+        sparkle.style.setProperty('--delay', `${delay}s`);
+        sparkle.style.setProperty('--size', `${size}px`);
+
+        sparkle.textContent = char;
+        container.appendChild(sparkle);
+      }
+
+      // Mouse Parallax Reaction (GPU hardware-accelerated damping)
+      let mouseX = 0, mouseY = 0;
+      let targetX = 0, targetY = 0;
+      let rafId = null;
+
+      window.addEventListener('mousemove', (e) => {
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        targetX = (e.clientX - cx) * 0.025;
+        targetY = (e.clientY - cy) * 0.025;
+
+        if (!rafId) {
+          rafId = requestAnimationFrame(updateParallax);
+        }
+      }, { passive: true });
+
+      function updateParallax() {
+        mouseX += (targetX - mouseX) * 0.08;
+        mouseY += (targetY - mouseY) * 0.08;
+        container.style.transform = `translate3d(${mouseX.toFixed(2)}px, ${mouseY.toFixed(2)}px, 0)`;
+
+        if (Math.abs(targetX - mouseX) > 0.05 || Math.abs(targetY - mouseY) > 0.05) {
+          rafId = requestAnimationFrame(updateParallax);
+        } else {
+          rafId = null;
+        }
+      }
+    }
+
     // Auto-detect URL parameter ?role=admin & initialize dynamic elements
     window.addEventListener('DOMContentLoaded', () => {
       initCardTilt();
       initConstellationCanvas();
+      initFloatingHealthNodesSystem();
+      initThreeBiomorphicCore();
+      initRealtimeEcg();
+      initCreamCursorStardust();
+      initKeystrokeSparks();
       initFramerMotionEntrance();
       initIndexAuthSyncEngine();
 
