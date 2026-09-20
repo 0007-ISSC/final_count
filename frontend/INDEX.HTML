@@ -616,6 +616,109 @@
       pointer-events: none;
     }
 
+    /* Custom Cream-Colored Minimalist Circular Loading Indicator */
+    .cream-btn-spinner {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      border-top-color: #ffffff;
+      border-right-color: rgba(245, 238, 228, 0.95);
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      animation: creamBtnSpinnerRotate 0.72s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+    }
+
+    .btn-glass-oauth .cream-btn-spinner {
+      border: 2px solid rgba(140, 109, 70, 0.22);
+      border-top-color: var(--accent-warm, #8c6d46);
+      border-right-color: #c4a480;
+      box-shadow: 0 0 10px rgba(200, 165, 120, 0.35);
+    }
+
+    @keyframes creamBtnSpinnerRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modern Premium Glassmorphic Social Buttons ('Continue with Google' & 'Continue with Apple') */
+    .social-oauth-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn-glass-oauth {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      padding: 11px 18px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 
+        0 4px 14px rgba(80, 60, 40, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+      color: var(--ink-primary);
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: -0.1px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-glass-oauth::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
+      transition: left 0.6s ease;
+      pointer-events: none;
+    }
+
+    .btn-glass-oauth:hover {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(200, 165, 120, 0.6);
+      transform: translateY(-1.5px);
+      box-shadow: 
+        0 8px 24px rgba(80, 60, 40, 0.1),
+        0 0 20px rgba(200, 165, 120, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.9) inset;
+      color: var(--ink-primary);
+    }
+
+    .btn-glass-oauth:hover::before {
+      left: 150%;
+    }
+
+    .btn-glass-oauth:active {
+      transform: translateY(0);
+      box-shadow: 0 3px 10px rgba(80, 60, 40, 0.08);
+    }
+
+    .btn-glass-oauth svg {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .btn-glass-oauth:hover svg {
+      transform: scale(1.1);
+    }
+
     /* Notification / Error / Success Alert */
     .alert-banner {
       padding: 10px 14px;
@@ -1443,19 +1546,132 @@
       box-shadow: 0 16px 35px -8px rgba(140,109,70,0.18);
       border-color: var(--accent-warm, #8c6d46);
     }
+    .twin-mode-tabs {
+      display: inline-flex;
+      background: rgba(243, 236, 226, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      padding: 3px;
+      border-radius: 10px;
+      gap: 3px;
+    }
+    .twin-mode-tab {
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--ink-secondary);
+      padding: 4px 9px;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .twin-mode-tab.active {
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--ink-primary);
+      box-shadow: 0 2px 6px rgba(80, 60, 40, 0.08);
+    }
+    .anatomical-pills-row {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 2px 2px 8px;
+      margin-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .anatomical-pills-row::-webkit-scrollbar {
+      display: none;
+    }
+    .anatomical-pill {
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(200, 165, 120, 0.28);
+      border-radius: 16px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 750;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 1px 4px rgba(80, 60, 40, 0.04);
+    }
+    .anatomical-pill:hover {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: var(--accent-warm, #8c6d46);
+      color: var(--accent-warm, #8c6d46);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 8px rgba(140, 109, 70, 0.12);
+    }
+    .anatomical-pill.active {
+      background: linear-gradient(135deg, #8c6d46 0%, #6f522e 100%);
+      border-color: #6f522e;
+      color: #ffffff;
+      box-shadow: 0 3px 10px rgba(140, 109, 70, 0.35);
+    }
     #hologramCanvasContainer {
       position: relative;
       width: 100%;
-      height: 185px;
+      height: 235px;
       border-radius: 12px;
       overflow: hidden;
-      background: radial-gradient(circle at 50% 50%, rgba(253,250,245,0.98) 0%, rgba(240,230,216,0.9) 100%);
+      background: radial-gradient(circle at 50% 50%, rgba(253,250,245,0.98) 0%, rgba(240,230,216,0.92) 100%);
       border: 1px solid rgba(140,109,70,0.18);
       cursor: grab;
       user-select: none;
     }
     #hologramCanvasContainer:active {
       cursor: grabbing;
+    }
+    .twin-mouse-hint {
+      position: absolute;
+      top: 8px;
+      left: 9px;
+      z-index: 2;
+      font-size: 10px;
+      font-weight: 750;
+      color: var(--accent-warm, #8c6d46);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(200, 165, 120, 0.24);
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(80, 60, 40, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .hologram-hud-overlay {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      right: 8px;
+      z-index: 2;
+      font-size: 11px;
+      color: var(--ink-secondary);
+      font-weight: 700;
+      pointer-events: none;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(140, 109, 70, 0.18);
+      box-shadow: 0 3px 12px rgba(80, 60, 40, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.25s ease;
     }
 
     /* Floating Cream Theme VFX Studio HUD Bar */
@@ -1856,27 +2072,60 @@
           Continuous AI vitals monitoring, personalized therapeutic guidance, verified pharmaceutical safety, and unified longitudinal health records.
         </p>
 
-        <!-- 3D Interactive Biomorphic Digital Twin Hologram Core -->
+        <!-- 3D Interactive Human Digital Twin & Biomorphic Core -->
         <div class="hologram-twin-widget" id="hologramTwinWidget">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
             <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--ink-primary);">
-              <span style="font-size:15px;">🧬</span>
-              <span>3D Biomorphic Hologram Core</span>
+              <span style="font-size:15px;">👤</span>
+              <span id="hologramTitleLabel">3D Human Digital Twin</span>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;">
-              <span id="hologramModePill" style="font-size:10.5px;font-weight:750;color:var(--accent-warm);background:var(--accent-warm-light);padding:3px 9px;border-radius:12px;border:1px solid rgba(140,109,70,0.22);display:flex;align-items:center;gap:4px;">
-                <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;animation:pulseDot 1.5s infinite;"></span>
-                <span>Live 3D Telemetry</span>
-              </span>
+            <!-- View Mode Switcher -->
+            <div class="twin-mode-tabs" role="tablist" aria-label="Digital Twin View Mode">
+              <button type="button" class="twin-mode-tab active" id="tabTwinHuman" onclick="switchTwinMode('human')" title="Switch to 3D Human Anatomy Digital Twin">
+                <span>👤</span> <span>Human Twin</span>
+              </button>
+              <button type="button" class="twin-mode-tab" id="tabTwinHelix" onclick="switchTwinMode('helix')" title="Switch to 3D Biomorphic Helix Core">
+                <span>🧬</span> <span>Helix Core</span>
+              </button>
             </div>
           </div>
-          <div id="hologramCanvasContainer" title="Drag to rotate 3D twin or click to pulse">
+
+          <!-- Quick Interactive Anatomical Area Pills -->
+          <div class="anatomical-pills-row" id="anatomicalPillsRow" aria-label="Anatomical Telemetry Zones">
+            <button type="button" class="anatomical-pill active" id="pillZoneCardiac" data-zone="cardiac" onclick="selectBodyZone('cardiac')" title="Highlight Cardiovascular & Thoracic Twin">
+              <span>🫀</span> <span>Cardiac</span>
+            </button>
+            <button type="button" class="anatomical-pill" id="pillZoneCranial" data-zone="cranial" onclick="selectBodyZone('cranial')" title="Highlight Cranial & Neurological Axis">
+              <span>🧠</span> <span>Cranial</span>
+            </button>
+            <button type="button" class="anatomical-pill" id="pillZoneMetabolic" data-zone="metabolic" onclick="selectBodyZone('metabolic')" title="Highlight Abdominal & Metabolic Core">
+              <span>⚡</span> <span>Metabolic</span>
+            </button>
+            <button type="button" class="anatomical-pill" id="pillZoneSpine" data-zone="spine" onclick="selectBodyZone('spine')" title="Highlight Spinal Alignment & Neuromuscular Axis">
+              <span>🦴</span> <span>Spine</span>
+            </button>
+            <button type="button" class="anatomical-pill" id="pillZoneJoints" data-zone="joints" onclick="selectBodyZone('joints')" title="Highlight Biomechanical Extremities & Joints">
+              <span>🏃</span> <span>Extremities</span>
+            </button>
+          </div>
+
+          <div id="hologramCanvasContainer" title="Drag to rotate 3D twin, hover or click body areas to inspect telemetry">
+            <div class="twin-mouse-hint">
+              <span>✦ Mouse Orbit &amp; Click to Inspect</span>
+            </div>
             <canvas id="creamBiomorphicCanvas"></canvas>
-            <div class="hologram-hud-overlay" style="position:absolute;bottom:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-secondary);font-weight:700;pointer-events:none;background:rgba(255,255,255,0.85);backdrop-filter:blur(6px);padding:4px 8px;border-radius:6px;border:1px solid rgba(140,109,70,0.14);">
-              <span style="display:flex;align-items:center;gap:5px;color:var(--accent-sage);">
-                <span>● Double-Helix Resonance</span>
-              </span>
-              <span style="font-family:'Space Grotesk',monospace;color:var(--accent-warm);" id="hologramTelemetryTxt">HRV 82ms · Optimal</span>
+            <!-- Floating Glassmorphic Anatomical Callout HUD -->
+            <div class="hologram-hud-overlay" id="anatomicalCalloutHud">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span id="anatomicalZoneTitle" style="color:var(--accent-warm,#8c6d46);font-weight:800;font-size:11.5px;display:flex;align-items:center;gap:5px;">
+                  <span>🫀</span> <span>Cardiovascular &amp; Thoracic Twin</span>
+                </span>
+                <span id="anatomicalZoneStatus" style="font-size:10px;font-weight:800;color:#047857;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);padding:2px 7px;border-radius:10px;">● Synchronized</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;font-size:10.5px;">
+                <span id="anatomicalZoneTelemetry" style="font-family:'Space Grotesk',monospace;color:var(--ink-primary);font-weight:700;">HR 72 BPM · HRV 84ms · Sinus Rhythm Verified</span>
+                <span style="color:var(--ink-muted);font-size:9.5px;">Interactive 3D Twin</span>
+              </div>
             </div>
           </div>
         </div>
@@ -2032,11 +2281,35 @@
             </div>
           </div>
 
-          <!-- 5. SIGN IN (AFTER THAT SIGN IN) -->
+          <!-- 5. SIGN IN (PRIMARY BUTTON WITH MINIMALIST CIRCULAR SPINNER SUPPORT) -->
           <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:10px;" onclick="triggerButtonBoom(event)">
             <span>Sign In as Patient</span>
             <span>→</span>
           </button>
+
+          <!-- OR SOCIAL LOGIN DIVIDER -->
+          <div class="ornament-divider" style="margin: 14px 0 10px;">
+            <span>or continue with</span>
+          </div>
+
+          <!-- GLASSMORPHIC SOCIAL LOGIN BUTTONS ('Continue with Google' & 'Continue with Apple') -->
+          <div class="social-oauth-group">
+            <button type="button" class="btn-glass-oauth" id="btnContinueGoogle" onclick="handleSocialOAuthLogin('Google')" title="Continue with Google Single Sign-On">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+            <button type="button" class="btn-glass-oauth" id="btnContinueApple" onclick="handleSocialOAuthLogin('Apple')" title="Continue with Apple ID">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.84c.62-.75 1.04-1.8 0.93-2.84-.9.04-2 .6-2.64 1.35-.57.65-1.06 1.73-.93 2.74 1.02.08 2.02-.5 2.64-1.25z"/>
+              </svg>
+              <span>Continue with Apple</span>
+            </button>
+          </div>
 
           <!-- DEDICATED USER LOGIN PORTAL BUTTON -->
           <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" class="btn-warm-primary" id="btnOpenDedicatedPortal" style="margin-top:4px;background:linear-gradient(135deg, #0284c7 0%, #0d9488 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(2,132,199,0.28);border:none;">
@@ -3089,7 +3362,8 @@
         return;
       }
 
-      btn.innerHTML = '<span>Verifying Credentials & OTP...</span>';
+      // Minimalist cream-colored circular loading indicator inside submit button
+      btn.innerHTML = '<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Verifying Credentials & OTP...</span>';
       btn.disabled = true;
 
       try {
@@ -3106,7 +3380,7 @@
           proceedToDashboard(data.user?.id || '1', data.user?.name || username);
         } else if (data.detail) {
           showAlert(data.detail, 'error');
-          btn.innerHTML = '<span>Sign In</span> <span>→</span>';
+          btn.innerHTML = '<span>Sign In as Patient</span> <span>→</span>';
           btn.disabled = false;
         } else {
           // Graceful fallback to guarantee entry
@@ -3119,6 +3393,35 @@
         proceedToDashboard('1', username);
       }
     }
+
+    /* Modern Premium Glassmorphic Social OAuth Authentication Handler */
+    window.handleSocialOAuthLogin = function(provider) {
+      const btn = provider === 'Google' ? document.getElementById('btnContinueGoogle') : document.getElementById('btnContinueApple');
+      if (!btn || btn.disabled) return;
+
+      playInteractiveTone('click');
+      
+      // Inject minimalist cream circular spinner into social button
+      btn.innerHTML = `<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Connecting to ${provider}...</span>`;
+      btn.disabled = true;
+
+      showAlert(`Authorizing Single Sign-On with ${provider}...`, 'info');
+
+      setTimeout(async () => {
+        const userName = provider === 'Google' ? 'Iqra Sultana' : 'Iqra Sultana (Apple ID)';
+
+        btn.innerHTML = `<span style="font-size:14px;color:#10b981;font-weight:900;">✓</span> <span>${provider} Verified · Launching...</span>`;
+        btn.style.borderColor = '#10b981';
+        btn.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.4)';
+
+        playInteractiveTone('success');
+        showAlert(`Successfully authenticated via ${provider}! Launching clinical digital twin...`, 'success');
+
+        setTimeout(() => {
+          proceedToDashboard('1', userName);
+        }, 650);
+      }, 950);
+    };
 
     function directGuestLogin() {
       proceedToDashboard('guest', 'Guest Explorer');
@@ -3284,7 +3587,8 @@
         return;
       }
 
-      btn.innerHTML = '<span>Verifying Clearance...</span>';
+      // Minimalist cream-colored circular loading indicator inside admin submit button
+      btn.innerHTML = '<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Verifying Clearance...</span>';
       btn.disabled = true;
 
       try {
@@ -3607,10 +3911,285 @@
       const masterGroup = new THREE.Group();
       scene.add(masterGroup);
 
-      // Structure A: Geodesic Icosahedron Wireframe
-      const icoGeo = new THREE.IcosahedronGeometry(1.25, 1);
       const palette = CREAM_THEME_PALETTES[creamCurrentTheme] || CREAM_THEME_PALETTES.champagne;
 
+      // ========================================================
+      // 3D HUMAN DIGITAL TWIN ANATOMICAL MODEL
+      // ========================================================
+      const humanGroup = new THREE.Group();
+      masterGroup.add(humanGroup);
+
+      // Anatomical Telemetry Definitions
+      const ANATOMICAL_ZONES = {
+        cardiac: {
+          name: 'Cardiovascular & Thoracic Twin',
+          icon: '🫀',
+          telemetry: 'HR 72 BPM · HRV 84ms · Sinus Rhythm Verified',
+          status: '● Synchronized',
+          color: 0xe0a96d,
+          emissive: 0xd4af37,
+          targetY: 0.65
+        },
+        cranial: {
+          name: 'Cranial & Neurological Axis',
+          icon: '🧠',
+          telemetry: 'EEG Alpha 10.4Hz · Cognitive Stress: Low (12/100)',
+          status: '● Flow State',
+          color: 0x38bdf8,
+          emissive: 0x0284c7,
+          targetY: 1.25
+        },
+        metabolic: {
+          name: 'Abdominal & Metabolic Core',
+          icon: '⚡',
+          telemetry: 'Glucose 94 mg/dL · Gut Biome Balance Index 98%',
+          status: '● Equilibrium',
+          color: 0x10b981,
+          emissive: 0x059669,
+          targetY: 0.22
+        },
+        spine: {
+          name: 'Spinal Alignment & Neuro-Axis',
+          icon: '🦴',
+          telemetry: 'Lordosis 32° (Nominal) · Neural Velocity: 62 m/s',
+          status: '● Postural Symmetry',
+          color: 0xf59e0b,
+          emissive: 0xd97706,
+          targetY: 0.55
+        },
+        joints: {
+          name: 'Articular Kinetics & Mobility',
+          icon: '🏃',
+          telemetry: 'Bilateral Symmetry 99.4% · Zero Articular Strain',
+          status: '● Free Range',
+          color: 0xa855f7,
+          emissive: 0x7c3aed,
+          targetY: -0.3
+        }
+      };
+
+      let activeZoneKey = 'cardiac';
+      let hoveredZoneKey = null;
+      const interactiveMeshes = [];
+
+      // Shared Materials
+      const bodyBaseMat = new THREE.MeshStandardMaterial({
+        color: palette.threeCore,
+        roughness: 0.32,
+        metalness: 0.55,
+        transparent: true,
+        opacity: 0.78
+      });
+
+      const organHeartMat = new THREE.MeshStandardMaterial({
+        color: 0xd4af37,
+        emissive: 0xd4af37,
+        emissiveIntensity: 0.65,
+        roughness: 0.2,
+        metalness: 0.7
+      });
+
+      const cranialHaloMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.5,
+        roughness: 0.25,
+        metalness: 0.8
+      });
+
+      const metabolicRingMat = new THREE.MeshStandardMaterial({
+        color: 0x10b981,
+        emissive: 0x059669,
+        emissiveIntensity: 0.45,
+        roughness: 0.25,
+        metalness: 0.8
+      });
+
+      const spineDiscMat = new THREE.MeshStandardMaterial({
+        color: 0xf59e0b,
+        emissive: 0xd97706,
+        emissiveIntensity: 0.35,
+        roughness: 0.3,
+        metalness: 0.7
+      });
+
+      const jointMat = new THREE.MeshStandardMaterial({
+        color: palette.threeRings,
+        roughness: 0.25,
+        metalness: 0.85
+      });
+
+      // Helper: tag mesh for raycasting
+      function tagMesh(mesh, zoneKey) {
+        mesh.userData = { bodyZone: zoneKey, originalMat: mesh.material };
+        interactiveMeshes.push(mesh);
+        return mesh;
+      }
+
+      // 1. Head & Cranial Axis
+      const headGeo = new THREE.SphereGeometry(0.23, 24, 24);
+      headGeo.scale(1, 1.25, 1.1);
+      const headMesh = tagMesh(new THREE.Mesh(headGeo, bodyBaseMat.clone()), 'cranial');
+      headMesh.position.set(0, 1.25, 0);
+      humanGroup.add(headMesh);
+
+      const cranialHaloGeo = new THREE.TorusGeometry(0.3, 0.015, 12, 48);
+      const cranialHaloMesh = tagMesh(new THREE.Mesh(cranialHaloGeo, cranialHaloMat), 'cranial');
+      cranialHaloMesh.position.set(0, 1.34, 0);
+      cranialHaloMesh.rotation.x = Math.PI / 6;
+      humanGroup.add(cranialHaloMesh);
+
+      // 2. Neck
+      const neckGeo = new THREE.CylinderGeometry(0.09, 0.11, 0.16, 16);
+      const neckMesh = new THREE.Mesh(neckGeo, bodyBaseMat);
+      neckMesh.position.set(0, 0.98, 0);
+      humanGroup.add(neckMesh);
+
+      // 3. Thorax / Chest & Cardiac Engine
+      const chestGeo = new THREE.CylinderGeometry(0.34, 0.26, 0.45, 20);
+      const chestMesh = tagMesh(new THREE.Mesh(chestGeo, bodyBaseMat.clone()), 'cardiac');
+      chestMesh.position.set(0, 0.68, 0);
+      humanGroup.add(chestMesh);
+
+      // Internal Pulsing 3D Heart Capsule
+      const heartGeo = new THREE.SphereGeometry(0.085, 16, 16);
+      heartGeo.scale(0.9, 1.15, 0.9);
+      const heartMesh = tagMesh(new THREE.Mesh(heartGeo, organHeartMat), 'cardiac');
+      heartMesh.position.set(0.07, 0.72, 0.12);
+      humanGroup.add(heartMesh);
+
+      // Cardiac Aura Ring
+      const cardiacAuraGeo = new THREE.TorusGeometry(0.38, 0.014, 12, 48);
+      const cardiacAuraMesh = tagMesh(new THREE.Mesh(cardiacAuraGeo, organHeartMat.clone()), 'cardiac');
+      cardiacAuraMesh.position.set(0, 0.7, 0);
+      cardiacAuraMesh.rotation.x = Math.PI / 12;
+      humanGroup.add(cardiacAuraMesh);
+
+      // 4. Abdomen & Metabolic Core
+      const abdomenGeo = new THREE.CylinderGeometry(0.26, 0.23, 0.38, 20);
+      const abdomenMesh = tagMesh(new THREE.Mesh(abdomenGeo, bodyBaseMat.clone()), 'metabolic');
+      abdomenMesh.position.set(0, 0.28, 0);
+      humanGroup.add(abdomenMesh);
+
+      // Metabolic Rotating Energy Ring
+      const metabolicRingGeo = new THREE.TorusGeometry(0.32, 0.015, 12, 48);
+      const metabolicRingMesh = tagMesh(new THREE.Mesh(metabolicRingGeo, metabolicRingMat), 'metabolic');
+      metabolicRingMesh.position.set(0, 0.28, 0);
+      humanGroup.add(metabolicRingMesh);
+
+      // 5. Spinal Vertebral Column (Dorsal Spine Discs)
+      const spineGroup = new THREE.Group();
+      for (let s = 0; s < 8; s++) {
+        const discGeo = new THREE.CylinderGeometry(0.055, 0.055, 0.035, 12);
+        const discMesh = tagMesh(new THREE.Mesh(discGeo, spineDiscMat.clone()), 'spine');
+        discMesh.position.set(0, 0.16 + s * 0.11, -0.16);
+        discMesh.rotation.x = Math.PI / 2;
+        spineGroup.add(discMesh);
+      }
+      humanGroup.add(spineGroup);
+
+      // 6. Pelvis
+      const pelvisGeo = new THREE.CylinderGeometry(0.24, 0.2, 0.18, 20);
+      const pelvisMesh = tagMesh(new THREE.Mesh(pelvisGeo, bodyBaseMat.clone()), 'joints');
+      pelvisMesh.position.set(0, 0.01, 0);
+      humanGroup.add(pelvisMesh);
+
+      // 7. Upper Extremities (Arms, Shoulders, Elbows, Hands)
+      [-1, 1].forEach((side) => {
+        // Shoulder
+        const shoulder = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(0.08, 14, 14), jointMat), 'joints');
+        shoulder.position.set(side * 0.42, 0.82, 0);
+        humanGroup.add(shoulder);
+
+        // Upper Arm
+        const upArm = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.055, 0.28, 14), bodyBaseMat), 'joints');
+        upArm.position.set(side * 0.48, 0.64, 0);
+        upArm.rotation.z = side * -0.15;
+        humanGroup.add(upArm);
+
+        // Elbow
+        const elbow = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(0.065, 12, 12), jointMat), 'joints');
+        elbow.position.set(side * 0.52, 0.46, 0);
+        humanGroup.add(elbow);
+
+        // Forearm
+        const forearm = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.045, 0.28, 14), bodyBaseMat), 'joints');
+        forearm.position.set(side * 0.54, 0.28, 0);
+        humanGroup.add(forearm);
+
+        // Hand
+        const hand = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 12), jointMat), 'joints');
+        hand.position.set(side * 0.55, 0.1, 0);
+        humanGroup.add(hand);
+      });
+
+      // 8. Lower Extremities (Hips, Thighs, Knees, Calves, Feet)
+      [-1, 1].forEach((side) => {
+        // Hip Joint
+        const hip = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(0.075, 14, 14), jointMat), 'joints');
+        hip.position.set(side * 0.16, -0.09, 0);
+        humanGroup.add(hip);
+
+        // Thigh
+        const thigh = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.065, 0.38, 16), bodyBaseMat), 'joints');
+        thigh.position.set(side * 0.16, -0.32, 0);
+        humanGroup.add(thigh);
+
+        // Knee
+        const knee = tagMesh(new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 14), jointMat), 'joints');
+        knee.position.set(side * 0.16, -0.54, 0);
+        humanGroup.add(knee);
+
+        // Shin / Calf
+        const shin = tagMesh(new THREE.Mesh(new THREE.CylinderGeometry(0.062, 0.052, 0.42, 16), bodyBaseMat), 'joints');
+        shin.position.set(side * 0.16, -0.78, 0);
+        humanGroup.add(shin);
+
+        // Foot
+        const foot = tagMesh(new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.055, 0.18), jointMat), 'joints');
+        foot.position.set(side * 0.16, -1.02, 0.04);
+        humanGroup.add(foot);
+      });
+
+      // 9. Holographic Ground Pedestal Disk
+      const pedestalGeo = new THREE.CylinderGeometry(0.72, 0.76, 0.04, 32);
+      const pedestalMat = new THREE.MeshStandardMaterial({
+        color: palette.threeCore,
+        roughness: 0.3,
+        metalness: 0.8,
+        transparent: true,
+        opacity: 0.65
+      });
+      const pedestalMesh = new THREE.Mesh(pedestalGeo, pedestalMat);
+      pedestalMesh.position.set(0, -1.08, 0);
+      humanGroup.add(pedestalMesh);
+
+      const pedestalRingGeo = new THREE.TorusGeometry(0.74, 0.016, 12, 60);
+      const pedestalRingMesh = new THREE.Mesh(pedestalRingGeo, jointMat);
+      pedestalRingMesh.position.set(0, -1.06, 0);
+      pedestalRingMesh.rotation.x = Math.PI / 2;
+      humanGroup.add(pedestalRingMesh);
+
+      // 10. Dynamic Shockwave Ring in 3D
+      const shockwaveGeo = new THREE.TorusGeometry(0.35, 0.02, 16, 60);
+      const shockwaveMat = new THREE.MeshBasicMaterial({
+        color: 0xd4af37,
+        transparent: true,
+        opacity: 0
+      });
+      const shockwaveMesh = new THREE.Mesh(shockwaveGeo, shockwaveMat);
+      shockwaveMesh.rotation.x = Math.PI / 2;
+      masterGroup.add(shockwaveMesh);
+      let shockwaveProgress = 1;
+
+      // ========================================================
+      // BIOMORPHIC HELIX CORE (MODE 2 ALTERNATE)
+      // ========================================================
+      const helixGroup = new THREE.Group();
+      helixGroup.visible = false;
+      masterGroup.add(helixGroup);
+
+      const icoGeo = new THREE.IcosahedronGeometry(1.25, 1);
       const icoMat = new THREE.MeshStandardMaterial({
         color: palette.threeCore,
         wireframe: true,
@@ -3620,9 +4199,9 @@
         metalness: 0.7
       });
       const icoMesh = new THREE.Mesh(icoGeo, icoMat);
+      icoMesh.visible = false;
       masterGroup.add(icoMesh);
 
-      // Structure B: Luminous Pulsing Inner Nucleus
       const nucleusGeo = new THREE.SphereGeometry(0.68, 32, 32);
       const nucleusMat = new THREE.MeshStandardMaterial({
         color: palette.threeNucleus,
@@ -3632,10 +4211,10 @@
         emissiveIntensity: 0.45
       });
       const nucleusMesh = new THREE.Mesh(nucleusGeo, nucleusMat);
+      nucleusMesh.visible = false;
       masterGroup.add(nucleusMesh);
 
-      // Structure C: DNA Double Helix Structure
-      const helixGroup = new THREE.Group();
+      // Helix rungs & nodes
       const nodeCount = 28;
       const helixRadius = 1.05;
       const helixHeight = 2.4;
@@ -3660,7 +4239,6 @@
         sphereB.position.set(x2, y, z2);
         helixGroup.add(sphereB);
 
-        // Connector rung every 2 nodes
         if (i % 2 === 0) {
           const rungGeo = new THREE.BufferGeometry().setFromPoints([
             new THREE.Vector3(x1, y, z1),
@@ -3670,9 +4248,8 @@
           helixGroup.add(rungLine);
         }
       }
-      masterGroup.add(helixGroup);
 
-      // Structure D: Double Golden Gyroscopic Orbital Rings
+      // Orbital Rings
       const ringGeoA = new THREE.TorusGeometry(1.85, 0.02, 16, 90);
       const ringMatA = new THREE.MeshStandardMaterial({
         color: palette.threeRings,
@@ -3696,7 +4273,7 @@
       ringMeshB.rotation.z = Math.PI / 6;
       masterGroup.add(ringMeshB);
 
-      // Structure E: Swarm of Floating Golden Biophotonic Dust Motes
+      // Swarm of Floating Golden Biophotonic Dust Motes
       const particleCount = 280;
       const particlesGeo = new THREE.BufferGeometry();
       const posArray = new Float32Array(particleCount * 3);
@@ -3720,27 +4297,163 @@
       const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
       masterGroup.add(particlesMesh);
 
-      // Interactive State
+      // ========================================================
+      // RAYCASTING, HIGHLIGHTING & INTERACTIVE CONTROLS
+      // ========================================================
+      const raycaster = new THREE.Raycaster();
+      const mouse = new THREE.Vector2();
+
       let isDragging = false;
       let prevMouseX = 0;
       let prevMouseY = 0;
       let mouseParallaxX = 0;
       let mouseParallaxY = 0;
       let pulseScale = 1;
+      let targetCameraY = 0.2;
 
-      container.addEventListener('mousedown', (e) => {
+      // Highlight Zone in 3D
+      function highlightZoneIn3D(zoneKey) {
+        const zoneData = ANATOMICAL_ZONES[zoneKey];
+        if (!zoneData) return;
+
+        interactiveMeshes.forEach(mesh => {
+          if (mesh.userData.bodyZone === zoneKey) {
+            if (mesh.material && mesh.material.emissive) {
+              mesh.material.emissive.setHex(zoneData.emissive);
+              mesh.material.emissiveIntensity = 0.9;
+            }
+          } else {
+            if (mesh.material && mesh.material.emissive) {
+              mesh.material.emissive.setHex(0x000000);
+              mesh.material.emissiveIntensity = 0.15;
+            }
+          }
+        });
+
+        // Always keep heart pulsing
+        organHeartMat.emissive.setHex(zoneKey === 'cardiac' ? 0xff4757 : 0xd4af37);
+        organHeartMat.emissiveIntensity = 0.85;
+
+        // Position shockwave ring at body zone Y
+        shockwaveMesh.position.y = zoneData.targetY;
+        shockwaveMesh.scale.set(1, 1, 1);
+        shockwaveMat.color.setHex(zoneData.emissive);
+        shockwaveMat.opacity = 0.95;
+        shockwaveProgress = 0;
+      }
+
+      // Select Body Zone (called via 3D click or UI pills)
+      window.selectBodyZone = function(zoneKey) {
+        if (!ANATOMICAL_ZONES[zoneKey]) return;
+        activeZoneKey = zoneKey;
+
+        // Update pills
+        document.querySelectorAll('.anatomical-pill').forEach(pill => {
+          if (pill.getAttribute('data-zone') === zoneKey) {
+            pill.classList.add('active');
+          } else {
+            pill.classList.remove('active');
+          }
+        });
+
+        // Update HUD
+        const data = ANATOMICAL_ZONES[zoneKey];
+        const titleEl = document.getElementById('anatomicalZoneTitle');
+        const statEl = document.getElementById('anatomicalZoneStatus');
+        const telEl = document.getElementById('anatomicalZoneTelemetry');
+
+        if (titleEl) {
+          titleEl.innerHTML = `<span>${data.icon}</span> <span>${data.name}</span>`;
+        }
+        if (statEl) {
+          statEl.textContent = data.status;
+        }
+        if (telEl) {
+          telEl.textContent = data.telemetry;
+        }
+
+        // 3D visual response
+        highlightZoneIn3D(zoneKey);
+        pulseScale = 1.25;
+        targetCameraY = (data.targetY - 0.2) * 0.35 + 0.2;
+
+        playInteractiveTone('click');
+      };
+
+      // Switch view mode (Human Twin vs Biomorphic Helix)
+      window.switchTwinMode = function(mode) {
+        const tabHuman = document.getElementById('tabTwinHuman');
+        const tabHelix = document.getElementById('tabTwinHelix');
+        const pillsRow = document.getElementById('anatomicalPillsRow');
+        const titleLabel = document.getElementById('hologramTitleLabel');
+
+        if (mode === 'human') {
+          humanGroup.visible = true;
+          helixGroup.visible = false;
+          icoMesh.visible = false;
+          nucleusMesh.visible = false;
+          if (tabHuman) tabHuman.classList.add('active');
+          if (tabHelix) tabHelix.classList.remove('active');
+          if (pillsRow) pillsRow.style.display = 'flex';
+          if (titleLabel) titleLabel.textContent = '3D Human Digital Twin';
+          selectBodyZone(activeZoneKey);
+        } else {
+          humanGroup.visible = false;
+          helixGroup.visible = true;
+          icoMesh.visible = true;
+          nucleusMesh.visible = true;
+          if (tabHuman) tabHuman.classList.remove('active');
+          if (tabHelix) tabHelix.classList.add('active');
+          if (pillsRow) pillsRow.style.display = 'none';
+          if (titleLabel) titleLabel.textContent = '3D Biomorphic Hologram Core';
+          const titleEl = document.getElementById('anatomicalZoneTitle');
+          const telEl = document.getElementById('anatomicalZoneTelemetry');
+          if (titleEl) titleEl.innerHTML = `<span>🧬</span> <span>Double-Helix Bio-Resonance</span>`;
+          if (telEl) telEl.textContent = 'Resonance Frequency: 432 Hz · HRV: 82ms · Optimal';
+        }
+        playInteractiveTone('focus');
+      };
+
+      // Raycast helper
+      function checkRaycast(clientX, clientY) {
+        if (!humanGroup.visible) return null;
+        const rect = container.getBoundingClientRect();
+        mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const intersects = raycaster.intersectObjects(interactiveMeshes, false);
+        if (intersects.length > 0) {
+          return intersects[0].object.userData.bodyZone || null;
+        }
+        return null;
+      }
+
+      // Mouse & Pointer Interactions
+      container.addEventListener('pointerdown', (e) => {
         isDragging = true;
         prevMouseX = e.clientX;
         prevMouseY = e.clientY;
       });
 
-      window.addEventListener('mouseup', () => { isDragging = false; });
+      window.addEventListener('pointerup', () => { isDragging = false; });
 
-      window.addEventListener('mousemove', (e) => {
+      container.addEventListener('pointermove', (e) => {
+        const hitZone = checkRaycast(e.clientX, e.clientY);
+        if (hitZone) {
+          container.style.cursor = 'pointer';
+          if (hitZone !== hoveredZoneKey) {
+            hoveredZoneKey = hitZone;
+          }
+        } else {
+          container.style.cursor = isDragging ? 'grabbing' : 'grab';
+          hoveredZoneKey = null;
+        }
+
         if (isDragging) {
           const deltaX = e.clientX - prevMouseX;
           const deltaY = e.clientY - prevMouseY;
-          masterGroup.rotation.y += deltaX * 0.008;
+          masterGroup.rotation.y += deltaX * 0.012;
           masterGroup.rotation.x += deltaY * 0.008;
           prevMouseX = e.clientX;
           prevMouseY = e.clientY;
@@ -3748,21 +4461,24 @@
           const contRect = container.getBoundingClientRect();
           const centerX = contRect.left + contRect.width / 2;
           const centerY = contRect.top + contRect.height / 2;
-          mouseParallaxX = ((e.clientX - centerX) / contRect.width) * 0.4;
-          mouseParallaxY = ((e.clientY - centerY) / contRect.height) * 0.4;
+          mouseParallaxX = ((e.clientX - centerX) / contRect.width) * 0.55;
+          mouseParallaxY = ((e.clientY - centerY) / contRect.height) * 0.45;
         }
       });
 
-      // Interactive Click on 3D Container: Triggers Biomorphic Energy Shockwave
-      container.addEventListener('click', () => {
-        pulseScale = 1.28;
-        playInteractiveTone('focus');
-        const txt = document.getElementById('hologramTelemetryTxt');
-        if (txt) {
-          txt.textContent = '✨ Pulse Synchronized';
-          setTimeout(() => { if (txt) txt.textContent = 'HRV 82ms · Optimal'; }, 1800);
+      container.addEventListener('click', (e) => {
+        const hitZone = checkRaycast(e.clientX, e.clientY);
+        if (hitZone) {
+          selectBodyZone(hitZone);
+        } else {
+          pulseScale = 1.28;
+          highlightZoneIn3D(activeZoneKey);
+          playInteractiveTone('focus');
         }
       });
+
+      // Initial active zone highlight
+      highlightZoneIn3D('cardiac');
 
       // Resize handling with ResizeObserver
       const ro = new ResizeObserver((entries) => {
@@ -3784,24 +4500,47 @@
         requestAnimationFrame(animateThree);
         const elapsed = clock.getElapsedTime();
 
-        // Organic Breathing & Rotations
-        masterGroup.rotation.y += 0.006;
+        // Organic Rotations
+        if (!isDragging) {
+          masterGroup.rotation.y += 0.004;
+        }
         helixGroup.rotation.y += 0.012;
-        ringMeshA.rotation.z += 0.009;
-        ringMeshB.rotation.x += 0.007;
-        particlesMesh.rotation.y -= 0.003;
+        ringMeshA.rotation.z += 0.007;
+        ringMeshB.rotation.x += 0.006;
+        metabolicRingMesh.rotation.z += 0.018;
+        cranialHaloMesh.rotation.z -= 0.012;
+        pedestalRingMesh.rotation.z += 0.004;
+        particlesMesh.rotation.y -= 0.0025;
+
+        // Realistic Anatomical Heartbeat Contraction (double beat systolic/diastolic)
+        const beatCycle = (elapsed * 2.4) % 1;
+        let heartPulse = 1;
+        if (beatCycle < 0.15) {
+          heartPulse = 1 + Math.sin((beatCycle / 0.15) * Math.PI) * 0.22;
+        } else if (beatCycle > 0.22 && beatCycle < 0.37) {
+          heartPulse = 1 + Math.sin(((beatCycle - 0.22) / 0.15) * Math.PI) * 0.14;
+        }
+        heartMesh.scale.set(heartPulse, heartPulse * 1.15, heartPulse);
+
+        // Expanding 3D Shockwave Ring Animation
+        if (shockwaveProgress < 1) {
+          shockwaveProgress += 0.024;
+          const s = 1 + shockwaveProgress * 2.2;
+          shockwaveMesh.scale.set(s, s, s);
+          shockwaveMat.opacity = Math.max(0, 0.95 * (1 - shockwaveProgress));
+        }
 
         // Pulse decay
         if (pulseScale > 1) {
           pulseScale = Math.max(1, pulseScale - 0.015);
         }
-        const breath = (1 + Math.sin(elapsed * 2.2) * 0.045) * pulseScale;
+        const breath = (1 + Math.sin(elapsed * 2.2) * 0.035) * pulseScale;
         nucleusMesh.scale.set(breath, breath, breath);
 
-        // Camera gentle parallax
-        camera.position.x += (mouseParallaxX - camera.position.x) * 0.05;
-        camera.position.y += (-mouseParallaxY - camera.position.y) * 0.05;
-        camera.lookAt(0, 0, 0);
+        // Camera gentle parallax & smooth Y-targeting
+        camera.position.x += (mouseParallaxX - camera.position.x) * 0.06;
+        camera.position.y += ((targetCameraY - mouseParallaxY) - camera.position.y) * 0.06;
+        camera.lookAt(0, 0.15, 0);
 
         renderer.render(scene, camera);
       }
@@ -3810,6 +4549,7 @@
       // Store references for runtime palette updates
       threeBiomorphicInstance = {
         updatePalette: (pal) => {
+          bodyBaseMat.color.setHex(pal.threeCore);
           icoMat.color.setHex(pal.threeCore);
           nucleusMat.color.setHex(pal.threeNucleus);
           nucleusMat.emissive.setHex(pal.threeNucleus);
@@ -3819,6 +4559,7 @@
           ringMatB.color.setHex(pal.threeCore);
           particlesMat.color.setHex(pal.threeParticles);
           pointLight.color.setHex(pal.threeRings);
+          jointMat.color.setHex(pal.threeRings);
         },
         toggleWireframe: () => {
           creamWireframeActive = !creamWireframeActive;
@@ -3827,6 +4568,7 @@
         },
         triggerPulse: () => {
           pulseScale = 1.38;
+          highlightZoneIn3D(activeZoneKey);
         }
       };
     }
