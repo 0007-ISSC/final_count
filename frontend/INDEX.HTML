@@ -1674,6 +1674,121 @@
       transition: all 0.25s ease;
     }
 
+    /* 3D Anatomical Twin Interactive Floating Tooltip */
+    .twin-3d-floating-tooltip {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      z-index: 10;
+      width: 290px;
+      max-width: calc(100% - 28px);
+      pointer-events: auto;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      filter: drop-shadow(0 10px 24px rgba(80, 60, 40, 0.18));
+    }
+    .twin-3d-tooltip-box {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--accent-warm, #c5a059);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      box-shadow: 0 4px 20px rgba(80, 60, 40, 0.12);
+    }
+    .twin-3d-tooltip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(140, 109, 70, 0.15);
+      padding-bottom: 6px;
+    }
+    .intro-tip-status {
+      font-size: 9.5px;
+      font-weight: 800;
+      color: #047857;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+    .intro-tip-close {
+      background: transparent;
+      border: none;
+      color: var(--ink-muted);
+      cursor: pointer;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      line-height: 1;
+    }
+    .intro-tip-close:hover {
+      background: rgba(140, 109, 70, 0.12);
+      color: var(--ink-primary);
+    }
+    .intro-tip-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+    .intro-tip-stat-card {
+      background: rgba(250, 246, 240, 0.85);
+      border: 1px solid rgba(140, 109, 70, 0.14);
+      border-radius: 6px;
+      padding: 4px 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .intro-tip-stat-lbl {
+      font-size: 8.5px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .intro-tip-stat-val {
+      font-size: 11.5px;
+      font-weight: 800;
+      font-family: 'Space Grotesk', monospace;
+      color: var(--ink-primary);
+    }
+    .intro-tip-summary {
+      font-size: 10px;
+      color: var(--ink-secondary);
+      line-height: 1.35;
+      background: rgba(240, 234, 224, 0.5);
+      border-left: 2px solid var(--accent-warm, #c5a059);
+      padding: 4px 6px;
+      border-radius: 0 4px 4px 0;
+    }
+    .intro-tip-nav {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      overflow-x: auto;
+      padding-top: 2px;
+    }
+    .intro-tip-pill {
+      background: rgba(140, 109, 70, 0.08);
+      border: 1px solid rgba(140, 109, 70, 0.16);
+      color: var(--ink-secondary);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-size: 9.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .intro-tip-pill:hover, .intro-tip-pill.active {
+      background: var(--accent-warm, #c5a059);
+      border-color: var(--accent-warm, #c5a059);
+      color: #ffffff;
+    }
+
     /* Floating Cream Theme VFX Studio HUD Bar */
     .cream-vfx-hud {
       position: fixed;
@@ -2151,13 +2266,372 @@
       }
     }
 
+    /* =========================================================
+       CINEMATIC VFX APP TOUR STYLES
+       ========================================================= */
+    #cinematicAppTourOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: none;
+      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.94) 0%, rgba(3, 7, 18, 0.98) 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      user-select: none;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 24px 16px;
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #cinematicAppTourOverlay.active {
+      opacity: 1;
+    }
+
+    #appTourVfxCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .tour-theater-wrapper {
+      position: relative;
+      z-index: 10;
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .tour-theater-card {
+      position: relative;
+      width: 100%;
+      max-width: 880px;
+      background: rgba(15, 23, 42, 0.92);
+      border: 1.5px solid rgba(56, 189, 248, 0.45);
+      border-radius: 24px;
+      box-shadow: 0 25px 70px -10px rgba(0, 0, 0, 0.8), 0 0 50px rgba(14, 165, 233, 0.25), 0 0 1px 1px rgba(56, 189, 248, 0.3);
+      color: #f8fafc;
+      overflow: hidden;
+      transform: scale(0.92) translateY(16px);
+      opacity: 0;
+      transition: all 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #cinematicAppTourOverlay.active .tour-theater-card {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+
+    /* Prismatic Border Glare on Theater Card */
+    .tour-card-glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, rgba(56, 189, 248, 0.8) 25%, rgba(245, 158, 11, 0.9) 50%, rgba(16, 185, 129, 0.8) 75%, transparent 100%);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.9);
+      pointer-events: none;
+      z-index: 12;
+    }
+
+    /* Tour Header */
+    .tour-theater-header {
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.6);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tour-brand-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tour-brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #0284c7;
+      box-shadow: 0 0 12px #38bdf8;
+      animation: pulseGlow 1.8s infinite alternate;
+    }
+
+    .tour-header-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .tour-ctrl-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .tour-ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .tour-ctrl-btn.active {
+      background: rgba(14, 165, 233, 0.2);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+
+    .tour-close-btn {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      transition: all 0.2s ease;
+    }
+
+    .tour-close-btn:hover {
+      background: rgba(239, 68, 68, 0.35);
+      color: #ffffff;
+      transform: scale(1.08);
+    }
+
+    /* Tour Stage Body */
+    .tour-theater-body {
+      padding: 24px 28px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .tour-step-content {
+      display: none;
+      animation: tourStepFadeSlide 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .tour-step-content.active {
+      display: block;
+    }
+
+    @keyframes tourStepFadeSlide {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Tour Footer Controls */
+    .tour-theater-footer {
+      padding: 16px 24px;
+      background: rgba(15, 23, 42, 0.85);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .tour-dots-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tour-dot-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      padding: 0;
+    }
+
+    .tour-dot-btn.active {
+      width: 28px;
+      border-radius: 12px;
+      background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+    }
+
+    .tour-action-btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0d9488 100%);
+      border: 1.5px solid rgba(56, 189, 248, 0.5);
+      color: #ffffff;
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.4);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tour-action-btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 24px rgba(14, 165, 233, 0.6);
+      border-color: #7dd3fc;
+    }
+
+    .tour-action-btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #cbd5e1;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tour-action-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Floating App Tour Trigger at bottom-left of Intro Page */
+    .floating-app-tour-trigger {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 9999;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.94) 0%, rgba(30, 41, 59, 0.96) 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.55);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 24px rgba(245, 158, 11, 0.25);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .floating-app-tour-trigger:hover {
+      transform: translateY(-3px) scale(1.03);
+      border-color: #fbbf24;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.5), 0 0 32px rgba(245, 158, 11, 0.45);
+    }
+
+    .floating-tour-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 12px #f59e0b;
+      position: relative;
+    }
+
+    .floating-tour-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 1.5px solid #f59e0b;
+      animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+
+    /* Tour Interactive Showcase Components */
+    .tour-twin-preview-box {
+      background: radial-gradient(circle at center, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 16px;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tour-organ-chip {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tour-organ-chip:hover,
+    .tour-organ-chip.active {
+      background: rgba(14, 165, 233, 0.25);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+      transform: translateY(-2px);
+    }
+
+    /* Audio Equalizer animation for Dr. Nambi / Alex in Step 2 */
+    .tour-equalizer-bar {
+      width: 4px;
+      background: #38bdf8;
+      border-radius: 4px;
+      animation: tourEqAnim 1.2s ease-in-out infinite alternate;
+    }
+    @keyframes tourEqAnim {
+      0% { height: 6px; }
+      50% { height: 26px; }
+      100% { height: 12px; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       .top-header,
       .visual-showcase,
       .auth-card,
       .visual-showcase *,
       .auth-card *,
-      .fm-switch-in {
+      .fm-switch-in,
+      .tour-theater-card,
+      .tour-step-content {
         animation: none !important;
         transform: none !important;
         opacity: 1 !important;
@@ -2242,7 +2716,7 @@
         <span>🔊</span> <span id="soundToggleLabel">Audio On</span>
       </button>
       <div class="nav-portal-links">
-        <a href="/onboarding?restart=true" class="nav-portal-btn" title="Open Interactive Onboarding Tutorial">
+        <a href="/onboarding?restart=true" class="nav-portal-btn" id="navBtnAppTour" onclick="openCinematicAppTour(event)" title="Launch Interactive Cinematic App Tour with High-End VFX">
           <span>✨</span> <span>App Tour</span>
         </a>
         <a href="/user-login" class="nav-portal-btn" title="Open Dedicated Patient Login Page">
@@ -2321,6 +2795,40 @@
               <span>✦ Mouse Orbit &amp; Click to Inspect</span>
             </div>
             <canvas id="creamBiomorphicCanvas"></canvas>
+
+            <!-- Interactive 3D Anatomical Body Part Tooltip with Brief Health Statistics -->
+            <div class="twin-3d-floating-tooltip" id="introTwin3DTooltip" style="display:none;">
+              <div class="twin-3d-tooltip-box">
+                <div class="twin-3d-tooltip-header">
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span id="introTipIcon" style="font-size:18px;">🫀</span>
+                    <div>
+                      <div id="introTipName" style="font-size:11.5px;font-weight:800;color:var(--ink-primary);">Cardiovascular System</div>
+                      <div id="introTipSub" style="font-size:9.5px;color:var(--ink-muted);">Thoracic Myocardial Core</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <span id="introTipStatus" class="intro-tip-status">● Synchronized</span>
+                    <button type="button" class="intro-tip-close" onclick="closeIntroTwinTooltip()" title="Close Tooltip">✕</button>
+                  </div>
+                </div>
+                <div class="intro-tip-stats-grid" id="introTipStatsGrid">
+                  <!-- Dynamic Health Statistics Chips -->
+                </div>
+                <div id="introTipSummary" class="intro-tip-summary">
+                  Sinus rhythm verified. Microvascular tone and arterial compliance nominal.
+                </div>
+                <div class="intro-tip-nav">
+                  <span style="font-size:9px;color:var(--ink-muted);font-weight:700;">Zone:</span>
+                  <button type="button" class="intro-tip-pill active" data-intro-zone="cardiac" onclick="selectBodyZone('cardiac')">🫀 Heart</button>
+                  <button type="button" class="intro-tip-pill" data-intro-zone="cranial" onclick="selectBodyZone('cranial')">🧠 Brain</button>
+                  <button type="button" class="intro-tip-pill" data-intro-zone="metabolic" onclick="selectBodyZone('metabolic')">⚡ Gut</button>
+                  <button type="button" class="intro-tip-pill" data-intro-zone="spine" onclick="selectBodyZone('spine')">🦴 Spine</button>
+                  <button type="button" class="intro-tip-pill" data-intro-zone="joints" onclick="selectBodyZone('joints')">🏃 Joints</button>
+                </div>
+              </div>
+            </div>
+
             <!-- Floating Glassmorphic Anatomical Callout HUD -->
             <div class="hologram-hud-overlay" id="anatomicalCalloutHud">
               <div style="display:flex;justify-content:space-between;align-items:center;">
@@ -2423,7 +2931,7 @@
           <div class="input-group">
             <label class="input-label" for="usernameInput">User Name</label>
             <div class="input-wrapper">
-              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required autocomplete="name" oninput="handleIndexUsernameInput(this.value)" onfocus="playInteractiveTone('focus')">
+              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. demo" value="demo" required autocomplete="name" oninput="handleIndexUsernameInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">👤</span>
             </div>
           </div>
@@ -2432,7 +2940,7 @@
           <div class="input-group">
             <label class="input-label" for="emailInput">Email Address</label>
             <div class="input-wrapper">
-              <input type="email" id="emailInput" class="input-field" placeholder="e.g. iqrasultana0007@gmail.com" value="iqrasultana0007@gmail.com" required autocomplete="email" oninput="handleIndexEmailInput(this.value)" onfocus="playInteractiveTone('focus')">
+              <input type="email" id="emailInput" class="input-field" placeholder="e.g. demo@gmail.com" value="demo@gmail.com" required autocomplete="email" oninput="handleIndexEmailInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">✉</span>
             </div>
             <!-- Dynamic Gmail Auto-OTP Detection Badge -->
@@ -2479,7 +2987,7 @@
                 <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">6</span>
               </div>
               <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11px;color:#64748b;" id="indexOtpDispatchedTo">Auto-generated for iqrasultana0007@gmail.com</span>
+                <span style="font-size:11px;color:#64748b;" id="indexOtpDispatchedTo">Auto-generated for demo@gmail.com</span>
                 <button type="button" onclick="copyIndexOtpCode()" id="btnCopyIndexOtp" style="background:#0d9488;color:#ffffff;border:none;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(13,148,136,0.25);">📋 Copy Code</button>
               </div>
             </div>
@@ -2526,7 +3034,7 @@
           </a>
 
           <!-- INTERACTIVE APP TOUR & CARE TOOL SELECTION -->
-          <a href="/onboarding?restart=true" class="btn-warm-primary" id="btnOpenAppTourIndex" style="margin-top:4px;background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(245,158,11,0.28);border:none;">
+          <a href="/onboarding?restart=true" onclick="openCinematicAppTour(event)" class="btn-warm-primary" id="btnOpenAppTourIndex" style="margin-top:4px;background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(245,158,11,0.28);border:none;">
             <span>✨ Interactive App Tour · Choose Your Primary Care Tools</span>
             <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">Tour ↗</span>
           </a>
@@ -2684,7 +3192,7 @@
       </div>
 
       <h2 style="font-size:22px;font-weight:900;margin:0 0 4px;color:#0f172a;letter-spacing:-0.5px;">Welcome to HealthGPT!</h2>
-      <p id="celebrationUserNameText" style="font-size:13.5px;color:#64748b;margin:0 0 16px;font-weight:600;">Opening clinical telemetry for Iqra Sultana</p>
+      <p id="celebrationUserNameText" style="font-size:13.5px;color:#64748b;margin:0 0 16px;font-weight:600;">Opening clinical telemetry for demo</p>
 
       <!-- Live Clinical Telemetry Checklist -->
       <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:10px 14px;margin-bottom:16px;text-align:left;display:flex;flex-direction:column;gap:7px;">
@@ -2727,6 +3235,429 @@
         </button>
       </div>
     </div>
+  </div>
+
+  <!-- ============================================================
+       CINEMATIC VFX APP TOUR THEATER OVERLAY
+       ============================================================ -->
+  <div id="cinematicAppTourOverlay" role="dialog" aria-modal="true" aria-label="HealthGPT Cinematic App Tour">
+    <!-- Dedicated Multi-Layer VFX Canvas (Hyper-Drive Warp, Quantum Reticles, Bio-luminescent Energy Particles, Shockwaves) -->
+    <canvas id="appTourVfxCanvas"></canvas>
+
+    <div class="tour-theater-wrapper">
+      <div class="tour-theater-card" id="tourTheaterCard">
+        <div class="tour-card-glare"></div>
+
+        <!-- Tour Header -->
+        <div class="tour-theater-header">
+          <div class="tour-brand-pill">
+            <div class="tour-brand-dot"></div>
+            <div>
+              <div style="font-size:13px;font-weight:900;letter-spacing:0.5px;color:#f8fafc;display:flex;align-items:center;gap:8px;">
+                <span>HEALTHGPT INTERACTIVE APP TOUR</span>
+                <span style="font-size:10px;background:rgba(56,189,248,0.2);color:#38bdf8;padding:2px 8px;border-radius:12px;border:1px solid rgba(56,189,248,0.4);font-weight:800;">ULTRA VFX</span>
+              </div>
+              <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">
+                Step <span id="tourStepNumber" style="color:#38bdf8;font-weight:800;">1</span> of 5 · <span id="tourStepBadgeLabel" style="color:#f1f5f9;font-weight:700;">3D Digital Twin</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tour-header-controls">
+            <!-- Audio FX Toggle -->
+            <button type="button" class="tour-ctrl-btn active" id="btnTourAudio" onclick="toggleTourAudio()" title="Toggle Tour Sound FX">
+              <span id="tourAudioIcon">🔊</span> <span id="tourAudioLabel">Sound On</span>
+            </button>
+
+            <!-- Auto-Play Timer Ring Button -->
+            <button type="button" class="tour-ctrl-btn" id="btnTourAutoPlay" onclick="toggleTourAutoPlay()" title="Toggle Auto-Play Slideshow">
+              <svg width="16" height="16" viewBox="0 0 20 20" style="transform:rotate(-90deg);">
+                <circle cx="10" cy="10" r="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2.5"></circle>
+                <circle id="tourCountdownCircle" cx="10" cy="10" r="8" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="50.26" stroke-dashoffset="0"></circle>
+              </svg>
+              <span id="tourAutoPlayLabel">Auto-Play</span>
+            </button>
+
+            <!-- Close Modal Button -->
+            <button type="button" class="tour-close-btn" onclick="closeCinematicAppTour()" title="Close App Tour (Esc)">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Tour Stage Body -->
+        <div class="tour-theater-body">
+
+          <!-- STEP 1: 3D HUMAN DIGITAL TWIN -->
+          <div class="tour-step-content active" id="tourStep_1">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span style="font-size:22px;">👤</span>
+              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
+                3D Human Digital Twin Anatomy &amp; Live Telemetry
+              </h2>
+            </div>
+            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
+              Experience a real-time, biomorphic 3D digital model of your physiological state. Click any anatomical zone below to inspect active biological scores and telemetry.
+            </p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;align-items:center;">
+              <!-- Left: Interactive Hologram Stage -->
+              <div class="tour-twin-preview-box">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                  <span style="font-size:11px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:0.8px;">
+                    ✦ Interactive 3D Scanner Stage
+                  </span>
+                  <span id="tourTwinActiveBadge" style="font-size:11px;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 8px;border-radius:10px;border:1px solid rgba(52,211,153,0.4);font-weight:700;">
+                    🫀 Cardiac Optimal
+                  </span>
+                </div>
+
+                <!-- Interactive Anatomical Selector Chips -->
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
+                  <button type="button" class="tour-organ-chip active" id="tourOrgan_cardiac" onclick="previewTourOrgan('cardiac')">
+                    <span>🫀</span> <span>Cardiac</span>
+                  </button>
+                  <button type="button" class="tour-organ-chip" id="tourOrgan_cranial" onclick="previewTourOrgan('cranial')">
+                    <span>🧠</span> <span>Cranial</span>
+                  </button>
+                  <button type="button" class="tour-organ-chip" id="tourOrgan_pulmonary" onclick="previewTourOrgan('pulmonary')">
+                    <span>🫁</span> <span>Lungs</span>
+                  </button>
+                  <button type="button" class="tour-organ-chip" id="tourOrgan_metabolic" onclick="previewTourOrgan('metabolic')">
+                    <span>🥗</span> <span>Metabolic</span>
+                  </button>
+                  <button type="button" class="tour-organ-chip" id="tourOrgan_spine" onclick="previewTourOrgan('spine')">
+                    <span>🦴</span> <span>Spine</span>
+                  </button>
+                </div>
+
+                <!-- Interactive Display Card -->
+                <div id="tourOrganDetailBox" style="background:rgba(15,23,42,0.85);border:1.5px solid rgba(56,189,248,0.4);border-radius:12px;padding:14px;box-shadow:0 0 20px rgba(14,165,233,0.2);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <b id="tourOrganTitle" style="font-size:14px;color:#ffffff;display:flex;align-items:center;gap:6px;">
+                      <span>🫀</span> Cardiovascular &amp; Thoracic Axis
+                    </b>
+                    <span id="tourOrganScore" style="font-size:13px;font-weight:800;color:#38bdf8;">94/100</span>
+                  </div>
+                  <div id="tourOrganVitals" style="font-family:'Space Grotesk',monospace;font-size:12px;color:#7dd3fc;margin-bottom:8px;">
+                    Pulse: 72 BPM · Blood Pressure: 118/76 mmHg · HRV: 64ms
+                  </div>
+                  <div id="tourOrganInsight" style="font-size:12px;color:#cbd5e1;line-height:1.45;">
+                    Arterial compliance nominal with symmetric left-ventricular ejection. Sinus rhythm clinically synchronized.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Key Capabilities Highlights -->
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                  <b style="font-size:13px;color:#38bdf8;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <span>⚡</span> 3D Raycasting &amp; Organ Isolation
+                  </b>
+                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
+                    Click, orbit, and zoom directly on individual organs to pull deep clinical biomarkers and telemetry histories.
+                  </span>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                  <b style="font-size:13px;color:#34d399;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <span>📊</span> Continuous Multi-Organ Health Matrix
+                  </b>
+                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
+                    Tracks neurological stress, cardiopulmonary efficiency, gastrointestinal glycemic load, and musculoskeletal symmetry.
+                  </span>
+                </div>
+                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
+                  <b style="font-size:13px;color:#fbbf24;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
+                    <span>🤝</span> Synchronized Specialist Consultations
+                  </b>
+                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
+                    Instantly transfer focused anatomical telemetry directly into conversations with Dr. Nambi or Alex.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: DUAL AI CLINICAL SPECIALISTS -->
+          <div class="tour-step-content" id="tourStep_2">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span style="font-size:22px;">🩺</span>
+              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
+                Dual AI Specialists: Dr. Nambi &amp; Therapist Alex
+              </h2>
+            </div>
+            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
+              Receive 24/7 internal medicine triage alongside compassionate somatic psychotherapeutic care with real-time voice synthesis.
+            </p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">
+              <!-- Specialist 1: Dr. Nambi -->
+              <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(14,165,233,0.4);border-radius:16px;padding:16px;position:relative;overflow:hidden;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0284c7,#0d9488);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 16px rgba(2,132,199,0.5);">
+                      👨‍⚕️
+                    </div>
+                    <div>
+                      <b style="font-size:14.5px;color:#ffffff;display:block;">Dr. Nambi</b>
+                      <span style="font-size:11px;color:#38bdf8;font-weight:700;">Chief Clinical AI Internist</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:3px;height:16px;">
+                    <div class="tour-equalizer-bar" style="animation-delay:0s;"></div>
+                    <div class="tour-equalizer-bar" style="animation-delay:0.2s;"></div>
+                    <div class="tour-equalizer-bar" style="animation-delay:0.4s;"></div>
+                    <div class="tour-equalizer-bar" style="animation-delay:0.1s;"></div>
+                  </div>
+                </div>
+                <div style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-bottom:12px;">
+                  Specializes in differential diagnosis, cardiopulmonary risk, medication reconciliations, and clinical laboratory interpretations.
+                </div>
+                <button type="button" onclick="simulateSpecialistSample('nambi')" style="width:100%;background:rgba(14,165,233,0.15);border:1px solid rgba(56,189,248,0.4);color:#38bdf8;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">
+                  ▶ Test Dr. Nambi Diagnostic Response
+                </button>
+              </div>
+
+              <!-- Specialist 2: Alex -->
+              <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(168,85,247,0.4);border-radius:16px;padding:16px;position:relative;overflow:hidden;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 16px rgba(124,58,237,0.5);">
+                      🌸
+                    </div>
+                    <div>
+                      <b style="font-size:14.5px;color:#ffffff;display:block;">Alex</b>
+                      <span style="font-size:11px;color:#c084fc;font-weight:700;">Compassionate Somatic Therapist</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:3px;height:16px;">
+                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.3s;"></div>
+                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.1s;"></div>
+                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.5s;"></div>
+                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.2s;"></div>
+                  </div>
+                </div>
+                <div style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-bottom:12px;">
+                  Guides diaphragmatic breathing (4-4 pacing), sleep hygiene, cognitive reframing, and stress resilience.
+                </div>
+                <button type="button" onclick="simulateSpecialistSample('alex')" style="width:100%;background:rgba(168,85,247,0.15);border:1px solid rgba(192,132,252,0.4);color:#c084fc;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">
+                  ▶ Test Alex Breathing &amp; Somatic Audio
+                </button>
+              </div>
+            </div>
+
+            <!-- Dynamic Live Sample Response Preview Box -->
+            <div id="tourSpecialistResponseBox" style="margin-top:14px;background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;font-size:12.5px;color:#e2e8f0;display:flex;align-items:flex-start;gap:12px;">
+              <span id="tourSampleAvatar" style="font-size:24px;">💬</span>
+              <div>
+                <b id="tourSampleSpeaker" style="color:#38bdf8;display:block;margin-bottom:2px;">Live Specialist Preview:</b>
+                <span id="tourSampleText" style="color:#94a3b8;line-height:1.4;">
+                  Click either specialist above to preview instant voice coaching, clinical differential insights, and breath pacing.
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3: PM JAN AUSHADHI GENERIC SAVINGS ENGINE -->
+          <div class="tour-step-content" id="tourStep_3">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span style="font-size:22px;">💊</span>
+              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
+                PM Jan Aushadhi Generic Medicine Engine
+              </h2>
+            </div>
+            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
+              Instantly find verified CDSCO bioequivalent generic alternatives to expensive brand-name medications and save up to 80%–90%.
+            </p>
+
+            <!-- Live Interactive Savings Demonstration Card -->
+            <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(13,148,136,0.5);border-radius:16px;padding:18px;box-shadow:0 0 30px rgba(13,148,136,0.2);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span class="pill" style="background:#0d9488;color:#ffffff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:16px;">
+                    🎯 Verified Bioequivalent Match
+                  </span>
+                  <span style="font-size:12px;color:#5eead4;font-weight:700;">PMBJP Code: <b>PMBJP-0012</b></span>
+                </div>
+                <span id="tourSavingsPercentBadge" style="background:#14532d;color:#86efac;font-size:12px;font-weight:800;padding:3px 10px;border-radius:16px;border:1px solid #22c55e;">
+                  Save 83% (₹25/strip)
+                </span>
+              </div>
+
+              <!-- Side by Side Pricing Columns -->
+              <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:16px;">
+                <!-- Brand Prescribed -->
+                <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:12px;text-align:center;">
+                  <span style="font-size:11px;color:#fca5a5;font-weight:700;text-transform:uppercase;">Prescribed Brand</span>
+                  <div style="font-size:16px;font-weight:900;color:#fee2e2;margin:2px 0;">Crocin 650mg</div>
+                  <div style="font-size:20px;font-weight:900;color:#ef4444;text-decoration:line-through;">₹30.00</div>
+                </div>
+
+                <div style="font-size:20px;text-align:center;">⚡ ➡️</div>
+
+                <!-- Jan Aushadhi Generic -->
+                <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);border-radius:12px;padding:12px;text-align:center;">
+                  <span style="font-size:11px;color:#86efac;font-weight:700;text-transform:uppercase;">PM Jan Aushadhi</span>
+                  <div style="font-size:16px;font-weight:900;color:#dcfce7;margin:2px 0;">Paracetamol 650mg</div>
+                  <div style="font-size:22px;font-weight:900;color:#22c55e;">₹5.00</div>
+                </div>
+              </div>
+
+              <!-- Interactive Slider: Monthly Packs -->
+              <div style="background:rgba(15,23,42,0.8);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,0.1);">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12.5px;">
+                  <span style="color:#cbd5e1;font-weight:600;">Simulate Monthly Family Medication Prescriptions:</span>
+                  <b id="tourPackCountLabel" style="color:#38bdf8;font-size:13.5px;">3 Packs / Month</b>
+                </div>
+                <input type="range" id="tourPackSlider" min="1" max="8" value="3" oninput="updateTourSavingsSlider(this.value)" style="width:100%;accent-color:#0d9488;cursor:pointer;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;">
+                  <span style="color:#94a3b8;">10,000+ Kendra Stores Across India</span>
+                  <span id="tourAnnualSavingsTally" style="font-size:13px;font-weight:800;color:#34d399;">
+                    💰 Annual Family Savings: ₹14,400 / yr
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4: REAL-TIME ECG & CLINICAL SAFETY MATRIX -->
+          <div class="tour-step-content" id="tourStep_4">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span style="font-size:22px;">📊</span>
+              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
+                Real-Time ECG Rhythm &amp; Clinical Safety Net
+              </h2>
+            </div>
+            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
+              Continuous 24/7 vital telemetry integration, arrhythmia detection, and real-time drug-drug interaction screening.
+            </p>
+
+            <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(56,189,248,0.4);border-radius:16px;padding:18px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:12px;font-weight:800;color:#38bdf8;">❤️ LIVE SIMULATED ECG MONITOR</span>
+                  <span id="tourEcgStatusPill" style="font-size:10px;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 7px;border-radius:8px;font-weight:800;">
+                    NORMAL SINUS RHYTHM
+                  </span>
+                </div>
+                <div id="tourEcgRateLabel" style="font-family:'Space Grotesk',monospace;font-size:15px;font-weight:800;color:#ffffff;">
+                  74 BPM
+                </div>
+              </div>
+
+              <!-- Mini Tour ECG Canvas -->
+              <div style="height:64px;background:rgba(15,23,42,0.95);border:1px solid rgba(56,189,248,0.25);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;">
+                <canvas id="tourEcgCanvas" style="width:100%;height:100%;display:block;"></canvas>
+              </div>
+
+              <!-- Interactive BPM Slider -->
+              <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;font-size:12px;color:#cbd5e1;">
+                <span style="white-space:nowrap;font-weight:700;">Simulate Heart Rate:</span>
+                <input type="range" id="tourBpmSlider" min="55" max="145" value="74" oninput="updateTourBpmSlider(this.value)" style="flex:1;accent-color:#38bdf8;cursor:pointer;">
+                <span id="tourBpmReadout" style="font-family:'Space Grotesk',monospace;font-weight:800;color:#38bdf8;width:55px;">74 bpm</span>
+              </div>
+
+              <!-- Clinical Safety Matrix Checks -->
+              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;font-size:12px;">
+                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
+                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>0 Dangerous Drug Interactions</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
+                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>Arterial Compliance Stable</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
+                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>Emergency Geo-SOS Active</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5: PERSONALIZED CARE LAUNCHPAD -->
+          <div class="tour-step-content" id="tourStep_5">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span style="font-size:22px;">🚀</span>
+              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
+                Welcome to Precision HealthCare
+              </h2>
+            </div>
+            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
+              You are ready to enter HealthGPT. Choose your entry point below to get started immediately:
+            </p>
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:20px;">
+              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;text-align:center;">
+                <span style="font-size:26px;display:block;margin-bottom:6px;">👤</span>
+                <b style="font-size:13px;color:#ffffff;display:block;">3D Health Twin</b>
+                <span style="font-size:11px;color:#94a3b8;">Explore full body contours</span>
+              </div>
+              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(168,85,247,0.3);border-radius:12px;padding:14px;text-align:center;">
+                <span style="font-size:26px;display:block;margin-bottom:6px;">🎙️</span>
+                <b style="font-size:13px;color:#ffffff;display:block;">AI Specialist Call</b>
+                <span style="font-size:11px;color:#94a3b8;">Dr. Nambi &amp; Alex</span>
+              </div>
+              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(16,185,129,0.3);border-radius:12px;padding:14px;text-align:center;">
+                <span style="font-size:26px;display:block;margin-bottom:6px;">💊</span>
+                <b style="font-size:13px;color:#ffffff;display:block;">Jan Aushadhi</b>
+                <span style="font-size:11px;color:#94a3b8;">Generic prescription savings</span>
+              </div>
+              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px;text-align:center;">
+                <span style="font-size:26px;display:block;margin-bottom:6px;">🩺</span>
+                <b style="font-size:13px;color:#ffffff;display:block;">Continuous Vitals</b>
+                <span style="font-size:11px;color:#94a3b8;">Live ECG &amp; health records</span>
+              </div>
+            </div>
+
+            <!-- Instant Launch Actions -->
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <button type="button" class="tour-action-btn-primary" onclick="launchDemoPatientFromTour()" style="flex:1;min-width:220px;padding:12px 20px;font-size:14px;justify-content:center;">
+                <span>⚡ Enter Platform as Demo Patient</span>
+                <span>→</span>
+              </button>
+              <a href="/user-login" class="tour-action-btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;">
+                <span>🧬 3D Holographic Login</span>
+              </a>
+              <a href="/onboarding?restart=true" class="tour-action-btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;">
+                <span>🚀 Deep Calibration Tour</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tour Footer -->
+        <div class="tour-theater-footer">
+          <button type="button" class="tour-action-btn-secondary" id="btnTourPrev" onclick="navigateTourStep(-1)">
+            <span>←</span> <span>Back</span>
+          </button>
+
+          <!-- Step Dots -->
+          <div class="tour-dots-row">
+            <button type="button" class="tour-dot-btn active" onclick="jumpToTourStep(1)" title="Step 1: 3D Twin"></button>
+            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(2)" title="Step 2: AI Specialists"></button>
+            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(3)" title="Step 3: Generic Savings"></button>
+            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(4)" title="Step 4: Real-time Telemetry"></button>
+            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(5)" title="Step 5: Launchpad"></button>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:10px;">
+            <button type="button" onclick="closeCinematicAppTour()" style="background:transparent;border:none;color:#94a3b8;font-size:12px;cursor:pointer;text-decoration:underline;">
+              Skip
+            </button>
+            <button type="button" class="tour-action-btn-primary" id="btnTourNext" onclick="navigateTourStep(1)">
+              <span id="tourNextBtnLabel">Next: AI Specialists</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLOATING QUICK APP TOUR TRIGGER PILL -->
+  <div class="floating-app-tour-trigger" id="floatingTourTrigger" onclick="openCinematicAppTour(event)" title="Launch Interactive Cinematic App Tour with High-End VFX">
+    <div class="floating-tour-dot"></div>
+    <span style="font-size:13px;font-weight:800;letter-spacing:0.2px;">✨ Take 60s VFX App Tour</span>
+    <span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 7px;border-radius:10px;font-weight:800;">Ultra VFX</span>
   </div>
 
   <script>
@@ -3089,8 +4020,8 @@
 
     function openDedicatedLoginFromIndex(e) {
       if (e) e.preventDefault();
-      const name = document.getElementById('usernameInput')?.value || 'Iqra Sultana';
-      const email = document.getElementById('emailInput')?.value || 'iqrasultana0007@gmail.com';
+      const name = document.getElementById('usernameInput')?.value || 'demo';
+      const email = document.getElementById('emailInput')?.value || 'demo@gmail.com';
       const otp = document.getElementById('otpInput')?.value || '123456';
 
       try {
@@ -3192,7 +4123,7 @@
     }
 
     function triggerCelebrationPreview() {
-      const username = document.getElementById('usernameInput')?.value || 'Iqra Sultana';
+      const username = document.getElementById('usernameInput')?.value || 'demo';
       startLoginFirecrackersCelebration('1', username, true);
     }
 
@@ -3203,14 +4134,14 @@
       const progressBar = document.getElementById('celebrationProgressBar');
       const countdownText = document.getElementById('celebrationCountdownText');
 
-      const displayName = userName || 'Iqra Sultana';
+      const displayName = userName || 'demo';
       if (userText) userText.textContent = `Opening clinical telemetry for ${displayName}`;
 
       try {
         sessionStorage.setItem('healthgpt_authenticated', 'true');
         sessionStorage.setItem('healthgpt_celebrate_login', 'true');
         localStorage.setItem('healthgpt_user_id', String(userId || '1'));
-        localStorage.setItem('healthgpt_user_name', String(userName || 'Iqra Sultana'));
+        localStorage.setItem('healthgpt_user_name', String(userName || 'demo'));
       } catch (e) {
         console.warn(e);
       }
@@ -3625,7 +4556,7 @@
       showAlert(`Authorizing Single Sign-On with ${provider}...`, 'info');
 
       setTimeout(async () => {
-        const userName = provider === 'Google' ? 'Iqra Sultana' : 'Iqra Sultana (Apple ID)';
+        const userName = provider === 'Google' ? 'demo' : 'demo (Apple ID)';
 
         btn.innerHTML = `<span style="font-size:14px;color:#10b981;font-weight:900;">✓</span> <span>${provider} Verified · Launching...</span>`;
         btn.style.borderColor = '#10b981';
@@ -4167,52 +5098,92 @@
       const humanGroup = new THREE.Group();
       masterGroup.add(humanGroup);
 
-      // Anatomical Telemetry Definitions
+      // Anatomical Telemetry Definitions with Brief Health Statistics
       const ANATOMICAL_ZONES = {
         cardiac: {
           name: 'Cardiovascular & Thoracic Twin',
+          sub: 'Thoracic Myocardial Core',
           icon: '🫀',
           telemetry: 'HR 72 BPM · HRV 84ms · Sinus Rhythm Verified',
           status: '● Synchronized',
           color: 0xe0a96d,
           emissive: 0xd4af37,
-          targetY: 0.65
+          targetY: 0.65,
+          stats: [
+            { label: 'Heart Rate', val: '72 BPM' },
+            { label: 'Blood Pressure', val: '118/76' },
+            { label: 'HRV Index', val: '84 ms' },
+            { label: 'Cardiac Output', val: '5.2 L/m' }
+          ],
+          summary: 'Normal sinus rhythm with optimal arterial compliance and microvascular perfusion.'
         },
         cranial: {
           name: 'Cranial & Neurological Axis',
+          sub: 'Cerebral & Synaptic Network',
           icon: '🧠',
           telemetry: 'EEG Alpha 10.4Hz · Cognitive Stress: Low (12/100)',
           status: '● Flow State',
           color: 0x38bdf8,
           emissive: 0x0284c7,
-          targetY: 1.25
+          targetY: 1.25,
+          stats: [
+            { label: 'Alpha Rhythm', val: '10.4 Hz' },
+            { label: 'Cognitive Stress', val: '12 / 100' },
+            { label: 'Deep Sleep Ratio', val: '22%' },
+            { label: 'Circadian State', val: 'Aligned' }
+          ],
+          summary: 'Synchronized neural oscillations with low cortical tension and nominal cognitive load.'
         },
         metabolic: {
           name: 'Abdominal & Metabolic Core',
+          sub: 'Enteric & Hepatic Matrix',
           icon: '⚡',
           telemetry: 'Glucose 94 mg/dL · Gut Biome Balance Index 98%',
           status: '● Equilibrium',
           color: 0x10b981,
           emissive: 0x059669,
-          targetY: 0.22
+          targetY: 0.22,
+          stats: [
+            { label: 'Fasting Glucose', val: '94 mg/dL' },
+            { label: 'Gut Microbiome', val: '98% Diversity' },
+            { label: 'Hydration Reserve', val: '2.4 L' },
+            { label: 'Motility Index', val: 'Balanced' }
+          ],
+          summary: 'Metabolic equilibrium maintained across hepatic and enteric pathways with nominal glycemic flux.'
         },
         spine: {
           name: 'Spinal Alignment & Neuro-Axis',
+          sub: 'Vertebral Column & Posture',
           icon: '🦴',
           telemetry: 'Lordosis 32° (Nominal) · Neural Velocity: 62 m/s',
           status: '● Postural Symmetry',
           color: 0xf59e0b,
           emissive: 0xd97706,
-          targetY: 0.55
+          targetY: 0.55,
+          stats: [
+            { label: 'Curvature Angle', val: '32° Norm' },
+            { label: 'Nerve Velocity', val: '62 m/s' },
+            { label: 'Symmetry Score', val: '99.2%' },
+            { label: 'Disc Hydration', val: 'Optimal' }
+          ],
+          summary: 'Axial biomechanical equilibrium with balanced spinal load distribution and zero nerve impingement.'
         },
         joints: {
           name: 'Articular Kinetics & Mobility',
+          sub: 'Kinetic Chain & Extremities',
           icon: '🏃',
           telemetry: 'Bilateral Symmetry 99.4% · Zero Articular Strain',
           status: '● Free Range',
           color: 0xa855f7,
           emissive: 0x7c3aed,
-          targetY: -0.3
+          targetY: -0.3,
+          stats: [
+            { label: 'Bilateral ROM', val: '99.4%' },
+            { label: 'Daily Activity', val: '8,450 Steps' },
+            { label: 'Kinetic Strain', val: 'Minimal' },
+            { label: 'Recovery Score', val: '100%' }
+          ],
+          summary: 'Fluid articulation with symmetrical weight bearing across extremities and nominal recovery reserve.'
         }
       };
 
@@ -4625,7 +5596,51 @@
         pulseScale = 1.25;
         targetCameraY = (data.targetY - 0.2) * 0.35 + 0.2;
 
+        // Update 3D Interactive Floating Tooltip with Brief Health Statistics
+        const tipEl = document.getElementById('introTwin3DTooltip');
+        if (tipEl) {
+          const iconEl = document.getElementById('introTipIcon');
+          const nameEl = document.getElementById('introTipName');
+          const subEl = document.getElementById('introTipSub');
+          const statusEl = document.getElementById('introTipStatus');
+          const gridEl = document.getElementById('introTipStatsGrid');
+          const summaryEl = document.getElementById('introTipSummary');
+
+          if (iconEl) iconEl.textContent = data.icon;
+          if (nameEl) nameEl.textContent = data.name;
+          if (subEl) subEl.textContent = data.sub || 'Biomarker Telemetry';
+          if (statusEl) statusEl.textContent = data.status;
+          if (summaryEl) summaryEl.textContent = data.summary || data.telemetry;
+
+          if (gridEl && Array.isArray(data.stats)) {
+            gridEl.innerHTML = data.stats.map((s, idx) => `
+              <div class="intro-tip-stat-card" id="introTipStat_${idx}">
+                <span class="intro-tip-stat-lbl">${typeof escapeHtml === 'function' ? escapeHtml(s.label) : s.label}</span>
+                <span class="intro-tip-stat-val">${typeof escapeHtml === 'function' ? escapeHtml(s.val) : s.val}</span>
+              </div>
+            `).join('');
+          }
+
+          // Update active zone in mini pills
+          document.querySelectorAll('.intro-tip-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.getAttribute('data-intro-zone') === zoneKey);
+          });
+
+          tipEl.style.display = 'block';
+          tipEl.style.opacity = '1';
+        }
+
         playInteractiveTone('click');
+      };
+
+      window.closeIntroTwinTooltip = function() {
+        const tipEl = document.getElementById('introTwin3DTooltip');
+        if (tipEl) {
+          tipEl.style.opacity = '0';
+          setTimeout(() => {
+            tipEl.style.display = 'none';
+          }, 180);
+        }
       };
 
       // Switch view mode (Human Twin vs Biomorphic Helix)
@@ -5910,7 +6925,825 @@
       });
     }
 
-    // Auto-detect URL parameter ?role=admin & initialize dynamic elements
+    /* =========================================================
+       CINEMATIC VFX APP TOUR ENGINE (BEST VFX & SOUND SYNTHESIS)
+       ========================================================= */
+    let tourCurrentStep = 1;
+    const tourTotalSteps = 5;
+    let tourIsOpen = false;
+    let tourAudioEnabled = true;
+    let tourAutoPlayActive = false;
+    let tourAutoPlayTimer = null;
+    let tourCountdownProgress = 0;
+    let tourCountdownInterval = null;
+
+    // VFX Canvas state
+    let tourVfxCanvas = null;
+    let tourVfxCtx = null;
+    let tourVfxAnimId = null;
+    let tourWarpSpeed = 2.0;
+    let tourTargetWarpSpeed = 2.0;
+    let tourStars = [];
+    let tourParticles = [];
+    let tourShockwaves = [];
+    let tourReticleAngle = 0;
+    let tourMousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+    // Step 4 Mini ECG state
+    let tourEcgCanvas = null;
+    let tourEcgCtx = null;
+    let tourEcgAnimId = null;
+    let tourBpmRate = 74;
+    let tourEcgX = 0;
+    let tourEcgLastY = 32;
+
+    const tourStepTitles = [
+      '3D Digital Twin',
+      'Dual AI Specialists',
+      'Generic Medicine Savings',
+      'Real-Time Telemetry',
+      'Care Launchpad'
+    ];
+
+    const tourNextBtnLabels = [
+      'Next: AI Specialists',
+      'Next: Generic Savings',
+      'Next: Live Vitals',
+      'Next: Care Launchpad',
+      'Enter Platform 🚀'
+    ];
+
+    // Web Audio Synthesizer for Tour VFX
+    function getTourAudioContext() {
+      if (!window.audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (AudioContext) {
+          window.audioCtx = new AudioContext();
+        }
+      }
+      if (window.audioCtx && window.audioCtx.state === 'suspended') {
+        window.audioCtx.resume();
+      }
+      return window.audioCtx;
+    }
+
+    function playTourWarpSound() {
+      if (!tourAudioEnabled) return;
+      try {
+        const ctx = getTourAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Pitch-swept oscillator
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const filter = ctx.createBiquadFilter();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(90, now);
+        osc.frequency.exponentialRampToValueAtTime(740, now + 0.32);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.65);
+
+        filter.type = 'lowpass';
+        filter.frequency.setValueAtTime(250, now);
+        filter.frequency.exponentialRampToValueAtTime(2800, now + 0.28);
+        filter.frequency.exponentialRampToValueAtTime(400, now + 0.65);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.18, now + 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.65);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.66);
+      } catch (err) {
+        console.warn('Tour warp audio notice:', err);
+      }
+    }
+
+    function playTourScannerPing(freq = 980) {
+      if (!tourAudioEnabled) return;
+      try {
+        const ctx = getTourAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.12);
+
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.36);
+      } catch (err) {}
+    }
+
+    function playTourOrganGlowSound(part) {
+      if (!tourAudioEnabled) return;
+      try {
+        const ctx = getTourAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        const freqs = {
+          cardiac: [220, 440, 660],
+          cranial: [440, 880, 1320],
+          pulmonary: [330, 660, 990],
+          metabolic: [261.63, 523.25, 659.25],
+          spine: [196, 392, 587.33]
+        };
+        const chord = freqs[part] || [330, 660];
+
+        chord.forEach((f, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now);
+
+          gain.gain.setValueAtTime(0.06 / (idx + 1), now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.5);
+        });
+      } catch (err) {}
+    }
+
+    function playTourSuccessFanfare() {
+      if (!tourAudioEnabled) return;
+      try {
+        const ctx = getTourAudioContext();
+        if (!ctx) return;
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C - E - G - C
+        notes.forEach((freq, i) => {
+          const now = ctx.currentTime + i * 0.09;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.48);
+        });
+      } catch (err) {}
+    }
+
+    function toggleTourAudio() {
+      tourAudioEnabled = !tourAudioEnabled;
+      const btn = document.getElementById('btnTourAudio');
+      const icon = document.getElementById('tourAudioIcon');
+      const label = document.getElementById('tourAudioLabel');
+      if (btn && icon && label) {
+        if (tourAudioEnabled) {
+          btn.classList.add('active');
+          icon.textContent = '🔊';
+          label.textContent = 'Sound On';
+          playTourScannerPing(880);
+        } else {
+          btn.classList.remove('active');
+          icon.textContent = '🔇';
+          label.textContent = 'Muted';
+        }
+      }
+    }
+
+    // VFX Canvas Initializer and Loop
+    function initTourVfxCanvas() {
+      tourVfxCanvas = document.getElementById('appTourVfxCanvas');
+      if (!tourVfxCanvas) return;
+      tourVfxCtx = tourVfxCanvas.getContext('2d');
+
+      function resizeTourCanvas() {
+        if (!tourVfxCanvas) return;
+        tourVfxCanvas.width = window.innerWidth;
+        tourVfxCanvas.height = window.innerHeight;
+      }
+      resizeTourCanvas();
+      window.addEventListener('resize', resizeTourCanvas);
+
+      // Generate 180 stars for the hyperspace warp background
+      tourStars = [];
+      const starCount = 180;
+      for (let i = 0; i < starCount; i++) {
+        tourStars.push({
+          x: (Math.random() - 0.5) * window.innerWidth * 2,
+          y: (Math.random() - 0.5) * window.innerHeight * 2,
+          z: Math.random() * 1000 + 1,
+          pz: 0,
+          hue: Math.random() > 0.5 ? 198 : (Math.random() > 0.5 ? 42 : 160)
+        });
+      }
+
+      // Generate 90 bio-luminescent particles
+      tourParticles = [];
+      const particleCount = 90;
+      for (let i = 0; i < particleCount; i++) {
+        tourParticles.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: (Math.random() - 0.5) * 1.2,
+          radius: Math.random() * 2.5 + 1.2,
+          alpha: Math.random() * 0.7 + 0.2,
+          hue: Math.random() > 0.6 ? 198 : 45
+        });
+      }
+
+      window.addEventListener('mousemove', (e) => {
+        tourMousePos.x = e.clientX;
+        tourMousePos.y = e.clientY;
+      });
+
+      // Canvas click adds celebratory radiant shockwave
+      if (tourVfxCanvas) {
+        tourVfxCanvas.addEventListener('pointerdown', (e) => {
+          triggerTourShockwave(e.clientX, e.clientY);
+        });
+      }
+    }
+
+    function triggerTourShockwave(x, y, color = '#38bdf8') {
+      tourShockwaves.push({
+        x: x || window.innerWidth / 2,
+        y: y || window.innerHeight / 2,
+        radius: 10,
+        maxRadius: Math.max(window.innerWidth, window.innerHeight) * 0.45,
+        alpha: 0.85,
+        color: color
+      });
+      playTourScannerPing(660);
+    }
+
+    function renderTourVfxLoop() {
+      if (!tourIsOpen || !tourVfxCtx || !tourVfxCanvas) return;
+
+      const w = tourVfxCanvas.width;
+      const h = tourVfxCanvas.height;
+      const ctx = tourVfxCtx;
+
+      // Semi-clear for smooth motion trails
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. Warp Stars Hyperdrive
+      tourWarpSpeed += (tourTargetWarpSpeed - tourWarpSpeed) * 0.08;
+      const isHyper = tourWarpSpeed > 10;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      for (let i = 0; i < tourStars.length; i++) {
+        const s = tourStars[i];
+        s.pz = s.z;
+        s.z -= tourWarpSpeed;
+
+        if (s.z <= 0) {
+          s.z = 1000;
+          s.pz = 1000;
+          s.x = (Math.random() - 0.5) * w * 2;
+          s.y = (Math.random() - 0.5) * h * 2;
+        }
+
+        const k = 280 / s.z;
+        const px = s.x * k + cx;
+        const py = s.y * k + cy;
+
+        if (px < -60 || px > w + 60 || py < -60 || py > h + 60) {
+          s.z = 1000;
+          continue;
+        }
+
+        const pk = 280 / s.pz;
+        const prevPx = s.x * pk + cx;
+        const prevPy = s.y * pk + cy;
+
+        const size = Math.max(0.8, (1 - s.z / 1000) * (isHyper ? 4.2 : 2.0));
+        const alpha = Math.min(1, Math.max(0.1, (1 - s.z / 1000) * (isHyper ? 0.95 : 0.4)));
+
+        ctx.beginPath();
+        ctx.moveTo(prevPx, prevPy);
+        ctx.lineTo(px, py);
+        ctx.strokeStyle = `hsla(${s.hue}, 90%, 65%, ${alpha})`;
+        ctx.lineWidth = size;
+        ctx.lineCap = 'round';
+        if (isHyper) {
+          ctx.shadowColor = `hsla(${s.hue}, 95%, 70%, 0.8)`;
+          ctx.shadowBlur = 10;
+        }
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      // 2. Quantum Holographic Reticle in Background
+      tourReticleAngle += 0.008;
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(tourReticleAngle);
+
+      // Outer ring
+      ctx.beginPath();
+      ctx.arc(0, 0, 180, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([8, 16]);
+      ctx.stroke();
+
+      // Middle ring
+      ctx.beginPath();
+      ctx.arc(0, 0, 240, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 12]);
+      ctx.stroke();
+
+      // Reticle Crosshairs
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(-280, 0);
+      ctx.lineTo(280, 0);
+      ctx.moveTo(0, -280);
+      ctx.lineTo(0, 280);
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
+      ctx.stroke();
+
+      ctx.restore();
+
+      // 3. Bio-Luminescent Particles with Swarm Dynamics
+      for (let i = 0; i < tourParticles.length; i++) {
+        const p = tourParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // Subtle mouse repulsion
+        const dx = p.x - tourMousePos.x;
+        const dy = p.y - tourMousePos.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120 && dist > 1) {
+          const force = (120 - dist) / 120 * 1.5;
+          p.x += (dx / dist) * force;
+          p.y += (dy / dist) * force;
+        }
+
+        // Screen wrap
+        if (p.x < 0) p.x = w;
+        if (p.x > w) p.x = 0;
+        if (p.y < 0) p.y = h;
+        if (p.y > h) p.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${p.hue}, 85%, 65%, ${p.alpha})`;
+        ctx.shadowColor = `hsla(${p.hue}, 90%, 75%, 0.6)`;
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // 4. Expanding Shockwave Rings
+      for (let i = tourShockwaves.length - 1; i >= 0; i--) {
+        const sw = tourShockwaves[i];
+        sw.radius += (sw.maxRadius - sw.radius) * 0.08 + 4;
+        sw.alpha -= 0.022;
+
+        if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
+          tourShockwaves.splice(i, 1);
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(56, 189, 248, ${sw.alpha})`;
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+
+      tourVfxAnimId = requestAnimationFrame(renderTourVfxLoop);
+    }
+
+    // Step 4 Mini ECG Waveform Engine
+    function initTourEcgCanvas() {
+      tourEcgCanvas = document.getElementById('tourEcgCanvas');
+      if (!tourEcgCanvas) return;
+      tourEcgCtx = tourEcgCanvas.getContext('2d');
+      tourEcgCanvas.width = tourEcgCanvas.parentElement.clientWidth || 360;
+      tourEcgCanvas.height = 64;
+      tourEcgX = 0;
+      tourEcgLastY = 32;
+
+      function drawTourEcgLoop() {
+        if (!tourIsOpen || tourCurrentStep !== 4 || !tourEcgCtx || !tourEcgCanvas) {
+          tourEcgAnimId = requestAnimationFrame(drawTourEcgLoop);
+          return;
+        }
+
+        const width = tourEcgCanvas.width;
+        const height = tourEcgCanvas.height;
+        const ctx = tourEcgCtx;
+
+        // Trace speed depends on BPM
+        const speed = (tourBpmRate / 60) * 2.2;
+
+        for (let step = 0; step < speed; step++) {
+          tourEcgX += 1;
+          if (tourEcgX > width) {
+            tourEcgX = 0;
+            tourEcgLastY = height / 2;
+          }
+
+          // Clear lead head
+          ctx.clearRect(tourEcgX, 0, 16, height);
+
+          // Calculate P-Q-R-S-T heartbeat cycle
+          const cycleLength = Math.max(28, 160 - (tourBpmRate - 60) * 1.1);
+          const cyclePos = tourEcgX % cycleLength;
+          let y = height / 2;
+
+          if (cyclePos > 12 && cyclePos < 20) {
+            // P wave
+            y -= Math.sin(((cyclePos - 12) / 8) * Math.PI) * 7;
+          } else if (cyclePos >= 24 && cyclePos < 27) {
+            // Q dip
+            y += 4;
+          } else if (cyclePos >= 27 && cyclePos < 33) {
+            // R spike
+            y -= 26;
+          } else if (cyclePos >= 33 && cyclePos < 36) {
+            // S dip
+            y += 10;
+          } else if (cyclePos >= 44 && cyclePos < 58) {
+            // T wave
+            y -= Math.sin(((cyclePos - 44) / 14) * Math.PI) * 10;
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(tourEcgX - 1, tourEcgLastY);
+          ctx.lineTo(tourEcgX, y);
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2.0;
+          ctx.shadowColor = '#38bdf8';
+          ctx.shadowBlur = 6;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          tourEcgLastY = y;
+        }
+
+        tourEcgAnimId = requestAnimationFrame(drawTourEcgLoop);
+      }
+
+      drawTourEcgLoop();
+    }
+
+    function updateTourBpmSlider(val) {
+      tourBpmRate = parseInt(val, 10) || 74;
+      const rateLbl = document.getElementById('tourEcgRateLabel');
+      const readout = document.getElementById('tourBpmReadout');
+      const pill = document.getElementById('tourEcgStatusPill');
+
+      if (rateLbl) rateLbl.textContent = `${tourBpmRate} BPM`;
+      if (readout) readout.textContent = `${tourBpmRate} bpm`;
+
+      if (pill) {
+        if (tourBpmRate < 62) {
+          pill.textContent = 'RESTING ATHLETIC BRADYCARDIA';
+          pill.style.background = 'rgba(56, 189, 248, 0.2)';
+          pill.style.color = '#38bdf8';
+        } else if (tourBpmRate <= 95) {
+          pill.textContent = 'NORMAL SINUS RHYTHM';
+          pill.style.background = 'rgba(16, 185, 129, 0.2)';
+          pill.style.color = '#34d399';
+        } else {
+          pill.textContent = 'ZONE-2 AEROBIC EXERTION';
+          pill.style.background = 'rgba(245, 158, 11, 0.2)';
+          pill.style.color = '#fbbf24';
+        }
+      }
+    }
+
+    // Step 1: Interactive Organ Switcher
+    function previewTourOrgan(part) {
+      const organs = ['cardiac', 'cranial', 'pulmonary', 'metabolic', 'spine'];
+      organs.forEach(o => {
+        const chip = document.getElementById(`tourOrgan_${o}`);
+        if (chip) chip.classList.toggle('active', o === part);
+      });
+
+      const titleEl = document.getElementById('tourOrganTitle');
+      const scoreEl = document.getElementById('tourOrganScore');
+      const vitalsEl = document.getElementById('tourOrganVitals');
+      const insightEl = document.getElementById('tourOrganInsight');
+      const badgeEl = document.getElementById('tourTwinActiveBadge');
+
+      const data = {
+        cardiac: {
+          badge: '🫀 Cardiac Optimal',
+          badgeColor: '#34d399',
+          title: 'Cardiovascular & Thoracic Axis',
+          score: '94/100',
+          vitals: 'Pulse: 72 BPM · Blood Pressure: 118/76 mmHg · HRV: 64ms',
+          insight: 'Arterial compliance nominal with symmetric left-ventricular ejection. Sinus rhythm clinically synchronized.'
+        },
+        cranial: {
+          badge: '🧠 Neurological Calibrated',
+          badgeColor: '#38bdf8',
+          title: 'Cranial & Autonomic Nervous System',
+          score: '91/100',
+          vitals: 'Cortisol Index: Low · Alpha Wave Ratio: 62% · Sleep Delta: 8.4h',
+          insight: 'Somatic parasympathetic dominant tone. Vagal nerve stimulation response within elite recovery threshold.'
+        },
+        pulmonary: {
+          badge: '🫁 Pulmonary Normal',
+          badgeColor: '#34d399',
+          title: 'Respiratory & Gas Exchange Axis',
+          score: '97/100',
+          vitals: 'SpO2: 99% · Tidal Volume: 510mL · RR: 14 breaths/min',
+          insight: 'Clear bilateral vesicular breath contours with zero airway resistance. Full capillary oxygen perfusion.'
+        },
+        metabolic: {
+          badge: '🥗 Metabolic Balanced',
+          badgeColor: '#fbbf24',
+          title: 'Metabolic, Hepatic & GI Micro-biome',
+          score: '88/100',
+          vitals: 'Fasting Glucose: 92 mg/dL · Hydration: 74% · Glycemic Stability: Optimal',
+          insight: 'Balanced postprandial glucose dynamics. Recommended Jan Aushadhi preventive micronutrient calibration.'
+        },
+        spine: {
+          badge: '🦴 Musculoskeletal Nominal',
+          badgeColor: '#a78bfa',
+          title: 'Spinal Alignment & Kinetic Chain',
+          score: '93/100',
+          vitals: 'Postural Splay: 0.4° · Core Tension: Symmetric · Joint Mobility: 95%',
+          insight: 'Lumbar-thoracic curvature in physiological neutral. Zero inflammatory kinetic impingement detected.'
+        }
+      };
+
+      const sel = data[part] || data.cardiac;
+      if (titleEl) titleEl.innerHTML = `<span>${sel.badge.slice(0, 2)}</span> ${sel.title}`;
+      if (scoreEl) scoreEl.textContent = sel.score;
+      if (vitalsEl) vitalsEl.textContent = sel.vitals;
+      if (insightEl) insightEl.textContent = sel.insight;
+      if (badgeEl) {
+        badgeEl.textContent = sel.badge;
+        badgeEl.style.color = sel.badgeColor;
+      }
+
+      playTourOrganGlowSound(part);
+      triggerTourShockwave(window.innerWidth / 2, window.innerHeight / 2);
+    }
+
+    // Step 2: Simulate Specialist Dialogue
+    function simulateSpecialistSample(type) {
+      const avatar = document.getElementById('tourSampleAvatar');
+      const speaker = document.getElementById('tourSampleSpeaker');
+      const text = document.getElementById('tourSampleText');
+
+      if (type === 'nambi') {
+        if (avatar) avatar.textContent = '👨‍⚕️';
+        if (speaker) {
+          speaker.textContent = 'Dr. Nambi (Clinical AI Internist):';
+          speaker.style.color = '#38bdf8';
+        }
+        if (text) {
+          text.innerHTML = `<em>"Analyzing your telemetry: blood pressure 118/76 mmHg and ECG are clinically stable. I have verified zero adverse interactions between your daily generic prescriptions and verified CDSCO bioavailability."</em>`;
+        }
+        playTourScannerPing(880);
+      } else {
+        if (avatar) avatar.textContent = '🌸';
+        if (speaker) {
+          speaker.textContent = 'Alex (Compassionate Somatic Therapist):';
+          speaker.style.color = '#c084fc';
+        }
+        if (text) {
+          text.innerHTML = `<em>"I notice a gentle rise in heart rate variability. Let's do a 4-second inhale followed by a 4-second restorative exhale. Release tension in your shoulders and allow your nervous system to ground."</em>`;
+        }
+        playTourScannerPing(520);
+      }
+    }
+
+    // Step 3: Generic Savings Slider
+    function updateTourSavingsSlider(val) {
+      const packs = parseInt(val, 10) || 3;
+      const packLbl = document.getElementById('tourPackCountLabel');
+      const tally = document.getElementById('tourAnnualSavingsTally');
+      if (packLbl) packLbl.textContent = `${packs} Packs / Month`;
+
+      // Brand cost ~ ₹400/pack, Generic ~ ₹50/pack -> savings = ₹350/pack * packs * 12
+      const annualSavings = packs * 380 * 12;
+      if (tally) {
+        tally.textContent = `💰 Annual Family Savings: ₹${annualSavings.toLocaleString('en-IN')} / yr`;
+      }
+      playTourScannerPing(700 + packs * 60);
+    }
+
+    // Step 5: Direct Platform Entry
+    function launchDemoPatientFromTour() {
+      closeCinematicAppTour();
+      playTourSuccessFanfare();
+
+      // Trigger standard demo login with neural transition
+      const emailInput = document.getElementById('patientEmail');
+      const passInput = document.getElementById('patientPassword');
+      if (emailInput && passInput) {
+        emailInput.value = 'demo@gmail.com';
+        passInput.value = 'demo';
+      }
+
+      // Check if quick login function exists
+      if (typeof quickLoginDemo === 'function') {
+        quickLoginDemo('patient');
+      } else if (typeof executeLoginWithTransition === 'function') {
+        executeLoginWithTransition('patient');
+      } else {
+        window.location.href = '/dashboard';
+      }
+    }
+
+    // Tour Navigation Controller
+    function jumpToTourStep(step) {
+      if (step < 1 || step > tourTotalSteps) return;
+      tourCurrentStep = step;
+
+      // Accelerate warp speed for cinematic hyper-space effect
+      tourTargetWarpSpeed = 48.0;
+      setTimeout(() => {
+        tourTargetWarpSpeed = 2.2;
+      }, 420);
+
+      playTourWarpSound();
+      triggerTourShockwave(window.innerWidth / 2, window.innerHeight / 2);
+
+      // Update Step UI
+      for (let i = 1; i <= tourTotalSteps; i++) {
+        const stepEl = document.getElementById(`tourStep_${i}`);
+        if (stepEl) stepEl.classList.toggle('active', i === tourCurrentStep);
+      }
+
+      // Update header
+      const stepNumEl = document.getElementById('tourStepNumber');
+      const badgeLbl = document.getElementById('tourStepBadgeLabel');
+      if (stepNumEl) stepNumEl.textContent = tourCurrentStep;
+      if (badgeLbl) badgeLbl.textContent = tourStepTitles[tourCurrentStep - 1];
+
+      // Update footer dots
+      const dots = document.querySelectorAll('.tour-dot-btn');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx === tourCurrentStep - 1);
+      });
+
+      // Update Back button visibility
+      const btnPrev = document.getElementById('btnTourPrev');
+      if (btnPrev) {
+        btnPrev.style.visibility = tourCurrentStep === 1 ? 'hidden' : 'visible';
+      }
+
+      // Update Next button label
+      const nextLbl = document.getElementById('tourNextBtnLabel');
+      if (nextLbl) {
+        nextLbl.textContent = tourNextBtnLabels[tourCurrentStep - 1];
+      }
+
+      // Reset auto-play timer on step change
+      resetTourAutoPlayCountdown();
+    }
+
+    function navigateTourStep(delta) {
+      if (tourCurrentStep === tourTotalSteps && delta > 0) {
+        // Finished tour, enter app!
+        launchDemoPatientFromTour();
+        return;
+      }
+      jumpToTourStep(tourCurrentStep + delta);
+    }
+
+    // Auto-Play Slideshow Engine
+    function toggleTourAutoPlay() {
+      tourAutoPlayActive = !tourAutoPlayActive;
+      const btn = document.getElementById('btnTourAutoPlay');
+      const lbl = document.getElementById('tourAutoPlayLabel');
+
+      if (tourAutoPlayActive) {
+        if (btn) btn.classList.add('active');
+        if (lbl) lbl.textContent = 'Pause Auto';
+        startTourAutoPlayTimer();
+      } else {
+        if (btn) btn.classList.remove('active');
+        if (lbl) lbl.textContent = 'Auto-Play';
+        stopTourAutoPlayTimer();
+      }
+    }
+
+    function startTourAutoPlayTimer() {
+      stopTourAutoPlayTimer();
+      tourCountdownProgress = 0;
+      const circle = document.getElementById('tourCountdownCircle');
+
+      tourCountdownInterval = setInterval(() => {
+        tourCountdownProgress += 1.25; // 100% over 8 seconds
+        if (circle) {
+          const offset = 50.26 * (1 - tourCountdownProgress / 100);
+          circle.style.strokeDashoffset = Math.max(0, offset);
+        }
+
+        if (tourCountdownProgress >= 100) {
+          tourCountdownProgress = 0;
+          if (tourCurrentStep < tourTotalSteps) {
+            jumpToTourStep(tourCurrentStep + 1);
+          } else {
+            jumpToTourStep(1); // loop back
+          }
+        }
+      }, 100);
+    }
+
+    function resetTourAutoPlayCountdown() {
+      if (!tourAutoPlayActive) return;
+      startTourAutoPlayTimer();
+    }
+
+    function stopTourAutoPlayTimer() {
+      if (tourCountdownInterval) {
+        clearInterval(tourCountdownInterval);
+        tourCountdownInterval = null;
+      }
+      const circle = document.getElementById('tourCountdownCircle');
+      if (circle) circle.style.strokeDashoffset = '50.26';
+    }
+
+    // Modal Open & Close
+    function openCinematicAppTour(e) {
+      if (e && e.preventDefault) e.preventDefault();
+
+      const overlay = document.getElementById('cinematicAppTourOverlay');
+      if (!overlay) return;
+
+      tourIsOpen = true;
+      overlay.style.display = 'flex';
+      setTimeout(() => {
+        overlay.classList.add('active');
+      }, 20);
+
+      // Initialize Canvases
+      if (!tourVfxCanvas) initTourVfxCanvas();
+      if (!tourEcgCanvas) initTourEcgCanvas();
+
+      jumpToTourStep(1);
+      renderTourVfxLoop();
+      playTourWarpSound();
+
+      // Lock body scroll
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeCinematicAppTour() {
+      const overlay = document.getElementById('cinematicAppTourOverlay');
+      if (!overlay) return;
+
+      overlay.classList.remove('active');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        tourIsOpen = false;
+        stopTourAutoPlayTimer();
+        if (tourVfxAnimId) cancelAnimationFrame(tourVfxAnimId);
+        document.body.style.overflow = '';
+      }, 350);
+    }
+
+    // Keyboard Shortcuts for Tour
+    window.addEventListener('keydown', (e) => {
+      if (!tourIsOpen) return;
+      if (e.key === 'Escape') {
+        closeCinematicAppTour();
+      } else if (e.key === 'ArrowRight') {
+        navigateTourStep(1);
+      } else if (e.key === 'ArrowLeft') {
+        navigateTourStep(-1);
+      } else if (e.key === ' ' && e.target === document.body) {
+        e.preventDefault();
+        toggleTourAutoPlay();
+      }
+    });
+
+    // Auto-detect URL parameter ?tour=true & initialize dynamic elements
     window.addEventListener('DOMContentLoaded', () => {
       initCardTilt();
       initConstellationCanvas();
@@ -5934,6 +7767,13 @@
       const params = new URLSearchParams(window.location.search);
       if (params.get('role') === 'admin' || window.location.hash === '#admin') {
         switchLoginRole('admin');
+      }
+
+      // Check for tour launch trigger in URL
+      if (params.get('tour') === 'true' || window.location.hash === '#tour') {
+        setTimeout(() => {
+          openCinematicAppTour();
+        }, 600);
       }
     });
   </script>

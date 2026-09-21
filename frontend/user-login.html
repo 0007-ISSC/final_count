@@ -2214,7 +2214,7 @@
             <span class="icon">👤</span>
             <div>
               <span class="role-title">Patient Portal</span>
-              <span class="role-desc">iqrasultana0007@gmail.com</span>
+              <span class="role-desc">demo@gmail.com</span>
             </div>
           </div>
           <div class="role-preset-btn" id="presetClinician" onclick="applyRolePreset('clinician')">
@@ -2232,7 +2232,7 @@
             <label class="form-label">Username / Patient ID</label>
             <div class="input-wrapper">
               <span class="input-icon">👤</span>
-              <input type="text" id="userInputUsername" class="form-input" placeholder="e.g. Iqra Sultana" value="Iqra Sultana" required oninput="handleUsernameInputChanged(this.value)">
+              <input type="text" id="userInputUsername" class="form-input" placeholder="e.g. demo" value="demo" required oninput="handleUsernameInputChanged(this.value)">
             </div>
           </div>
 
@@ -2247,7 +2247,7 @@
             <div style="display:flex;gap:8px;">
               <div class="input-wrapper" style="flex:1;">
                 <span class="input-icon">✉️</span>
-                <input type="email" id="userInputEmail" class="form-input" placeholder="e.g. yourname@gmail.com" value="iqrasultana0007@gmail.com" required oninput="handleEmailInputChanged(this.value)" onblur="handleEmailInputChanged(this.value, true)">
+                <input type="email" id="userInputEmail" class="form-input" placeholder="e.g. demo@gmail.com" value="demo@gmail.com" required oninput="handleEmailInputChanged(this.value)" onblur="handleEmailInputChanged(this.value, true)">
               </div>
               <button type="button" id="btnGenerateOtp" class="btn-generate-otp pulsing" onclick="handleGenerateOtp(true)" title="Generate 6-digit OTP verification code">
                 <span id="btnGenerateOtpIcon">⚡</span>
@@ -3640,10 +3640,10 @@
       } else {
         pPatient?.classList.add('active');
         pClinician?.classList.remove('active');
-        if (userInput) userInput.value = 'Iqra Sultana';
+        if (userInput) userInput.value = 'demo';
         if (emailInput) {
-          emailInput.value = 'iqrasultana0007@gmail.com';
-          handleEmailInputChanged('iqrasultana0007@gmail.com', true);
+          emailInput.value = 'demo@gmail.com';
+          handleEmailInputChanged('demo@gmail.com', true);
         }
         if (passInput) passInput.value = 'healthgpt2026';
         playHarmonicChime(659.25, 'sine', 0.3);

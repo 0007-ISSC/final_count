@@ -321,6 +321,303 @@
   flex-wrap: wrap;
 }
 
+/* ============================================================
+   3D ANATOMICAL INTERACTIVE TOOLTIP WITH BRIEF HEALTH STATS
+============================================================ */
+.twin-3d-interactive-tooltip {
+  position: absolute;
+  z-index: 35;
+  width: 320px;
+  pointer-events: auto;
+  transform: translate(-50%, -100%);
+  margin-top: -18px;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.75));
+}
+
+.twin-3d-interactive-tooltip.docked {
+  transform: none;
+  margin-top: 0;
+  top: 72px !important;
+  right: 18px !important;
+  left: auto !important;
+}
+
+.twin-tooltip-anchor-point {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.twin-3d-interactive-tooltip.docked .twin-tooltip-anchor-point {
+  display: none;
+}
+
+.twin-tooltip-stem-line {
+  width: 1.5px;
+  height: 14px;
+  background: linear-gradient(to bottom, rgba(45, 212, 191, 0.9), rgba(45, 212, 191, 0.2));
+}
+
+.twin-tooltip-anchor-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  box-shadow: 0 0 10px #2dd4bf;
+}
+
+.twin-tooltip-ping-circle {
+  position: absolute;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #2dd4bf;
+  animation: twinPingRing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes twinPingRing {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.twin-tooltip-card-inner {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(45, 212, 191, 0.45);
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.twin-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.twin-tooltip-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.twin-tooltip-icon {
+  font-size: 22px;
+  line-height: 1;
+  filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.5));
+}
+
+.twin-tooltip-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.twin-tooltip-sub {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.twin-tooltip-score-badge {
+  font-size: 10.5px;
+  font-weight: 800;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  padding: 2px 8px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.twin-tooltip-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  border-radius: 6px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.twin-tooltip-icon-btn:hover {
+  background: rgba(45, 212, 191, 0.2);
+  border-color: #2dd4bf;
+  color: #ffffff;
+}
+
+.twin-tooltip-icon-btn.active {
+  background: rgba(45, 212, 191, 0.35);
+  border-color: #2dd4bf;
+  color: #2dd4bf;
+}
+
+.twin-tooltip-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.twin-tooltip-stat-tile {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: background 0.15s;
+}
+
+.twin-tooltip-stat-tile:hover {
+  background: rgba(45, 212, 191, 0.08);
+  border-color: rgba(45, 212, 191, 0.25);
+}
+
+.twin-tooltip-stat-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.twin-tooltip-stat-val {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  letter-spacing: -0.2px;
+}
+
+.twin-tooltip-summary {
+  font-size: 11px;
+  color: #cbd5e1;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 2.5px solid #2dd4bf;
+  padding: 6px 8px;
+  border-radius: 0 6px 6px 0;
+}
+
+.twin-tooltip-quick-parts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 2px 0;
+}
+
+.twin-tooltip-mini-chip {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #cbd5e1;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.twin-tooltip-mini-chip:hover {
+  background: rgba(45, 212, 191, 0.18);
+  border-color: rgba(45, 212, 191, 0.4);
+  color: #ffffff;
+}
+
+.twin-tooltip-mini-chip.active {
+  background: rgba(45, 212, 191, 0.28);
+  border-color: #2dd4bf;
+  color: #ffffff;
+}
+
+.twin-tooltip-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 3px;
+}
+
+.twin-tooltip-action-btn {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 750;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.twin-tooltip-action-btn.primary {
+  background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+  border: 1px solid rgba(94, 234, 212, 0.4);
+  color: #ffffff;
+}
+
+.twin-tooltip-action-btn.primary:hover {
+  background: linear-gradient(135deg, #14b8a6 0%, #2dd4bf 100%);
+  box-shadow: 0 4px 14px rgba(45, 212, 191, 0.4);
+}
+
+.twin-tooltip-action-btn.secondary {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+}
+
+.twin-tooltip-action-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+/* Real-Time Cursor Hover Tooltip Tag */
+.twin-3d-hover-tag {
+  pointer-events: none;
+  transition: opacity 0.15s ease-out;
+}
+
+.twin-hover-tag-bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(15, 23, 42, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(45, 212, 191, 0.5);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 750;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
 .twin-hud-card {
   background: rgba(15, 23, 42, 0.85);
   backdrop-filter: blur(10px);
@@ -5532,7 +5829,7 @@ window.go = window.go || function(pageId, subParam) {
         <!-- USER / ADMIN SESSION PILL -->
         <div id="topUserProfileBadge" style="display:inline-flex;align-items:center;gap:6px;background:var(--card);padding:4px 10px;border-radius:20px;border:1px solid var(--line);box-shadow:var(--shadow-sm);font-size:12px;font-weight:700;">
           <span id="topUserRoleIcon">👤</span>
-          <span id="topUserNameDisplay" style="color:var(--ink);">Iqra Sultana</span>
+          <span id="topUserNameDisplay" style="color:var(--ink);">demo</span>
           <button type="button" onclick="triggerDashboardFirecrackers()" style="background:none;border:none;cursor:pointer;font-size:13px;padding:1px 3px;" title="Launch Firecrackers Celebration">🎆</button>
           <a href="/login" id="topUserSwitchLink" style="font-size:11px;color:var(--primary);text-decoration:none;margin-left:4px;border-left:1px solid var(--line);padding-left:6px;" title="Switch User / Log In">Switch</a>
           <a href="/admin-login" id="topAdminPortalLink" style="font-size:11px;color:#0284c7;text-decoration:none;border-left:1px solid var(--line);padding-left:6px;" title="Go to Admin Portal">🛡️ Admin</a>
@@ -5837,8 +6134,8 @@ window.go = window.go || function(pageId, subParam) {
               <button type="button" onclick="openSupabaseAuthModal()" style="padding:10px 20px;background:#0f172a;color:white;border:none;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
                 <span>⚡ Sign In with Supabase</span>
               </button>
-              <button type="button" onclick="loginWithSupabase('iqrasultana0007@gmail.com','',true)" style="padding:10px 20px;background:#ecfdf5;color:#059669;border:1.5px solid #a7f3d0;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
-                <span>🔑 1-Click Patient Access (Iqra Sultana)</span>
+              <button type="button" onclick="loginWithSupabase('demo@gmail.com','',true)" style="padding:10px 20px;background:#ecfdf5;color:#059669;border:1.5px solid #a7f3d0;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                <span>🔑 1-Click Patient Access (demo)</span>
               </button>
             </div>
             <div style="font-size:11.5px;color:#94a3b8;margin-top:4px;">
@@ -5852,10 +6149,10 @@ window.go = window.go || function(pageId, subParam) {
           <!-- Patient Dossier Meta Strip -->
           <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:18px;">
             <div style="display:flex;align-items:center;gap:12px;">
-              <div style="width:40px;height:40px;border-radius:50%;background:#0284c7;color:white;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;" id="phrAvatarText">IS</div>
+              <div style="width:40px;height:40px;border-radius:50%;background:#0284c7;color:white;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;" id="phrAvatarText">DM</div>
               <div>
-                <div style="font-size:15px;font-weight:800;color:#0f172a;" id="phrPatientName">Iqra Sultana</div>
-                <div style="font-size:12px;color:#64748b;" id="phrPatientEmail">iqrasultana0007@gmail.com • Blood Group: O+ • Age: 28</div>
+                <div style="font-size:15px;font-weight:800;color:#0f172a;" id="phrPatientName">demo</div>
+                <div style="font-size:12px;color:#64748b;" id="phrPatientEmail">demo@gmail.com • Blood Group: O+ • Age: 28</div>
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
@@ -7136,11 +7433,11 @@ window.go = window.go || function(pageId, subParam) {
               <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:20px;padding:14px;background:var(--card-subtle, #f8fafc);border-radius:12px;border:1px solid var(--line, #e2e8f0);">
                 <div>
                   <label for="feedbackInputAuthorName" style="display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Your Name</label>
-                  <input type="text" id="feedbackInputAuthorName" value="Iqra Sultana" placeholder="e.g. Iqra Sultana" style="width:100%;padding:7px 10px;border:1px solid var(--line, #cbd5e1);border-radius:8px;font-size:12.5px;color:var(--dark);box-sizing:border-box;background:#ffffff;"/>
+                  <input type="text" id="feedbackInputAuthorName" value="demo" placeholder="e.g. demo" style="width:100%;padding:7px 10px;border:1px solid var(--line, #cbd5e1);border-radius:8px;font-size:12.5px;color:var(--dark);box-sizing:border-box;background:#ffffff;"/>
                 </div>
                 <div>
                   <label for="feedbackInputAuthorEmail" style="display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Your Email (Optional)</label>
-                  <input type="email" id="feedbackInputAuthorEmail" value="iqrasultana0007@gmail.com" placeholder="e.g. user@gmail.com" style="width:100%;padding:7px 10px;border:1px solid var(--line, #cbd5e1);border-radius:8px;font-size:12.5px;color:var(--dark);box-sizing:border-box;background:#ffffff;"/>
+                  <input type="email" id="feedbackInputAuthorEmail" value="demo@gmail.com" placeholder="e.g. demo@gmail.com" style="width:100%;padding:7px 10px;border:1px solid var(--line, #cbd5e1);border-radius:8px;font-size:12.5px;color:var(--dark);box-sizing:border-box;background:#ffffff;"/>
                 </div>
                 <div>
                   <label for="feedbackInputRole" style="display:block;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Your Clinical Role</label>
@@ -9049,8 +9346,8 @@ window.go = window.go || function(pageId, subParam) {
                 <button type="button" onclick="openSupabaseAuthModal()" style="padding:10px 20px;background:#2dd4bf;color:#091e2f;border:none;border-radius:10px;font-weight:800;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
                   <span>⚡ Authenticate with Supabase</span>
                 </button>
-                <button type="button" onclick="loginWithSupabase('iqrasultana0007@gmail.com','',true)" style="padding:10px 20px;background:rgba(255,255,255,0.1);color:#ffffff;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;">
-                  <span>🔑 1-Click Patient Access (Iqra Sultana)</span>
+                <button type="button" onclick="loginWithSupabase('demo@gmail.com','',true)" style="padding:10px 20px;background:rgba(255,255,255,0.1);color:#ffffff;border:1px solid rgba(255,255,255,0.3);border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;">
+                  <span>🔑 1-Click Patient Access (demo)</span>
                 </button>
               </div>
               <div style="font-size:11.5px;color:#94a3b8;margin-top:4px;">
@@ -9060,6 +9357,103 @@ window.go = window.go || function(pageId, subParam) {
           </div>
 
           <canvas id="twin3DCanvas" class="twin-3d-canvas"></canvas>
+
+          <!-- 3D INTERACTIVE ANATOMICAL TOOLTIP WITH BRIEF HEALTH STATISTICS -->
+          <div id="twin3DInteractiveTooltip" class="twin-3d-interactive-tooltip" style="display:none;">
+            <!-- Reticle Pointer / Anchor Pin Line -->
+            <div class="twin-tooltip-anchor-point">
+              <div class="twin-tooltip-ping-circle"></div>
+              <div class="twin-tooltip-anchor-dot"></div>
+              <div class="twin-tooltip-stem-line"></div>
+            </div>
+
+            <!-- Card Body -->
+            <div class="twin-tooltip-card-inner">
+              <!-- Header -->
+              <div class="twin-tooltip-header">
+                <div class="twin-tooltip-title-wrap">
+                  <span id="twinTipIcon" class="twin-tooltip-icon">🫀</span>
+                  <div style="display:flex;flex-direction:column;gap:1px;">
+                    <span id="twinTipTitle" class="twin-tooltip-title">Cardiovascular System</span>
+                    <span id="twinTipSubtitle" class="twin-tooltip-sub">Thoracic &amp; Myocardial Axis</span>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <span id="twinTipScoreBadge" class="twin-tooltip-score-badge">● 94/100 Optimal</span>
+                  <button type="button" class="twin-tooltip-icon-btn" id="twinTipPinBtn" onclick="togglePinTwinTooltip()" title="Pin / Dock Tooltip">📌</button>
+                  <button type="button" class="twin-tooltip-icon-btn" onclick="closeTwinInteractiveTooltip()" title="Dismiss Tooltip">✕</button>
+                </div>
+              </div>
+
+              <!-- Brief Health Statistics Grid (4 Key Biomarkers) -->
+              <div class="twin-tooltip-stats-grid" id="twinTipStatsGrid">
+                <!-- Injected dynamically based on selected body part -->
+              </div>
+
+              <!-- Brief Clinical Assessment -->
+              <div class="twin-tooltip-summary" id="twinTipSummary">
+                Normal sinus rhythm with optimal arterial compliance. Capillary perfusion verified.
+              </div>
+
+              <!-- Quick Organ Switcher Mini-Chips -->
+              <div class="twin-tooltip-quick-parts">
+                <span style="font-size:10px;font-weight:700;color:#94a3b8;margin-right:2px;">Select:</span>
+                <button type="button" class="twin-tooltip-mini-chip active" data-tip-part="heart" onclick="select3DBodyPart('heart')" title="Inspect Heart">🫀 Heart</button>
+                <button type="button" class="twin-tooltip-mini-chip" data-tip-part="brain" onclick="select3DBodyPart('brain')" title="Inspect Brain">🧠 Brain</button>
+                <button type="button" class="twin-tooltip-mini-chip" data-tip-part="lungs" onclick="select3DBodyPart('lungs')" title="Inspect Lungs">🫁 Lungs</button>
+                <button type="button" class="twin-tooltip-mini-chip" data-tip-part="gut" onclick="select3DBodyPart('gut')" title="Inspect Metabolic Core">🥗 Gut</button>
+                <button type="button" class="twin-tooltip-mini-chip" data-tip-part="spine" onclick="select3DBodyPart('spine')" title="Inspect Spine">🦴 Spine</button>
+                <button type="button" class="twin-tooltip-mini-chip" data-tip-part="muscles" onclick="select3DBodyPart('muscles')" title="Inspect Limbs">🏃 Limbs</button>
+              </div>
+
+              <!-- Interactive Actions Footer -->
+              <div class="twin-tooltip-footer">
+                <button type="button" class="twin-tooltip-action-btn primary" onclick="consultTargetedTwinSpecialist()">
+                  <span>🩺</span> <span>Ask Dr. Nambi</span>
+                </button>
+                <button type="button" class="twin-tooltip-action-btn secondary" onclick="scrollToOrganDeepDive()">
+                  <span>📊</span> <span>Full Telemetry</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-Time Cursor Raycast Hover Tooltip -->
+          <div id="twin3DHoverTooltip" class="twin-3d-hover-tag" style="display:none;position:absolute;pointer-events:none;z-index:36;">
+            <div class="twin-hover-tag-bubble">
+              <span id="twinHoverIcon">🫀</span>
+              <span id="twinHoverLabel">Heart</span>
+              <span id="twinHoverMetric" style="color:#5eead4;font-family:monospace;font-weight:700;margin-left:4px;">78 BPM</span>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE 3D ANATOMICAL BODY PART SELECTOR STRIP -->
+          <div class="twin-anatomical-selector-bar" id="twinAnatomicalSelectorBar" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:28;display:flex;align-items:center;gap:6px;background:rgba(15,23,42,0.85);backdrop-filter:blur(10px);border:1px solid rgba(45,212,191,0.35);padding:5px 10px;border-radius:24px;box-shadow:0 8px 24px rgba(0,0,0,0.5);max-width:92%;overflow-x:auto;">
+            <span style="font-size:11px;font-weight:800;color:#5eead4;display:inline-flex;align-items:center;gap:4px;padding:0 6px;text-transform:uppercase;letter-spacing:0.5px;white-space:nowrap;">
+              <span>🧬</span> <span>Select Body Part:</span>
+            </span>
+            <button type="button" class="twin-body-part-btn active" data-part="heart" onclick="select3DBodyPart('heart')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid #2dd4bf;background:rgba(45,212,191,0.25);color:#ffffff;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🫀</span> <span>Heart</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" data-part="brain" onclick="select3DBodyPart('brain')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#cbd5e1;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🧠</span> <span>Brain</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" data-part="lungs" onclick="select3DBodyPart('lungs')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#cbd5e1;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🫁</span> <span>Lungs</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" data-part="gut" onclick="select3DBodyPart('gut')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#cbd5e1;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🥗</span> <span>Metabolic Core</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" data-part="spine" onclick="select3DBodyPart('spine')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#cbd5e1;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🦴</span> <span>Spine & Axis</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" data-part="muscles" onclick="select3DBodyPart('muscles')" style="display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:18px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#cbd5e1;font-size:11.5px;font-weight:750;cursor:pointer;white-space:nowrap;transition:all 0.2s;">
+              <span>🏃</span> <span>Limbs / Mobility</span>
+            </button>
+            <button type="button" class="twin-body-part-btn" onclick="resetTwinCamera('front')" title="Reset 3D Orbit" style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;border-radius:18px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.1);color:#ffffff;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+              <span>🔄</span> <span>Reset View</span>
+            </button>
+          </div>
 
           <!-- TOP HUD: AI FOCUS & CAMERA TOOLS -->
           <div class="twin-3d-hud-top">
@@ -9118,6 +9512,57 @@ window.go = window.go || function(pageId, subParam) {
                 <button class="twin-scenario-chip" onclick="focusTwinRegion('gut')" style="padding:3px 7px;font-size:10px;">🥗 Core</button>
                 <button class="twin-scenario-chip" onclick="focusTwinRegion('muscles')" style="padding:3px 7px;font-size:10px;">🏃 Limbs</button>
               </div>
+            </div>
+          </div>
+
+          <!-- TARGETED 3D HEALTH INSIGHTS FLOATING PANEL (ON BODY PART SELECTION) -->
+          <div id="twinTargetedInsightHud" class="twin-targeted-insight-panel" style="position:absolute;bottom:64px;right:16px;z-index:27;max-width:350px;width:calc(100% - 32px);background:rgba(15,23,42,0.92);backdrop-filter:blur(14px);border:1.5px solid rgba(45,212,191,0.45);border-radius:16px;padding:15px;box-shadow:0 12px 36px rgba(0,0,0,0.65);display:flex;flex-direction:column;gap:9px;">
+            <!-- Header with organ icon, name & score badge -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span id="twinInsightIcon" style="font-size:24px;">🫀</span>
+                <div>
+                  <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#2dd4bf;" id="twinInsightSubtitle">
+                    Targeted Health Twin Insight
+                  </div>
+                  <div style="font-size:14.5px;font-weight:800;color:#ffffff;line-height:1.2;" id="twinInsightTitle">
+                    Cardiovascular &amp; Thoracic System
+                  </div>
+                </div>
+              </div>
+              <span class="pill" id="twinInsightScoreBadge" style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);font-weight:800;font-size:11px;white-space:nowrap;">
+                Optimal (94/100)
+              </span>
+            </div>
+
+            <!-- Biomarkers quick pill strip -->
+            <div id="twinInsightBiomarkersStrip" style="display:flex;flex-wrap:wrap;gap:5px;padding:7px 10px;background:rgba(255,255,255,0.06);border-radius:10px;border:1px solid rgba(255,255,255,0.08);font-size:11px;">
+              <span style="color:#cbd5e1;">❤️ <b>78</b> BPM</span>
+              <span style="color:#64748b;">·</span>
+              <span style="color:#cbd5e1;">🩺 <b>118/76</b> mmHg</span>
+              <span style="color:#64748b;">·</span>
+              <span style="color:#cbd5e1;">⚡ HRV <b>64ms</b></span>
+            </div>
+
+            <!-- Clinical AI Insight description -->
+            <p id="twinInsightBody" style="margin:0;font-size:12px;color:#cbd5e1;line-height:1.45;">
+              Cardiovascular efficiency is robust. Arterial compliance and pulse wave velocity are well within optimal clinical thresholds. Normal sinus rhythm.
+            </p>
+
+            <!-- Targeted Actionable Recommendation -->
+            <div id="twinInsightTip" style="font-size:11px;color:#93c5fd;background:rgba(30,58,138,0.35);border:1px solid rgba(59,130,246,0.35);border-radius:8px;padding:6px 10px;display:flex;align-items:flex-start;gap:6px;line-height:1.4;">
+              <span>💡</span>
+              <span id="twinInsightTipText">Maintain current 35 min zone-2 aerobic pacing 3x/week to preserve arterial elasticity and healthy HRV.</span>
+            </div>
+
+            <!-- Actions -->
+            <div style="display:flex;gap:6px;padding-top:2px;">
+              <button type="button" class="btn btn-sm" onclick="consultTargetedTwinSpecialist()" style="flex:1;background:linear-gradient(135deg,#0d9488,#0f766e);color:white;font-weight:750;font-size:11px;border-radius:8px;padding:6px 10px;border:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:4px;">
+                <span>🩺</span> <span>Consult Dr. Nambi</span>
+              </button>
+              <button type="button" class="btn btn-sm" onclick="scrollToOrganDeepDive()" style="background:rgba(255,255,255,0.1);color:#ffffff;border:1px solid rgba(255,255,255,0.2);font-weight:600;font-size:11px;border-radius:8px;padding:6px 10px;cursor:pointer;">
+                🫀 Full Matrix
+              </button>
             </div>
           </div>
 
@@ -10778,13 +11223,97 @@ window.go = window.go || function(pageId, subParam) {
 
         <!-- VIEW 1: GENERIC PRICE COMPARISON CATALOG -->
         <div id="jaViewContainer_catalog">
-          <!-- Search & Category Filters -->
-          <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:240px;position:relative;">
-              <input type="text" id="jaSearchInput" class="input" placeholder="Search by brand name (e.g. Dolo, Augmentin, Telma, Pan 40) or generic salt..." oninput="debounceJaSearch()" style="width:100%;padding-left:36px;border-radius:8px;font-size:13px;" />
-              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted);">🔍</span>
+
+          <!-- DEDICATED BRAND-NAME MEDICINE GENERIC ALTERNATIVE SEARCH HERO -->
+          <div style="background:linear-gradient(135deg, #f0fdfa 0%, #e6fffa 100%);border:1.5px solid #0d9488;border-radius:14px;padding:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(13,148,136,0.09);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;">
+                  <span style="font-size:22px;">🔍</span>
+                  <h3 style="margin:0;font-size:18px;font-weight:800;color:#0f766e;letter-spacing:-0.3px;">
+                    Search Brand-Name Medicine for Jan Aushadhi Generic Alternatives
+                  </h3>
+                </div>
+                <p style="margin:4px 0 0;font-size:13px;color:#134e4a;line-height:1.45;">
+                  Type any doctor-prescribed branded medicine (e.g., <b>Augmentin, Dolo, Telma, Pan 40, Lipitor</b>) to instantly find 100% bioequivalent generic alternatives with identical chemical salts at up to <b>90% lower prices</b>.
+                </p>
+              </div>
+              <span class="pill" style="background:#0d9488;color:white;font-weight:800;font-size:11.5px;padding:5px 12px;border-radius:20px;flex-shrink:0;">
+                🏛️ PMBJP Verified Database
+              </span>
             </div>
-            <select id="jaCategorySelect" class="input" onchange="filterJaByCategory(this.value)" style="width:auto;min-width:180px;border-radius:8px;font-size:13px;">
+
+            <!-- Search Input with Live Button and Clear -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+              <div style="flex:1;min-width:260px;position:relative;">
+                <input 
+                  type="text" 
+                  id="jaSearchInput" 
+                  class="input" 
+                  placeholder="Enter brand name (e.g. Augmentin 625, Dolo 650, Telma 40, Pan 40, Lipitor, Glycomet 500)..." 
+                  oninput="handleJanAushadhiSearchInput()"
+                  onkeydown="if(event.key==='Enter') executeJanAushadhiBrandSearch()"
+                  style="width:100%;padding-left:38px;padding-right:32px;height:44px;border-radius:10px;font-size:13.5px;border:1.5px solid #14b8a6;background:#ffffff;box-shadow:0 2px 6px rgba(0,0,0,0.04);" 
+                />
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:16px;color:#0d9488;">💊</span>
+                <button type="button" id="btnClearJaSearch" onclick="clearJanAushadhiSearch()" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:14px;color:#94a3b8;cursor:pointer;padding:4px;">✕</button>
+              </div>
+              <button type="button" class="btn" onclick="executeJanAushadhiBrandSearch()" style="background:#0d9488;color:#ffffff;font-weight:750;font-size:13px;padding:0 20px;height:44px;border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(13,148,136,0.3);">
+                <span>🔍</span> <span>Find Generic Alternative</span>
+              </button>
+            </div>
+
+            <!-- Popular Brand-Name Quick Selection Chips -->
+            <div>
+              <div style="font-size:11px;font-weight:750;color:#0f766e;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:6px;">
+                Popular Doctor Prescriptions (Click to see generic equivalent &amp; savings):
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Augmentin 625')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  💊 Augmentin 625 <span style="color:#16a34a;font-weight:800;">(Save ₹155)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Dolo 650')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🌡️ Dolo 650 <span style="color:#16a34a;font-weight:800;">(Save ₹25.5)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Telma 40')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  ❤️ Telma 40 <span style="color:#16a34a;font-weight:800;">(Save ₹83)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Pan 40')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🧪 Pan 40 <span style="color:#16a34a;font-weight:800;">(Save ₹135)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Glycomet 500')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🩸 Glycomet 500 <span style="color:#16a34a;font-weight:800;">(Save ₹24.5)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Atorva 10')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🩺 Atorva 10 <span style="color:#16a34a;font-weight:800;">(Save ₹88)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Combiflam')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  ⚡ Combiflam <span style="color:#16a34a;font-weight:800;">(Save ₹34)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Azithral 500')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🛡️ Azithral 500 <span style="color:#16a34a;font-weight:800;">(Save ₹83)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Montair-LC')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🫁 Montair-LC <span style="color:#16a34a;font-weight:800;">(Save ₹163)</span>
+                </button>
+                <button type="button" class="ja-brand-chip" onclick="quickSelectBrandAlternative('Shelcal 500')" style="padding:4px 10px;font-size:11px;font-weight:700;border-radius:16px;border:1px solid #99f6e4;background:#ffffff;color:#0f766e;cursor:pointer;transition:all 0.15s;">
+                  🦴 Shelcal 500 <span style="color:#16a34a;font-weight:800;">(Save ₹93)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPOTLIGHT: BRAND VS. JAN AUSHADHI GENERIC MATCH RESULT -->
+          <div id="jaInstantMatchSpotlight" style="display:none;margin-bottom:20px;">
+            <!-- Populated dynamically by renderJanAushadhiSpotlight(brand, med) -->
+          </div>
+
+          <!-- Secondary Filters & Categories -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;">
+            <div style="font-size:12.5px;font-weight:750;color:var(--dark);">
+              Browse All PM Jan Aushadhi Generic Equivalents:
+            </div>
+            <select id="jaCategorySelect" class="input" onchange="filterJaByCategory(this.value)" style="width:auto;min-width:180px;border-radius:8px;font-size:12.5px;padding:4px 10px;">
               <option value="all">All Therapeutic Categories</option>
               <option value="Hypertension & Heart">Hypertension & Heart</option>
               <option value="Diabetes Care">Diabetes Care</option>
@@ -22316,6 +22845,7 @@ function init3DHealthTwin() {
   });
   const brainMesh = new THREE.Mesh(brainGeo, brainMat);
   brainMesh.position.set(0, 1.46, 0);
+  brainMesh.userData = { bodyPart: 'brain', organId: 'neurological' };
   humanGroup.add(brainMesh);
   organMeshes.brain = brainMesh;
 
@@ -22341,6 +22871,7 @@ function init3DHealthTwin() {
     opacity: 0.85
   });
   const neuralParticles = new THREE.Points(neuralGeo, neuralMat);
+  neuralParticles.userData = { bodyPart: 'brain', organId: 'neurological' };
   humanGroup.add(neuralParticles);
   twinThreeState.neuralParticles = neuralParticles;
 
@@ -22354,6 +22885,7 @@ function init3DHealthTwin() {
   });
   const heartMesh = new THREE.Mesh(heartGeo, heartMat);
   heartMesh.position.set(-0.04, 0.94, 0.04);
+  heartMesh.userData = { bodyPart: 'heart', organId: 'cardiovascular' };
   humanGroup.add(heartMesh);
   organMeshes.heart = heartMesh;
 
@@ -22363,6 +22895,7 @@ function init3DHealthTwin() {
   const aortaMesh = new THREE.Mesh(aortaGeo, aortaMat);
   aortaMesh.rotation.z = Math.PI * 0.4;
   aortaMesh.position.set(-0.04, 1.02, 0.04);
+  aortaMesh.userData = { bodyPart: 'heart', organId: 'cardiovascular' };
   humanGroup.add(aortaMesh);
 
   // 3. LUNGS / RESPIRATORY
@@ -22381,11 +22914,13 @@ function init3DHealthTwin() {
   const lungLeft = new THREE.Mesh(lungLeftGeo, lungMat);
   lungLeft.position.set(-0.11, 0, 0);
   lungLeft.rotation.z = 0.1;
+  lungLeft.userData = { bodyPart: 'lungs', organId: 'respiratory' };
   lungGroup.add(lungLeft);
 
   const lungRight = new THREE.Mesh(lungLeftGeo, lungMat);
   lungRight.position.set(0.11, 0, 0);
   lungRight.rotation.z = -0.1;
+  lungRight.userData = { bodyPart: 'lungs', organId: 'respiratory' };
   lungGroup.add(lungRight);
 
   humanGroup.add(lungGroup);
@@ -22401,6 +22936,7 @@ function init3DHealthTwin() {
   });
   const gutMesh = new THREE.Mesh(gutGeo, gutMat);
   gutMesh.position.set(0, 0.58, 0.03);
+  gutMesh.userData = { bodyPart: 'gut', organId: 'digestive' };
   humanGroup.add(gutMesh);
   organMeshes.gut = gutMesh;
 
@@ -22412,6 +22948,7 @@ function init3DHealthTwin() {
       new THREE.MeshStandardMaterial({ color: 0x6366f1, emissive: 0x4f46e5, emissiveIntensity: 0.8 })
     );
     vertMesh.position.set(0, 1.2 - s * 0.1, -0.05);
+    vertMesh.userData = { bodyPart: 'spine', organId: 'neurological' };
     spineGroup.add(vertMesh);
   }
   humanGroup.add(spineGroup);
@@ -22428,8 +22965,10 @@ function init3DHealthTwin() {
   });
   const quadL = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.36, 12), muscleMat);
   quadL.position.set(-0.13, 0.02, 0.02);
+  quadL.userData = { bodyPart: 'muscles', organId: 'musculoskeletal' };
   const quadR = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.36, 12), muscleMat);
   quadR.position.set(0.13, 0.02, 0.02);
+  quadR.userData = { bodyPart: 'muscles', organId: 'musculoskeletal' };
   muscleGroup.add(quadL);
   muscleGroup.add(quadR);
   humanGroup.add(muscleGroup);
@@ -22480,19 +23019,79 @@ function init3DHealthTwin() {
     const intersects = raycaster.intersectObjects(humanGroup.children, true);
     if (intersects.length > 0) {
       const hit = intersects[0];
-      const hitY = hit.point.y;
-      if (hitY > 1.25) {
-        if (twinThreeState.activeCompanion === 'alex') triggerTwinTopic('stress');
-        else focusTwinRegion('brain');
-      } else if (hitY > 0.8) {
-        if (twinThreeState.activeCompanion === 'alex') triggerTwinTopic('breathing');
-        else triggerTwinTopic('heart_rate');
-      } else if (hitY > 0.4) {
-        triggerTwinTopic('nutrition');
-      } else {
-        triggerTwinTopic('activity');
+      let partKey = hit.object?.userData?.bodyPart;
+      
+      // If direct mesh doesn't have userData, deduce from 3D hit point coordinates
+      if (!partKey) {
+        const hitY = hit.point.y;
+        const hitX = Math.abs(hit.point.x);
+        if (hitY > 1.25) {
+          partKey = 'brain';
+        } else if (hitY > 0.78) {
+          if (hitX > 0.07) partKey = 'lungs';
+          else partKey = 'heart';
+        } else if (hitY > 0.38) {
+          partKey = 'gut';
+        } else if (hitY > 0.08) {
+          partKey = 'spine';
+        } else {
+          partKey = 'muscles';
+        }
+      }
+
+      if (typeof select3DBodyPart === 'function') {
+        select3DBodyPart(partKey);
       }
     }
+  });
+
+  // Cursor hover pointer feedback and real-time hover tooltip when hovering body parts
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(humanGroup.children, true);
+    const hoverTip = document.getElementById('twin3DHoverTooltip');
+
+    if (intersects.length > 0) {
+      canvas.style.cursor = 'pointer';
+      const hit = intersects[0];
+      let partKey = hit.object?.userData?.bodyPart;
+      if (!partKey) {
+        const hitY = hit.point.y;
+        const hitX = Math.abs(hit.point.x);
+        if (hitY > 1.25) partKey = 'brain';
+        else if (hitY > 0.78) partKey = (hitX > 0.07) ? 'lungs' : 'heart';
+        else if (hitY > 0.38) partKey = 'gut';
+        else if (hitY > 0.08) partKey = 'spine';
+        else partKey = 'muscles';
+      }
+
+      if (hoverTip && partKey) {
+        const data = TARGETED_TWIN_INSIGHTS[partKey] || TARGETED_TWIN_INSIGHTS.heart;
+        const iconEl = document.getElementById('twinHoverIcon');
+        const labelEl = document.getElementById('twinHoverLabel');
+        const metricEl = document.getElementById('twinHoverMetric');
+        if (iconEl) iconEl.textContent = data.icon;
+        if (labelEl) labelEl.textContent = data.title.split('&')[0].split('•')[0].trim();
+        if (metricEl && data.biomarkers && data.biomarkers[0]) {
+          metricEl.textContent = data.biomarkers[0].val;
+        }
+        hoverTip.style.display = 'block';
+        hoverTip.style.left = `${e.clientX - rect.left + 14}px`;
+        hoverTip.style.top = `${e.clientY - rect.top - 20}px`;
+      }
+    } else {
+      canvas.style.cursor = 'default';
+      if (hoverTip) hoverTip.style.display = 'none';
+    }
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    const hoverTip = document.getElementById('twin3DHoverTooltip');
+    if (hoverTip) hoverTip.style.display = 'none';
   });
 
   // Responsive stage resizing
@@ -22565,12 +23164,20 @@ function init3DHealthTwin() {
     // Gentle floating motion
     humanGroup.position.y = -0.2 + 0.015 * Math.sin(time * 1.2);
 
+    // Dynamically update 3D interactive tooltip screen-projected coordinates
+    if (typeof updateTwinInteractiveTooltipPosition === 'function') {
+      updateTwinInteractiveTooltipPosition();
+    }
+
     renderer.render(scene, camera);
   }
   animate();
 
-  // Set initial topic
+  // Set initial topic and body part
   triggerTwinTopic('heart_rate');
+  if (typeof select3DBodyPart === 'function') {
+    select3DBodyPart('heart');
+  }
 }
 
 function setTwinCompanionMode(mode) {
@@ -22720,11 +23327,368 @@ function triggerTwinTopic(topicKey) {
 }
 
 function focusTwinRegion(regionKey) {
-  if (regionKey === 'brain') triggerTwinTopic('stress');
-  else if (regionKey === 'heart') triggerTwinTopic('heart_rate');
-  else if (regionKey === 'lungs') triggerTwinTopic('spo2');
-  else if (regionKey === 'gut') triggerTwinTopic('nutrition');
-  else if (regionKey === 'muscles') triggerTwinTopic('activity');
+  select3DBodyPart(regionKey);
+}
+
+// Targeted 3D Anatomical Body Parts Health Intelligence Matrix
+const TARGETED_TWIN_INSIGHTS = {
+  brain: {
+    icon: '🧠',
+    title: 'Neurological & Cranial Axis',
+    subtitle: 'Central Nervous System • Alpha Sync',
+    score: '91/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Optimal (91/100)',
+    organId: 'neurological',
+    cameraPos: { x: 0, y: 1.48, z: 1.6 },
+    cameraTarget: { x: 0, y: 1.46, z: 0 },
+    biomarkers: [
+      { label: 'Alpha Rhythm', val: '10.4 Hz' },
+      { label: 'Deep Sleep', val: '22%' },
+      { label: 'Cognitive Stress', val: 'Low (14/100)' },
+      { label: 'Circadian Sync', val: '94%' }
+    ],
+    insight: 'High cognitive clarity with low neuro-inflammatory burden. Bilateral EEG synchronization confirms optimal restorative mental reserves.',
+    recommendation: '30-minute evening screen wind-down preserves melatonin synthesis and REM cycle continuity.',
+    companionPrompt: 'Dr. Nambi, what do my cranial alpha rhythms and cognitive stress scores indicate today?'
+  },
+  heart: {
+    icon: '🫀',
+    title: 'Cardiovascular & Thoracic System',
+    subtitle: 'Myocardial Health • Arterial Compliance',
+    score: '94/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Optimal (94/100)',
+    organId: 'cardiovascular',
+    cameraPos: { x: 0, y: 0.96, z: 1.7 },
+    cameraTarget: { x: 0, y: 0.94, z: 0 },
+    biomarkers: [
+      { label: 'Resting Pulse', val: '78 BPM' },
+      { label: 'Blood Pressure', val: '118/76 mmHg' },
+      { label: 'HRV Index', val: '64 ms' },
+      { label: 'Cardiac Output', val: '5.2 L/min' }
+    ],
+    insight: 'Cardiovascular efficiency is robust. Arterial compliance and pulse wave velocity are well within optimal clinical thresholds. Normal sinus rhythm.',
+    recommendation: 'Maintain current 35 min zone-2 aerobic pacing 3x/week to preserve arterial elasticity and healthy HRV.',
+    companionPrompt: 'Dr. Nambi, can you review my latest blood pressure (118/76) and resting heart rate (78 BPM)?'
+  },
+  lungs: {
+    icon: '🫁',
+    title: 'Respiratory & Pulmonary Tree',
+    subtitle: 'Gas Exchange • Bronchial Ventilation',
+    score: '96/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Optimal (96/100)',
+    organId: 'respiratory',
+    cameraPos: { x: 0, y: 0.94, z: 1.7 },
+    cameraTarget: { x: 0, y: 0.93, z: 0 },
+    biomarkers: [
+      { label: 'SpO₂ Oxygen', val: '99%' },
+      { label: 'Respiration Rate', val: '14 bpm' },
+      { label: 'Peak Flow (PEF)', val: '520 L/min' },
+      { label: 'Airway Resistance', val: 'Nominal' }
+    ],
+    insight: 'Pulmonary diffusion capacity and alveolar gas exchange are excellent. Arterial oxygen saturation indicates clear bronchial ventilation.',
+    recommendation: 'Practice 5 minutes of 4-4 diaphragmatic breathing twice daily to optimize vagal tone and lung volume reserve.',
+    companionPrompt: 'Dr. Nambi, how does my 99% SpO2 and respiration rate correlate with my cardio conditioning?'
+  },
+  gut: {
+    icon: '🥗',
+    title: 'Metabolic Core & Digestive Tract',
+    subtitle: 'Glycemic Regulation • Enteric Barrier',
+    score: '89/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Normal (89/100)',
+    organId: 'digestive',
+    cameraPos: { x: 0, y: 0.58, z: 1.7 },
+    cameraTarget: { x: 0, y: 0.58, z: 0 },
+    biomarkers: [
+      { label: 'Fasting Glucose', val: '94 mg/dL' },
+      { label: 'Hydration Intake', val: '2.4 L / 2.5 L' },
+      { label: 'Gut Motility', val: 'Balanced' },
+      { label: 'Fiber Reserve', val: '28g / day' }
+    ],
+    insight: 'Glycemic homeostasis is steady with low postprandial excursions. Enteric microbiome markers reflect balanced microbial diversity and barrier integrity.',
+    recommendation: 'Incorporate 1 extra glass of water post-exercise and fermented prebiotics to maximize gut flora resilience.',
+    companionPrompt: 'Dr. Nambi, please evaluate my metabolic core vitals, fasting glucose (94 mg/dL) and daily hydration.'
+  },
+  spine: {
+    icon: '🦴',
+    title: 'Spinal Column & Somatic Axis',
+    subtitle: 'Posture Symmetry • Neuromuscular Axis',
+    score: '92/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Optimal (92/100)',
+    organId: 'neurological',
+    cameraPos: { x: 0.8, y: 0.82, z: 1.9 },
+    cameraTarget: { x: 0, y: 0.8, z: 0 },
+    biomarkers: [
+      { label: 'Cervical Curve', val: 'Nominal (34°)' },
+      { label: 'Nerve Velocity', val: '62 m/s' },
+      { label: 'Core Posture Load', val: 'Balanced' },
+      { label: 'Lumbar Strain', val: 'Minimal' }
+    ],
+    insight: 'Axial musculoskeletal alignment exhibits balanced lordosis and symmetrical lateral weight distribution. Neuromuscular transmission is rapid.',
+    recommendation: 'Take 2-minute posture micro-breaks every 50 minutes of seated desk work to unload thoracic discs.',
+    companionPrompt: 'Dr. Nambi, how is my spinal posture alignment and neuromuscular strain profile looking?'
+  },
+  muscles: {
+    icon: '🏃',
+    title: 'Musculoskeletal & Mobility Grid',
+    subtitle: 'Articular Kinetics • Glycogen Reserves',
+    score: '93/100',
+    scoreBadgeClass: 'optimal',
+    scoreText: 'Optimal (93/100)',
+    organId: 'musculoskeletal',
+    cameraPos: { x: 0, y: 0.15, z: 2.2 },
+    cameraTarget: { x: 0, y: 0.1, z: 0 },
+    biomarkers: [
+      { label: 'Daily Steps', val: '8,450 steps' },
+      { label: 'Active Burn', val: '460 kcal' },
+      { label: 'Joint Mobility', val: 'Full ROM' },
+      { label: 'Muscle Recovery', val: 'Complete' }
+    ],
+    insight: 'Articular flexibility and bilateral kinetic symmetry are at 99.4%. Adequate glycogen replenishment and low delayed-onset muscular stiffness.',
+    recommendation: 'Dynamic hip flexor and hamstring stretches post-walk ensure continued joint capsule lubrication.',
+    companionPrompt: 'Dr. Nambi, what is your assessment of my daily activity (8,450 steps) and musculoskeletal endurance?'
+  }
+};
+
+let currentSelectedTwinPart = 'heart';
+
+function select3DBodyPart(partKey) {
+  if (!partKey) return;
+  currentSelectedTwinPart = partKey;
+
+  const data = TARGETED_TWIN_INSIGHTS[partKey] || TARGETED_TWIN_INSIGHTS.heart;
+
+  // 1. Highlight organ meshes in 3D scene
+  if (twinThreeState.organMeshes) {
+    Object.keys(twinThreeState.organMeshes).forEach(k => {
+      const mesh = twinThreeState.organMeshes[k];
+      if (!mesh) return;
+      const isTarget = (k === partKey);
+      if (mesh.isMesh && mesh.material) {
+        mesh.material.emissiveIntensity = isTarget ? 1.6 : 0.45;
+      } else if (mesh.isGroup) {
+        mesh.children.forEach(c => {
+          if (c.material && c.material.emissive) {
+            c.material.emissiveIntensity = isTarget ? 1.6 : 0.45;
+          }
+        });
+      }
+    });
+  }
+
+  // 2. Smoothly steer 3D camera to target organ position
+  if (data.cameraPos) {
+    twinThreeState.targetCamPos = data.cameraPos;
+  }
+  if (data.cameraTarget) {
+    twinThreeState.targetCamLook = data.cameraTarget;
+  }
+
+  // 3. Update top selector toolbar pills
+  document.querySelectorAll('.twin-body-part-btn').forEach(btn => {
+    if (btn.getAttribute('data-part') === partKey) {
+      btn.classList.add('active');
+      btn.style.background = 'rgba(45,212,191,0.28)';
+      btn.style.borderColor = '#2dd4bf';
+      btn.style.color = '#ffffff';
+    } else if (btn.getAttribute('data-part')) {
+      btn.classList.remove('active');
+      btn.style.background = 'rgba(255,255,255,0.06)';
+      btn.style.borderColor = 'rgba(255,255,255,0.15)';
+      btn.style.color = '#cbd5e1';
+    }
+  });
+
+  // 4. Update the Floating Targeted Health Insights HUD panel
+  renderTargetedTwinInsight(data);
+
+  // 5. Synchronize with the Biological Organ Systems Health Matrix
+  if (typeof selectOrgan === 'function' && data.organId) {
+    selectOrgan(data.organId);
+  }
+
+  // 6. Display 3D Anatomical Interactive Tooltip with brief health statistics
+  render3DInteractiveTooltip(partKey);
+}
+
+let twinTooltipDocked = false;
+
+function render3DInteractiveTooltip(partKey) {
+  const tooltip = document.getElementById('twin3DInteractiveTooltip');
+  if (!tooltip) return;
+
+  const data = TARGETED_TWIN_INSIGHTS[partKey] || TARGETED_TWIN_INSIGHTS.heart;
+
+  const iconEl = document.getElementById('twinTipIcon');
+  const titleEl = document.getElementById('twinTipTitle');
+  const subEl = document.getElementById('twinTipSubtitle');
+  const badgeEl = document.getElementById('twinTipScoreBadge');
+  const gridEl = document.getElementById('twinTipStatsGrid');
+  const summaryEl = document.getElementById('twinTipSummary');
+
+  if (iconEl) iconEl.textContent = data.icon;
+  if (titleEl) titleEl.textContent = data.title;
+  if (subEl) subEl.textContent = data.subtitle;
+  if (badgeEl) badgeEl.textContent = data.scoreText;
+  if (summaryEl) summaryEl.textContent = data.insight;
+
+  // Build the 4 brief health statistics tiles
+  if (gridEl && Array.isArray(data.biomarkers)) {
+    gridEl.innerHTML = data.biomarkers.slice(0, 4).map((b, idx) => `
+      <div class="twin-tooltip-stat-tile" id="twinTipStatTile_${idx}">
+        <span class="twin-tooltip-stat-label">${typeof escapeHtml === 'function' ? escapeHtml(b.label) : b.label}</span>
+        <span class="twin-tooltip-stat-val ${idx === 0 ? 'accent' : ''}">${typeof escapeHtml === 'function' ? escapeHtml(b.val) : b.val}</span>
+      </div>
+    `).join('');
+  }
+
+  // Update quick parts mini chips active class
+  document.querySelectorAll('.twin-tooltip-mini-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.getAttribute('data-tip-part') === partKey);
+  });
+
+  tooltip.style.display = 'block';
+  tooltip.style.opacity = '1';
+
+  // Trigger position update immediately
+  updateTwinInteractiveTooltipPosition();
+}
+
+function togglePinTwinTooltip() {
+  const tooltip = document.getElementById('twin3DInteractiveTooltip');
+  const btn = document.getElementById('twinTipPinBtn');
+  if (!tooltip) return;
+
+  twinTooltipDocked = !twinTooltipDocked;
+  if (twinTooltipDocked) {
+    tooltip.classList.add('docked');
+    if (btn) {
+      btn.classList.add('active');
+      btn.title = 'Unpin / Follow 3D Organ in Space';
+    }
+  } else {
+    tooltip.classList.remove('docked');
+    if (btn) {
+      btn.classList.remove('active');
+      btn.title = 'Pin / Dock Tooltip in Corner';
+    }
+    updateTwinInteractiveTooltipPosition();
+  }
+}
+
+function closeTwinInteractiveTooltip() {
+  const tooltip = document.getElementById('twin3DInteractiveTooltip');
+  if (tooltip) {
+    tooltip.style.opacity = '0';
+    setTimeout(() => {
+      tooltip.style.display = 'none';
+    }, 180);
+  }
+}
+
+function updateTwinInteractiveTooltipPosition() {
+  const tooltip = document.getElementById('twin3DInteractiveTooltip');
+  const stage = document.getElementById('twin3DStageContainer');
+  if (!tooltip || !stage || twinTooltipDocked || tooltip.style.display === 'none') return;
+  if (!twinThreeState.camera || !twinThreeState.initialized) return;
+
+  // Compute 3D world coordinates of currently selected body part
+  const worldPos = new THREE.Vector3();
+  let found = false;
+
+  if (twinThreeState.organMeshes && twinThreeState.organMeshes[currentSelectedTwinPart]) {
+    const mesh = twinThreeState.organMeshes[currentSelectedTwinPart];
+    mesh.getWorldPosition(worldPos);
+    found = true;
+  }
+
+  if (!found) {
+    const data = TARGETED_TWIN_INSIGHTS[currentSelectedTwinPart];
+    if (data && data.cameraTarget) {
+      worldPos.set(data.cameraTarget.x, data.cameraTarget.y, data.cameraTarget.z);
+    } else {
+      worldPos.set(0, 0.8, 0);
+    }
+  }
+
+  // Project 3D vector to camera screen NDC (-1 to +1)
+  worldPos.project(twinThreeState.camera);
+
+  // If organ is behind the camera (z > 1), keep tooltip softly faded
+  if (worldPos.z > 1) {
+    tooltip.style.opacity = '0.2';
+    return;
+  } else {
+    tooltip.style.opacity = '1';
+  }
+
+  const stageW = stage.clientWidth || 800;
+  const stageH = stage.clientHeight || 540;
+
+  let screenX = (worldPos.x * 0.5 + 0.5) * stageW;
+  let screenY = (-(worldPos.y * 0.5) + 0.5) * stageH;
+
+  // Clamp screen coordinates so tooltip remains fully visible inside the stage container
+  const halfTipW = 165;
+  const tipH = 260;
+  screenX = Math.max(halfTipW + 10, Math.min(stageW - halfTipW - 10, screenX));
+  screenY = Math.max(tipH + 20, Math.min(stageH - 20, screenY));
+
+  tooltip.style.left = `${screenX}px`;
+  tooltip.style.top = `${screenY}px`;
+}
+
+function renderTargetedTwinInsight(data) {
+  const hud = document.getElementById('twinTargetedInsightHud');
+  if (!hud) return;
+  hud.style.display = 'flex';
+
+  const iconEl = document.getElementById('twinInsightIcon');
+  const titleEl = document.getElementById('twinInsightTitle');
+  const subEl = document.getElementById('twinInsightSubtitle');
+  const scoreBadge = document.getElementById('twinInsightScoreBadge');
+  const bioStrip = document.getElementById('twinInsightBiomarkersStrip');
+  const bodyEl = document.getElementById('twinInsightBody');
+  const tipEl = document.getElementById('twinInsightTipText');
+
+  if (iconEl) iconEl.textContent = data.icon;
+  if (titleEl) titleEl.textContent = data.title;
+  if (subEl) subEl.textContent = data.subtitle;
+  if (scoreBadge) scoreBadge.textContent = data.scoreText;
+  if (bodyEl) bodyEl.textContent = data.insight;
+  if (tipEl) tipEl.textContent = data.recommendation;
+
+  if (bioStrip && Array.isArray(data.biomarkers)) {
+    bioStrip.innerHTML = data.biomarkers.map((b, idx) => `
+      <span style="color:#cbd5e1;">${escapeHtml(b.label)}: <b style="color:#ffffff;">${escapeHtml(b.val)}</b></span>
+      ${idx < data.biomarkers.length - 1 ? '<span style="color:#64748b;">·</span>' : ''}
+    `).join('');
+  }
+}
+
+function consultTargetedTwinSpecialist() {
+  const data = TARGETED_TWIN_INSIGHTS[currentSelectedTwinPart] || TARGETED_TWIN_INSIGHTS.heart;
+  
+  // Switch to Dr. Nambi / Companion screen
+  switchMainView('consult');
+  
+  // Pre-fill question into consult input
+  const input = document.getElementById('consultInput') || document.getElementById('chatInput');
+  if (input) {
+    input.value = data.companionPrompt || `Dr. Nambi, please assess my ${data.title} metrics.`;
+    input.focus();
+  }
+}
+
+function scrollToOrganDeepDive() {
+  const matrix = document.getElementById('organDeepDiveCard') || document.getElementById('twinBiologicalMatrixSection') || document.getElementById('twinOrgansGrid');
+  if (matrix) {
+    matrix.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 }
 
 function resetTwinCamera(preset = 'reset') {
@@ -29518,10 +30482,216 @@ function renderJanAushadhiMedicines(medicines) {
 }
 
 function debounceJaSearch() {
+  handleJanAushadhiSearchInput();
+}
+
+function handleJanAushadhiSearchInput() {
+  const input = document.getElementById('jaSearchInput');
+  const query = (input?.value || '').trim();
+  const clearBtn = document.getElementById('btnClearJaSearch');
+  if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
   clearTimeout(jaSearchDebounceTimer);
   jaSearchDebounceTimer = setTimeout(() => {
+    if (query.length >= 2) {
+      executeJanAushadhiBrandSearch(query);
+    } else if (query.length === 0) {
+      const spotlight = document.getElementById('jaInstantMatchSpotlight');
+      if (spotlight) spotlight.style.display = 'none';
+      applyJaFilters();
+    } else {
+      applyJaFilters();
+    }
+  }, 220);
+}
+
+function clearJanAushadhiSearch() {
+  const input = document.getElementById('jaSearchInput');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('btnClearJaSearch');
+  if (clearBtn) clearBtn.style.display = 'none';
+  const spotlight = document.getElementById('jaInstantMatchSpotlight');
+  if (spotlight) spotlight.style.display = 'none';
+  applyJaFilters();
+}
+
+function quickSelectBrandAlternative(brandName) {
+  const input = document.getElementById('jaSearchInput');
+  if (input) input.value = brandName;
+  executeJanAushadhiBrandSearch(brandName);
+}
+
+async function executeJanAushadhiBrandSearch(brandQuery) {
+  const input = document.getElementById('jaSearchInput');
+  const query = (brandQuery !== undefined ? brandQuery : (input?.value || '')).trim();
+  if (!query) {
     applyJaFilters();
-  }, 180);
+    return;
+  }
+  if (input && input.value !== query) {
+    input.value = query;
+  }
+  const clearBtn = document.getElementById('btnClearJaSearch');
+  if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
+  // 1. Try local cache matching
+  let localMatch = null;
+  const qLower = query.toLowerCase();
+  if (Array.isArray(jaMedicinesCache) && jaMedicinesCache.length > 0) {
+    localMatch = jaMedicinesCache.find(m => 
+      m.popularBrands.some(b => {
+        const bl = b.toLowerCase();
+        return bl === qLower || bl.startsWith(qLower) || qLower.startsWith(bl) || bl.includes(qLower) || qLower.includes(bl);
+      })
+    ) || jaMedicinesCache.find(m => 
+      m.genericName.toLowerCase().includes(qLower) || m.saltComposition.toLowerCase().includes(qLower)
+    );
+  }
+
+  // 2. Fetch server-side suggest-alternative endpoint for complete bioequivalent database lookup
+  let serverAlternative = null;
+  try {
+    const res = await fetch(`/api/jan-aushadhi/suggest-alternative?brand=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    if (data.success && data.found && data.medicine) {
+      serverAlternative = data.medicine;
+    }
+  } catch (err) {
+    console.warn('Error querying Jan Aushadhi suggest alternative:', err);
+  }
+
+  const bestMatch = serverAlternative || localMatch;
+  renderJanAushadhiSpotlight(query, bestMatch);
+
+  // 3. Filter catalog grid
+  applyJaFilters();
+}
+
+function renderJanAushadhiSpotlight(searchedBrand, med) {
+  const container = document.getElementById('jaInstantMatchSpotlight');
+  if (!container) return;
+
+  if (!med) {
+    container.style.display = 'block';
+    container.innerHTML = `
+      <div style="background:#fffbeb;border:1.5px dashed #f59e0b;border-radius:12px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;animation:fadeIn 0.2s ease;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span style="font-size:28px;">🔎</span>
+          <div>
+            <div style="font-size:14.5px;font-weight:800;color:#92400e;">No Direct Jan Aushadhi Match for "${escapeHtml(searchedBrand)}"</div>
+            <div style="font-size:12.5px;color:#b45309;margin-top:2px;">
+              Try searching by the chemical salt (e.g. Paracetamol, Amoxicillin, Metformin, Pantoprazole) or browse therapeutic categories below.
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-sm btn-secondary" onclick="clearJanAushadhiSearch()" style="border-radius:8px;font-size:12px;cursor:pointer;">
+          View All Generics
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  // Determine matched brand name & calculate savings
+  const brandList = Array.isArray(med.popularBrands) ? med.popularBrands : [];
+  const matchedBrand = brandList.find(b => b.toLowerCase().includes(searchedBrand.toLowerCase())) || brandList[0] || searchedBrand;
+  const savingsAmt = med.savingsAmountINR || (med.brandedAvgPriceINR - med.janAushadhiPriceINR);
+  const savingsPct = med.savingsPercent || Math.round((savingsAmt / med.brandedAvgPriceINR) * 100);
+  const annualSavings = Math.round(savingsAmt * 12);
+
+  container.style.display = 'block';
+  container.innerHTML = `
+    <div style="background:#ffffff;border:2px solid #0d9488;border-radius:14px;padding:20px;box-shadow:0 8px 24px -4px rgba(13,148,136,0.18);animation:fadeIn 0.25s ease;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;border-bottom:1px solid #ccfbf1;padding-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span class="pill" style="background:#0d9488;color:#ffffff;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;padding:4px 10px;border-radius:20px;">
+            🎯 Verified Bioequivalent Generic Match
+          </span>
+          <span style="font-size:12px;color:#0f766e;font-weight:700;">PMBJP Code: <code style="font-weight:800;color:#0d9488;">${escapeHtml(med.pmbjpCode || 'PMBJP-N/A')}</code></span>
+        </div>
+        <span class="pill" style="background:#dcfce7;color:#15803d;font-weight:800;font-size:13px;padding:4px 12px;border:1px solid #bbf7d0;border-radius:20px;">
+          Save ${savingsPct}% (₹${savingsAmt} per pack)
+        </span>
+      </div>
+
+      <!-- SIDE BY SIDE COMPARISON COLUMNS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;align-items:center;margin-bottom:16px;">
+        <!-- Left: Prescribed Brand -->
+        <div style="background:#fef2f2;border:1.5px solid #fecaca;border-radius:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:11px;font-weight:800;color:#991b1b;text-transform:uppercase;letter-spacing:0.5px;">Prescribed Brand-Name</span>
+            <span style="font-size:11px;background:#fee2e2;color:#b91c1c;padding:2px 7px;border-radius:6px;font-weight:700;">High Retail MRP</span>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:#7f1d1d;margin-bottom:2px;">
+            ${escapeHtml(matchedBrand)}
+          </div>
+          <div style="font-size:12px;color:#991b1b;margin-bottom:10px;">
+            Standard Private Pharmacy Packaging
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;background:#ffffff;padding:8px 12px;border-radius:8px;border:1px solid #fca5a5;">
+            <span style="font-size:12px;color:#64748b;">Market Average Price:</span>
+            <span style="font-size:20px;font-weight:800;color:#dc2626;text-decoration:line-through;">₹${med.brandedAvgPriceINR}</span>
+          </div>
+        </div>
+
+        <!-- Center: Savings Callout Divider -->
+        <div style="text-align:center;padding:8px 0;">
+          <div style="font-size:24px;line-height:1;">⚡ ➡️ 💸</div>
+          <div style="font-size:16px;font-weight:900;color:#16a34a;margin-top:4px;">
+            You Pocket ₹${savingsAmt}
+          </div>
+          <div style="font-size:11.5px;color:#0f766e;font-weight:700;">
+            ₹${annualSavings} saved / year (1 pack/mo)
+          </div>
+        </div>
+
+        <!-- Right: Jan Aushadhi Government Alternative -->
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:16px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+            <span style="font-size:11px;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:0.5px;">PM Jan Aushadhi Alternative</span>
+            <span style="font-size:11px;background:#dcfce7;color:#15803d;padding:2px 7px;border-radius:6px;font-weight:800;">Govt Capped Rate</span>
+          </div>
+          <div style="font-size:18px;font-weight:800;color:#14532d;margin-bottom:2px;">
+            ${escapeHtml(med.genericName)}
+          </div>
+          <div style="font-size:12px;color:#166534;margin-bottom:10px;">
+            Pack: <b>${escapeHtml(med.packSize || 'Strip of 10')}</b> · Salt: <b>${escapeHtml(med.saltComposition)}</b>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;background:#ffffff;padding:8px 12px;border-radius:8px;border:1px solid #86efac;">
+            <span style="font-size:12px;color:#166534;font-weight:700;">Jan Aushadhi Fixed Price:</span>
+            <span style="font-size:24px;font-weight:900;color:#15803d;">₹${med.janAushadhiPriceINR}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- BIOEQUIVALENCE & SAFETY BANNER -->
+      <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px;">
+        <div style="display:flex;align-items:center;gap:8px;color:#334155;">
+          <span style="font-size:18px;">🛡️</span>
+          <span><b>Quality Benchmark:</b> ${escapeHtml(med.cdscoStandards || 'WHO-GMP & IP Certified Bioequivalent')} · 100% Identical Therapeutic Efficacy</span>
+        </div>
+        <div style="color:#0369a1;font-weight:700;">
+          Indications: ${escapeHtml(med.indications || 'Therapeutic treatment')}
+        </div>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" class="btn" onclick="addGenericToActiveRx('${med.id}')" style="background:#0d9488;color:white;font-weight:750;font-size:12.5px;padding:8px 16px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <span>💊</span> <span>+ Add Generic to My Active Rx</span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="locateKendraForMedicine('${escapeHtml(med.genericName)}')" style="font-weight:750;font-size:12.5px;padding:8px 16px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <span>📍</span> <span>Find Nearest Kendra Stocking This</span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="copyGenericRxSlip('${escapeHtml(med.genericName)}', '${escapeHtml(med.saltComposition)}', '${escapeHtml(matchedBrand)}', ${med.brandedAvgPriceINR}, ${med.janAushadhiPriceINR})" style="font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <span>📋</span> <span>Copy Doctor Substitution Slip</span>
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="switchJaSubView('calculator');addMedicineToSavingsCalculator('${med.id}')" style="font-weight:700;font-size:12.5px;padding:8px 14px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+          <span>🧮</span> <span>Add to Family Savings Calculator</span>
+        </button>
+      </div>
+    </div>
+  `;
 }
 
 function filterJaByCategory(cat, btn) {
@@ -29563,6 +30733,27 @@ function applyJaFilters() {
   }
 
   renderJanAushadhiMedicines(filtered);
+}
+
+function addMedicineToSavingsCalculator(medId) {
+  const med = jaMedicinesCache.find(m => m.id === medId);
+  if (!med) return;
+
+  const existing = familyCalculatorItems.find(i => i.id === medId);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    familyCalculatorItems.unshift({
+      id: med.id,
+      name: `${med.genericName} (${med.popularBrands[0] || 'Brand'})`,
+      brandPrice: med.brandedAvgPriceINR,
+      genPrice: med.janAushadhiPriceINR,
+      qty: 1
+    });
+  }
+
+  initializeFamilySavingsCalculator();
+  toast(`Added ${med.genericName} to Family Savings Calculator.`);
 }
 
 function addGenericToActiveRx(medId) {
@@ -38298,8 +39489,8 @@ function openFeedbackModal(defaultCategory = 'clinical_accuracy') {
 
   // Pre-fill user name and email from localStorage or session
   try {
-    const savedName = localStorage.getItem('healthgpt_user_name') || localStorage.getItem('user_name') || 'Iqra Sultana';
-    const savedEmail = localStorage.getItem('healthgpt_user_email') || localStorage.getItem('user_email') || 'iqrasultana0007@gmail.com';
+    const savedName = localStorage.getItem('healthgpt_user_name') || localStorage.getItem('user_name') || 'demo';
+    const savedEmail = localStorage.getItem('healthgpt_user_email') || localStorage.getItem('user_email') || 'demo@gmail.com';
     const nameInput = document.getElementById('feedbackInputAuthorName');
     const emailInput = document.getElementById('feedbackInputAuthorEmail');
     if (nameInput && !nameInput.value) nameInput.value = savedName;
@@ -38452,8 +39643,8 @@ async function submitFeedbackForm(event) {
   const category = document.getElementById('feedbackInputCategory')?.value || 'clinical_accuracy';
   const title = document.getElementById('feedbackInputTitle')?.value.trim() || '';
   const recommendScore = document.getElementById('feedbackInputRecommend')?.value || 'yes';
-  const userName = document.getElementById('feedbackInputAuthorName')?.value.trim() || 'Iqra Sultana';
-  const userEmail = document.getElementById('feedbackInputAuthorEmail')?.value.trim() || 'iqrasultana0007@gmail.com';
+  const userName = document.getElementById('feedbackInputAuthorName')?.value.trim() || 'demo';
+  const userEmail = document.getElementById('feedbackInputAuthorEmail')?.value.trim() || 'demo@gmail.com';
   const userRole = document.getElementById('feedbackInputRole')?.value || 'Patient';
 
   const submitBtn = document.getElementById('btnSubmitFeedback');
@@ -39404,7 +40595,7 @@ window.calculatePcosRisk = function() {
    DASHBOARD CELEBRATORY FIRECRACKERS & TOAST ENGINE
    ========================================================= */
 function triggerDashboardFirecrackers() {
-  const userName = localStorage.getItem('healthgpt_user_name') || 'Iqra Sultana';
+  const userName = localStorage.getItem('healthgpt_user_name') || 'demo';
   showDashboardFirecrackerToast(userName);
 }
 
@@ -39771,7 +40962,7 @@ async function fetchEncryptedPersonalRecords() {
         const nameEl = document.getElementById('phrPatientName');
         const emailEl = document.getElementById('phrPatientEmail');
         const avatarEl = document.getElementById('phrAvatarText');
-        if (nameEl) nameEl.textContent = data.patient.name || 'Iqra Sultana';
+        if (nameEl) nameEl.textContent = data.patient.name || 'demo';
         if (emailEl) emailEl.textContent = `${data.patient.email} • Blood Group: ${data.patient.bloodGroup || 'O+'} • Age: ${data.patient.age || 28}`;
         if (avatarEl) avatarEl.textContent = (data.patient.name || 'IS').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
       }
@@ -39884,9 +41075,9 @@ async function loginWithSupabase(email, password, isDirect = false) {
       isTwinLocked = false;
       isPhrLocked = false;
       currentSupabaseUser = data.user || {
-        id: 'usr_iqra_01',
+        id: 'usr_demo_01',
         email: emailInput,
-        name: emailInput.includes('iqra') ? 'Iqra Sultana' : 'Verified Patient',
+        name: emailInput.includes('demo') ? 'demo' : (emailInput.includes('iqra') ? 'Iqra Sultana' : 'Verified Patient'),
         role: 'verified_patient',
         blood_group: 'O+',
         age: 28,
@@ -40104,7 +41295,7 @@ function updateSupabaseAuthUI() {
 
   if (currentSupabaseUser) {
     if (phrAvatar) phrAvatar.textContent = currentSupabaseUser.name ? currentSupabaseUser.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'IS';
-    if (phrName) phrName.textContent = currentSupabaseUser.name || 'Iqra Sultana';
+    if (phrName) phrName.textContent = currentSupabaseUser.name || 'demo';
     if (phrEmail) phrEmail.textContent = `${currentSupabaseUser.email} • Blood Group: ${currentSupabaseUser.blood_group || 'O+'} • Age: ${currentSupabaseUser.age || 28}`;
   }
 
@@ -40752,7 +41943,7 @@ function checkNeuralArrivalTransition() {
       sessionStorage.removeItem('healthgpt_transition_source');
       const banner = document.getElementById('neuralArrivalToastBanner');
       const bannerText = document.getElementById('neuralArrivalBannerText');
-      const userName = localStorage.getItem('healthgpt_user_name') || 'Iqra Sultana';
+      const userName = localStorage.getItem('healthgpt_user_name') || 'demo';
       if (banner && bannerText) {
         bannerText.textContent = `⚡ Neural Biometrics Synced · Welcome to Clinical Dashboard, ${userName}`;
         banner.style.display = 'flex';
@@ -41450,7 +42641,7 @@ function confirmEndTelehealthCall() {
       <div id="authPane_signin">
         <div style="margin-bottom:14px;">
           <label style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px;">Patient / Clinical Email</label>
-          <input type="email" id="supabaseLoginEmail" value="iqrasultana0007@gmail.com" placeholder="patient@example.com" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #cbd5e1;font-size:13.5px;outline:none;" />
+          <input type="email" id="supabaseLoginEmail" value="demo@gmail.com" placeholder="patient@example.com" style="width:100%;padding:10px 12px;border-radius:10px;border:1.5px solid #cbd5e1;font-size:13.5px;outline:none;" />
         </div>
         <div style="margin-bottom:18px;">
           <label style="display:block;font-size:12.5px;font-weight:700;color:#334155;margin-bottom:6px;">Password</label>
@@ -41499,16 +42690,16 @@ function confirmEndTelehealthCall() {
         </button>
       </div>
 
-      <!-- PANE 3: 1-CLICK VERIFIED PATIENT (IQRA SULTANA) -->
+      <!-- PANE 3: 1-CLICK VERIFIED PATIENT (DEMO) -->
       <div id="authPane_quickPatient" style="display:none;">
         <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:16px;margin-bottom:16px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
             <div style="width:44px;height:44px;border-radius:50%;background:#0284c7;color:white;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;">
-              IS
+              DM
             </div>
             <div>
-              <div style="font-size:16px;font-weight:800;color:#0f172a;">Iqra Sultana</div>
-              <div style="font-size:12.5px;color:#64748b;">iqrasultana0007@gmail.com</div>
+              <div style="font-size:16px;font-weight:800;color:#0f172a;">demo</div>
+              <div style="font-size:12.5px;color:#64748b;">demo@gmail.com</div>
             </div>
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;background:white;padding:10px;border-radius:8px;border:1px solid #e2e8f0;">
@@ -41519,8 +42710,8 @@ function confirmEndTelehealthCall() {
           </div>
         </div>
 
-        <button type="button" onclick="loginWithSupabase('iqrasultana0007@gmail.com','PatientPass2026!',true)" style="width:100%;padding:11px;background:#10b981;color:white;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
-          <span>🔑 1-Click Access as Iqra Sultana</span>
+        <button type="button" onclick="loginWithSupabase('demo@gmail.com','PatientPass2026!',true)" style="width:100%;padding:11px;background:#10b981;color:white;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px;">
+          <span>🔑 1-Click Access as demo</span>
         </button>
 
         <button type="button" onclick="logoutFromSupabase()" style="width:100%;padding:9px;background:#f8fafc;color:#ef4444;border:1.5px solid #fecdd3;border-radius:10px;font-weight:700;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;">

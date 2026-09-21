@@ -511,13 +511,26 @@ users.push({
   createdAt: new Date().toISOString(),
 });
 
-// Seed primary patient user (Iqra Sultana)
-const iqraPasswordHash = bcrypt.hashSync('password123', 10);
+// Seed primary patient user (Demo Patient)
+const patientPasswordHash = bcrypt.hashSync('password123', 10);
 users.push({
   id: nextUserId++,
-  name: 'Iqra Sultana',
-  email: 'iqrasultana0007@gmail.com',
-  passwordHash: iqraPasswordHash,
+  name: 'Demo Patient',
+  email: 'demo@healthgpt.org',
+  passwordHash: patientPasswordHash,
+  role: 'user',
+  age: 26,
+  gender: 'Female',
+  isActive: true,
+  createdAt: new Date().toISOString(),
+});
+
+// Also seed demo@gmail.com for flexible patient login
+users.push({
+  id: nextUserId++,
+  name: 'Demo Patient',
+  email: 'demo@gmail.com',
+  passwordHash: demoPasswordHash,
   role: 'user',
   age: 26,
   gender: 'Female',
@@ -8599,8 +8612,8 @@ const feedbackStore: FeedbackItem[] = [
     categoryLabel: 'Dr. Nambi & Alex Voice Companion',
     title: 'Dr. Nambi bedside voice is remarkably calming',
     comment: 'The endless voice conversation with Dr. Nambi answered my questions about hypertension medications without rush. The speed controls (1.15x) are also very convenient!',
-    userName: 'Iqra Sultana',
-    userEmail: 'iqrasultana0007@gmail.com',
+    userName: 'Demo Patient',
+    userEmail: 'demo@gmail.com',
     userRole: 'Patient',
     recommendScore: 'yes',
     platform: 'Web Desktop',
@@ -9073,7 +9086,7 @@ app.post('/api/supabase/auth/register', async (req: Request, res: Response) => {
 
 app.post('/api/supabase/auth/login', async (req: Request, res: Response) => {
   const { email, password, isDemoOneClick } = req.body;
-  const targetEmail = String(email || 'iqrasultana0007@gmail.com').trim().toLowerCase();
+  const targetEmail = String(email || 'demo@healthgpt.org').trim().toLowerCase();
 
   try {
     let authUser = users.find(u => u.email.toLowerCase() === targetEmail);
@@ -9092,7 +9105,7 @@ app.post('/api/supabase/auth/login', async (req: Request, res: Response) => {
         const u = data[0];
         authUser = {
           id: Number(u.id) || 1,
-          name: u.name || 'Iqra Sultana',
+          name: u.name || 'Demo Patient',
           email: u.email,
           passwordHash: u.password_hash || '',
           age: u.age || 28,
@@ -9102,7 +9115,7 @@ app.post('/api/supabase/auth/login', async (req: Request, res: Response) => {
         };
         users.push(authUser);
       } else {
-        const fallbackName = targetEmail.includes('iqra') ? 'Iqra Sultana' : (targetEmail.split('@')[0] || 'Verified Patient');
+        const fallbackName = targetEmail.includes('demo') ? 'Demo Patient' : (targetEmail.includes('iqra') ? 'Iqra Sultana' : (targetEmail.split('@')[0] || 'Verified Patient'));
         authUser = {
           id: 1,
           name: fallbackName,
@@ -9201,8 +9214,8 @@ app.get('/api/supabase/auth/session', (req: Request, res: Response) => {
     const decoded: any = jwt.verify(token, JWT_SECRET);
     const user = users.find(u => u.id === decoded.userId) || {
       id: decoded.userId || 1,
-      name: decoded.name || 'Iqra Sultana',
-      email: decoded.email || 'iqrasultana0007@gmail.com',
+      name: decoded.name || 'Demo Patient',
+      email: decoded.email || 'demo@healthgpt.org',
       age: 28,
       gender: 'female'
     };
