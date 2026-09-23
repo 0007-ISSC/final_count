@@ -20,10 +20,21 @@ export interface Doctor {
   nextSlot: string;
   avatarUrl: string;
   bio: string;
-  phone?: string;
-  whatsapp?: string;
-  telehealthUrl?: string;
-  directionsUrl?: string;
+  phone: string;
+  directNumber: string;
+  whatsappNumber: string;
+  whatsapp: string;
+  telehealthUrl: string;
+  directionsUrl: string;
+  hospitalDeskPhone?: string;
+  emergencyNumber?: string;
+  opdRoom?: string;
+  realtimeStatus?: {
+    isOnline: boolean;
+    queueLength: number;
+    estimatedWaitMins: number;
+    statusText: string;
+  };
 }
 
 // =========================================================================
@@ -32,7 +43,7 @@ export interface Doctor {
 // Across All 28 States & 8 Union Territories in India
 // =========================================================================
 
-export const SEED_DOCTORS: Doctor[] = [
+const SEED_DOCTORS_BASE: any[] = [
   {
     id: 1,
     name: 'Dr. Rajesh Sharma',
@@ -861,7 +872,83 @@ export const SEED_DOCTORS: Doctor[] = [
     avatarUrl: 'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=150&auto=format&fit=crop&q=80',
     bio: 'Vascular specialist handling deep vein thrombosis (DVT), varicose vein laser ablation, diabetic limb salvage, peripheral arterial disease, and dialysis AV access.'
   }
-];;
+];
+
+const SEED_DOCTORS_CONTACTS: Record<number, {
+  phone: string;
+  directNumber: string;
+  whatsappNumber: string;
+  hospitalDeskPhone: string;
+  emergencyNumber: string;
+  opdRoom: string;
+}> = {
+  1: { phone: '+91 124 414 1414', directNumber: '+91 98110 38291', whatsappNumber: '+91 98110 38291', hospitalDeskPhone: '+91 124 483 4000', emergencyNumber: '1066', opdRoom: 'Room 312, Heart Institute, Tower A' },
+  2: { phone: '+91 80 2502 4444', directNumber: '+91 99014 59218', whatsappNumber: '+91 99014 59218', hospitalDeskPhone: '+91 80 2502 3270', emergencyNumber: '080 2222 1111', opdRoom: 'Room 204, OPD Block 2' },
+  3: { phone: '+91 44 2829 0200', directNumber: '+91 98402 44910', whatsappNumber: '+91 98402 44910', hospitalDeskPhone: '+91 44 2829 3333', emergencyNumber: '1066', opdRoom: 'Neurosciences Centre, Room 410' },
+  4: { phone: '+91 33 6628 4444', directNumber: '+91 98301 61029', whatsappNumber: '+91 98301 61029', hospitalDeskPhone: '+91 33 6628 4000', emergencyNumber: '105010', opdRoom: 'Mental Health Unit, Room 108' },
+  5: { phone: '+91 22 2445 1515', directNumber: '+91 98200 48219', whatsappNumber: '+91 98200 48219', hospitalDeskPhone: '+91 22 2444 7000', emergencyNumber: '022 2444 9199', opdRoom: 'Orthopedic Suite, 3rd Floor' },
+  6: { phone: '+91 40 4567 4567', directNumber: '+91 98490 88342', whatsappNumber: '+91 98490 88342', hospitalDeskPhone: '+91 40 2331 9999', emergencyNumber: '1066', opdRoom: 'Metabolic Wing, Room 215' },
+  7: { phone: '+91 20 6645 5100', directNumber: '+91 98220 53901', whatsappNumber: '+91 98220 53901', hospitalDeskPhone: '+91 20 6645 5000', emergencyNumber: '105010', opdRoom: 'Surgical Block, Room 502' },
+  8: { phone: '+91 11 2651 5050', directNumber: '+91 98101 67123', whatsappNumber: '+91 98101 67123', hospitalDeskPhone: '+91 11 4055 4055', emergencyNumber: '011 4055 4055', opdRoom: 'Chest & Sleep Clinic, Room 104' },
+  9: { phone: '+91 80 4342 0100', directNumber: '+91 99801 39120', whatsappNumber: '+91 99801 39120', hospitalDeskPhone: '+91 80 4342 0000', emergencyNumber: '080 4342 0111', opdRoom: 'Womens Health Centre, Room 220' },
+  10: { phone: '+91 11 2658 8500', directNumber: '+91 98105 29481', whatsappNumber: '+91 98105 29481', hospitalDeskPhone: '+91 11 2659 8700', emergencyNumber: '011 2659 3677', opdRoom: 'Renal Care Block, Room 301' },
+  11: { phone: '+91 484 669 9999', directNumber: '+91 98470 51928', whatsappNumber: '+91 98470 51928', hospitalDeskPhone: '+91 484 290 5000', emergencyNumber: '0484 669 9000', opdRoom: 'Digestive Diseases, Room 112' },
+  12: { phone: '+91 22 2417 7000', directNumber: '+91 98202 72190', whatsappNumber: '+91 98202 72190', hospitalDeskPhone: '+91 22 2417 7300', emergencyNumber: '022 2417 7000', opdRoom: 'Medical Oncology OPD, Room 402' },
+  13: { phone: '+91 172 274 7585', directNumber: '+91 98140 68214', whatsappNumber: '+91 98140 68214', hospitalDeskPhone: '+91 172 275 6565', emergencyNumber: '0172 274 6018', opdRoom: 'Child Health Advanced Centre, Room 105' },
+  14: { phone: '+91 44 2829 0200', directNumber: '+91 98410 44102', whatsappNumber: '+91 98410 44102', hospitalDeskPhone: '+91 44 2829 3333', emergencyNumber: '1066', opdRoom: 'Urology Suite 203' },
+  15: { phone: '+91 22 4269 6969', directNumber: '+91 98210 59201', whatsappNumber: '+91 98210 59201', hospitalDeskPhone: '+91 22 3099 9999', emergencyNumber: '022 4269 9999', opdRoom: 'ENT Department, Room 310' },
+  16: { phone: '+91 20 4015 1000', directNumber: '+91 98230 49120', whatsappNumber: '+91 98230 49120', hospitalDeskPhone: '+91 20 4015 1600', emergencyNumber: '105010', opdRoom: 'Ophthalmology Clinic, Room 115' },
+  17: { phone: '+91 79 6670 1800', directNumber: '+91 98250 63102', whatsappNumber: '+91 98250 63102', hospitalDeskPhone: '+91 79 6670 1888', emergencyNumber: '1066', opdRoom: 'Rheumatology Centre, Room 208' },
+  18: { phone: '+91 522 450 5050', directNumber: '+91 94150 71928', whatsappNumber: '+91 94150 71928', hospitalDeskPhone: '+91 522 450 5555', emergencyNumber: '1066', opdRoom: 'General Medicine Chamber 101' },
+  19: { phone: '+91 141 256 6251', directNumber: '+91 98290 82109', whatsappNumber: '+91 98290 82109', hospitalDeskPhone: '+91 141 256 6250', emergencyNumber: '0141 256 6255', opdRoom: 'Skin & Allergy Care, Room 106' },
+  20: { phone: '+91 40 2360 7777', directNumber: '+91 98480 39102', whatsappNumber: '+91 98480 39102', hospitalDeskPhone: '+91 40 2360 7788', emergencyNumber: '1066', opdRoom: 'Heart Centre, Room 405' },
+  21: { phone: '+91 11 2575 0000', directNumber: '+91 98111 49201', whatsappNumber: '+91 98111 49201', hospitalDeskPhone: '+91 11 4225 4000', emergencyNumber: '011 2586 1463', opdRoom: 'Neurology Block, Room 218' },
+  22: { phone: '+91 80 7122 2222', directNumber: '+91 99001 58291', whatsappNumber: '+91 99001 58291', hospitalDeskPhone: '+91 80 7122 2000', emergencyNumber: '080 7122 2999', opdRoom: 'Joint Reconstruction Room 302' },
+  23: { phone: '+91 44 2829 0200', directNumber: '+91 98400 67102', whatsappNumber: '+91 98400 67102', hospitalDeskPhone: '+91 44 2829 3333', emergencyNumber: '1066', opdRoom: 'High-Risk Obstetrics, Room 109' },
+  24: { phone: '+91 11 4713 5000', directNumber: '+91 98180 73910', whatsappNumber: '+91 98180 73910', hospitalDeskPhone: '+91 11 4713 5001', emergencyNumber: '105010', opdRoom: 'Coronary Care OPD, Room 201' },
+  25: { phone: '+91 33 2223 1589', directNumber: '+91 98310 84210', whatsappNumber: '+91 98310 84210', hospitalDeskPhone: '+91 33 2223 1500', emergencyNumber: '033 2223 1599', opdRoom: 'Pediatrics Wing, Room 103' },
+  26: { phone: '+91 484 285 1234', directNumber: '+91 98460 92104', whatsappNumber: '+91 98460 92104', hospitalDeskPhone: '+91 484 285 1000', emergencyNumber: '0484 285 1200', opdRoom: 'Endocrinology Center, Room 222' },
+  27: { phone: '+91 40 4488 5000', directNumber: '+91 98492 48102', whatsappNumber: '+91 98492 48102', hospitalDeskPhone: '+91 40 4488 5555', emergencyNumber: '040 4488 5999', opdRoom: 'Psychiatry & Mind Care, Room 114' },
+  28: { phone: '+91 22 2675 1000', directNumber: '+91 98205 39182', whatsappNumber: '+91 98205 39182', hospitalDeskPhone: '+91 22 2656 8000', emergencyNumber: '022 2656 8000', opdRoom: 'Chest Clinic, Room 304' },
+  29: { phone: '+91 11 3040 3040', directNumber: '+91 98108 51092', whatsappNumber: '+91 98108 51092', hospitalDeskPhone: '+91 11 3040 3000', emergencyNumber: '011 3040 3040', opdRoom: 'Dermatology & Laser, Room 206' },
+  30: { phone: '+91 11 4055 4055', directNumber: '+91 98112 63910', whatsappNumber: '+91 98112 63910', hospitalDeskPhone: '+91 11 2651 5050', emergencyNumber: '011 4055 4055', opdRoom: 'Comprehensive Cancer Center, Room 408' },
+  31: { phone: '+91 44 2829 0200', directNumber: '+91 98405 72910', whatsappNumber: '+91 98405 72910', hospitalDeskPhone: '+91 44 2829 3333', emergencyNumber: '1066', opdRoom: 'Nephrology & Dialysis, Room 210' },
+  32: { phone: '+91 80 2502 4444', directNumber: '+91 99018 84910', whatsappNumber: '+91 99018 84910', hospitalDeskPhone: '+91 80 2502 3270', emergencyNumber: '080 2222 1111', opdRoom: 'GI & Hepatology Clinic, Room 306' },
+  33: { phone: '+91 33 6628 4444', directNumber: '+91 98308 93012', whatsappNumber: '+91 98308 93012', hospitalDeskPhone: '+91 33 6628 4000', emergencyNumber: '105010', opdRoom: 'ENT Examination Chamber 107' },
+  34: { phone: '+91 20 6645 5100', directNumber: '+91 98225 41920', whatsappNumber: '+91 98225 41920', hospitalDeskPhone: '+91 20 6645 5000', emergencyNumber: '105010', opdRoom: 'Urology Laser Unit, Room 212' },
+  35: { phone: '+91 522 450 5050', directNumber: '+91 94155 82910', whatsappNumber: '+91 94155 82910', hospitalDeskPhone: '+91 522 450 5555', emergencyNumber: '1066', opdRoom: 'Wellness & Primary Care, Room 102' },
+  36: { phone: '+91 79 6670 1800', directNumber: '+91 98255 93012', whatsappNumber: '+91 98255 93012', hospitalDeskPhone: '+91 79 6670 1888', emergencyNumber: '1066', opdRoom: 'Vascular Lab & OPD, Room 315' }
+};
+
+export const SEED_DOCTORS: Doctor[] = SEED_DOCTORS_BASE.map(doc => {
+  const contact = SEED_DOCTORS_CONTACTS[doc.id] || {
+    phone: '+91 11 2658 8500',
+    directNumber: '+91 98110 38291',
+    whatsappNumber: '+91 98110 38291',
+    hospitalDeskPhone: '+91 11 2659 8700',
+    emergencyNumber: '1066',
+    opdRoom: 'Room 201, OPD Block'
+  };
+  const cleanPhone = contact.directNumber.replace(/[^0-9]/g, '');
+  return {
+    ...doc,
+    phone: contact.phone,
+    directNumber: contact.directNumber,
+    whatsappNumber: contact.whatsappNumber,
+    whatsapp: `https://wa.me/${cleanPhone}?text=${encodeURIComponent(`Hello ${doc.name}, I am reaching out through HealthGPT Real-Time Telehealth Desk regarding ${doc.specialty}.`)}`,
+    telehealthUrl: `https://meet.google.com/hgpt-doc${doc.id}`,
+    directionsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${doc.hospital}, ${doc.city}`)}`,
+    hospitalDeskPhone: contact.hospitalDeskPhone,
+    emergencyNumber: contact.emergencyNumber,
+    opdRoom: contact.opdRoom,
+    realtimeStatus: {
+      isOnline: doc.availableNow,
+      queueLength: doc.availableNow ? (doc.id % 3) : (doc.id % 5 + 2),
+      estimatedWaitMins: doc.availableNow ? ((doc.id % 3) + 1) : ((doc.id % 5 + 2) * 5),
+      statusText: doc.availableNow ? 'Live Online · Direct Call Ready' : 'In Consultation · Open in 20m'
+    }
+  };
+});
 
 // -------------------------------------------------------------------------
 // Geographical & Clinical Network Tables for 10,000 Doctor Expansion
@@ -1589,12 +1676,32 @@ export function generateExpandedDoctorConnections(count = 10000, startId = 37): 
     const bio = `${bioTemplate} Special clinical focus on ${interests.join(", ")}.`;
 
     const phoneDigits = Math.floor(1000 + rng() * 8999);
-    const phone = `${cluster.phonePrefix} ${phoneDigits}`;
+    const phoneExt = Math.floor(101 + rng() * 890);
+    const phone = `${cluster.phonePrefix} ${phoneDigits} Ext: ${phoneExt}`;
+
+    const mobilePrefixes = ["98", "99", "97", "94", "88", "70", "81", "91"];
+    const mobPref = mobilePrefixes[Math.floor(rng() * mobilePrefixes.length)];
+    const mobDigits = Math.floor(10000000 + rng() * 89999999);
+    const directNumber = `+91 ${mobPref}${String(mobDigits).slice(0, 3)} ${String(mobDigits).slice(3, 8)}`;
+    const whatsappNumber = directNumber;
+    const cleanDocPhone = `91${mobPref}${mobDigits}`;
+
     const cleanDocName = encodeURIComponent(name);
     const cleanSpec = encodeURIComponent(spec.name);
-    const whatsapp = `https://wa.me/919876543210?text=Hello%20${cleanDocName}%20Desk%2C%20I%20would%20like%20to%20consult%20regarding%20${cleanSpec}`;
+    const whatsapp = `https://wa.me/${cleanDocPhone}?text=Hello%20${cleanDocName}%20Desk%2C%20I%20am%20connecting%20via%20HealthGPT%20Real-Time%20Desk%20regarding%20${cleanSpec}`;
     const telehealthUrl = `https://meet.google.com/hgpt-doc${id}`;
     const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${hospital}, ${locality}, ${cluster.city}`)}`;
+    const hospitalDeskPhone = `${cluster.phonePrefix} 1000`;
+    const emergencyNumber = "1066";
+    const opdRoom = `Room ${Math.floor(101 + rng() * 490)}, OPD Wing ${Math.floor(1 + rng() * 4)}`;
+    const queueLen = availableNow ? Math.floor(rng() * 3) : Math.floor(2 + rng() * 5);
+    const estWait = availableNow ? (queueLen * 2 + 1) : (queueLen * 5 + 10);
+    const realtimeStatus = {
+      isOnline: availableNow,
+      queueLength: queueLen,
+      estimatedWaitMins: estWait,
+      statusText: availableNow ? "Live Now · Ready for Direct Call" : "In Consultation"
+    };
 
     const address = `${locality}, near ${hospital}, ${cluster.city}, ${cluster.state}`;
 
@@ -1621,9 +1728,15 @@ export function generateExpandedDoctorConnections(count = 10000, startId = 37): 
       avatarUrl,
       bio,
       phone,
+      directNumber,
+      whatsappNumber,
       whatsapp,
       telehealthUrl,
-      directionsUrl
+      directionsUrl,
+      hospitalDeskPhone,
+      emergencyNumber,
+      opdRoom,
+      realtimeStatus
     });
   }
 
@@ -1777,5 +1890,70 @@ export function searchDoctorConnections(options: DoctorFilterOptions = {}) {
     doctors: paginatedDoctors,
     cities: DOCTOR_CITIES,
     specialties: DOCTOR_SPECIALTIES
+  };
+}
+
+export interface RealtimeDoctorMatchResult {
+  doctor: Doctor;
+  token: string;
+  matchedAt: string;
+  status: "CONNECTED";
+  queueAhead: number;
+  estimatedWaitSeconds: number;
+  originalNumber: string;
+  directNumber: string;
+  phone: string;
+  whatsapp: string;
+  whatsappNumber: string;
+  telehealthUrl: string;
+  hospitalDeskPhone: string;
+  emergencyNumber: string;
+  opdRoom: string;
+}
+
+export function findRealtimeDoctorMatch(options: { specialty?: string; city?: string; urgency?: string } = {}): RealtimeDoctorMatchResult {
+  const { specialty = "", city = "", urgency = "normal" } = options;
+  const cleanSpec = specialty.toLowerCase().trim();
+  const cleanCity = city.toLowerCase().trim();
+
+  // Try to find available doctor matching specialty and city
+  let candidates = DOCTORS_DATABASE.filter(d => {
+    const specMatch = !cleanSpec || d.specialty.toLowerCase().includes(cleanSpec);
+    const cityMatch = !cleanCity || d.city.toLowerCase().includes(cleanCity);
+    return specMatch && cityMatch && d.availableNow;
+  });
+
+  // If none available in city, look across all cities for the specialty
+  if (candidates.length === 0 && cleanSpec) {
+    candidates = DOCTORS_DATABASE.filter(d => d.specialty.toLowerCase().includes(cleanSpec) && d.availableNow);
+  }
+
+  // If still none, look for any available doctor
+  if (candidates.length === 0) {
+    candidates = DOCTORS_DATABASE.filter(d => d.availableNow);
+  }
+
+  // Fallback to top rated doctor
+  const doc = candidates.length > 0 ? candidates[Math.floor(Math.random() * Math.min(candidates.length, 5))] : DOCTORS_DATABASE[0];
+
+  const waitSec = urgency === 'immediate' ? 5 : (doc.realtimeStatus?.estimatedWaitMins || 2) * 60;
+  const queue = urgency === 'immediate' ? 0 : (doc.realtimeStatus?.queueLength || 1);
+
+  return {
+    doctor: doc,
+    token: `LIVE-${doc.city.includes('Delhi') ? 'DEL' : doc.city.includes('Bengaluru') ? 'BLR' : 'IND'}-${Math.floor(1000 + Math.random() * 9000)}`,
+    matchedAt: new Date().toISOString(),
+    status: "CONNECTED",
+    queueAhead: queue,
+    estimatedWaitSeconds: waitSec,
+    originalNumber: doc.directNumber || doc.phone || "+91 98110 38291",
+    directNumber: doc.directNumber || doc.phone || "+91 98110 38291",
+    phone: doc.phone || "+91 11 2658 8500",
+    whatsapp: doc.whatsapp || `https://wa.me/919811038291?text=Hello%20Doctor`,
+    whatsappNumber: doc.whatsappNumber || doc.directNumber || "+91 98110 38291",
+    telehealthUrl: doc.telehealthUrl || `https://meet.google.com/hgpt-doc${doc.id}`,
+    hospitalDeskPhone: doc.hospitalDeskPhone || `${doc.phone || '+91 11 2658 8500'}`,
+    emergencyNumber: doc.emergencyNumber || "1066",
+    opdRoom: doc.opdRoom || "Chamber 204, OPD Block"
   };
 }

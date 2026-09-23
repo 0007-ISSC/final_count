@@ -7775,6 +7775,10 @@
           openCinematicAppTour();
         }, 600);
       }
+
+      window.startRealtimeInstantDoctorMatch = function(specialty, city) {
+        window.location.href = `/myi10.html?action=realtime_doctor&specialty=${encodeURIComponent(specialty || '')}&city=${encodeURIComponent(city || '')}#doctorConnect`;
+      };
     });
   </script>
 </body>

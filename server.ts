@@ -46,7 +46,8 @@ import {
   searchDoctorConnections,
   getDoctorById,
   DOCTOR_CITIES,
-  DOCTOR_SPECIALTIES
+  DOCTOR_SPECIALTIES,
+  findRealtimeDoctorMatch
 } from './src/data/doctorNetworkService.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -3098,6 +3099,28 @@ app.get('/api/doctors', (req: Request, res: Response) => {
     doctors: searchRes.doctors,
     cities: searchRes.cities,
     specialties: searchRes.specialties
+  });
+});
+
+app.get('/api/doctors/realtime-match', (req: Request, res: Response) => {
+  const specialty = String(req.query.specialty || '').trim();
+  const city = String(req.query.city || '').trim();
+  const urgency = String(req.query.urgency || 'normal').trim();
+  const matchResult = findRealtimeDoctorMatch({ specialty, city, urgency });
+  return res.json({
+    success: true,
+    ...matchResult
+  });
+});
+
+app.post('/api/doctors/realtime-match', (req: Request, res: Response) => {
+  const specialty = String(req.body.specialty || req.query.specialty || '').trim();
+  const city = String(req.body.city || req.query.city || '').trim();
+  const urgency = String(req.body.urgency || req.query.urgency || 'normal').trim();
+  const matchResult = findRealtimeDoctorMatch({ specialty, city, urgency });
+  return res.json({
+    success: true,
+    ...matchResult
   });
 });
 
