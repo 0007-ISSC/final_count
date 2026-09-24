@@ -6,4 +6,5 @@ export * from './medicineVisionService.ts';
 export * from './supabaseService.ts';
 export * from './mlIntelligenceService.ts';
 export * from './healthGptAgent.ts';
+export * from './emailService.ts';
 export * from './conversation/index.ts';

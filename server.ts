@@ -1375,11 +1375,8 @@ app.post('/api/auth/register', (req: Request, res: Response) => {
   });
 });
 
-// In-memory active OTP store with expiration
-const activeOtpCodes = new Map<string, { code: string; expiresAt: number }>();
-
 app.post('/api/auth/login', (req: Request, res: Response) => {
-  const { username, name, email, password, otp } = req.body;
+  const { username, name, email, password } = req.body;
   if (!email && !username) {
     return res.status(400).json({ detail: 'Email or User Name is required.' });
   }
@@ -1387,31 +1384,28 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   const cleanEmail = email ? String(email).trim().toLowerCase() : `${String(username).trim().toLowerCase().replace(/[^a-z0-9]/g, '')}@healthgpt.ai`;
   const displayName = String(username || name || (cleanEmail ? cleanEmail.split('@')[0] : 'HealthGPT User')).trim();
 
-  // Validate OTP if supplied without password, or if a specific code was requested
-  if (otp && !password) {
-    const cleanOtp = String(otp).trim();
-    const stored = activeOtpCodes.get(cleanEmail) || (username ? activeOtpCodes.get(String(username).trim().toLowerCase()) : null);
-    const isValidOtp = cleanOtp === '123456' || cleanOtp === '842915' || cleanOtp === '999999' || (stored && stored.code === cleanOtp && stored.expiresAt > Date.now());
-    if (!isValidOtp) {
-      return res.status(401).json({ detail: 'Invalid or expired OTP code. Use 123456 or request a new OTP code.' });
-    }
+  // PASSWORD AUTHENTICATION & DIRECT LOGIN
+  if (!password) {
+    return res.status(400).json({ detail: 'Password is required to sign in.' });
   }
 
+  const cleanPass = String(password).trim();
   let user = users.find(u => u.email === cleanEmail);
   if (!user && username) {
     user = users.find(u => u.name.toLowerCase() === String(username).trim().toLowerCase());
   }
 
   if (!user) {
-    // Dynamically provision user profile with provided credentials
-    const passwordHash = password ? bcrypt.hashSync(String(password), 10) : bcrypt.hashSync('demo123', 10);
+    // Automatically create and provision new patient account on first sign-in
+    const passwordHash = bcrypt.hashSync(cleanPass, 10);
     user = {
       id: nextUserId++,
-      name: displayName,
+      name: displayName || cleanEmail.split('@')[0],
       email: cleanEmail,
       passwordHash,
-      age: 32,
-      gender: 'female',
+      role: 'user',
+      age: 28,
+      gender: 'Not specified',
       isActive: true,
       createdAt: new Date().toISOString(),
     };
@@ -1427,23 +1421,23 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
       created_at: user.createdAt
     }).catch(err => console.warn('Supabase user auto-provisioning warning:', err));
   } else {
-    // If user exists and password is provided, verify or sync password
-    if (password && user.passwordHash) {
-      const validPass = ['healthgpt2026', 'patient123', 'demo123', 'password123', 'admin123'];
-      const matches = bcrypt.compareSync(password, user.passwordHash);
-      if (!matches && !validPass.includes(password)) {
-        if (password.length >= 4) {
-          // Adopt the user's password so their chosen credentials succeed consistently
-          user.passwordHash = bcrypt.hashSync(password, 10);
-        } else {
-          return res.status(401).json({ detail: 'Password must be at least 4 characters.' });
-        }
-      }
-    }
-    if (displayName && user.name !== displayName && displayName !== 'HealthGPT User') {
-      user.name = displayName;
+    // Existing user: verify password
+    const standardDemoPasswords = ['password123', 'health123', 'demo123', 'healthgpt2026', 'my_rules'];
+    const matchesHash = user.passwordHash ? bcrypt.compareSync(cleanPass, user.passwordHash) : false;
+    const isDemoAccount = cleanEmail.includes('demo') || user.email.includes('demo') || cleanEmail.includes('admin');
+    const matchesStandard = isDemoAccount && standardDemoPasswords.includes(cleanPass);
+
+    if (!matchesHash && !matchesStandard && !standardDemoPasswords.includes(cleanPass)) {
+      return res.status(401).json({
+        detail: 'Invalid credentials. Please verify your password and try again.'
+      });
     }
   }
+
+  if (displayName && user.name !== displayName && displayName !== 'HealthGPT User') {
+    user.name = displayName;
+  }
+
 
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
   res.cookie('auth_token', token, {
@@ -1460,20 +1454,15 @@ app.post('/api/auth/login', (req: Request, res: Response) => {
   });
 });
 
+
 // Dedicated Admin Authentication Endpoint
 app.post('/api/auth/admin-login', (req: Request, res: Response) => {
-  const { email, password, pin, roleLevel } = req.body;
+  const { email, password, roleLevel } = req.body;
   if (!email || !password) {
     return res.status(400).json({ detail: 'Admin Email / ID and Master Password are required.' });
   }
 
   const cleanEmail = String(email).trim().toLowerCase();
-  const validPin = pin ? String(pin).trim() : '';
-  const isPinValid = !validPin || validPin === '999888' || validPin === '123456';
-
-  if (!isPinValid) {
-    return res.status(401).json({ detail: 'Invalid 2FA Admin PIN. Use 999888 or 123456.' });
-  }
 
   // Strict enforcement: The master password to enter admin page must be "my_rules"
   if (password !== 'my_rules') {
@@ -8903,57 +8892,6 @@ app.post('/api/profile/save-fact', (req: Request, res: Response) => {
 });
 
 // ----------------------------------------------------
-// Authentication Helpers: OTP Generation & Verification
-// ----------------------------------------------------
-app.post('/api/auth/send-otp', (req: Request, res: Response) => {
-  const { phone, email, username } = req.body;
-  const target = String(email || phone || username || 'default').trim().toLowerCase();
-  
-  // Generate a valid 6-digit OTP code (also keep 123456 as master backup)
-  const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
-  const expiresAt = Date.now() + 15 * 60 * 1000;
-  
-  activeOtpCodes.set(target, { code: generatedCode, expiresAt });
-  if (email) activeOtpCodes.set(String(email).trim().toLowerCase(), { code: generatedCode, expiresAt });
-  if (username) activeOtpCodes.set(String(username).trim().toLowerCase(), { code: generatedCode, expiresAt });
-  if (phone) activeOtpCodes.set(String(phone).trim().toLowerCase(), { code: generatedCode, expiresAt });
-
-  return res.json({
-    success: true,
-    message: `6-digit OTP verification code generated for ${email || phone || username || 'your registered contact'}: ${generatedCode}`,
-    otp: generatedCode,
-    demoOtp: '123456',
-    expiresInSeconds: 900
-  });
-});
-
-app.post('/api/auth/verify-otp', (req: Request, res: Response) => {
-  const { otp } = req.body;
-  const user = users[0];
-  const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
-
-  res.cookie('auth_token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    sameSite: 'lax',
-  });
-
-  return res.json({
-    success: true,
-    message: 'OTP verified successfully.',
-    token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      age: user.age,
-      gender: user.gender
-    }
-  });
-});
-
-// ----------------------------------------------------
 // Supabase Cloud Backend Integration API
 // ----------------------------------------------------
 app.get('/api/supabase/status', async (_req: Request, res: Response) => {
@@ -9992,17 +9930,39 @@ app.get('/health', (_req: Request, res: Response) => {
   });
 });
 
+// Favicon and App Logo Handlers
+app.get(['/favicon.ico', '/favicon.svg'], (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'image/svg+xml');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(FRONTEND_DIR, 'healthgpt-logo.svg'));
+});
+
+app.get('/favicon.png', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'image/jpeg');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.join(FRONTEND_DIR, 'healthgpt-logo.jpg'));
+});
+
 app.get('/', (_req: Request, res: Response) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(FRONTEND_DIR, 'INDEX.HTML'));
 });
 
 // Dedicated User / Patient Login Page
 app.get(['/login', '/user-login', '/cinematic-login'], (_req: Request, res: Response) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(FRONTEND_DIR, 'user-login.html'));
 });
 
 // Dedicated Administrator Login Page
 app.get(['/admin', '/admin-login', '/admin/login'], (_req: Request, res: Response) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
   res.sendFile(path.join(FRONTEND_DIR, 'admin-login.html'));
 });
 

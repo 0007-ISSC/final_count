@@ -3,7 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Admin Login — HealthGPT Clinical Command Center</title>
+  <link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link rel="alternate icon" type="image/jpeg" href="/healthgpt-logo.jpg">
+  <link rel="apple-touch-icon" href="/healthgpt-logo.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -867,19 +875,7 @@
           </div>
         </div>
 
-        <!-- 3. 2FA SECURITY PIN -->
-        <div class="form-group">
-          <div class="form-label">
-            <span>2FA Security Token / PIN</span>
-            <span style="font-size:11px;color:var(--emerald-bright);font-weight:600;">Hardware Security Token</span>
-          </div>
-          <div class="input-wrapper">
-            <input type="text" id="adminPinInput" class="admin-input" placeholder="6-digit Admin PIN" value="999888" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playCyberAudio('focus')">
-            <span class="input-icon">🔑</span>
-          </div>
-        </div>
-
-        <!-- 4. ROLE CLEARANCE LEVEL -->
+        <!-- 3. ROLE CLEARANCE LEVEL -->
         <div class="form-group">
           <label class="form-label" for="adminRoleSelect">Administrative Clearance Level</label>
           <select id="adminRoleSelect" class="admin-select" onfocus="playCyberAudio('focus')">
@@ -1080,7 +1076,6 @@
     function fillAdminPreset(email, pin, e) {
       document.getElementById('adminEmailInput').value = email;
       document.getElementById('adminPasswordInput').value = 'my_rules';
-      document.getElementById('adminPinInput').value = pin;
       handleAdminPassInput('my_rules');
       showAdminAlert(`✓ Administrative credentials loaded securely`, 'success');
       playCyberAudio('boom');
@@ -1147,7 +1142,6 @@
       if (e) e.preventDefault();
       const email = document.getElementById('adminEmailInput').value.trim();
       const password = document.getElementById('adminPasswordInput').value;
-      const pin = document.getElementById('adminPinInput').value.trim();
       const roleLevel = document.getElementById('adminRoleSelect').value;
       const btn = document.getElementById('btnAdminSignInSubmit');
 
@@ -1167,20 +1161,15 @@
         playCyberAudio('error');
         return;
       }
-      if (!pin) {
-        showAdminAlert('Please enter 6-digit Security PIN', 'error');
-        playCyberAudio('error');
-        return;
-      }
 
-      btn.innerHTML = '<span>Verifying Clearance &amp; PIN...</span>';
+      btn.innerHTML = '<span>Verifying Clearance...</span>';
       btn.disabled = true;
 
       try {
         const response = await fetch('/api/auth/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, pin, roleLevel })
+          body: JSON.stringify({ email, password, roleLevel })
         });
 
         const data = await response.json().catch(() => ({}));

@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>HealthGPT — Where AI Meets HealthCare</title>
   <link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
   <link rel="alternate icon" type="image/jpeg" href="/healthgpt-logo.jpg">
   <link rel="apple-touch-icon" href="/healthgpt-logo.jpg">
   <!-- Google Fonts: Plus Jakarta Sans & Cormorant Garamond / Playfair Display -->
@@ -851,32 +856,6 @@
       border-color: var(--accent-warm);
       color: var(--accent-warm);
       background: var(--accent-warm-light);
-    }
-
-    /* Mobile OTP View */
-    .otp-inputs-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .otp-box {
-      flex: 1;
-      height: 48px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 700;
-      background: #faf7f2;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-md);
-      outline: none;
-      color: var(--ink-primary);
-    }
-
-    .otp-box:focus {
-      background: #ffffff;
-      border-color: var(--accent-warm);
-      box-shadow: 0 0 0 3px var(--gold-glow);
     }
 
     /* Role Switcher Tabs & Navigation */
@@ -2704,7 +2683,9 @@
   <!-- Top Brand Navigation -->
   <header class="top-header">
     <a href="/" class="brand-mark" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
-      <img src="/healthgpt-logo.svg" alt="HealthGPT Logo" style="width:42px;height:42px;border-radius:12px;object-fit:cover;box-shadow:0 4px 14px rgba(14,165,233,0.25);border:1.5px solid rgba(56,189,248,0.35);background:#0c1929;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
+      <div class="brand-logo-wrap" style="position:relative;width:44px;height:44px;flex-shrink:0;">
+        <img src="/healthgpt-logo.svg" alt="HealthGPT Logo" style="width:44px;height:44px;border-radius:12px;object-fit:cover;box-shadow:0 4px 14px rgba(14,165,233,0.28);border:1.5px solid rgba(56,189,248,0.4);background:#0c1929;display:block;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
+      </div>
       <div class="brand-titles">
         <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.3px;color:var(--ink-primary);">HealthGPT</h1>
         <span style="font-size:10.5px;color:var(--accent-warm);font-weight:750;letter-spacing:0.3px;text-transform:none;">Where AI Meets HealthCare</span>
@@ -2712,12 +2693,19 @@
     </a>
 
     <div class="header-status" style="display:flex;align-items:center;gap:12px;">
+      <!-- Active User Profile Badge (shown when user is logged in) -->
+      <div id="navUserBadge" style="display:none;align-items:center;gap:8px;padding:4px 10px;border-radius:14px;background:rgba(2,132,199,0.08);border:1px solid rgba(2,132,199,0.25);">
+        <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg, #0284c7, #0d9488);color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;" id="navUserAvatar">IS</div>
+        <span style="font-size:12px;font-weight:750;color:var(--ink-primary);" id="navUserName">Iqra Sultana</span>
+        <a href="/dashboard" style="font-size:11px;color:#0284c7;text-decoration:none;font-weight:800;background:#ffffff;padding:2px 7px;border-radius:6px;border:1px solid rgba(2,132,199,0.2);">Portal ↗</a>
+      </div>
+
       <button type="button" class="sound-toggle-btn active" id="soundToggleBtn" onclick="toggleAudioFX()" title="Toggle interactive audio feedback">
         <span>🔊</span> <span id="soundToggleLabel">Audio On</span>
       </button>
       <div class="nav-portal-links">
-        <a href="/onboarding?restart=true" class="nav-portal-btn" id="navBtnAppTour" onclick="openCinematicAppTour(event)" title="Launch Interactive Cinematic App Tour with High-End VFX">
-          <span>✨</span> <span>App Tour</span>
+        <a href="/onboarding" class="nav-portal-btn" id="navBtnOnboarding" title="Open Interactive Multi-Stage Onboarding Page">
+          <span>Onboarding Page</span>
         </a>
         <a href="/user-login" class="nav-portal-btn" title="Open Dedicated Patient Login Page">
           <span>👤</span> <span>Patient Login</span>
@@ -2732,6 +2720,50 @@
       </div>
     </div>
   </header>
+
+  <!-- Calibrated Onboarding Welcome Banner (Appears when onboarding completes or ?welcome=true) -->
+  <div id="onboardingWelcomeBanner" style="display:none;width:100%;max-width:1380px;margin:12px auto 0;padding:0 16px;position:relative;z-index:35;">
+    <div style="background:linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,244,0.95) 100%);border:1.5px solid #86efac;border-radius:18px;padding:16px 24px;box-shadow:0 14px 36px -10px rgba(5,150,105,0.18);display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;backdrop-filter:blur(12px);">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#ffffff;display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 6px 16px rgba(5,150,105,0.28);flex-shrink:0;">
+          ✨
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span style="font-size:11px;font-weight:800;letter-spacing:0.5px;color:#15803d;text-transform:uppercase;background:#dcfce7;padding:2px 8px;border-radius:12px;border:1px solid #bbf7d0;">
+              Clinical Calibration Active
+            </span>
+            <span style="font-size:12px;color:var(--ink-muted);" id="welcomeBannerTime">Session Initialized</span>
+          </div>
+          <h2 style="font-family:'Cormorant Garamond', Georgia, serif;font-size:24px;font-weight:700;color:var(--ink-primary);margin:2px 0 0;" id="welcomeBannerTitle">
+            Welcome to HealthGPT, Eleanor Vance!
+          </h2>
+          <div style="font-size:12.5px;color:var(--ink-secondary);display:flex;gap:12px;flex-wrap:wrap;margin-top:2px;">
+            <span>🧬 Archetype: <strong id="welcomeBannerArchetype">Longevity &amp; Vitals</strong></span>
+            <span>·</span>
+            <span>🩺 Doctor: <strong id="welcomeBannerDoctor">Dr. Rajesh Sharma</strong></span>
+            <span>·</span>
+            <span>🫀 Vitals: <strong id="welcomeBannerBpm">72 BPM · NSR</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <a href="/dashboard" class="btn-warm-primary" style="padding:9px 18px;font-size:12.5px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#ffffff;box-shadow:0 4px 14px rgba(5,150,105,0.25);">
+          <span>🚀 Open Calibrated Dashboard</span>
+        </a>
+        <a href="/alex" class="btn-warm-primary" style="padding:9px 16px;font-size:12.5px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:6px;background:#ffffff;border:1.5px solid var(--card-border);color:var(--ink-primary);">
+          <span>🎙️ Talk to Alex AI</span>
+        </a>
+        <a href="/onboarding" class="btn-warm-primary" style="padding:9px 14px;font-size:12px;border-radius:10px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;background:transparent;border:1px solid rgba(140,109,70,0.3);color:var(--accent-warm);">
+          <span>Re-open Onboarding Page</span>
+        </a>
+        <button type="button" onclick="document.getElementById('onboardingWelcomeBanner').style.display='none'" style="background:transparent;border:none;color:var(--ink-muted);font-size:18px;cursor:pointer;padding:4px 8px;line-height:1;" title="Dismiss notification">
+          ✕
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Main Split Presentation -->
   <main class="main-wrapper">
@@ -2905,6 +2937,9 @@
       </div>
 
       <div class="auth-card-header">
+        <div style="display:inline-flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg, rgba(14,165,233,0.12), rgba(13,148,136,0.14));border:1.5px solid rgba(56,189,248,0.35);box-shadow:0 6px 20px rgba(14,165,233,0.2);margin:0 auto 12px;padding:3px;">
+          <img src="/healthgpt-logo.svg" alt="HealthGPT Icon" style="width:48px;height:48px;border-radius:13px;object-fit:cover;background:#0c1929;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
+        </div>
         <h3 class="auth-title" id="authTitleText">Welcome to HealthGPT</h3>
         <p class="auth-subtitle" id="authSubtitleText">Sign in to your clinical twin, consultation logs &amp; health dashboard</p>
       </div>
@@ -2913,14 +2948,43 @@
       <div class="alert-banner" id="alertBanner" style="display:none;"></div>
 
       <!-- Cross-Portal Live Synchronization Status Bar -->
-      <div id="indexSyncStatusBar" style="margin-bottom:14px;padding:9px 13px;border-radius:12px;background:rgba(2,132,199,0.07);border:1px solid rgba(2,132,199,0.22);display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#0284c7;font-weight:700;transition:all 0.3s ease;">
-        <span id="indexSyncStatusText" style="display:flex;align-items:center;gap:7px;">
-          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;display:inline-block;animation:pulseDot 1.6s infinite;"></span>
-          <span>🔄 Dual-Portal Sync Active</span>
+      <div id="indexSyncStatusBar" style="margin-bottom:12px;padding:8px 12px;border-radius:10px;background:rgba(2,132,199,0.06);border:1px solid rgba(2,132,199,0.2);display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:#0284c7;font-weight:700;">
+        <span id="indexSyncStatusText" style="display:flex;align-items:center;gap:6px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;display:inline-block;"></span>
+          <span>Dual-Portal Sync Active</span>
         </span>
-        <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" style="background:#0284c7;color:#ffffff;text-decoration:none;font-size:11px;font-weight:800;padding:4px 9px;border-radius:6px;display:flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(2,132,199,0.25);" title="Switch to full-screen holographic terminal">
+        <a href="/user-login" onclick="openDedicatedLoginFromIndex(event)" style="background:#0284c7;color:#ffffff;text-decoration:none;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px;display:flex;align-items:center;gap:4px;" title="Switch to full-screen holographic terminal">
           <span>Dedicated Portal</span> <span>↗</span>
         </a>
+      </div>
+
+      <!-- Standardized Credentials Quick-Load Panel -->
+      <div style="background:#fefbf6;border:1.5px solid #e7ded2;border-radius:12px;padding:12px;margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-size:12px;font-weight:800;color:var(--ink-primary);display:flex;align-items:center;gap:6px;">
+            <span>🔑</span> <span>Standardized Login Credentials</span>
+          </span>
+          <span style="font-size:10px;background:#e8ded2;color:#6b583e;padding:2px 7px;border-radius:10px;font-weight:700;">Verified Clearance</span>
+        </div>
+        <p style="font-size:11px;color:var(--ink-secondary);line-height:1.4;margin:0 0 9px;">
+          Click below to fill standardized demo credentials, or sign in directly with your personal email and password.
+        </p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <button type="button" onclick="fillStandardPatientPreset()" style="background:#ffffff;border:1.5px solid #0d9488;border-radius:8px;padding:7px 9px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;box-shadow:0 2px 4px rgba(13,148,136,0.1);">
+            <div style="font-size:11.5px;font-weight:800;color:#0f766e;display:flex;align-items:center;gap:4px;">
+              <span>👤 Patient Account</span>
+            </div>
+            <span style="font-size:10px;color:#64748b;font-family:monospace;">demo@healthgpt.ai</span>
+            <span style="font-size:9.5px;color:#0d9488;font-weight:700;">Password: password123</span>
+          </button>
+          <button type="button" onclick="fillAdminPresetIndex()" style="background:#ffffff;border:1.5px solid #334155;border-radius:8px;padding:7px 9px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;box-shadow:0 2px 4px rgba(0,0,0,0.06);">
+            <div style="font-size:11.5px;font-weight:800;color:#1e293b;display:flex;align-items:center;gap:4px;">
+              <span>🛡️ Admin Account</span>
+            </div>
+            <span style="font-size:10px;color:#64748b;font-family:monospace;">admin@healthgpt.ai</span>
+            <span style="font-size:9.5px;color:#334155;font-weight:700;">Password: my_rules</span>
+          </button>
+        </div>
       </div>
 
       <!-- 1. PATIENT / USER LOGIN FORM -->
@@ -2929,9 +2993,9 @@
           
           <!-- 1. USER NAME -->
           <div class="input-group">
-            <label class="input-label" for="usernameInput">User Name</label>
+            <label class="input-label" for="usernameInput">User / Patient Name</label>
             <div class="input-wrapper">
-              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. demo" value="demo" required autocomplete="name" oninput="handleIndexUsernameInput(this.value)" onfocus="playInteractiveTone('focus')">
+              <input type="text" id="usernameInput" class="input-field" placeholder="e.g. Iqra Sultana" value="demo" required autocomplete="name" oninput="handleIndexUsernameInput(this.value)" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">👤</span>
             </div>
           </div>
@@ -2940,68 +3004,31 @@
           <div class="input-group">
             <label class="input-label" for="emailInput">Email Address</label>
             <div class="input-wrapper">
-              <input type="email" id="emailInput" class="input-field" placeholder="e.g. demo@gmail.com" value="demo@gmail.com" required autocomplete="email" oninput="handleIndexEmailInput(this.value)" onfocus="playInteractiveTone('focus')">
-              <span class="input-icon">✉</span>
+              <input type="email" id="emailInput" class="input-field" placeholder="e.g. yourname@gmail.com" value="demo@healthgpt.ai" required autocomplete="email" oninput="handleIndexEmailInput(this.value)" onfocus="playInteractiveTone('focus')">
+              <span class="input-icon">📧</span>
             </div>
-            <!-- Dynamic Gmail Auto-OTP Detection Badge -->
             <div id="indexEmailStatusBadge" style="display:none;margin-top:6px;font-size:11.5px;font-weight:700;align-items:center;gap:5px;padding:4px 8px;border-radius:6px;transition:all 0.2s ease;"></div>
           </div>
 
           <!-- 3. PASSWORD -->
           <div class="input-group">
-            <label class="input-label" for="passwordInput">Password</label>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <label class="input-label" for="passwordInput" style="margin-bottom:0;">Account Password</label>
+              <span style="font-size:11px;color:var(--ink-muted);">Standard: password123</span>
+            </div>
             <div class="input-wrapper">
-              <input type="password" id="passwordInput" class="input-field" placeholder="••••••••" value="password123" required autocomplete="current-password" onfocus="playInteractiveTone('focus')">
+              <input type="password" id="passwordInput" class="input-field" placeholder="Enter your account password" value="password123" required autocomplete="current-password" onfocus="playInteractiveTone('focus')">
               <span class="input-icon">🔒</span>
               <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility()" aria-label="Toggle password visibility">👁</button>
             </div>
           </div>
 
-          <!-- 4. OTP -->
-          <div class="input-group">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label class="input-label" for="otpInput" style="margin-bottom:0;">OTP (One-Time Password)</label>
-              <button type="button" id="btnRequestOtp" onclick="requestOtpCode(false)" style="background:none;border:none;color:var(--accent-warm);font-size:12px;font-weight:700;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px;">
-                <span>⚡ Send / Get OTP</span>
-              </button>
-            </div>
-            <div class="input-wrapper">
-              <input type="text" id="otpInput" class="input-field" placeholder="6-digit OTP code" value="123456" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" oninput="handleIndexOtpInput(this.value)" onfocus="playInteractiveTone('focus')">
-              <span class="input-icon">🔑</span>
-            </div>
-            
-            <!-- Dynamic High-Tech OTP Digits Banner -->
-            <div id="indexDynamicOtpBox" style="display:flex;margin-top:8px;padding:10px 12px;border-radius:10px;background:linear-gradient(135deg, rgba(13,148,136,0.08) 0%, rgba(2,132,199,0.08) 100%);border:1.5px solid rgba(13,148,136,0.3);flex-direction:column;gap:6px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11.5px;color:#0d9488;font-weight:800;display:flex;align-items:center;gap:5px;">
-                  <span>⚡ Active Verification Passcode:</span>
-                </span>
-                <span id="indexOtpTimerBadge" style="font-size:10px;background:#0d9488;color:#fff;padding:2px 7px;border-radius:6px;font-weight:800;">Valid 60s</span>
-              </div>
-              <div id="indexOtpDigitsDisplay" style="display:flex;gap:6px;justify-content:center;margin:4px 0;">
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">1</span>
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">2</span>
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">3</span>
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">4</span>
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">5</span>
-                <span class="index-otp-card" style="width:34px;height:38px;background:#ffffff;border:1.5px solid #0d9488;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#0f766e;box-shadow:0 2px 5px rgba(13,148,136,0.18);">6</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:11px;color:#64748b;" id="indexOtpDispatchedTo">Auto-generated for demo@gmail.com</span>
-                <button type="button" onclick="copyIndexOtpCode()" id="btnCopyIndexOtp" style="background:#0d9488;color:#ffffff;border:none;padding:3px 9px;border-radius:6px;font-size:11px;font-weight:800;cursor:pointer;box-shadow:0 2px 6px rgba(13,148,136,0.25);">📋 Copy Code</button>
-              </div>
-            </div>
-
-            <div id="otpStatusHint" style="margin-top:5px;font-size:11.5px;color:var(--forest);font-weight:600;display:flex;align-items:center;gap:4px;">
-              <span>✓ Test OTP: <b>123456</b> (or typing valid email auto-generates code)</span>
-            </div>
-          </div>
-
-          <!-- 5. SIGN IN (PRIMARY BUTTON WITH MINIMALIST CIRCULAR SPINNER SUPPORT) -->
+          <!-- 4. SIGN IN (PRIMARY BUTTON) -->
           <button type="submit" class="btn-warm-primary" id="btnSignInSubmit" style="margin-top:10px;" onclick="triggerButtonBoom(event)">
             <span>Sign In as Patient</span>
             <span>→</span>
           </button>
+
 
           <!-- OR SOCIAL LOGIN DIVIDER -->
           <div class="ornament-divider" style="margin: 14px 0 10px;">
@@ -3033,10 +3060,10 @@
             <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">3D Terminal ↗</span>
           </a>
 
-          <!-- INTERACTIVE APP TOUR & CARE TOOL SELECTION -->
-          <a href="/onboarding?restart=true" onclick="openCinematicAppTour(event)" class="btn-warm-primary" id="btnOpenAppTourIndex" style="margin-top:4px;background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(245,158,11,0.28);border:none;">
-            <span>✨ Interactive App Tour · Choose Your Primary Care Tools</span>
-            <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">Tour ↗</span>
+          <!-- DEDICATED MULTI-STAGE ONBOARDING PAGE -->
+          <a href="/onboarding" class="btn-warm-primary" id="btnOpenOnboardingIndex" style="margin-top:4px;background:linear-gradient(135deg, #059669 0%, #047857 100%);color:#ffffff;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 14px rgba(5,150,105,0.28);border:none;">
+            <span>Multi-Stage Onboarding &amp; Clinical Calibration</span>
+            <span style="font-size:11px;background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:10px;font-weight:800;">6 Steps ↗</span>
           </a>
 
           <!-- CELEBRATION LOGIN ANIMATION PREVIEW TRIGGER -->
@@ -3088,18 +3115,6 @@
             </div>
             <div id="adminPassStrengthWrap" style="height:3px;background:#e8ded2;border-radius:2px;overflow:hidden;margin-top:6px;display:none;">
               <div id="adminPassStrengthBar" style="height:100%;width:0%;background:#8c6d46;transition:all 0.3s ease;"></div>
-            </div>
-          </div>
-
-          <!-- Admin 2FA PIN -->
-          <div class="input-group">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label class="input-label" for="indexAdminPinInput" style="margin-bottom:0;">2FA Security PIN</label>
-              <span style="font-size:11px;color:var(--forest);font-weight:700;">Security Token</span>
-            </div>
-            <div class="input-wrapper">
-              <input type="text" id="indexAdminPinInput" class="input-field" placeholder="6-digit Admin PIN" value="999888" maxlength="6" required style="letter-spacing:3px;font-weight:700;font-size:15px;" onfocus="playInteractiveTone('focus')">
-              <span class="input-icon">🔑</span>
             </div>
           </div>
 
@@ -3237,428 +3252,8 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       CINEMATIC VFX APP TOUR THEATER OVERLAY
-       ============================================================ -->
-  <div id="cinematicAppTourOverlay" role="dialog" aria-modal="true" aria-label="HealthGPT Cinematic App Tour">
-    <!-- Dedicated Multi-Layer VFX Canvas (Hyper-Drive Warp, Quantum Reticles, Bio-luminescent Energy Particles, Shockwaves) -->
-    <canvas id="appTourVfxCanvas"></canvas>
-
-    <div class="tour-theater-wrapper">
-      <div class="tour-theater-card" id="tourTheaterCard">
-        <div class="tour-card-glare"></div>
-
-        <!-- Tour Header -->
-        <div class="tour-theater-header">
-          <div class="tour-brand-pill">
-            <div class="tour-brand-dot"></div>
-            <div>
-              <div style="font-size:13px;font-weight:900;letter-spacing:0.5px;color:#f8fafc;display:flex;align-items:center;gap:8px;">
-                <span>HEALTHGPT INTERACTIVE APP TOUR</span>
-                <span style="font-size:10px;background:rgba(56,189,248,0.2);color:#38bdf8;padding:2px 8px;border-radius:12px;border:1px solid rgba(56,189,248,0.4);font-weight:800;">ULTRA VFX</span>
-              </div>
-              <div style="font-size:11.5px;color:#94a3b8;margin-top:2px;">
-                Step <span id="tourStepNumber" style="color:#38bdf8;font-weight:800;">1</span> of 5 · <span id="tourStepBadgeLabel" style="color:#f1f5f9;font-weight:700;">3D Digital Twin</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="tour-header-controls">
-            <!-- Audio FX Toggle -->
-            <button type="button" class="tour-ctrl-btn active" id="btnTourAudio" onclick="toggleTourAudio()" title="Toggle Tour Sound FX">
-              <span id="tourAudioIcon">🔊</span> <span id="tourAudioLabel">Sound On</span>
-            </button>
-
-            <!-- Auto-Play Timer Ring Button -->
-            <button type="button" class="tour-ctrl-btn" id="btnTourAutoPlay" onclick="toggleTourAutoPlay()" title="Toggle Auto-Play Slideshow">
-              <svg width="16" height="16" viewBox="0 0 20 20" style="transform:rotate(-90deg);">
-                <circle cx="10" cy="10" r="8" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="2.5"></circle>
-                <circle id="tourCountdownCircle" cx="10" cy="10" r="8" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="50.26" stroke-dashoffset="0"></circle>
-              </svg>
-              <span id="tourAutoPlayLabel">Auto-Play</span>
-            </button>
-
-            <!-- Close Modal Button -->
-            <button type="button" class="tour-close-btn" onclick="closeCinematicAppTour()" title="Close App Tour (Esc)">
-              ✕
-            </button>
-          </div>
-        </div>
-
-        <!-- Tour Stage Body -->
-        <div class="tour-theater-body">
-
-          <!-- STEP 1: 3D HUMAN DIGITAL TWIN -->
-          <div class="tour-step-content active" id="tourStep_1">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-              <span style="font-size:22px;">👤</span>
-              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
-                3D Human Digital Twin Anatomy &amp; Live Telemetry
-              </h2>
-            </div>
-            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
-              Experience a real-time, biomorphic 3D digital model of your physiological state. Click any anatomical zone below to inspect active biological scores and telemetry.
-            </p>
-
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;align-items:center;">
-              <!-- Left: Interactive Hologram Stage -->
-              <div class="tour-twin-preview-box">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                  <span style="font-size:11px;font-weight:800;color:#38bdf8;text-transform:uppercase;letter-spacing:0.8px;">
-                    ✦ Interactive 3D Scanner Stage
-                  </span>
-                  <span id="tourTwinActiveBadge" style="font-size:11px;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 8px;border-radius:10px;border:1px solid rgba(52,211,153,0.4);font-weight:700;">
-                    🫀 Cardiac Optimal
-                  </span>
-                </div>
-
-                <!-- Interactive Anatomical Selector Chips -->
-                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;">
-                  <button type="button" class="tour-organ-chip active" id="tourOrgan_cardiac" onclick="previewTourOrgan('cardiac')">
-                    <span>🫀</span> <span>Cardiac</span>
-                  </button>
-                  <button type="button" class="tour-organ-chip" id="tourOrgan_cranial" onclick="previewTourOrgan('cranial')">
-                    <span>🧠</span> <span>Cranial</span>
-                  </button>
-                  <button type="button" class="tour-organ-chip" id="tourOrgan_pulmonary" onclick="previewTourOrgan('pulmonary')">
-                    <span>🫁</span> <span>Lungs</span>
-                  </button>
-                  <button type="button" class="tour-organ-chip" id="tourOrgan_metabolic" onclick="previewTourOrgan('metabolic')">
-                    <span>🥗</span> <span>Metabolic</span>
-                  </button>
-                  <button type="button" class="tour-organ-chip" id="tourOrgan_spine" onclick="previewTourOrgan('spine')">
-                    <span>🦴</span> <span>Spine</span>
-                  </button>
-                </div>
-
-                <!-- Interactive Display Card -->
-                <div id="tourOrganDetailBox" style="background:rgba(15,23,42,0.85);border:1.5px solid rgba(56,189,248,0.4);border-radius:12px;padding:14px;box-shadow:0 0 20px rgba(14,165,233,0.2);">
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                    <b id="tourOrganTitle" style="font-size:14px;color:#ffffff;display:flex;align-items:center;gap:6px;">
-                      <span>🫀</span> Cardiovascular &amp; Thoracic Axis
-                    </b>
-                    <span id="tourOrganScore" style="font-size:13px;font-weight:800;color:#38bdf8;">94/100</span>
-                  </div>
-                  <div id="tourOrganVitals" style="font-family:'Space Grotesk',monospace;font-size:12px;color:#7dd3fc;margin-bottom:8px;">
-                    Pulse: 72 BPM · Blood Pressure: 118/76 mmHg · HRV: 64ms
-                  </div>
-                  <div id="tourOrganInsight" style="font-size:12px;color:#cbd5e1;line-height:1.45;">
-                    Arterial compliance nominal with symmetric left-ventricular ejection. Sinus rhythm clinically synchronized.
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right: Key Capabilities Highlights -->
-              <div style="display:flex;flex-direction:column;gap:12px;">
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
-                  <b style="font-size:13px;color:#38bdf8;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-                    <span>⚡</span> 3D Raycasting &amp; Organ Isolation
-                  </b>
-                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
-                    Click, orbit, and zoom directly on individual organs to pull deep clinical biomarkers and telemetry histories.
-                  </span>
-                </div>
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
-                  <b style="font-size:13px;color:#34d399;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-                    <span>📊</span> Continuous Multi-Organ Health Matrix
-                  </b>
-                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
-                    Tracks neurological stress, cardiopulmonary efficiency, gastrointestinal glycemic load, and musculoskeletal symmetry.
-                  </span>
-                </div>
-                <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;">
-                  <b style="font-size:13px;color:#fbbf24;display:flex;align-items:center;gap:6px;margin-bottom:4px;">
-                    <span>🤝</span> Synchronized Specialist Consultations
-                  </b>
-                  <span style="font-size:12px;color:#94a3b8;line-height:1.4;">
-                    Instantly transfer focused anatomical telemetry directly into conversations with Dr. Nambi or Alex.
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 2: DUAL AI CLINICAL SPECIALISTS -->
-          <div class="tour-step-content" id="tourStep_2">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-              <span style="font-size:22px;">🩺</span>
-              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
-                Dual AI Specialists: Dr. Nambi &amp; Therapist Alex
-              </h2>
-            </div>
-            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
-              Receive 24/7 internal medicine triage alongside compassionate somatic psychotherapeutic care with real-time voice synthesis.
-            </p>
-
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;">
-              <!-- Specialist 1: Dr. Nambi -->
-              <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(14,165,233,0.4);border-radius:16px;padding:16px;position:relative;overflow:hidden;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0284c7,#0d9488);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 16px rgba(2,132,199,0.5);">
-                      👨‍⚕️
-                    </div>
-                    <div>
-                      <b style="font-size:14.5px;color:#ffffff;display:block;">Dr. Nambi</b>
-                      <span style="font-size:11px;color:#38bdf8;font-weight:700;">Chief Clinical AI Internist</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:3px;height:16px;">
-                    <div class="tour-equalizer-bar" style="animation-delay:0s;"></div>
-                    <div class="tour-equalizer-bar" style="animation-delay:0.2s;"></div>
-                    <div class="tour-equalizer-bar" style="animation-delay:0.4s;"></div>
-                    <div class="tour-equalizer-bar" style="animation-delay:0.1s;"></div>
-                  </div>
-                </div>
-                <div style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-bottom:12px;">
-                  Specializes in differential diagnosis, cardiopulmonary risk, medication reconciliations, and clinical laboratory interpretations.
-                </div>
-                <button type="button" onclick="simulateSpecialistSample('nambi')" style="width:100%;background:rgba(14,165,233,0.15);border:1px solid rgba(56,189,248,0.4);color:#38bdf8;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">
-                  ▶ Test Dr. Nambi Diagnostic Response
-                </button>
-              </div>
-
-              <!-- Specialist 2: Alex -->
-              <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(168,85,247,0.4);border-radius:16px;padding:16px;position:relative;overflow:hidden;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                  <div style="display:flex;align-items:center;gap:10px;">
-                    <div style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#ec4899);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 16px rgba(124,58,237,0.5);">
-                      🌸
-                    </div>
-                    <div>
-                      <b style="font-size:14.5px;color:#ffffff;display:block;">Alex</b>
-                      <span style="font-size:11px;color:#c084fc;font-weight:700;">Compassionate Somatic Therapist</span>
-                    </div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:3px;height:16px;">
-                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.3s;"></div>
-                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.1s;"></div>
-                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.5s;"></div>
-                    <div class="tour-equalizer-bar" style="background:#c084fc;animation-delay:0.2s;"></div>
-                  </div>
-                </div>
-                <div style="font-size:12px;color:#cbd5e1;line-height:1.45;margin-bottom:12px;">
-                  Guides diaphragmatic breathing (4-4 pacing), sleep hygiene, cognitive reframing, and stress resilience.
-                </div>
-                <button type="button" onclick="simulateSpecialistSample('alex')" style="width:100%;background:rgba(168,85,247,0.15);border:1px solid rgba(192,132,252,0.4);color:#c084fc;padding:8px 12px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;">
-                  ▶ Test Alex Breathing &amp; Somatic Audio
-                </button>
-              </div>
-            </div>
-
-            <!-- Dynamic Live Sample Response Preview Box -->
-            <div id="tourSpecialistResponseBox" style="margin-top:14px;background:rgba(15,23,42,0.9);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;font-size:12.5px;color:#e2e8f0;display:flex;align-items:flex-start;gap:12px;">
-              <span id="tourSampleAvatar" style="font-size:24px;">💬</span>
-              <div>
-                <b id="tourSampleSpeaker" style="color:#38bdf8;display:block;margin-bottom:2px;">Live Specialist Preview:</b>
-                <span id="tourSampleText" style="color:#94a3b8;line-height:1.4;">
-                  Click either specialist above to preview instant voice coaching, clinical differential insights, and breath pacing.
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 3: PM JAN AUSHADHI GENERIC SAVINGS ENGINE -->
-          <div class="tour-step-content" id="tourStep_3">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-              <span style="font-size:22px;">💊</span>
-              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
-                PM Jan Aushadhi Generic Medicine Engine
-              </h2>
-            </div>
-            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
-              Instantly find verified CDSCO bioequivalent generic alternatives to expensive brand-name medications and save up to 80%–90%.
-            </p>
-
-            <!-- Live Interactive Savings Demonstration Card -->
-            <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(13,148,136,0.5);border-radius:16px;padding:18px;box-shadow:0 0 30px rgba(13,148,136,0.2);">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span class="pill" style="background:#0d9488;color:#ffffff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:16px;">
-                    🎯 Verified Bioequivalent Match
-                  </span>
-                  <span style="font-size:12px;color:#5eead4;font-weight:700;">PMBJP Code: <b>PMBJP-0012</b></span>
-                </div>
-                <span id="tourSavingsPercentBadge" style="background:#14532d;color:#86efac;font-size:12px;font-weight:800;padding:3px 10px;border-radius:16px;border:1px solid #22c55e;">
-                  Save 83% (₹25/strip)
-                </span>
-              </div>
-
-              <!-- Side by Side Pricing Columns -->
-              <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-bottom:16px;">
-                <!-- Brand Prescribed -->
-                <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:12px;padding:12px;text-align:center;">
-                  <span style="font-size:11px;color:#fca5a5;font-weight:700;text-transform:uppercase;">Prescribed Brand</span>
-                  <div style="font-size:16px;font-weight:900;color:#fee2e2;margin:2px 0;">Crocin 650mg</div>
-                  <div style="font-size:20px;font-weight:900;color:#ef4444;text-decoration:line-through;">₹30.00</div>
-                </div>
-
-                <div style="font-size:20px;text-align:center;">⚡ ➡️</div>
-
-                <!-- Jan Aushadhi Generic -->
-                <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);border-radius:12px;padding:12px;text-align:center;">
-                  <span style="font-size:11px;color:#86efac;font-weight:700;text-transform:uppercase;">PM Jan Aushadhi</span>
-                  <div style="font-size:16px;font-weight:900;color:#dcfce7;margin:2px 0;">Paracetamol 650mg</div>
-                  <div style="font-size:22px;font-weight:900;color:#22c55e;">₹5.00</div>
-                </div>
-              </div>
-
-              <!-- Interactive Slider: Monthly Packs -->
-              <div style="background:rgba(15,23,42,0.8);border-radius:12px;padding:12px 14px;border:1px solid rgba(255,255,255,0.1);">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12.5px;">
-                  <span style="color:#cbd5e1;font-weight:600;">Simulate Monthly Family Medication Prescriptions:</span>
-                  <b id="tourPackCountLabel" style="color:#38bdf8;font-size:13.5px;">3 Packs / Month</b>
-                </div>
-                <input type="range" id="tourPackSlider" min="1" max="8" value="3" oninput="updateTourSavingsSlider(this.value)" style="width:100%;accent-color:#0d9488;cursor:pointer;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;">
-                  <span style="color:#94a3b8;">10,000+ Kendra Stores Across India</span>
-                  <span id="tourAnnualSavingsTally" style="font-size:13px;font-weight:800;color:#34d399;">
-                    💰 Annual Family Savings: ₹14,400 / yr
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 4: REAL-TIME ECG & CLINICAL SAFETY MATRIX -->
-          <div class="tour-step-content" id="tourStep_4">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-              <span style="font-size:22px;">📊</span>
-              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
-                Real-Time ECG Rhythm &amp; Clinical Safety Net
-              </h2>
-            </div>
-            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
-              Continuous 24/7 vital telemetry integration, arrhythmia detection, and real-time drug-drug interaction screening.
-            </p>
-
-            <div style="background:rgba(30,41,59,0.7);border:1.5px solid rgba(56,189,248,0.4);border-radius:16px;padding:18px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                <div style="display:flex;align-items:center;gap:8px;">
-                  <span style="font-size:12px;font-weight:800;color:#38bdf8;">❤️ LIVE SIMULATED ECG MONITOR</span>
-                  <span id="tourEcgStatusPill" style="font-size:10px;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 7px;border-radius:8px;font-weight:800;">
-                    NORMAL SINUS RHYTHM
-                  </span>
-                </div>
-                <div id="tourEcgRateLabel" style="font-family:'Space Grotesk',monospace;font-size:15px;font-weight:800;color:#ffffff;">
-                  74 BPM
-                </div>
-              </div>
-
-              <!-- Mini Tour ECG Canvas -->
-              <div style="height:64px;background:rgba(15,23,42,0.95);border:1px solid rgba(56,189,248,0.25);border-radius:10px;overflow:hidden;margin-bottom:14px;position:relative;">
-                <canvas id="tourEcgCanvas" style="width:100%;height:100%;display:block;"></canvas>
-              </div>
-
-              <!-- Interactive BPM Slider -->
-              <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;font-size:12px;color:#cbd5e1;">
-                <span style="white-space:nowrap;font-weight:700;">Simulate Heart Rate:</span>
-                <input type="range" id="tourBpmSlider" min="55" max="145" value="74" oninput="updateTourBpmSlider(this.value)" style="flex:1;accent-color:#38bdf8;cursor:pointer;">
-                <span id="tourBpmReadout" style="font-family:'Space Grotesk',monospace;font-weight:800;color:#38bdf8;width:55px;">74 bpm</span>
-              </div>
-
-              <!-- Clinical Safety Matrix Checks -->
-              <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:10px;font-size:12px;">
-                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
-                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>0 Dangerous Drug Interactions</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
-                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>Arterial Compliance Stable</span>
-                </div>
-                <div style="background:rgba(255,255,255,0.05);padding:8px 12px;border-radius:8px;border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px;">
-                  <span style="color:#22c55e;font-weight:900;">✓</span> <span>Emergency Geo-SOS Active</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 5: PERSONALIZED CARE LAUNCHPAD -->
-          <div class="tour-step-content" id="tourStep_5">
-            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-              <span style="font-size:22px;">🚀</span>
-              <h2 style="font-size:22px;font-weight:900;color:#ffffff;margin:0;letter-spacing:-0.4px;">
-                Welcome to Precision HealthCare
-              </h2>
-            </div>
-            <p style="font-size:13.5px;color:#94a3b8;margin:0 0 16px;line-height:1.5;">
-              You are ready to enter HealthGPT. Choose your entry point below to get started immediately:
-            </p>
-
-            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:20px;">
-              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;text-align:center;">
-                <span style="font-size:26px;display:block;margin-bottom:6px;">👤</span>
-                <b style="font-size:13px;color:#ffffff;display:block;">3D Health Twin</b>
-                <span style="font-size:11px;color:#94a3b8;">Explore full body contours</span>
-              </div>
-              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(168,85,247,0.3);border-radius:12px;padding:14px;text-align:center;">
-                <span style="font-size:26px;display:block;margin-bottom:6px;">🎙️</span>
-                <b style="font-size:13px;color:#ffffff;display:block;">AI Specialist Call</b>
-                <span style="font-size:11px;color:#94a3b8;">Dr. Nambi &amp; Alex</span>
-              </div>
-              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(16,185,129,0.3);border-radius:12px;padding:14px;text-align:center;">
-                <span style="font-size:26px;display:block;margin-bottom:6px;">💊</span>
-                <b style="font-size:13px;color:#ffffff;display:block;">Jan Aushadhi</b>
-                <span style="font-size:11px;color:#94a3b8;">Generic prescription savings</span>
-              </div>
-              <div class="tour-path-card" style="background:rgba(255,255,255,0.04);border:1.5px solid rgba(245,158,11,0.3);border-radius:12px;padding:14px;text-align:center;">
-                <span style="font-size:26px;display:block;margin-bottom:6px;">🩺</span>
-                <b style="font-size:13px;color:#ffffff;display:block;">Continuous Vitals</b>
-                <span style="font-size:11px;color:#94a3b8;">Live ECG &amp; health records</span>
-              </div>
-            </div>
-
-            <!-- Instant Launch Actions -->
-            <div style="display:flex;gap:12px;flex-wrap:wrap;">
-              <button type="button" class="tour-action-btn-primary" onclick="launchDemoPatientFromTour()" style="flex:1;min-width:220px;padding:12px 20px;font-size:14px;justify-content:center;">
-                <span>⚡ Enter Platform as Demo Patient</span>
-                <span>→</span>
-              </button>
-              <a href="/user-login" class="tour-action-btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;">
-                <span>🧬 3D Holographic Login</span>
-              </a>
-              <a href="/onboarding?restart=true" class="tour-action-btn-secondary" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;padding:12px 18px;">
-                <span>🚀 Deep Calibration Tour</span>
-              </a>
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Tour Footer -->
-        <div class="tour-theater-footer">
-          <button type="button" class="tour-action-btn-secondary" id="btnTourPrev" onclick="navigateTourStep(-1)">
-            <span>←</span> <span>Back</span>
-          </button>
-
-          <!-- Step Dots -->
-          <div class="tour-dots-row">
-            <button type="button" class="tour-dot-btn active" onclick="jumpToTourStep(1)" title="Step 1: 3D Twin"></button>
-            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(2)" title="Step 2: AI Specialists"></button>
-            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(3)" title="Step 3: Generic Savings"></button>
-            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(4)" title="Step 4: Real-time Telemetry"></button>
-            <button type="button" class="tour-dot-btn" onclick="jumpToTourStep(5)" title="Step 5: Launchpad"></button>
-          </div>
-
-          <div style="display:flex;align-items:center;gap:10px;">
-            <button type="button" onclick="closeCinematicAppTour()" style="background:transparent;border:none;color:#94a3b8;font-size:12px;cursor:pointer;text-decoration:underline;">
-              Skip
-            </button>
-            <button type="button" class="tour-action-btn-primary" id="btnTourNext" onclick="navigateTourStep(1)">
-              <span id="tourNextBtnLabel">Next: AI Specialists</span>
-              <span>→</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- FLOATING QUICK APP TOUR TRIGGER PILL -->
-  <div class="floating-app-tour-trigger" id="floatingTourTrigger" onclick="openCinematicAppTour(event)" title="Launch Interactive Cinematic App Tour with High-End VFX">
-    <div class="floating-tour-dot"></div>
-    <span style="font-size:13px;font-weight:800;letter-spacing:0.2px;">✨ Take 60s VFX App Tour</span>
-    <span style="font-size:10px;background:rgba(255,255,255,0.2);padding:2px 7px;border-radius:10px;font-weight:800;">Ultra VFX</span>
-  </div>
+  <!-- Cinematic App Tour Overlay replaced by dedicated full-page /onboarding experience -->
+  <!-- Floating App Tour Icon Removed as requested -->
 
   <script>
     /* =========================================================
@@ -3681,33 +3276,13 @@
        ========================================================= */
     function switchAuthTab(tab) {
       document.getElementById('alertBanner').style.display = 'none';
-
-      const tabEmail = document.getElementById('tabEmail');
-      const tabOtp = document.getElementById('tabOtp');
-      const tabQuick = document.getElementById('tabQuick');
-
-      const viewEmail = document.getElementById('viewEmail');
-      const viewOtp = document.getElementById('viewOtp');
-      const viewQuick = document.getElementById('viewQuick');
-
-      [tabEmail, tabOtp, tabQuick].forEach(t => t.classList.remove('active'));
-      [viewEmail, viewOtp, viewQuick].forEach(v => v.style.display = 'none');
-
-      if (tab === 'email') {
-        tabEmail.classList.add('active');
-        viewEmail.style.display = 'block';
-      } else if (tab === 'otp') {
-        tabOtp.classList.add('active');
-        viewOtp.style.display = 'block';
-      } else {
-        tabQuick.classList.add('active');
-        viewQuick.style.display = 'block';
-      }
     }
 
     function togglePasswordVisibility() {
       const input = document.getElementById('passwordInput');
-      input.type = input.type === 'password' ? 'text' : 'password';
+      if (input) {
+        input.type = input.type === 'password' ? 'text' : 'password';
+      }
     }
 
     function showAlert(msg, type = 'info') {
@@ -3719,13 +3294,12 @@
     }
 
     /* =========================================================
-       CROSS-PORTAL DUAL SYNCHRONIZATION & AUTO-OTP ENGINE
+       CROSS-PORTAL DUAL SYNCHRONIZATION ENGINE
        Keeps INDEX.HTML and user-login.html completely in sync
        ========================================================= */
     let indexAuthChannel = null;
     let indexEmailDebounceTimer = null;
-    let indexOtpCountdownInterval = null;
-    let lastGeneratedIndexOtp = null;
+
 
     function initIndexAuthSyncEngine() {
       // 1. Initialize BroadcastChannel
@@ -3786,22 +3360,6 @@
           emailInput.value = data.email;
           updateIndexEmailBadge(data.email);
         }
-      }
-
-      if (data.type === 'OTP_CHANGED' && data.otp) {
-        const otpInput = document.getElementById('otpInput');
-        if (otpInput && otpInput.value !== data.otp) {
-          otpInput.value = data.otp;
-          renderIndexOtpCards(data.otp);
-        }
-      }
-
-      if (data.type === 'OTP_GENERATED' && data.otp) {
-        const otpInput = document.getElementById('otpInput');
-        if (otpInput) otpInput.value = data.otp;
-        renderIndexOtpCards(data.otp);
-        startOtpTimer(60);
-        showAlert(`⚡ Authentic OTP (${data.otp}) received from Dedicated Terminal!`, 'success');
       }
 
       if (data.type === 'LOGIN_SUCCESS') {
@@ -3872,11 +3430,9 @@
         const urlParams = new URLSearchParams(window.location.search);
         const qName = urlParams.get('name');
         const qEmail = urlParams.get('email');
-        const qOtp = urlParams.get('otp');
 
-        const savedName = qName || localStorage.getItem('healthgpt_sync_username');
-        const savedEmail = qEmail || localStorage.getItem('healthgpt_sync_email');
-        const savedOtp = qOtp || localStorage.getItem('healthgpt_sync_otp');
+        const savedName = qName || localStorage.getItem('healthgpt_user_name') || localStorage.getItem('healthgpt_sync_username');
+        const savedEmail = qEmail || localStorage.getItem('healthgpt_user_email') || localStorage.getItem('healthgpt_sync_email');
 
         if (savedName) {
           const u = document.getElementById('usernameInput');
@@ -3889,11 +3445,18 @@
             updateIndexEmailBadge(savedEmail);
           }
         }
-        if (savedOtp) {
-          const o = document.getElementById('otpInput');
-          if (o) {
-            o.value = savedOtp;
-            renderIndexOtpCards(savedOtp);
+
+        // Display user account avatar icon in the top header if user is authenticated
+        const activeName = localStorage.getItem('healthgpt_user_name') || savedName;
+        const navBadge = document.getElementById('navUserBadge');
+        if (navBadge && activeName && activeName !== 'demo') {
+          navBadge.style.display = 'flex';
+          const nameEl = document.getElementById('navUserName');
+          const avatarEl = document.getElementById('navUserAvatar');
+          if (nameEl) nameEl.textContent = activeName;
+          if (avatarEl) {
+            const initials = activeName.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase() || '👤';
+            avatarEl.textContent = initials;
           }
         }
       } catch(e){}
@@ -3909,27 +3472,12 @@
       try { localStorage.setItem('healthgpt_sync_email', email); } catch(e){}
       broadcastIndexSync({ type: 'EMAIL_CHANGED', email });
       updateIndexEmailBadge(email);
-
-      // Debounce authentic OTP generation
-      clearTimeout(indexEmailDebounceTimer);
-      if (isValidGmailOrEmail(email)) {
-        indexEmailDebounceTimer = setTimeout(() => {
-          requestOtpCode(true);
-        }, 600);
-      }
-    }
-
-    function handleIndexOtpInput(val) {
-      const otp = (val || '').trim();
-      try { localStorage.setItem('healthgpt_sync_otp', otp); } catch(e){}
-      broadcastIndexSync({ type: 'OTP_CHANGED', otp });
-      renderIndexOtpCards(otp);
     }
 
     function isValidGmailOrEmail(email) {
       if (!email) return false;
       const lower = email.toLowerCase().trim();
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower) && (lower.includes('@gmail.com') || lower.length >= 8);
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lower) && (lower.includes('@gmail.com') || lower.length >= 6);
     }
 
     function updateIndexEmailBadge(email) {
@@ -3945,93 +3493,40 @@
       const isGmail = email.toLowerCase().endsWith('@gmail.com');
       const isValid = isValidGmailOrEmail(email);
 
-      if (isGmail) {
+      if (isGmail || isValid) {
         badge.style.background = 'rgba(16, 185, 129, 0.12)';
         badge.style.color = '#059669';
         badge.style.border = '1px solid rgba(16, 185, 129, 0.3)';
-        badge.innerHTML = `<span>✓ Verified Google Workspace (${email}) • Auto-OTP Armed</span>`;
-      } else if (isValid) {
-        badge.style.background = 'rgba(2, 132, 199, 0.1)';
-        badge.style.color = '#0284c7';
-        badge.style.border = '1px solid rgba(2, 132, 199, 0.3)';
-        badge.innerHTML = `<span>✓ Clinical Email Detected • Ready for OTP Verification</span>`;
+        badge.innerHTML = `<span>✓ Valid Account Email (${email})</span>`;
       } else {
         badge.style.background = 'rgba(245, 158, 11, 0.1)';
         badge.style.color = '#d97706';
         badge.style.border = '1px solid rgba(245, 158, 11, 0.3)';
-        badge.innerHTML = `<span>⏳ Complete your email to automatically dispatch OTP</span>`;
+        badge.innerHTML = `<span>Enter your valid email address</span>`;
       }
-    }
-
-    function renderIndexOtpCards(otpStr) {
-      const container = document.getElementById('indexOtpDigitsDisplay');
-      if (!container) return;
-      const padded = (otpStr || '').padEnd(6, '•').slice(0, 6);
-      container.innerHTML = padded.split('').map(digit => {
-        const isFilled = digit !== '•';
-        return `
-          <span class="index-otp-card" style="width:34px;height:38px;background:${isFilled ? '#ffffff' : '#f8fafc'};border:1.5px solid ${isFilled ? '#0d9488' : '#cbd5e1'};border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:${isFilled ? '#0f766e' : '#94a3b8'};box-shadow:${isFilled ? '0 2px 6px rgba(13,148,136,0.18)' : 'none'};transition:all 0.2s ease;">
-            ${digit}
-          </span>
-        `;
-      }).join('');
-    }
-
-    function startOtpTimer(seconds = 60) {
-      clearInterval(indexOtpCountdownInterval);
-      const timerBadge = document.getElementById('indexOtpTimerBadge');
-      let remaining = seconds;
-      if (timerBadge) timerBadge.textContent = `Valid ${remaining}s`;
-
-      indexOtpCountdownInterval = setInterval(() => {
-        remaining--;
-        if (remaining <= 0) {
-          clearInterval(indexOtpCountdownInterval);
-          if (timerBadge) {
-            timerBadge.textContent = 'Expired';
-            timerBadge.style.background = '#ef4444';
-          }
-        } else {
-          if (timerBadge) {
-            timerBadge.textContent = `Valid ${remaining}s`;
-            timerBadge.style.background = remaining <= 10 ? '#ef4444' : '#0d9488';
-          }
-        }
-      }, 1000);
-    }
-
-    function copyIndexOtpCode() {
-      const otp = document.getElementById('otpInput')?.value || lastGeneratedIndexOtp || '123456';
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(otp);
-      }
-      const btn = document.getElementById('btnCopyIndexOtp');
-      if (btn) {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '✓ Copied!';
-        btn.style.background = '#059669';
-        setTimeout(() => {
-          btn.innerHTML = orig;
-          btn.style.background = '#0d9488';
-        }, 1800);
-      }
-      showAlert(`Copied OTP ${otp} to clipboard!`, 'success');
     }
 
     function openDedicatedLoginFromIndex(e) {
       if (e) e.preventDefault();
       const name = document.getElementById('usernameInput')?.value || 'demo';
-      const email = document.getElementById('emailInput')?.value || 'demo@gmail.com';
-      const otp = document.getElementById('otpInput')?.value || '123456';
+      const email = document.getElementById('emailInput')?.value || 'demo@healthgpt.ai';
 
       try {
         localStorage.setItem('healthgpt_sync_username', name);
         localStorage.setItem('healthgpt_sync_email', email);
-        localStorage.setItem('healthgpt_sync_otp', otp);
       } catch(err){}
 
-      const targetUrl = `/user-login?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`;
+      const targetUrl = `/user-login?name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
       triggerIndexTransition(targetUrl, 'Opening Dedicated 3D Terminal', 'Transferring verified patient credentials & biometrics...');
+    }
+
+    function fillStandardPatientPreset() {
+      document.getElementById('usernameInput').value = 'demo';
+      document.getElementById('emailInput').value = 'demo@healthgpt.ai';
+      document.getElementById('passwordInput').value = 'password123';
+      updateIndexEmailBadge('demo@healthgpt.ai');
+      showAlert('✓ Standard Patient Credentials Loaded (demo@healthgpt.ai / password123)', 'success');
+      playInteractiveTone('success');
     }
 
     function fillPreset(name, email, password) {
@@ -4041,71 +3536,10 @@
       updateIndexEmailBadge(email);
       handleIndexUsernameInput(name);
       handleIndexEmailInput(email);
-      requestOtpCode(true);
       showAlert(`Profile loaded: ${name} (${email})`, 'success');
     }
 
-    async function requestOtpCode(isAuto = false) {
-      const email = document.getElementById('emailInput').value.trim();
-      const username = document.getElementById('usernameInput').value.trim();
-      const hint = document.getElementById('otpStatusHint');
-      const btn = document.getElementById('btnRequestOtp');
-      const dispatchedText = document.getElementById('indexOtpDispatchedTo');
-      
-      if (btn && !isAuto) {
-        btn.innerHTML = '<span>⏳ Sending...</span>';
-        btn.disabled = true;
-      }
 
-      try {
-        const res = await fetch('/api/auth/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, username })
-        });
-        const data = await res.json().catch(() => ({}));
-        const otpCode = String(data.demoOtp || data.otp || '123456');
-        lastGeneratedIndexOtp = otpCode;
-
-        document.getElementById('otpInput').value = otpCode;
-        renderIndexOtpCards(otpCode);
-        startOtpTimer(60);
-
-        if (dispatchedText) {
-          dispatchedText.textContent = `Dispatched to ${email || username || 'Gmail'}`;
-        }
-
-        if (hint) {
-          hint.innerHTML = `<span>✓ Verification OTP: <b>${otpCode}</b> (Sent to ${email || username})</span>`;
-          hint.style.color = '#059669';
-        }
-
-        // Broadcast to dedicated terminal
-        broadcastIndexSync({
-          type: 'OTP_GENERATED',
-          otp: otpCode,
-          email: email,
-          name: username
-        });
-
-        showAlert(`Verification code generated: ${otpCode}`, 'success');
-        playInteractiveTone('focus');
-      } catch (err) {
-        const fallbackOtp = '123456';
-        lastGeneratedIndexOtp = fallbackOtp;
-        document.getElementById('otpInput').value = fallbackOtp;
-        renderIndexOtpCards(fallbackOtp);
-        startOtpTimer(60);
-        if (hint) {
-          hint.innerHTML = '<span>✓ Verification OTP: <b>123456</b> (Offline Ready)</span>';
-        }
-      } finally {
-        if (btn) {
-          btn.innerHTML = '<span>⚡ Resend OTP</span>';
-          btn.disabled = false;
-        }
-      }
-    }
 
     /* =========================================================
        3. NAVIGATION & FIRECRACKERS CELEBRATION LOGIN HANDLER
@@ -4489,91 +3923,87 @@
       if (e) e.preventDefault();
       const username = document.getElementById('usernameInput').value.trim();
       const email = document.getElementById('emailInput').value.trim();
-      const password = document.getElementById('passwordInput').value;
-      const otp = document.getElementById('otpInput').value.trim();
+      const password = document.getElementById('passwordInput').value.trim();
       const btn = document.getElementById('btnSignInSubmit');
 
-      if (!username) {
-        showAlert('Please enter your User Name', 'info');
-        return;
-      }
-      if (!email) {
-        showAlert('Please enter your Email Address', 'info');
+      if (!email && !username) {
+        showAlert('Please enter your Email Address or User Name', 'error');
+        playInteractiveTone('click');
         return;
       }
       if (!password) {
-        showAlert('Please enter your Password', 'info');
-        return;
-      }
-      if (!otp) {
-        showAlert('Please enter the 6-digit OTP (e.g. 123456)', 'info');
+        showAlert('Please enter your account password.', 'error');
+        playInteractiveTone('click');
         return;
       }
 
       // Minimalist cream-colored circular loading indicator inside submit button
-      btn.innerHTML = '<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Verifying Credentials & OTP...</span>';
+      btn.innerHTML = '<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Verifying with Auth Server...</span>';
       btn.disabled = true;
 
       try {
+        const payload = {
+          username: username || undefined,
+          email: email || undefined,
+          password: password
+        };
+
         const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, email, password, otp })
+          body: JSON.stringify(payload)
         });
 
         const data = await response.json().catch(() => ({}));
 
         if (response.ok && data.success) {
+          playInteractiveTone('success');
+          showAlert(`✓ Access Granted: Welcome ${data.user?.name || username}! Opening Dashboard...`, 'success');
+
+          if (data.token) {
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('supabase_auth_token', data.token);
+            sessionStorage.setItem('auth_token', data.token);
+          }
+          localStorage.setItem('healthgpt_supabase_auth', 'true');
+          localStorage.setItem('healthgpt_supabase_user', JSON.stringify({
+            id: data.user?.id || '1',
+            email: data.user?.email || email,
+            name: data.user?.name || username || 'Patient',
+            role: data.user?.role || 'patient'
+          }));
+          localStorage.setItem('healthgpt_user_id', String(data.user?.id || '1'));
+          localStorage.setItem('healthgpt_user_name', String(data.user?.name || username || 'Patient'));
+          localStorage.setItem('healthgpt_user_email', String(data.user?.email || email));
+          localStorage.setItem('healthgpt_user_role', String(data.user?.role || 'patient'));
+
+
           await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
           proceedToDashboard(data.user?.id || '1', data.user?.name || username);
-        } else if (data.detail) {
-          showAlert(data.detail, 'error');
+        } else {
+          // Strictly display server rejection
+          const errorMsg = data.detail || 'Access Denied: Authentication failed. Please check your credentials.';
+          showAlert(errorMsg, 'error');
+          playInteractiveTone('error');
           btn.innerHTML = '<span>Sign In as Patient</span> <span>→</span>';
           btn.disabled = false;
-        } else {
-          // Graceful fallback to guarantee entry
-          await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
-          proceedToDashboard('1', username);
         }
       } catch (err) {
-        // Fallback for offline or sandbox iframe
-        await playButtonSuccessPulseIndex(btn, 'Verified · Entering Dashboard...');
-        proceedToDashboard('1', username);
+        showAlert('Authentication error: Unable to contact authentication server. Please check your connection.', 'error');
+        playInteractiveTone('error');
+        btn.innerHTML = '<span>Sign In as Patient</span> <span>→</span>';
+        btn.disabled = false;
       }
     }
 
     /* Modern Premium Glassmorphic Social OAuth Authentication Handler */
     window.handleSocialOAuthLogin = function(provider) {
-      const btn = provider === 'Google' ? document.getElementById('btnContinueGoogle') : document.getElementById('btnContinueApple');
-      if (!btn || btn.disabled) return;
-
-      playInteractiveTone('click');
-      
-      // Inject minimalist cream circular spinner into social button
-      btn.innerHTML = `<span class="cream-btn-spinner" aria-hidden="true"></span> <span>Connecting to ${provider}...</span>`;
-      btn.disabled = true;
-
-      showAlert(`Authorizing Single Sign-On with ${provider}...`, 'info');
-
-      setTimeout(async () => {
-        const userName = provider === 'Google' ? 'demo' : 'demo (Apple ID)';
-
-        btn.innerHTML = `<span style="font-size:14px;color:#10b981;font-weight:900;">✓</span> <span>${provider} Verified · Launching...</span>`;
-        btn.style.borderColor = '#10b981';
-        btn.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.4)';
-
-        playInteractiveTone('success');
-        showAlert(`Successfully authenticated via ${provider}! Launching clinical digital twin...`, 'success');
-
-        setTimeout(() => {
-          proceedToDashboard('1', userName);
-        }, 650);
-      }, 950);
+      fillStandardPatientPreset();
+      showAlert(`SSO Account Loaded: demo@healthgpt.ai. Click "Sign In as Patient" to proceed.`, 'info');
+      playInteractiveTone('focus');
     };
 
-    function directGuestLogin() {
-      proceedToDashboard('guest', 'Guest Explorer');
-    }
+
 
     /* Role Switcher Handler with Framer Motion Layout Slide */
     function switchLoginRole(role) {
@@ -4651,7 +4081,6 @@
     function fillAdminPresetIndex() {
       document.getElementById('indexAdminEmailInput').value = 'admin@healthgpt.ai';
       document.getElementById('indexAdminPasswordInput').value = 'my_rules';
-      document.getElementById('indexAdminPinInput').value = '999888';
       handleAdminPasswordInput('my_rules');
       showAlert('✓ Master Admin clearance credentials loaded securely', 'success');
       playInteractiveTone('success');
@@ -4719,11 +4148,10 @@
       if (e) e.preventDefault();
       const email = document.getElementById('indexAdminEmailInput').value.trim();
       const password = document.getElementById('indexAdminPasswordInput').value;
-      const pin = document.getElementById('indexAdminPinInput').value.trim();
       const btn = document.getElementById('btnAdminSignInIndex');
 
-      if (!email || !password || !pin) {
-        showAlert('Please fill in Admin Email, Password, and 2FA PIN', 'error');
+      if (!email || !password) {
+        showAlert('Please fill in Admin Email and Password', 'error');
         playInteractiveTone('error');
         return;
       }
@@ -4743,7 +4171,7 @@
         const res = await fetch('/api/auth/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, pin, roleLevel: 'super_admin' })
+          body: JSON.stringify({ email, password, roleLevel: 'super_admin' })
         });
         const data = await res.json().catch(() => ({}));
 
@@ -7689,44 +7117,16 @@
       if (circle) circle.style.strokeDashoffset = '50.26';
     }
 
-    // Modal Open & Close
+    // Modal Open & Close - routes to dedicated full-screen multi-page onboarding experience
     function openCinematicAppTour(e) {
       if (e && e.preventDefault) e.preventDefault();
-
-      const overlay = document.getElementById('cinematicAppTourOverlay');
-      if (!overlay) return;
-
-      tourIsOpen = true;
-      overlay.style.display = 'flex';
-      setTimeout(() => {
-        overlay.classList.add('active');
-      }, 20);
-
-      // Initialize Canvases
-      if (!tourVfxCanvas) initTourVfxCanvas();
-      if (!tourEcgCanvas) initTourEcgCanvas();
-
-      jumpToTourStep(1);
-      renderTourVfxLoop();
-      playTourWarpSound();
-
-      // Lock body scroll
-      document.body.style.overflow = 'hidden';
+      window.location.href = '/onboarding';
     }
 
     function closeCinematicAppTour() {
-      const overlay = document.getElementById('cinematicAppTourOverlay');
-      if (!overlay) return;
-
-      overlay.classList.remove('active');
-      setTimeout(() => {
-        overlay.style.display = 'none';
-        tourIsOpen = false;
-        stopTourAutoPlayTimer();
-        if (tourVfxAnimId) cancelAnimationFrame(tourVfxAnimId);
-        document.body.style.overflow = '';
-      }, 350);
+      // No-op since onboarding is now a dedicated page
     }
+
 
     // Keyboard Shortcuts for Tour
     window.addEventListener('keydown', (e) => {
@@ -7765,15 +7165,50 @@
       }, 1200);
 
       const params = new URLSearchParams(window.location.search);
+
+      // 1. Calibrated Onboarding Welcome Announcement Banner (shown after completing onboarding)
+      const hasCompletedOnboarding = localStorage.getItem('healthgpt_onboarding_completed') === 'true';
+      if (params.get('welcome') === 'true' || (hasCompletedOnboarding && params.get('calibrated') === 'true')) {
+        const welcomeBanner = document.getElementById('onboardingWelcomeBanner');
+        if (welcomeBanner) {
+          welcomeBanner.style.display = 'block';
+
+          const userName = localStorage.getItem('healthgpt_user_name') || 'Eleanor Vance';
+          const archetype = localStorage.getItem('healthgpt_user_archetype') || 'longevity';
+          const doctor = localStorage.getItem('healthgpt_preferred_doctor') || 'Dr. Rajesh Sharma';
+          const bpm = localStorage.getItem('healthgpt_user_bpm') || '72';
+
+          const titleEl = document.getElementById('welcomeBannerTitle');
+          const archEl = document.getElementById('welcomeBannerArchetype');
+          const docEl = document.getElementById('welcomeBannerDoctor');
+          const bpmEl = document.getElementById('welcomeBannerBpm');
+
+          const archLabels = {
+            longevity: 'Longevity & Vitals',
+            chronic: 'Chronic Care Protocol',
+            family: 'Family & Pediatric Care',
+            fitness: 'Metabolic & HRV Biohack'
+          };
+
+          if (titleEl) titleEl.textContent = `Welcome to HealthGPT, ${userName}!`;
+          if (archEl) archEl.textContent = archLabels[archetype] || archetype;
+          if (docEl) docEl.textContent = doctor;
+          if (bpmEl) bpmEl.textContent = `${bpm} BPM · NSR`;
+
+          // Play subtle celebratory chime if audio is enabled
+          try {
+            if (typeof playSoundFx === 'function') playSoundFx('celebrate');
+          } catch(e) {}
+        }
+      }
+
       if (params.get('role') === 'admin' || window.location.hash === '#admin') {
         switchLoginRole('admin');
       }
 
-      // Check for tour launch trigger in URL
-      if (params.get('tour') === 'true' || window.location.hash === '#tour') {
-        setTimeout(() => {
-          openCinematicAppTour();
-        }, 600);
+      // Check for onboarding launch trigger in URL
+      if (params.get('tour') === 'true' || window.location.hash === '#tour' || params.get('onboarding') === 'true') {
+        window.location.href = '/onboarding';
       }
 
       window.startRealtimeInstantDoctorMatch = function(specialty, city) {

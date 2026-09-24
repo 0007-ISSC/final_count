@@ -3,8 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>HealthGPT — Where AI Meets HealthCare | Access Portal</title>
   <link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
   <link rel="alternate icon" type="image/jpeg" href="/healthgpt-logo.jpg">
   <link rel="apple-touch-icon" href="/healthgpt-logo.jpg">
   <meta name="description" content="Cinematic futuristic AI healthcare portal featuring 3D holographic digital twin, real-time biometric telemetry, and secure clinical access.">
@@ -631,53 +636,6 @@
       transform: translateX(-2px);
     }
 
-    /* Individual 6-digit OTP cards */
-    .otp-digits-row {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
-      margin: 10px 0 6px;
-    }
-
-    .otp-digit-card {
-      width: 42px;
-      height: 50px;
-      background: rgba(4, 8, 19, 0.95);
-      border: 1.5px solid rgba(56, 189, 248, 0.45);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 22px;
-      font-weight: 800;
-      color: #34d399;
-      text-shadow: 0 0 10px rgba(52, 211, 153, 0.65);
-      box-shadow: inset 0 0 12px rgba(14, 165, 233, 0.2);
-      animation: popDigit 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    @keyframes popDigit {
-      0% { transform: scale(0.6); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .otp-progress-track {
-      width: 100%;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 3px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
-
-    .otp-progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #38bdf8, #34d399);
-      width: 100%;
-      transition: width 1s linear;
-    }
-
     .terminal-container::before {
       content: '';
       position: absolute;
@@ -799,107 +757,6 @@
 
     .form-input::placeholder {
       color: #475569;
-    }
-
-    .form-input.otp-active-glow {
-      border-color: #34d399;
-      box-shadow: 0 0 16px rgba(52, 211, 153, 0.4);
-      background: rgba(4, 8, 19, 0.95);
-    }
-
-    .btn-generate-otp {
-      background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(2, 132, 199, 0.5) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      color: #38bdf8;
-      border-radius: 10px;
-      padding: 0 16px;
-      font-size: 12.5px;
-      font-weight: 700;
-      white-space: nowrap;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.25s ease;
-      box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
-    }
-
-    .btn-generate-otp:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(14, 165, 233, 0.4) 0%, rgba(2, 132, 199, 0.7) 100%);
-      border-color: #38bdf8;
-      color: #ffffff;
-      box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
-      transform: translateY(-1px);
-    }
-
-    .btn-generate-otp:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #94a3b8;
-    }
-
-    .btn-generate-otp.pulsing {
-      animation: otpGlowPulse 1.8s infinite ease-in-out;
-      border-color: #38bdf8;
-      color: #ffffff;
-    }
-
-    @keyframes otpGlowPulse {
-      0%, 100% { box-shadow: 0 0 8px rgba(56, 189, 248, 0.35); transform: scale(1); }
-      50% { box-shadow: 0 0 22px rgba(56, 189, 248, 0.85); transform: scale(1.02); }
-    }
-
-    .otp-notice-bar {
-      margin-top: 10px;
-      padding: 10px 12px;
-      background: rgba(14, 165, 233, 0.08);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      animation: fadeInOtp 0.25s ease forwards;
-    }
-
-    @keyframes fadeInOtp {
-      from { opacity: 0; transform: translateY(-4px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .otp-code-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(4, 8, 19, 0.85);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 8px;
-      padding: 6px 12px;
-    }
-
-    .otp-number {
-      font-family: var(--font-mono);
-      font-size: 17px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      color: #34d399;
-    }
-
-    .otp-quick-btn {
-      background: rgba(56, 189, 248, 0.15);
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      color: #38bdf8;
-      border-radius: 6px;
-      padding: 4px 10px;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .otp-quick-btn:hover {
-      background: rgba(56, 189, 248, 0.35);
-      color: #ffffff;
     }
 
     .form-toggle-btn {
@@ -2238,57 +2095,45 @@
 
           <div class="form-group">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label class="form-label" style="margin-bottom:0;">Gmail / Account Email</label>
+              <label class="form-label" style="margin-bottom:0;">Email Address</label>
               <span id="emailValidationStatus" style="font-size:11px;color:#38bdf8;font-weight:700;display:inline-flex;align-items:center;gap:4px;">
                 <span style="width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;"></span>
-                <span>Gmail Verified</span>
+                <span>Verified Clearance</span>
               </span>
             </div>
-            <div style="display:flex;gap:8px;">
-              <div class="input-wrapper" style="flex:1;">
-                <span class="input-icon">✉️</span>
-                <input type="email" id="userInputEmail" class="form-input" placeholder="e.g. demo@gmail.com" value="demo@gmail.com" required oninput="handleEmailInputChanged(this.value)" onblur="handleEmailInputChanged(this.value, true)">
-              </div>
-              <button type="button" id="btnGenerateOtp" class="btn-generate-otp pulsing" onclick="handleGenerateOtp(true)" title="Generate 6-digit OTP verification code">
-                <span id="btnGenerateOtpIcon">⚡</span>
-                <span id="btnGenerateOtpText">Generate OTP</span>
-              </button>
-            </div>
-            <!-- Dynamic OTP Feedback Notice Banner -->
-            <div id="otpNoticeBar" class="otp-notice-bar" style="display:none;"></div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Security Password</label>
             <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="userInputPassword" class="form-input" placeholder="••••••••••••" value="healthgpt2026" required>
-              <button type="button" class="form-toggle-btn" onclick="togglePasswordVisibility('userInputPassword')" title="Show/Hide Password">👁️</button>
+              <span class="input-icon">✉️</span>
+              <input type="email" id="userInputEmail" class="form-input" placeholder="e.g. demo@healthgpt.ai" value="demo@healthgpt.ai" required oninput="handleEmailInputChanged(this.value)" onblur="handleEmailInputChanged(this.value, true)">
             </div>
           </div>
 
           <div class="form-group">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-              <label class="form-label" style="margin-bottom:0;">2FA Passcode / OTP Verification</label>
-              <span id="otpStatusBadge" style="font-size:10.5px;color:#94a3b8;font-weight:600;">Auto-generated or Demo (123456)</span>
+              <label class="form-label" style="margin-bottom:0;">Security Password</label>
+              <span style="font-size:10.5px;color:#94a3b8;">Standard: password123</span>
             </div>
             <div class="input-wrapper">
-              <span class="input-icon">🛡️</span>
-              <input type="text" id="userInputOtp" class="form-input" placeholder="Enter 6-digit code" value="842915" required maxlength="6" style="letter-spacing:3px;font-weight:700;" oninput="handleOtpInputChanged(this.value)">
-              <button type="button" class="form-toggle-btn" onclick="handleGenerateOtp(true)" title="Generate New OTP Code" style="right:10px;font-size:11px;color:#38bdf8;font-weight:700;background:rgba(56,189,248,0.12);padding:3px 8px;border-radius:6px;border:1px solid rgba(56,189,248,0.3);cursor:pointer;">
-                ⚡ New OTP
-              </button>
+              <span class="input-icon">🔒</span>
+              <input type="password" id="userInputPassword" class="form-input" placeholder="••••••••••••" value="password123" required autocomplete="current-password">
+              <button type="button" class="form-toggle-btn" onclick="togglePasswordVisibility('userInputPassword')" title="Show/Hide Password">👁️</button>
             </div>
           </div>
+
 
           <button type="submit" class="btn-submit" id="btnTerminalSubmit">
             <span>Enter HealthGPT System</span>
             <span>→</span>
           </button>
 
-          <button type="button" class="btn-guest" onclick="handleInstantGuestEntry()">
-            ⚡ Instant Direct Entry (Guest Diagnostic Session)
-          </button>
+          <!-- Standardized Credentials Quick Loaders (Strict Authentication, No Bypass) -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
+            <button type="button" class="btn-guest" onclick="applyRolePreset('patient')" style="margin-top:0;font-size:11px;padding:8px 6px;">
+              ⚡ Standard Patient Account
+            </button>
+            <button type="button" class="btn-guest" onclick="applyRolePreset('clinician')" style="margin-top:0;font-size:11px;padding:8px 6px;">
+              🛡️ Standard Admin Account
+            </button>
+          </div>
 
           <!-- Interactive App Tour & Care Tool Customization -->
           <a href="/onboarding?restart=true" class="btn-guest" style="margin-top:8px;background:rgba(245,158,11,0.12);border:1.5px solid rgba(245,158,11,0.4);color:#fbbf24;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;">
@@ -2297,6 +2142,7 @@
             <span style="font-size:11px;background:rgba(245,158,11,0.25);padding:2px 8px;border-radius:10px;">Tour ↗</span>
           </a>
         </form>
+
 
         <div class="terminal-footer">
           <div>Encrypted with CDSCO 256-bit Healthcare Protocols.</div>
@@ -2960,7 +2806,7 @@
       mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
       if (hologramGroup) {
-        // Dynamic VFX Hologram Energy Surge on OTP / Bio Events
+        // Dynamic VFX Hologram Energy Surge on Key / Bio Events
         if (hologramSurge > 0.005) {
           hologramSurge *= 0.94;
           if (bodyParticles && bodyParticles.material) {
@@ -3330,7 +3176,7 @@
       // Target lock listeners on inputs, buttons, and cards
       document.addEventListener('mouseover', (e) => {
         if (!reticleActive) return;
-        const target = e.target.closest('input, button, a, .role-card, .btn-generate-otp');
+        const target = e.target.closest('input, button, a, .role-card');
         if (target && reticleEl) {
           reticleEl.classList.add('locked');
           if (reticleStatusEl) {
@@ -3341,7 +3187,7 @@
       });
 
       document.addEventListener('mouseout', (e) => {
-        const target = e.target.closest('input, button, a, .role-card, .btn-generate-otp');
+        const target = e.target.closest('input, button, a, .role-card');
         if (target && reticleEl) {
           reticleEl.classList.remove('locked');
           if (reticleStatusEl) reticleStatusEl.textContent = 'BIO-SCAN';
@@ -3630,22 +3476,24 @@
       if (role === 'clinician') {
         pClinician?.classList.add('active');
         pPatient?.classList.remove('active');
-        if (userInput) userInput.value = 'Verified Clinician';
+        if (userInput) userInput.value = 'Medical Administrator';
         if (emailInput) {
-          emailInput.value = 'clinician@healthgpt.io';
-          handleEmailInputChanged('clinician@healthgpt.io', true);
+          emailInput.value = 'admin@healthgpt.ai';
+          handleEmailInputChanged('admin@healthgpt.ai', true);
         }
-        if (passInput) passInput.value = 'clinician123';
+        if (passInput) passInput.value = 'my_rules';
+        showTerminalAlert('Standard Admin Credentials Loaded (admin@healthgpt.ai / my_rules)', 'info');
         playHarmonicChime(523.25, 'sine', 0.3);
       } else {
         pPatient?.classList.add('active');
         pClinician?.classList.remove('active');
         if (userInput) userInput.value = 'demo';
         if (emailInput) {
-          emailInput.value = 'demo@gmail.com';
-          handleEmailInputChanged('demo@gmail.com', true);
+          emailInput.value = 'demo@healthgpt.ai';
+          handleEmailInputChanged('demo@healthgpt.ai', true);
         }
-        if (passInput) passInput.value = 'healthgpt2026';
+        if (passInput) passInput.value = 'password123';
+        showTerminalAlert('Standard Patient Credentials Loaded (demo@healthgpt.ai / password123)', 'info');
         playHarmonicChime(659.25, 'sine', 0.3);
       }
 
@@ -3672,7 +3520,6 @@
       try {
         if (payload.name) localStorage.setItem('healthgpt_user_name', payload.name);
         if (payload.email) localStorage.setItem('healthgpt_user_email', payload.email);
-        if (payload.otp) localStorage.setItem('healthgpt_sync_otp', payload.otp);
         localStorage.setItem('healthgpt_auth_sync_ping', JSON.stringify(data));
       } catch (e) {}
     }
@@ -3701,7 +3548,6 @@
 
       const userInput = document.getElementById('userInputUsername');
       const emailInput = document.getElementById('userInputEmail');
-      const otpInput = document.getElementById('userInputOtp');
       const syncBar = document.getElementById('syncStatusBar');
       const syncText = document.getElementById('syncStatusText');
 
@@ -3715,37 +3561,6 @@
         emailInput.value = data.email;
         handleEmailInputChanged(data.email, false, true); // true = fromSync
         updated = true;
-      }
-      if (data.otp && otpInput) {
-        if (otpInput.value !== data.otp) {
-          otpInput.value = data.otp;
-          updated = true;
-        }
-        if (data.type === 'OTP_GENERATED') {
-          latestGeneratedOtp = data.otp;
-          const noticeBar = document.getElementById('otpNoticeBar');
-          if (noticeBar) {
-            noticeBar.style.display = 'flex';
-            const digits = data.otp.split('');
-            const digitsHtml = digits.map(d => `<div class="otp-digit-card">${d}</div>`).join('');
-            noticeBar.innerHTML = `
-              <div style="display:flex;justify-content:space-between;align-items:center;">
-                <span style="font-size:12px;font-weight:700;color:#38bdf8;display:flex;align-items:center;gap:6px;">
-                  <span>📬</span> <span>Real OTP Passcode Synced from Login Page</span>
-                </span>
-                <span style="font-size:10px;color:#34d399;font-weight:800;background:rgba(52,211,153,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(52,211,153,0.3);">SYNCED</span>
-              </div>
-              <div class="otp-digits-row">${digitsHtml}</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px;">
-                <span style="font-size:11.5px;color:#94a3b8;">Dispatched to: <strong style="color:#f8fafc;">${escapeHtml(data.email || 'Gmail')}</strong></span>
-                <button type="button" class="otp-quick-btn" id="btnCopyOtp" onclick="copyOtpCode('${data.otp}')">📋 Copy OTP</button>
-              </div>
-            `;
-          }
-          triggerHologramSurgeEffect();
-          triggerVfxSparkles();
-          playHarmonicChime(880, 'sine', 0.4);
-        }
       }
 
       if (updated && syncBar) {
@@ -3763,24 +3578,12 @@
       });
     }
 
-    function handleOtpInputChanged(otp) {
-      broadcastAuthSync({
-        type: 'OTP_CHANGED',
-        otp: otp,
-        source: 'user_login'
-      });
-    }
-
     /* ============================================================
-       EMAIL DETECTION & AUTOMATIC REAL OTP GENERATION
+       EMAIL DETECTION & VALIDATION
        ============================================================ */
-    let otpDebounceTimer = null;
-    let lastOtpGeneratedEmail = '';
-
     function handleEmailInputChanged(email, forceImmediate = false, fromSync = false) {
       const cleanEmail = (email || '').trim().toLowerCase();
       const statusEl = document.getElementById('emailValidationStatus');
-      const otpBtn = document.getElementById('btnGenerateOtp');
 
       if (!fromSync) {
         broadcastAuthSync({
@@ -3790,250 +3593,16 @@
         });
       }
 
-      if (!statusEl || !otpBtn) return;
+      if (!statusEl) return;
 
       const isValidEmail = cleanEmail.includes('@') && cleanEmail.includes('.');
-      const isGmail = cleanEmail.includes('@gmail.com');
 
       if (isValidEmail) {
         statusEl.style.display = 'inline-flex';
-        if (isGmail) {
-          statusEl.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;"></span> <span>✓ Verified Gmail · Auto-Dispatching OTP</span>';
-          statusEl.style.color = '#34d399';
-        } else {
-          statusEl.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#38bdf8;box-shadow:0 0 6px #38bdf8;"></span> <span>✓ Email Ready · Generating OTP</span>';
-          statusEl.style.color = '#38bdf8';
-        }
-        otpBtn.classList.add('pulsing');
-        otpBtn.removeAttribute('disabled');
-
-        // Automatically trigger OTP generation once Gmail/email is valid!
-        if (cleanEmail !== lastOtpGeneratedEmail) {
-          clearTimeout(otpDebounceTimer);
-          const delay = forceImmediate ? 50 : 650;
-          otpDebounceTimer = setTimeout(() => {
-            if (cleanEmail === (document.getElementById('userInputEmail')?.value.trim().toLowerCase())) {
-              handleGenerateOtp(false); // automated generation
-            }
-          }, delay);
-        }
+        statusEl.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;"></span> <span>✓ Verified Clearance</span>';
+        statusEl.style.color = '#34d399';
       } else {
         statusEl.style.display = 'none';
-        otpBtn.classList.remove('pulsing');
-      }
-    }
-
-    /* ============================================================
-       AUTHENTIC REAL OTP GENERATION & VFX PRESENTATION
-       ============================================================ */
-    let otpCooldownInterval = null;
-    let latestGeneratedOtp = '842915';
-
-    async function handleGenerateOtp(isManualClick = true) {
-      const emailInput = document.getElementById('userInputEmail');
-      const email = (emailInput?.value || '').trim();
-      const username = document.getElementById('userInputUsername')?.value.trim() || 'User';
-      const otpBtn = document.getElementById('btnGenerateOtp');
-      const otpIcon = document.getElementById('btnGenerateOtpIcon');
-      const otpText = document.getElementById('btnGenerateOtpText');
-      const noticeBar = document.getElementById('otpNoticeBar');
-      const otpInput = document.getElementById('userInputOtp');
-      const badge = document.getElementById('otpStatusBadge');
-      const scanner = document.getElementById('terminalLaserScanner');
-
-      if (!email || !email.includes('@')) {
-        if (isManualClick) {
-          showTerminalAlert('Please enter your Gmail / account email address to generate an OTP.', 'error');
-          shakeTerminalBox();
-          emailInput?.focus();
-        }
-        return;
-      }
-
-      lastOtpGeneratedEmail = email.toLowerCase();
-      initAudioContext();
-      playHarmonicChime(587.33, 'sine', 0.35); // D5
-
-      // Trigger Visual Cyber Laser Sweep & Hologram Reaction
-      if (scanner) scanner.classList.add('scanning');
-      triggerHologramSurgeEffect();
-      triggerVfxSparkles();
-
-      if (otpBtn) {
-        otpBtn.disabled = true;
-        if (otpIcon) otpIcon.textContent = '⚡';
-        if (otpText) otpText.textContent = 'Generating OTP...';
-      }
-
-      try {
-        // Call authentic backend OTP dispatch endpoint
-        const response = await fetch('/api/auth/send-otp', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, username })
-        });
-
-        const data = await response.json().catch(() => ({}));
-        const generatedCode = (data && data.otp) ? String(data.otp) : String(Math.floor(100000 + Math.random() * 900000));
-        latestGeneratedOtp = generatedCode;
-
-        // Auto-apply code to verification input
-        if (otpInput) {
-          otpInput.value = generatedCode;
-          otpInput.classList.add('otp-active-glow');
-        }
-
-        if (badge) {
-          badge.innerHTML = '<span style="color:#34d399;font-weight:700;">✓ Passcode Generated & Auto-Applied</span>';
-        }
-
-        // Render high-tech 6-digit individual cards
-        const digits = generatedCode.split('');
-        const digitsHtml = digits.map(d => `<div class="otp-digit-card">${d}</div>`).join('');
-
-        if (noticeBar) {
-          noticeBar.style.display = 'flex';
-          noticeBar.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:12px;font-weight:700;color:#38bdf8;display:flex;align-items:center;gap:6px;">
-                <span>📬</span> <span>Real OTP Passcode Generated for Gmail</span>
-              </span>
-              <span style="font-size:10px;color:#34d399;font-weight:800;background:rgba(52,211,153,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(52,211,153,0.3);">ACTIVE</span>
-            </div>
-
-            <div class="otp-digits-row">
-              ${digitsHtml}
-            </div>
-
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px;">
-              <span style="font-size:11.5px;color:#94a3b8;">
-                Dispatched to: <strong style="color:#f8fafc;">${escapeHtml(email)}</strong>
-              </span>
-              <div style="display:flex;gap:6px;">
-                <button type="button" class="otp-quick-btn" id="btnCopyOtp" onclick="copyOtpCode('${generatedCode}')">📋 Copy OTP</button>
-                <button type="button" class="otp-quick-btn" style="background:#0284c7;color:#fff;border-color:#38bdf8;" onclick="autoFillOtpCode('${generatedCode}')">✓ Applied</button>
-              </div>
-            </div>
-
-            <div class="otp-progress-track">
-              <div class="otp-progress-fill" id="otpProgressFill" style="width:100%;"></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;align-items:center;font-size:10.5px;color:#94a3b8;margin-top:2px;">
-              <span>Cryptographically signed with 256-bit SHA-2</span>
-              <span id="otpCountdownText" style="color:#38bdf8;font-weight:700;">Valid for 60s</span>
-            </div>
-          `;
-        }
-
-        // Multi-frequency harmonic success chord
-        setTimeout(() => playHarmonicChime(659.25, 'sine', 0.4), 80); // E5
-        setTimeout(() => playHarmonicChime(880, 'sine', 0.6), 180);   // A5
-        triggerVfxSparkles();
-
-        showTerminalAlert(`✓ 6-Digit OTP [${generatedCode}] generated and ready for ${email}!`, 'success');
-
-        // Broadcast OTP to main workspace
-        broadcastAuthSync({
-          type: 'OTP_GENERATED',
-          otp: generatedCode,
-          email: email,
-          name: username,
-          source: 'user_login'
-        });
-
-        // Start 60-second cooldown and progress bar
-        startOtpCooldown(60);
-
-      } catch (err) {
-        console.warn('OTP network fallback active:', err);
-        const fallbackOtp = String(Math.floor(100000 + Math.random() * 900000));
-        latestGeneratedOtp = fallbackOtp;
-
-        if (otpInput) {
-          otpInput.value = fallbackOtp;
-          otpInput.classList.add('otp-active-glow');
-        }
-
-        if (noticeBar) {
-          noticeBar.style.display = 'flex';
-          const digits = fallbackOtp.split('');
-          const digitsHtml = digits.map(d => `<div class="otp-digit-card">${d}</div>`).join('');
-          noticeBar.innerHTML = `
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:12px;font-weight:700;color:#38bdf8;">📬 OTP Passcode Generated</span>
-              <span style="font-size:10px;color:#34d399;font-weight:800;background:rgba(52,211,153,0.15);padding:2px 8px;border-radius:4px;">ACTIVE</span>
-            </div>
-            <div class="otp-digits-row">${digitsHtml}</div>
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span style="font-size:11.5px;color:#94a3b8;">Dispatched to: <strong style="color:#fff;">${escapeHtml(email)}</strong></span>
-              <button type="button" class="otp-quick-btn" onclick="autoFillOtpCode('${fallbackOtp}')">✓ Applied</button>
-            </div>
-          `;
-        }
-
-        startOtpCooldown(30);
-      } finally {
-        setTimeout(() => {
-          if (scanner) scanner.classList.remove('scanning');
-        }, 1800);
-      }
-    }
-
-    function startOtpCooldown(seconds) {
-      if (otpCooldownInterval) clearInterval(otpCooldownInterval);
-
-      const totalTime = seconds;
-      let timeLeft = seconds;
-      const otpBtn = document.getElementById('btnGenerateOtp');
-      const otpIcon = document.getElementById('btnGenerateOtpIcon');
-      const otpText = document.getElementById('btnGenerateOtpText');
-
-      if (otpBtn) {
-        otpBtn.disabled = true;
-        otpBtn.classList.remove('pulsing');
-      }
-
-      otpCooldownInterval = setInterval(() => {
-        timeLeft--;
-        const countdownEl = document.getElementById('otpCountdownText');
-        const progressFill = document.getElementById('otpProgressFill');
-
-        if (countdownEl) countdownEl.textContent = `Valid for ${timeLeft}s`;
-        if (progressFill) progressFill.style.width = `${(timeLeft / totalTime) * 100}%`;
-        if (otpText) otpText.textContent = `Resend (${timeLeft}s)`;
-
-        if (timeLeft <= 0) {
-          clearInterval(otpCooldownInterval);
-          if (otpBtn) {
-            otpBtn.disabled = false;
-            otpBtn.classList.add('pulsing');
-          }
-          if (otpIcon) otpIcon.textContent = '⚡';
-          if (otpText) otpText.textContent = 'Resend OTP';
-          if (countdownEl) countdownEl.textContent = 'Ready to regenerate';
-        }
-      }, 1000);
-    }
-
-    function copyOtpCode(code) {
-      navigator.clipboard?.writeText(code).then(() => {
-        const btn = document.getElementById('btnCopyOtp');
-        if (btn) btn.textContent = '✓ Copied!';
-        playHarmonicChime(783.99, 'sine', 0.2);
-        setTimeout(() => { if (btn) btn.textContent = '📋 Copy OTP'; }, 2000);
-      }).catch(() => {
-        const input = document.getElementById('userInputOtp');
-        input?.select();
-      });
-    }
-
-    function autoFillOtpCode(code) {
-      const input = document.getElementById('userInputOtp');
-      if (input) {
-        input.value = code;
-        input.classList.add('otp-active-glow');
-        showTerminalAlert(`✓ Passcode ${code} loaded into verification field.`, 'success');
-        playHarmonicChime(659.25, 'sine', 0.3);
       }
     }
 
@@ -4044,6 +3613,7 @@
         setTimeout(() => card.classList.remove('shake-error'), 500);
       }
     }
+
 
     /* ============================================================
        TERMINAL VFX SPARKLES & PARTICLE BURST ENGINE
@@ -4152,17 +3722,21 @@
       const username = document.getElementById('userInputUsername')?.value.trim() || 'Patient';
       const email = document.getElementById('userInputEmail')?.value.trim();
       const password = document.getElementById('userInputPassword')?.value;
-      const otp = document.getElementById('userInputOtp')?.value.trim();
       const btn = document.getElementById('btnTerminalSubmit');
 
-      if (!email || !password) {
-        showTerminalAlert('Please fill in both email and security password.', 'error');
+      if (!email && !username) {
+        showTerminalAlert('Please fill in your email address or username.', 'error');
+        shakeTerminalBox();
+        return;
+      }
+      if (!password) {
+        showTerminalAlert('Please enter your account password.', 'error');
         shakeTerminalBox();
         return;
       }
 
       if (btn) {
-        btn.innerHTML = '<span>⚡ Establishing Supabase & Neural Handshake...</span>';
+        btn.innerHTML = '<span>⚡ Verifying Credentials with Auth Server...</span>';
         btn.disabled = true;
       }
 
@@ -4170,55 +3744,62 @@
       playHarmonicChime(587.33, 'sine', 0.4);
 
       try {
-        // 1. Attempt authentication via Supabase Auth route first
-        let response = await fetch('/api/supabase/auth/login', {
+        const payload = {
+          username: username || undefined,
+          email: email || undefined,
+          password: password
+        };
+
+        const response = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        }).catch(() => null);
+          body: JSON.stringify(payload)
+        });
 
-        let data = response && response.ok ? await response.json().catch(() => ({})) : null;
+        const data = await response.json().catch(() => ({}));
 
-        // 2. If not Supabase Auth or fallback required, authenticate via standard auth route
-        if (!data || !data.success) {
-          response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, email, password, otp: otp || '123456' })
-          });
-          data = await response.json().catch(() => ({}));
-        }
-
-        if (data && (data.success || data.token || data.user)) {
-          if (data.token) {
-            localStorage.setItem('supabase_auth_token', data.token);
-            localStorage.setItem('auth_token', data.token);
-          }
+        if (response.ok && data.success) {
           const verifiedUser = data.user || {};
+          if (data.token) {
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('supabase_auth_token', data.token);
+            sessionStorage.setItem('auth_token', data.token);
+          }
+          localStorage.setItem('healthgpt_supabase_auth', 'true');
+          localStorage.setItem('healthgpt_supabase_user', JSON.stringify({
+            id: verifiedUser.id || '1',
+            email: verifiedUser.email || email,
+            name: verifiedUser.name || username || 'Patient',
+            role: verifiedUser.role || 'patient'
+          }));
+          localStorage.setItem('healthgpt_user_id', String(verifiedUser.id || '1'));
+          localStorage.setItem('healthgpt_user_name', String(verifiedUser.name || username || 'Patient'));
+          localStorage.setItem('healthgpt_user_email', String(verifiedUser.email || email));
+          localStorage.setItem('healthgpt_user_role', String(verifiedUser.role || 'patient'));
+
           onAuthSuccess(verifiedUser.id || '1', verifiedUser.name || username || 'Patient', verifiedUser.email || email);
-        } else if (data && data.detail && !data.detail.toLowerCase().includes('otp')) {
-          showTerminalAlert(data.detail, 'error');
+
+        } else {
+          const errorMsg = data.detail || 'Access Denied: Authentication failed. Please verify your credentials.';
+          showTerminalAlert(errorMsg, 'error');
           shakeTerminalBox();
           if (btn) {
             btn.innerHTML = '<span>Enter HealthGPT System</span> <span>→</span>';
             btn.disabled = false;
           }
-        } else {
-          // Direct guaranteed entry for authentic experience
-          onAuthSuccess('patient_001', username || 'Patient', email);
         }
       } catch (err) {
-        console.warn('Network auth fallback active:', err);
-        onAuthSuccess('patient_001', username, email);
+        showTerminalAlert('Authentication error: Unable to contact auth server.', 'error');
+        shakeTerminalBox();
+        if (btn) {
+          btn.innerHTML = '<span>Enter HealthGPT System</span> <span>→</span>';
+          btn.disabled = false;
+        }
       }
     }
 
-    function handleInstantGuestEntry() {
-      initAudioContext();
-      playHarmonicChime(783.99, 'sine', 0.5);
-      showTerminalAlert('Access Granted: Diagnostic Guest Session initialized.', 'success');
-      onAuthSuccess('guest_session', 'Guest Patient', 'guest@healthgpt.io');
-    }
+
+
 
     function triggerPageExitTransition(targetUrl = '/dashboard', heading = 'Opening Clinical Dashboard', subtext = 'Calibrating digital twin, EHR telemetry & live consult session...') {
       const terminal = document.getElementById('userAuthCard');
@@ -4431,7 +4012,7 @@
        KEYSTROKE NEON SPARKS & INPUT INTERACTION VFX
        ============================================================ */
     function initKeystrokeVfx() {
-      const inputIds = ['userInputUsername', 'userInputEmail', 'userInputPassword', 'userInputOtp'];
+      const inputIds = ['userInputUsername', 'userInputEmail', 'userInputPassword'];
       inputIds.forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;

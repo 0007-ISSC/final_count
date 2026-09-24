@@ -3,34 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onboarding & Calibration — HealthGPT Clinical Intelligence</title>
-  <meta name="description" content="Interactive multi-stage onboarding with animated VFX, holographic biometrics, and AI clinical twin calibration.">
+  <title>Interactive Onboarding & Clinical Calibration — HealthGPT</title>
+  <meta name="description" content="Explore HealthGPT's full clinical suite through an interactive multi-stage onboarding journey with real-time biometric twin, Alex voice AI, 10,036 doctor radar, and RxVision OCR.">
+  <link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
+  <link rel="alternate icon" type="image/jpeg" href="/healthgpt-logo.jpg">
 
-  <!-- Web Fonts -->
+  <!-- Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Framer Motion Core Engine -->
+  <!-- Motion Engine -->
   <script src="https://cdn.jsdelivr.net/npm/motion@11.11.17/dist/motion.js"></script>
-
-  <!-- Immediate LocalStorage Guard: Bypass onboarding if user already completed it -->
-  <script>
-    (function () {
-      try {
-        var params = new URLSearchParams(window.location.search);
-        var isRestart = params.get('restart') === 'true' || params.get('force') === 'true';
-        var isCompleted = localStorage.getItem('healthgpt_onboarding_completed') === 'true';
-        if (isCompleted && !isRestart) {
-          var userToken = localStorage.getItem('healthgpt_user_id');
-          // If already authenticated jump to dashboard, otherwise jump to login interface
-          window.location.replace(userToken ? '/dashboard' : '/user-login');
-        }
-      } catch (err) {
-        console.warn('Onboarding early guard notice:', err);
-      }
-    })();
-  </script>
 
   <style>
     :root {
@@ -40,25 +24,26 @@
       --card-border: #e8ded2;
       --card-border-subtle: #f0e9df;
 
-      --ink-primary: #2c2523;
-      --ink-secondary: #5c524e;
-      --ink-muted: #8c827a;
+      --ink-primary: #1e1b18;
+      --ink-secondary: #4a423d;
+      --ink-muted: #786d65;
 
       --accent-warm: #8c6d46;
       --accent-warm-hover: #735735;
       --accent-warm-light: #f5eee4;
 
-      --accent-cyan: #0284c7;
-      --accent-cyan-light: #e0f2fe;
       --accent-emerald: #059669;
-      --accent-emerald-light: #d1fae5;
-      --accent-terracotta: #a65b44;
+      --accent-emerald-light: #ecfdf5;
+      --accent-cyan: #0284c7;
+      --accent-cyan-light: #f0f9ff;
       --accent-purple: #7c3aed;
+      --accent-purple-light: #f5f3ff;
+      --accent-amber: #d97706;
 
-      --shadow-luxury: 0 24px 48px -16px rgba(80, 60, 40, 0.12), 0 0 1px 1px rgba(80, 60, 40, 0.05);
-      --shadow-glow-cyan: 0 0 36px rgba(2, 132, 199, 0.25);
-      --shadow-glow-warm: 0 0 36px rgba(140, 109, 70, 0.25);
-      --shadow-glow-emerald: 0 0 36px rgba(5, 150, 105, 0.3);
+      --shadow-luxury: 0 24px 60px -16px rgba(44, 34, 24, 0.14), 0 0 1px 1px rgba(44, 34, 24, 0.05);
+      --shadow-glow-warm: 0 0 40px rgba(140, 109, 70, 0.22);
+      --shadow-glow-cyan: 0 0 40px rgba(2, 132, 199, 0.25);
+      --shadow-glow-emerald: 0 0 40px rgba(5, 150, 105, 0.25);
 
       --radius-xl: 24px;
       --radius-lg: 16px;
@@ -95,37 +80,37 @@
     .vfx-blob {
       position: absolute;
       border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.65;
+      filter: blur(90px);
+      opacity: 0.6;
       pointer-events: none;
       transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .vfx-blob-1 {
-      width: 520px;
-      height: 520px;
-      background: radial-gradient(circle, rgba(232, 218, 198, 0.8) 0%, rgba(212, 193, 166, 0.25) 70%, transparent 100%);
+      width: 580px;
+      height: 580px;
+      background: radial-gradient(circle, rgba(232, 218, 198, 0.75) 0%, rgba(212, 193, 166, 0.2) 70%, transparent 100%);
       top: -120px;
       left: -120px;
       animation: floatOrganic 22s infinite alternate ease-in-out;
     }
 
     .vfx-blob-2 {
-      width: 480px;
-      height: 480px;
-      background: radial-gradient(circle, rgba(200, 225, 220, 0.7) 0%, rgba(160, 205, 195, 0.2) 70%, transparent 100%);
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, rgba(195, 230, 222, 0.65) 0%, rgba(150, 210, 198, 0.15) 70%, transparent 100%);
       bottom: -140px;
       right: -100px;
       animation: floatOrganic 26s infinite alternate-reverse ease-in-out;
     }
 
     .vfx-blob-3 {
-      width: 360px;
-      height: 360px;
-      background: radial-gradient(circle, rgba(245, 215, 205, 0.6) 0%, rgba(240, 190, 175, 0.15) 70%, transparent 100%);
-      top: 35%;
-      left: 55%;
-      animation: floatOrganic 18s infinite alternate ease-in-out;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(215, 225, 250, 0.55) 0%, rgba(185, 205, 245, 0.12) 70%, transparent 100%);
+      top: 40%;
+      left: 60%;
+      animation: floatOrganic 20s infinite alternate ease-in-out;
     }
 
     @keyframes floatOrganic {
@@ -134,29 +119,83 @@
       100% { transform: translate(-30px, 40px) scale(0.94); }
     }
 
-    /* Top Progress Bar & Header */
+    /* Full-screen Quantum Warp Hyper-speed Canvas */
+    #quantumWarpCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* Quantum Hyper-space Portal Flash VFX */
+    .warp-flash-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 1) 0%, rgba(245, 238, 228, 0.95) 70%, rgba(140, 109, 70, 0.6) 100%);
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      backdrop-filter: blur(16px);
+    }
+    .warp-flash-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .warp-portal-spinner {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      border: 3px solid rgba(140, 109, 70, 0.25);
+      border-top-color: var(--accent-warm);
+      border-right-color: var(--accent-emerald);
+      animation: portalSpin 0.75s linear infinite;
+      box-shadow: 0 0 50px rgba(140, 109, 70, 0.4);
+      margin-bottom: 24px;
+    }
+    @keyframes portalSpin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Sticky Top Header & Stepper */
     .onboarding-header {
       position: sticky;
       top: 0;
       z-index: 40;
-      background: rgba(249, 246, 240, 0.95);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(249, 246, 240, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(232, 222, 210, 0.85);
-      padding: 10px 28px 12px;
+      padding: 10px 24px 12px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
-    /* Top Progress Strip with Steps Remaining Count */
     .top-progress-strip {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(232, 222, 210, 0.65);
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(232, 222, 210, 0.6);
     }
 
     .top-progress-info {
@@ -189,7 +228,6 @@
       font-weight: 700;
       font-size: 11.5px;
       border: 1px solid rgba(140, 109, 70, 0.25);
-      box-shadow: 0 1px 4px rgba(140, 109, 70, 0.06);
     }
 
     .remaining-pulse-dot {
@@ -200,10 +238,9 @@
       display: inline-block;
       animation: pulseDot 1.8s infinite ease-in-out;
     }
-
     @keyframes pulseDot {
       0%, 100% { transform: scale(0.85); opacity: 0.5; }
-      50% { transform: scale(1.25); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 1; }
     }
 
     .top-progress-strip-right {
@@ -236,7 +273,6 @@
       transition: all 0.2s ease;
       font-family: inherit;
     }
-
     .btn-top-strip-skip:hover {
       background: var(--accent-warm);
       color: #ffffff;
@@ -248,7 +284,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      width: 100%;
+      flex-wrap: wrap;
     }
 
     .brand-link {
@@ -256,194 +292,173 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
-      color: var(--ink-primary);
+      color: inherit;
     }
 
     .brand-icon {
       width: 38px;
       height: 38px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent-warm), var(--accent-warm-hover));
-      color: #fff;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 19px;
-      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.3);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.25);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      overflow: hidden;
+    }
+    .brand-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .brand-name {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: -0.02em;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+      color: var(--ink-primary);
     }
 
     .brand-tag {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
       color: var(--accent-warm);
       background: var(--accent-warm-light);
-      padding: 3px 8px;
-      border-radius: 20px;
-      border: 1px solid rgba(140, 109, 70, 0.2);
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
-    /* Progress Indicators */
+    /* Stepper with 6 Steps */
     .steps-stepper {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .step-pill {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 6px 14px;
-      border-radius: 24px;
-      font-size: 12px;
-      font-weight: 600;
-      background: rgba(232, 222, 210, 0.4);
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--ink-muted);
+      background: rgba(240, 233, 223, 0.7);
       border: 1px solid transparent;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
     }
-
+    .step-pill:hover {
+      background: #ffffff;
+      color: var(--ink-primary);
+      border-color: var(--card-border);
+      transform: translateY(-1px);
+    }
     .step-pill.active {
       background: #ffffff;
       color: var(--accent-warm);
-      border-color: var(--accent-warm);
-      box-shadow: 0 4px 14px rgba(140, 109, 70, 0.15);
-      font-weight: 700;
+      border-color: rgba(140, 109, 70, 0.35);
+      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.12);
     }
-
     .step-pill.completed {
-      background: var(--accent-emerald-light);
-      color: var(--accent-emerald);
-      border-color: rgba(5, 150, 105, 0.3);
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
     }
 
     .step-circle {
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: rgba(140, 130, 122, 0.25);
+      background: rgba(0, 0, 0, 0.08);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 800;
-      color: #ffffff;
+      font-family: 'Space Grotesk', monospace;
     }
-
     .step-pill.active .step-circle {
       background: var(--accent-warm);
+      color: #ffffff;
     }
-
     .step-pill.completed .step-circle {
-      background: var(--accent-emerald);
+      background: #059669;
+      color: #ffffff;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .btn-audio-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 20px;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 8px;
       border: 1px solid var(--card-border);
       background: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
       color: var(--ink-secondary);
-      font-size: 12px;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
-
-    .btn-audio-toggle:hover {
-      background: var(--accent-warm-light);
-      border-color: var(--accent-warm);
-      color: var(--accent-warm);
-    }
-
     .btn-audio-toggle.active {
-      background: var(--accent-warm-light);
-      border-color: var(--accent-warm);
-      color: var(--accent-warm);
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #15803d;
     }
 
-    /* Skip Button */
     .btn-skip {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      text-decoration: none;
+      gap: 5px;
+      padding: 5px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(140, 109, 70, 0.35);
+      background: transparent;
       color: var(--accent-warm);
-      background: rgba(140, 109, 70, 0.08);
-      font-size: 12.5px;
+      font-size: 12px;
       font-weight: 700;
-      padding: 7px 15px;
-      border-radius: 20px;
-      border: 1.5px solid rgba(140, 109, 70, 0.3);
       cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s ease;
+      text-decoration: none;
     }
-
     .btn-skip:hover {
-      color: #ffffff;
       background: var(--accent-warm);
-      border-color: var(--accent-warm);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.25);
+      color: #ffffff;
     }
 
-    /* Continuous Horizontal Progress Bar at Top */
     .progress-bar-track {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 4.5px;
-      background: rgba(232, 222, 210, 0.7);
+      width: 100%;
+      height: 4px;
+      background: rgba(232, 222, 210, 0.6);
+      border-radius: 4px;
       overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-warm) 0%, #c29962 45%, var(--accent-emerald) 100%);
-      width: 20%;
-      transition: width 0.45s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 0 12px rgba(140, 109, 70, 0.6);
       position: relative;
     }
-
-    .progress-bar-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-      animation: progressShimmer 2.4s infinite ease-in-out;
+    .progress-bar-fill {
+      height: 100%;
+      width: 16.66%;
+      background: linear-gradient(90deg, #8c6d46 0%, #0284c7 50%, #059669 100%);
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 0 10px rgba(5, 150, 105, 0.5);
     }
 
-    @keyframes progressShimmer {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* Main Container & Onboarding Stage */
+    /* Main Stage Card Container */
     .stage-wrapper {
       position: relative;
       z-index: 10;
@@ -452,1647 +467,1195 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 30px 24px 60px;
+      padding: 24px 16px 40px;
       max-width: 1100px;
       margin: 0 auto;
       width: 100%;
     }
 
-    /* Onboarding Card Deck with Swipe Gestures */
     .onboarding-card {
-      width: 100%;
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1px solid var(--card-border);
       border-radius: var(--radius-xl);
       box-shadow: var(--shadow-luxury);
-      padding: 44px 48px;
+      padding: 32px 36px 28px;
+      width: 100%;
       position: relative;
       overflow: hidden;
-      transform-style: preserve-3d;
-      will-change: transform, opacity;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
-      touch-action: pan-y;
-      cursor: grab;
-      user-select: none;
+      transition: box-shadow 0.3s ease, transform 0.2s ease;
+      perspective: 1000px;
     }
 
-    .onboarding-card.is-dragging {
-      cursor: grabbing !important;
-      transition: none !important;
-    }
-
-    /* Swipe Edge Guidance Indicators */
-    .swipe-edge-indicator {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 9px 15px;
-      border-radius: 20px;
-      background: rgba(44, 37, 35, 0.88);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      color: #ffffff;
-      font-size: 12px;
-      font-weight: 700;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 30;
-      transition: opacity 0.18s ease, transform 0.18s ease;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .swipe-edge-indicator.edge-left {
-      left: 18px;
-    }
-
-    .swipe-edge-indicator.edge-right {
-      right: 18px;
-    }
-
-    .swipe-edge-indicator.visible {
-      opacity: 1;
-    }
-
-    /* Card Corner Skip Button */
-    .card-corner-actions {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      z-index: 20;
-    }
-
-    .btn-card-skip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(249, 246, 240, 0.85);
-      border: 1px solid var(--card-border);
-      color: var(--ink-muted);
-      font-size: 12px;
-      font-weight: 600;
-      padding: 6px 13px;
-      border-radius: 18px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
-    }
-
-    .btn-card-skip:hover {
-      background: #ffffff;
-      color: var(--accent-warm);
-      border-color: var(--accent-warm);
-      box-shadow: 0 2px 8px rgba(140, 109, 70, 0.12);
-    }
-
-    .swipe-hint-banner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-top: 16px;
-      font-size: 12px;
-      color: var(--ink-muted);
-      text-align: center;
-      opacity: 0.85;
-      pointer-events: none;
-    }
-
-    .swipe-gesture-icon {
-      display: inline-block;
-      font-size: 15px;
-      animation: nudgeHorizontal 2.4s infinite ease-in-out;
-    }
-
-    @keyframes nudgeHorizontal {
-      0%, 100% { transform: translateX(0); }
-      30% { transform: translateX(-4px); }
-      70% { transform: translateX(4px); }
-    }
-
-    .onboarding-card::before {
-      content: '';
+    /* Holographic Edge Glow Beam */
+    .card-top-laser-beam {
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--accent-warm), var(--accent-emerald));
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #8c6d46 25%, #0284c7 50%, #059669 75%, transparent 100%);
       opacity: 0.85;
+      animation: laserSweep 6s infinite alternate ease-in-out;
+    }
+    @keyframes laserSweep {
+      0% { transform: translateX(-30%); }
+      100% { transform: translateX(30%); }
     }
 
-    /* Step Page Panels (Only current is active) */
+    /* Page Panels */
     .page-panel {
       display: none;
-      animation: fadeInSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+      opacity: 0;
+      animation: fadeInPanel 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-
     .page-panel.active {
       display: block;
+      opacity: 1;
     }
-
-    @keyframes fadeInSlide {
-      from {
-        opacity: 0;
-        transform: translateY(22px) scale(0.985);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+    @keyframes fadeInPanel {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .page-header {
-      margin-bottom: 32px;
-      text-align: center;
+      margin-bottom: 24px;
     }
 
     .page-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
       padding: 4px 12px;
       border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
       background: var(--accent-warm-light);
       color: var(--accent-warm);
-      border: 1px solid rgba(140, 109, 70, 0.2);
-      margin-bottom: 12px;
+      border: 1px solid rgba(140, 109, 70, 0.25);
+      margin-bottom: 10px;
     }
 
     .page-title {
       font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 38px;
+      font-size: 32px;
       font-weight: 700;
-      letter-spacing: -0.02em;
       color: var(--ink-primary);
-      line-height: 1.15;
+      line-height: 1.2;
       margin-bottom: 8px;
+      text-wrap: balance;
     }
 
     .page-subtitle {
-      font-size: 15px;
+      font-size: 14px;
+      line-height: 1.6;
       color: var(--ink-secondary);
-      max-width: 620px;
-      margin: 0 auto;
-      line-height: 1.55;
+      max-width: 780px;
+      text-wrap: balance;
     }
 
-    /* STEP 1: HOLOGRAPHIC BIO-CARD & PROFILE SETUP */
-    .step1-grid {
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      gap: 36px;
-      align-items: center;
-    }
-
-    .form-col {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
+    /* Forms & Inputs */
     .input-field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      margin-bottom: 14px;
     }
-
     .input-label {
+      display: block;
       font-size: 12px;
       font-weight: 700;
-      color: var(--ink-primary);
-      letter-spacing: 0.02em;
+      color: var(--ink-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
     }
-
     .text-input, .select-input {
-      padding: 12px 16px;
-      border-radius: var(--radius-md);
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
       border: 1.5px solid var(--card-border);
-      background: #faf7f2;
-      font-size: 14px;
-      color: var(--ink-primary);
+      background: #faf8f5;
+      font-size: 13.5px;
       font-family: inherit;
-      transition: all 0.25s;
-    }
-
-    .text-input:focus, .select-input:focus {
+      color: var(--ink-primary);
+      transition: all 0.2s ease;
       outline: none;
+    }
+    .text-input:focus, .select-input:focus {
       border-color: var(--accent-warm);
       background: #ffffff;
-      box-shadow: 0 0 0 3px rgba(140, 109, 70, 0.15);
+      box-shadow: 0 0 0 3px rgba(140, 109, 70, 0.12);
     }
 
-    .avatar-picker-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-    }
-
-    .avatar-opt {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      border: 2px solid var(--card-border);
-      background: #ffffff;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .avatar-opt.selected {
-      border-color: var(--accent-warm);
-      background: var(--accent-warm-light);
-      transform: scale(1.12);
-      box-shadow: 0 4px 12px rgba(140, 109, 70, 0.25);
-    }
-
-    /* Holographic Live Bio-Card VFX */
-    .holographic-preview-card {
-      background: linear-gradient(135deg, #201a18 0%, #2f2724 50%, #1e1715 100%);
-      border-radius: 20px;
-      padding: 28px;
-      color: #f8fafc;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 40px -10px rgba(44, 37, 35, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      transform-style: preserve-3d;
-      transition: transform 0.2s ease-out;
-    }
-
-    .holographic-preview-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 215, 0, 0.15) 50%, rgba(56, 189, 248, 0.15) 60%, transparent 80%);
-      pointer-events: none;
-      animation: holographicSheen 6s infinite linear;
-    }
-
-    @keyframes holographicSheen {
-      0% { transform: translateX(-150%) skewX(-20deg); }
-      100% { transform: translateX(150%) skewX(-20deg); }
-    }
-
-    .card-top-chip {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .sim-chip {
-      width: 38px;
-      height: 28px;
-      border-radius: 6px;
-      background: linear-gradient(135deg, #d4af37, #aa820a);
-      border: 1px solid #ffe599;
-      position: relative;
-    }
-
-    .card-status-dot {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      font-family: 'Space Grotesk', monospace;
-      color: #34d399;
-    }
-
-    .pulse-glow-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #34d399;
-      box-shadow: 0 0 10px #34d399;
-      animation: dotPulse 1.8s infinite;
-    }
-
-    @keyframes dotPulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.4); opacity: 0.6; }
-    }
-
-    .card-patient-name {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      margin-bottom: 4px;
-      text-transform: uppercase;
-      color: #ffffff;
-    }
-
-    .card-patient-id {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.6);
-      font-family: 'Space Grotesk', monospace;
-      letter-spacing: 0.1em;
-      margin-bottom: 20px;
-    }
-
-    .card-meta-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .card-meta-item small {
-      font-size: 10px;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.5);
-      display: block;
-      margin-bottom: 2px;
-      letter-spacing: 0.05em;
-    }
-
-    .card-meta-item strong {
-      font-size: 13px;
-      color: #ffffff;
-      font-weight: 600;
-    }
-
-    /* STEP 2: AI CLINICAL PHYSICIAN TWIN */
-    .step2-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      margin-bottom: 24px;
-    }
-
-    .doctor-card {
-      border: 2px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      background: #faf7f2;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .doctor-card:hover {
-      border-color: var(--accent-warm);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(140, 109, 70, 0.12);
-    }
-
-    .doctor-card.selected {
-      border-color: var(--accent-warm);
-      background: #ffffff;
-      box-shadow: 0 12px 32px rgba(140, 109, 70, 0.2), 0 0 0 2px var(--accent-warm);
-    }
-
-    .doctor-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .doctor-avatar {
-      width: 54px;
-      height: 54px;
-      border-radius: 16px;
-      background: var(--accent-warm-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      border: 1px solid rgba(140, 109, 70, 0.25);
-    }
-
-    .doctor-name {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--ink-primary);
-    }
-
-    .doctor-specialty {
-      font-size: 12px;
-      color: var(--accent-warm);
-      font-weight: 600;
-    }
-
-    .doctor-traits {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .trait-badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 12px;
-      background: rgba(140, 109, 70, 0.1);
-      color: var(--ink-secondary);
-      font-weight: 600;
-    }
-
-    /* Live ECG Rhythm Waveform Box */
-    .ecg-waveform-card {
-      background: #0f172a;
-      border-radius: var(--radius-lg);
-      padding: 18px 22px;
-      color: #f8fafc;
-      border: 1px solid #1e293b;
-      margin-top: 14px;
-    }
-
-    .ecg-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-
-    .ecg-title {
-      font-size: 12px;
-      font-weight: 700;
-      font-family: 'Space Grotesk', monospace;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .ecg-bpm-readout {
-      font-size: 14px;
-      font-family: 'Space Grotesk', monospace;
-      color: #34d399;
-      font-weight: 700;
-    }
-
-    #ecgCanvas {
-      width: 100%;
-      height: 70px;
-      display: block;
-    }
-
-    .ecg-controls-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 12px;
-      font-size: 12px;
-      color: #94a3b8;
-    }
-
-    .ecg-range-slider {
-      accent-color: #38bdf8;
-      width: 160px;
-      cursor: pointer;
-    }
-
-    /* STEP 3: CLINICAL CAPABILITIES RADAR */
-    .modules-matrix {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .module-item {
-      border: 2px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      background: #faf7f2;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-    }
-
-    .module-item:hover {
-      border-color: var(--accent-warm);
-      transform: translateY(-3px);
-      background: #ffffff;
-      box-shadow: 0 8px 24px rgba(140, 109, 70, 0.1);
-    }
-
-    .module-item.selected {
-      border-color: var(--accent-warm);
-      background: #ffffff;
-      box-shadow: 0 8px 24px rgba(140, 109, 70, 0.18), 0 0 0 1.5px var(--accent-warm);
-    }
-
-    .module-checkbox {
-      position: absolute;
-      top: 14px;
-      right: 14px;
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
-      border: 2px solid var(--card-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: transparent;
-      background: #ffffff;
-      transition: all 0.2s;
-    }
-
-    .module-item.selected .module-checkbox {
-      background: var(--accent-warm);
-      border-color: var(--accent-warm);
-      color: #ffffff;
-    }
-
-    .module-icon {
-      font-size: 28px;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-
-    .module-name {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--ink-primary);
-      margin-bottom: 4px;
-    }
-
-    .module-desc {
-      font-size: 12px;
-      color: var(--ink-muted);
-      line-height: 1.4;
-    }
-
-    /* STEP 4: BIOMETRIC TELEMETRY SENSORS */
-    .telemetry-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: 32px;
-      align-items: center;
-    }
-
-    .sensor-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .sensor-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 20px;
-      border-radius: var(--radius-md);
-      background: #faf7f2;
-      border: 1px solid var(--card-border);
-      transition: all 0.2s;
-    }
-
-    .sensor-item:hover {
-      background: #ffffff;
-      border-color: var(--accent-warm);
-    }
-
-    .sensor-info {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .sensor-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      background: var(--accent-warm-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-    }
-
-    .sensor-label {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--ink-primary);
-    }
-
-    .sensor-sub {
-      font-size: 11px;
-      color: var(--ink-muted);
-    }
-
-    /* Modern Toggle Switch */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 26px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      inset: 0;
-      background-color: #cbd5e1;
-      transition: .3s;
-      border-radius: 26px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-    }
-
-    input:checked + .slider {
-      background-color: var(--accent-emerald);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
-
-    /* Live Telemetry Radar Visualizer */
-    .telemetry-radar-box {
-      background: linear-gradient(135deg, #090d16 0%, #131d2e 100%);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      color: #f8fafc;
-      border: 1px solid #1e293b;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 16px 36px rgba(9, 13, 22, 0.4);
-    }
-
-    .radar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      font-family: 'Space Grotesk', monospace;
-    }
-
-    .radar-badge {
-      font-size: 11px;
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      padding: 3px 8px;
-      border-radius: 12px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-    }
-
-    .telemetry-bars-group {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .telemetry-bar-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .bar-label-flex {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-family: 'Space Grotesk', monospace;
-      color: #94a3b8;
-    }
-
-    .bar-track {
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .bar-value-fill {
-      height: 100%;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #38bdf8, #34d399);
-      transition: width 0.6s ease;
-    }
-
-    /* STEP 5: ACTIVATION & CELEBRATION */
-    .step5-wrap {
-      text-align: center;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .scanner-orb-wrap {
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 28px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scanner-svg {
-      transform: rotate(-90deg);
-      width: 100%;
-      height: 100%;
-    }
-
-    .scanner-bg-circle {
-      fill: none;
-      stroke: rgba(140, 109, 70, 0.15);
-      stroke-width: 7;
-    }
-
-    .scanner-progress-circle {
-      fill: none;
-      stroke: url(#scannerGradient);
-      stroke-width: 7;
-      stroke-linecap: round;
-      stroke-dasharray: 377;
-      stroke-dashoffset: 377;
-      transition: stroke-dashoffset 1.8s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .scanner-center-content {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .scanner-percentage {
-      font-family: 'Space Grotesk', monospace;
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--accent-warm);
-    }
-
-    .scanner-icon {
-      font-size: 36px;
-      display: none;
-    }
-
-    .summary-badge-card {
-      background: #faf7f2;
-      border: 1px solid var(--card-border);
-      border-radius: var(--radius-lg);
-      padding: 24px;
-      margin-bottom: 28px;
-      text-align: left;
-    }
-
-    .summary-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px dashed rgba(140, 109, 70, 0.2);
-      font-size: 13px;
-    }
-
-    .summary-row:last-child {
-      border-bottom: none;
-    }
-
-    .summary-row span:first-child {
-      color: var(--ink-secondary);
-    }
-
-    .summary-row span:last-child {
-      font-weight: 700;
-      color: var(--ink-primary);
-    }
-
-    /* Actions Navigation Bar */
+    /* Common Card Button Controls */
     .card-actions-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 36px;
-      padding-top: 24px;
+      gap: 16px;
+      margin-top: 28px;
+      padding-top: 18px;
       border-top: 1px solid var(--card-border-subtle);
-    }
-
-    .btn-back {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 12px 20px;
-      border-radius: var(--radius-md);
-      border: 1.5px solid var(--card-border);
-      background: #ffffff;
-      color: var(--ink-secondary);
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-back:hover {
-      background: var(--bg-warm-sand);
-      border-color: var(--ink-muted);
-      color: var(--ink-primary);
-    }
-
-    .btn-back:disabled {
-      opacity: 0.4;
-      pointer-events: none;
+      flex-wrap: wrap;
     }
 
     .btn-next {
+      background: linear-gradient(135deg, #8c6d46 0%, #735735 100%);
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 13px 28px;
-      border-radius: var(--radius-md);
-      border: none;
-      background: linear-gradient(135deg, var(--accent-warm) 0%, var(--accent-warm-hover) 100%);
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(140, 109, 70, 0.3);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 6px 18px rgba(140, 109, 70, 0.28);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     .btn-next:hover {
       transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(140, 109, 70, 0.4);
+      box-shadow: 0 8px 24px rgba(140, 109, 70, 0.38);
     }
-
     .btn-next:active {
       transform: translateY(0);
     }
 
-    .btn-launch-final {
-      background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-      box-shadow: 0 8px 24px rgba(5, 150, 105, 0.4) !important;
-      font-size: 15px !important;
-      padding: 14px 34px !important;
+    .btn-back {
+      background: #ffffff;
+      color: var(--ink-secondary);
+      border: 1px solid var(--card-border);
+      padding: 11px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.18s ease;
+    }
+    .btn-back:hover:not(:disabled) {
+      background: #f8fafc;
+      color: var(--ink-primary);
+      border-color: #cbd5e1;
+    }
+    .btn-back:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
-    .step-counter-cluster {
+    /* STAGE 1: Reactive Holographic Bio-Card */
+    .step1-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 820px) {
+      .step1-grid { grid-template-columns: 1fr; }
+    }
+
+    .archetype-cards-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .archetype-card {
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #faf8f5;
+      cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 10px;
     }
+    .archetype-card.selected {
+      background: #f0fdf4;
+      border-color: #10b981;
+      box-shadow: 0 3px 10px rgba(16, 185, 129, 0.12);
+    }
+    .archetype-icon { font-size: 22px; }
+    .archetype-title { font-size: 12.5px; font-weight: 800; color: var(--ink-primary); }
+    .archetype-desc { font-size: 11px; color: var(--ink-muted); }
 
-    .footer-remaining-badge {
-      display: inline-flex;
-      align-items: center;
-      background: var(--bg-warm-sand);
-      color: var(--ink-secondary);
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 3px 9px;
-      border-radius: 12px;
-      border: 1px solid rgba(140, 109, 70, 0.2);
+    .holographic-bio-preview {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+    .holo-sheen {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.08) 45%, transparent 60%);
+      pointer-events: none;
     }
 
-    .btn-skip-subtle {
-      display: inline-flex;
+    .avatar-chips-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .avatar-chip {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      display: flex;
       align-items: center;
-      gap: 4px;
-      background: transparent;
-      border: 1px solid rgba(140, 109, 70, 0.25);
-      color: var(--ink-muted);
-      font-size: 13px;
-      font-weight: 600;
-      padding: 12px 18px;
-      border-radius: var(--radius-md);
+      justify-content: center;
+      font-size: 18px;
       cursor: pointer;
-      font-family: inherit;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+    }
+    .avatar-chip.active {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.25);
+      transform: scale(1.1);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
     }
 
-    .btn-skip-subtle:hover {
-      color: var(--accent-warm);
-      background: rgba(140, 109, 70, 0.08);
-      border-color: var(--accent-warm);
+    /* STAGE 2: Alex AI Voice Engine */
+    .step2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .step2-grid { grid-template-columns: 1fr; }
     }
 
-    .restart-mode-banner {
+    .voice-terminal-card {
+      background: #0f172a;
+      border-radius: 14px;
+      padding: 20px;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+
+    .waveform-canvas-box {
+      width: 100%;
+      height: 90px;
+      background: #020617;
+      border-radius: 8px;
+      margin: 14px 0;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+
+    .sample-prompt-chips {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .prompt-chip {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #eff6ff;
-      border: 1px solid #bfdbfe;
-      color: #1e40af;
-      padding: 10px 16px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+      transition: all 0.18s ease;
+    }
+    .prompt-chip:hover {
+      background: var(--accent-warm-light);
+      border-color: var(--accent-warm);
+      transform: translateX(4px);
+    }
+
+    /* STAGE 3: 3D Holographic Twin & ECG */
+    .step3-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 24px;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .step3-grid { grid-template-columns: 1fr; }
+    }
+
+    .twin-canvas-wrap {
+      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+      border-radius: 14px;
+      height: 320px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .organ-inspect-pills {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .organ-pill {
+      background: #f8fafc;
+      border: 1.5px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
       font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .organ-pill.active {
+      background: #ecfdf5;
+      border-color: #10b981;
+      color: #065f46;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+    }
+
+    .ecg-canvas-box {
       width: 100%;
+      height: 85px;
+      background: #020617;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      margin-bottom: 12px;
     }
 
-    .restart-mode-banner a {
-      color: #1d4ed8;
-      font-weight: 700;
-      text-decoration: underline;
+    /* STAGE 4: Doctor Radar */
+    .step4-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+    @media (max-width: 820px) {
+      .step4-grid { grid-template-columns: 1fr; }
     }
 
-    /* Confetti Particle Canvas */
-    #confettiCanvas {
-      position: fixed;
-      inset: 0;
+    .radar-canvas-wrap {
+      background: #020617;
+      border-radius: 14px;
+      height: 300px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .matched-doctor-badge {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+      border: 2px solid #86efac;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
+    }
+
+    /* STAGE 5: RxVision OCR */
+    .step5-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 820px) {
+      .step5-grid { grid-template-columns: 1fr; }
+    }
+
+    .rx-paper-mockup {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      position: relative;
+      overflow: hidden;
+      min-height: 240px;
+    }
+    .rx-laser-scanner {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 3px;
+      background: #0284c7;
+      box-shadow: 0 0 16px #38bdf8, 0 0 30px #0284c7;
+      opacity: 0;
       pointer-events: none;
-      z-index: 100;
+    }
+    .rx-laser-scanner.scanning {
+      opacity: 1;
+      animation: rxSweep 2.2s ease-in-out infinite;
+    }
+    @keyframes rxSweep {
+      0% { top: 0%; }
+      50% { top: 100%; }
+      100% { top: 0%; }
     }
 
-    /* Responsive Breakdown */
-    @media (max-width: 900px) {
-      .onboarding-card {
-        padding: 30px 24px;
-      }
-      .step1-grid, .step2-grid, .telemetry-grid {
-        grid-template-columns: 1fr;
-      }
-      .modules-matrix {
-        grid-template-columns: 1fr 1fr;
-      }
-      .steps-stepper {
-        display: none;
-      }
-      .holographic-preview-card {
-        max-width: 440px;
-        margin: 0 auto;
-      }
+    /* STAGE 6: Calibration & Intro Transition */
+    .step6-wrap {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto;
     }
 
-    @media (max-width: 600px) {
-      .modules-matrix {
-        grid-template-columns: 1fr;
-      }
-      .page-title {
-        font-size: 30px;
-      }
+    .calibration-gauge-orb {
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .calibration-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+    .gauge-bg {
+      stroke: rgba(232, 222, 210, 0.5);
+      stroke-width: 8;
+      fill: none;
+    }
+    .gauge-fill {
+      stroke: url(#calibrationGrad);
+      stroke-width: 8;
+      stroke-linecap: round;
+      fill: none;
+      stroke-dasharray: 377;
+      stroke-dashoffset: 377;
+      transition: stroke-dashoffset 0.05s linear;
+    }
+
+    .gauge-center-text {
+      position: absolute;
+      font-size: 26px;
+      font-weight: 900;
+      font-family: 'Space Grotesk', monospace;
+      color: var(--ink-primary);
+    }
+
+    .modules-matrix {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 20px 0 24px;
+      text-align: left;
+    }
+    @media (max-width: 640px) {
+      .modules-matrix { grid-template-columns: 1fr; }
+    }
+    .module-item {
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #faf8f5;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+    .module-item.selected {
+      background: #ecfdf5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+
+    .btn-launch-intro {
+      background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+      color: #ffffff;
+      border: none;
+      padding: 16px 36px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 28px rgba(5, 150, 105, 0.35);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-launch-intro:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 34px rgba(5, 150, 105, 0.45);
+    }
+
+    /* Swipe hint gesture banner */
+    .swipe-hint-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--ink-muted);
     }
   </style>
 </head>
 <body>
 
-  <!-- Full-screen Canvas for Ambient Biometric Constellation VFX -->
+  <!-- Ambient Blobs & Quantum Warp Background Canvas -->
   <div class="ambient-canvas-wrap">
     <div class="vfx-blob vfx-blob-1"></div>
     <div class="vfx-blob vfx-blob-2"></div>
     <div class="vfx-blob vfx-blob-3"></div>
-    <canvas id="ambientConstellationCanvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;"></canvas>
+    <canvas id="quantumWarpCanvas"></canvas>
   </div>
 
-  <!-- Celebratory Fireworks & Confetti Canvas -->
+  <!-- Celebratory Confetti Canvas -->
   <canvas id="confettiCanvas"></canvas>
 
-  <!-- Sticky Top Header & Stepper with Remaining Steps Counter -->
+  <!-- Quantum Warp Hyper-speed Flash Overlay for Intro Page Transition -->
+  <div class="warp-flash-overlay" id="warpFlashOverlay">
+    <div class="warp-portal-spinner"></div>
+    <h2 style="font-family:'Cormorant Garamond', Georgia, serif;font-size:36px;font-weight:700;color:var(--ink-primary);margin-bottom:8px;">
+      Entering HealthGPT Sanctuary...
+    </h2>
+    <p style="font-size:14px;color:var(--ink-secondary);max-width:480px;line-height:1.5;">
+      Your personalized biometric telemetry, doctor network, and clinical AI companion have calibrated. Transitioning to the intro experience.
+    </p>
+  </div>
+
+  <!-- Sticky Top Header & 6-Step Stepper -->
   <header class="onboarding-header" id="onboardingHeader">
-    <!-- Top Progress Bar Strip showing remaining steps count -->
     <div class="top-progress-strip" id="topProgressStrip">
       <div class="top-progress-info">
-        <span class="progress-step-tag" id="topStepPill">Step 1 of 5</span>
+        <span class="progress-step-tag" id="topStepTag">Step 1 of 6</span>
         <span class="progress-separator">•</span>
         <span class="steps-remaining-text" id="topStepsRemaining">
           <span class="remaining-pulse-dot"></span>
-          <strong id="stepsRemainingCount">4</strong> steps remaining
+          <strong id="stepsRemainingNum">5</strong> steps remaining
         </span>
       </div>
 
       <div class="top-progress-strip-right">
-        <span class="progress-percent-text" id="topProgressPct">20% Completed</span>
-        <button type="button" class="btn-top-strip-skip" id="btnTopStripSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
-          <span>Skip to Login</span>
+        <span class="progress-percent-text" id="topProgressPct">17% Completed</span>
+        <button type="button" class="btn-top-strip-skip" onclick="skipDirectToIntro()" title="Bypass tutorial and open intro page">
+          <span>Skip to Intro Page</span>
           <span>→</span>
         </button>
       </div>
     </div>
 
-    <!-- Main Navigation Bar Row -->
     <div class="header-main-row">
-      <a href="/" class="brand-link" id="brandHomeLink">
-        <div class="brand-icon">🌿</div>
+      <a href="/" class="brand-link">
+        <div class="brand-icon">
+          <img src="/healthgpt-logo.svg" alt="HealthGPT" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
+        </div>
         <div>
           <span class="brand-name">HealthGPT</span>
         </div>
-        <span class="brand-tag">Onboarding</span>
+        <span class="brand-tag">Extreme Onboarding</span>
       </a>
 
-      <!-- Step Progress Pills -->
+      <!-- 6-Stage Stepper Navigation -->
       <nav class="steps-stepper" aria-label="Onboarding Steps">
         <div class="step-pill active" id="stepPill1" onclick="jumpToStep(1)">
           <span class="step-circle">1</span>
-          <span>Profile</span>
+          <span>Identity</span>
         </div>
         <div class="step-pill" id="stepPill2" onclick="jumpToStep(2)">
           <span class="step-circle">2</span>
-          <span>AI Twin</span>
+          <span>Alex Voice</span>
         </div>
         <div class="step-pill" id="stepPill3" onclick="jumpToStep(3)">
           <span class="step-circle">3</span>
-          <span>Priorities</span>
+          <span>3D Twin &amp; ECG</span>
         </div>
         <div class="step-pill" id="stepPill4" onclick="jumpToStep(4)">
           <span class="step-circle">4</span>
-          <span>Telemetry</span>
+          <span>Doctor Radar</span>
         </div>
         <div class="step-pill" id="stepPill5" onclick="jumpToStep(5)">
           <span class="step-circle">5</span>
-          <span>Activation</span>
+          <span>RxVision OCR</span>
+        </div>
+        <div class="step-pill" id="stepPill6" onclick="jumpToStep(6)">
+          <span class="step-circle">6</span>
+          <span>Calibration</span>
         </div>
       </nav>
 
-      <!-- Header Actions -->
       <div class="header-actions">
-        <button type="button" class="btn-audio-toggle active" id="audioToggleBtn" onclick="toggleAudio()" title="Toggle ambient audio effects">
+        <button type="button" class="btn-audio-toggle active" id="audioToggleBtn" onclick="toggleAudio()" title="Toggle Web Audio SFX">
           <span id="audioIcon">🔊</span>
           <span id="audioLabel">Sound ON</span>
         </button>
-        <button type="button" class="btn-skip" id="btnHeaderSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
-          <span>Skip to Login</span>
+        <button type="button" class="btn-skip" onclick="skipDirectToIntro()">
+          <span>Skip to Intro</span>
           <span>→</span>
         </button>
       </div>
     </div>
 
-    <!-- Continuous Progress Bar Track -->
-    <div class="progress-bar-track" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" id="topProgressBarTrack">
+    <!-- Progress Track -->
+    <div class="progress-bar-track">
       <div class="progress-bar-fill" id="progressBarFill"></div>
     </div>
   </header>
 
-  <!-- Main Stage Card Container -->
+  <!-- Main Stage Card -->
   <main class="stage-wrapper">
-    <!-- Optional Restart Notice Banner (Shown when arriving via ?restart=true) -->
-    <div class="restart-mode-banner" id="restartModeBanner" style="display:none;">
-      <span>ℹ️ <strong>Tutorial Replay Mode:</strong> Navigating through onboarding. Your progress will be remembered once finished.</span>
-      <a href="/user-login">Exit to Login →</a>
-    </div>
-
     <div class="onboarding-card" id="onboardingDeckCard">
-      <!-- Swipe Navigation Edge Visual Indicators -->
-      <div class="swipe-edge-indicator edge-left" id="swipeIndicatorLeft" aria-hidden="true">
-        <span>←</span>
-        <span>Previous Step</span>
-      </div>
-      <div class="swipe-edge-indicator edge-right" id="swipeIndicatorRight" aria-hidden="true">
-        <span>Next Step</span>
-        <span>→</span>
-      </div>
-
-      <!-- Quick Corner Skip Button inside card -->
-      <div class="card-corner-actions">
-        <button type="button" class="btn-card-skip" id="btnCardSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
-          <span>Skip Tutorial</span>
-          <span>✕</span>
-        </button>
-      </div>
+      <div class="card-top-laser-beam"></div>
 
       <!-- ══════════════════════════════════════════════════
-           PAGE 1: IDENTITY & LIVE HOLOGRAPHIC BIO-CARD
+           PAGE 1: CLINICAL IDENTITY & HOLOGRAPHIC BIO-CARD
            ══════════════════════════════════════════════════ -->
       <section class="page-panel active" id="pageStep1">
         <div class="page-header">
-          <div class="page-badge">✨ Stage 01 of 05 · Patient Identity</div>
-          <h1 class="page-title">Personalize Your Clinical Profile</h1>
-          <p class="page-subtitle">Configure your baseline medical persona to calibrate customized diagnostics, metabolic indicators, and clinical communication.</p>
+          <div class="page-badge">✨ Stage 01 of 06 · Clinical Identity</div>
+          <h1 class="page-title">Calibrate Your Clinical Profile</h1>
+          <p class="page-subtitle">Configure your baseline persona to calibrate predictive diagnostics, metabolic risk alerts, and doctor communication.</p>
         </div>
 
         <div class="step1-grid">
-          <div class="form-col">
+          <div>
             <div class="input-field-group">
-              <label class="input-label" for="onboardingFullName">Full Legal or Preferred Name</label>
-              <input type="text" id="onboardingFullName" class="text-input" placeholder="e.g. Eleanor Vance" value="Eleanor Vance" oninput="updateHolographicCard()">
+              <label class="input-label" for="userNameInput">Full Name / Preferred Identifier</label>
+              <input type="text" id="userNameInput" class="text-input" value="Eleanor Vance" oninput="updateBioCardPreview()">
             </div>
 
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div class="input-field-group">
-                <label class="input-label" for="onboardingAge">Age Range</label>
-                <select id="onboardingAge" class="select-input" onchange="updateHolographicCard()">
-                  <option value="18-24">18 – 24 years</option>
-                  <option value="25-34" selected>25 – 34 years</option>
-                  <option value="35-49">35 – 49 years</option>
-                  <option value="50-64">50 – 64 years</option>
-                  <option value="65+">65+ years</option>
+                <label class="input-label" for="userAgeSelect">Age Bracket</label>
+                <select id="userAgeSelect" class="select-input" onchange="updateBioCardPreview()">
+                  <option value="18-24">18 – 24 yrs</option>
+                  <option value="25-34" selected>25 – 34 yrs</option>
+                  <option value="35-49">35 – 49 yrs</option>
+                  <option value="50-64">50 – 64 yrs</option>
+                  <option value="65+">65+ Senior</option>
                 </select>
               </div>
 
               <div class="input-field-group">
-                <label class="input-label" for="onboardingBlood">Blood Group</label>
-                <select id="onboardingBlood" class="select-input" onchange="updateHolographicCard()">
+                <label class="input-label" for="userBloodSelect">Blood Group</label>
+                <select id="userBloodSelect" class="select-input" onchange="updateBioCardPreview()">
                   <option value="O+">O Positive (O+)</option>
                   <option value="A+">A Positive (A+)</option>
                   <option value="B+">B Positive (B+)</option>
                   <option value="AB+">AB Positive (AB+)</option>
                   <option value="O-">O Negative (O-)</option>
-                  <option value="Other">Not Specified</option>
+                  <option value="A-">A Negative (A-)</option>
                 </select>
               </div>
             </div>
 
             <div class="input-field-group">
-              <label class="input-label" for="onboardingGoal">Primary Health Aspiration</label>
-              <select id="onboardingGoal" class="select-input" onchange="updateHolographicCard()">
-                <option value="Holistic Longevity & Prevention">Holistic Longevity & Preventive Care</option>
-                <option value="Chronic Condition Management">Chronic Vital Management (Cardio/Endocrine)</option>
-                <option value="Hormonal & Reproductive Vitality">Hormonal & Reproductive Vitality</option>
-                <option value="Athletic Performance & Biohacking">Athletic Biomarker Optimization</option>
-                <option value="Mental Well-being & Stress Resilience">Mental Well-being & Sleep Rhythm</option>
-              </select>
+              <label class="input-label">Select Clinical Persona Archetype</label>
+              <div class="archetype-cards-row">
+                <div class="archetype-card selected" onclick="selectArchetype(this, 'longevity')">
+                  <span class="archetype-icon">🧬</span>
+                  <div>
+                    <div class="archetype-title">Longevity &amp; Vitals</div>
+                    <div class="archetype-desc">Preventive telemetry</div>
+                  </div>
+                </div>
+                <div class="archetype-card" onclick="selectArchetype(this, 'chronic')">
+                  <span class="archetype-icon">🩺</span>
+                  <div>
+                    <div class="archetype-title">Chronic Care</div>
+                    <div class="archetype-desc">BP, sugar, heart meds</div>
+                  </div>
+                </div>
+                <div class="archetype-card" onclick="selectArchetype(this, 'family')">
+                  <span class="archetype-icon">👨‍👩‍👧</span>
+                  <div>
+                    <div class="archetype-title">Family Health</div>
+                    <div class="archetype-desc">Pediatric &amp; parents</div>
+                  </div>
+                </div>
+                <div class="archetype-card" onclick="selectArchetype(this, 'fitness')">
+                  <span class="archetype-icon">⚡</span>
+                  <div>
+                    <div class="archetype-title">Metabolic Fitness</div>
+                    <div class="archetype-desc">HRV &amp; nutrition biohacks</div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="input-field-group">
-              <label class="input-label">Select Holographic Identity Avatar</label>
-              <div class="avatar-picker-row">
-                <button type="button" class="avatar-opt selected" onclick="selectAvatar('👩‍⚕️', this)">👩‍⚕️</button>
-                <button type="button" class="avatar-opt" onclick="selectAvatar('🌿', this)">🌿</button>
-                <button type="button" class="avatar-opt" onclick="selectAvatar('🧬', this)">🧬</button>
-                <button type="button" class="avatar-opt" onclick="selectAvatar('🏃‍♀️', this)">🏃‍♀️</button>
-                <button type="button" class="avatar-opt" onclick="selectAvatar('🧘', this)">🧘</button>
+              <label class="input-label">Avatar Identity</label>
+              <div class="avatar-chips-row">
+                <div class="avatar-chip active" onclick="selectAvatar(this, '👩‍⚕️')">👩‍⚕️</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '👨‍⚕️')">👨‍⚕️</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '🧑‍💼')">🧑‍💼</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '👵')">👵</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '🧕')">🧕</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '🧔')">🧔</div>
+                <div class="avatar-chip" onclick="selectAvatar(this, '🧬')">🧬</div>
               </div>
             </div>
           </div>
 
-          <!-- Holographic Real-time Bio-Card -->
-          <div>
-            <div class="holographic-preview-card" id="holographicCard">
-              <div class="card-top-chip">
-                <div class="sim-chip"></div>
-                <div class="card-status-dot">
-                  <span class="pulse-glow-dot"></span>
-                  <span>SYNCED · VERIFIED</span>
-                </div>
+          <!-- Live Reactive Holographic Bio-Card -->
+          <div class="holographic-bio-preview">
+            <div class="holo-sheen"></div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+              <div>
+                <span style="font-size:10px;font-weight:800;letter-spacing:1px;color:#38bdf8;text-transform:uppercase;">CLINICAL BIOMETRIC ID</span>
+                <div style="font-size:18px;font-weight:800;color:#ffffff;margin-top:2px;" id="bioPreviewName">Eleanor Vance</div>
+                <div style="font-size:11.5px;color:#94a3b8;" id="bioPreviewArchetype">Longevity &amp; Vitals Persona</div>
               </div>
-              <div class="card-patient-name" id="holoNameDisplay">ELEANOR VANCE</div>
-              <div class="card-patient-id" id="holoIdDisplay">UID-2026-HLTH-88219</div>
-
-              <div class="card-meta-grid">
-                <div class="card-meta-item">
-                  <small>Age Cohort</small>
-                  <strong id="holoAgeDisplay">25 – 34</strong>
-                </div>
-                <div class="card-meta-item">
-                  <small>Blood Type</small>
-                  <strong id="holoBloodDisplay">O+</strong>
-                </div>
-                <div class="card-meta-item">
-                  <small>Avatar</small>
-                  <strong id="holoAvatarDisplay">👩‍⚕️ Active</strong>
-                </div>
-              </div>
-
-              <div style="margin-top:18px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.1);font-size:11px;color:rgba(255,255,255,0.7);display:flex;align-items:center;justify-content:space-between;">
-                <span>PRIORITY: <b id="holoGoalDisplay" style="color:#38bdf8;">Holistic Longevity</b></span>
-                <span style="font-family:'Space Grotesk', monospace;font-size:10px;">AES-256 ENCRYPTED</span>
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(56,189,248,0.2);display:flex;align-items:center;justify-content:center;font-size:24px;border:2px solid #38bdf8;" id="bioPreviewAvatar">
+                👩‍⚕️
               </div>
             </div>
-            <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--ink-muted);">
-              🖱️ Hover or tilt to experience holographic optical refraction
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;background:rgba(0,0,0,0.25);border-radius:10px;padding:12px;margin-bottom:14px;border:1px solid rgba(255,255,255,0.08);">
+              <div>
+                <span style="font-size:10px;color:#94a3b8;">AGE BRACKET</span>
+                <div style="font-size:13px;font-weight:700;color:#f1f5f9;" id="bioPreviewAge">25 – 34 yrs</div>
+              </div>
+              <div>
+                <span style="font-size:10px;color:#94a3b8;">BLOOD GROUP</span>
+                <div style="font-size:13px;font-weight:700;color:#f43f5e;" id="bioPreviewBlood">O Positive (O+)</div>
+              </div>
+              <div>
+                <span style="font-size:10px;color:#94a3b8;">ENCRYPTION</span>
+                <div style="font-size:13px;font-weight:700;color:#34d399;">AES-GCM-256</div>
+              </div>
+              <div>
+                <span style="font-size:10px;color:#94a3b8;">PULSE TELEMETRY</span>
+                <div style="font-size:13px;font-weight:700;color:#38bdf8;">72 BPM · Online</div>
+              </div>
+            </div>
+
+            <div style="font-size:11px;color:#94a3b8;line-height:1.4;">
+              🛡️ Live synchronization with AI clinical twin and verified Indian hospital records.
             </div>
           </div>
+        </div>
+
+        <div class="card-actions-row">
+          <button type="button" class="btn-back" disabled>← Previous</button>
+          <div style="font-size:12.5px;color:var(--ink-secondary);font-weight:700;">Step 1 of 6</div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to Alex Voice AI →</button>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════
-           PAGE 2: AI CLINICAL PHYSICIAN PAIRING & ECG VFX
+           PAGE 2: ALEX AI CLINICAL COMPANION & VOICE ENGINE
            ══════════════════════════════════════════════════ -->
       <section class="page-panel" id="pageStep2">
         <div class="page-header">
-          <div class="page-badge">🩺 Stage 02 of 05 · AI Clinical Twin</div>
-          <h1 class="page-title">Calibrate Your Primary AI Care Companion</h1>
-          <p class="page-subtitle">Select your dedicated AI physician interface to match your communication preference and clinical focus.</p>
+          <div class="page-badge" style="background:#f0f9ff;color:#0284c7;border-color:#bae6fd;">🎙️ Stage 02 of 06 · Alex Voice AI</div>
+          <h1 class="page-title">Multilingual Clinical Voice Consultation</h1>
+          <p class="page-subtitle">Experience Alex: HealthGPT's real-time clinical AI companion fluent in 12 Indian languages with emotional resonance and emergency diagnostic triage.</p>
         </div>
 
         <div class="step2-grid">
-          <!-- Doctor 1: Dr. Nambi -->
-          <div class="doctor-card selected" id="docCardNambi" onclick="selectDoctor('nambi')">
-            <div class="doctor-head">
-              <div class="doctor-avatar">👨‍⚕️</div>
-              <div>
-                <div class="doctor-name">Dr. Nambi, MD</div>
-                <div class="doctor-specialty">Internal Medicine & Diagnostics</div>
+          <div class="voice-terminal-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#38bdf8;box-shadow:0 0 8px #38bdf8;"></div>
+                <span style="font-size:12px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;">Alex Voice Telemetry</span>
               </div>
+              <span style="font-size:11px;background:#1e293b;padding:3px 8px;border-radius:4px;color:#38bdf8;" id="voiceStatusBadge">Idle · Ready to speak</span>
             </div>
-            <p style="font-size:13px;color:var(--ink-secondary);line-height:1.5;">
-              Analytical, clinically rigorous, and evidence-driven. Specializes in comprehensive symptom differential diagnosis, multi-organ laboratory analysis, and pharmacotherapy interactions.
-            </p>
-            <div class="doctor-traits">
-              <span class="trait-badge">🧬 Differential Dx</span>
-              <span class="trait-badge">💊 Pharmacovigilance</span>
-              <span class="trait-badge">🔬 Lab Analytics</span>
+
+            <!-- Dynamic Equalizer Frequency Waveform Canvas -->
+            <div class="waveform-canvas-box">
+              <canvas id="voiceWaveformCanvas" style="width:100%;height:100%;"></canvas>
             </div>
-            <button type="button" class="btn-audio-toggle" style="align-self:flex-start;margin-top:4px;" onclick="previewDoctorVoice('nambi', event)">
-              <span>🔊</span> Voice Sample
-            </button>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;">
+              <div>
+                <label style="font-size:11px;color:#94a3b8;display:block;margin-bottom:3px;">Select Language</label>
+                <select id="voiceLanguageSelect" class="select-input" style="padding:6px 10px;font-size:12px;background:#1e293b;color:#f8fafc;border-color:#334155;width:auto;" onchange="changeVoiceLanguage()">
+                  <option value="en">English (Clinical Indian)</option>
+                  <option value="hi" selected>Hindi (हिन्दी)</option>
+                  <option value="ta">Tamil (தமிழ்)</option>
+                  <option value="te">Telugu (తెలుగు)</option>
+                  <option value="bn">Bengali (বাংলা)</option>
+                  <option value="mr">Marathi (मराठी)</option>
+                  <option value="gu">Gujarati (ગુજરાતી)</option>
+                  <option value="kn">Kannada (ಕನ್ನಡ)</option>
+                  <option value="ml">Malayalam (മലയാളം)</option>
+                  <option value="pa">Punjabi (ਪੰਜਾਬੀ)</option>
+                </select>
+              </div>
+
+              <button type="button" class="btn-next" onclick="triggerAlexVoiceDemo()" style="padding:8px 16px;font-size:12.5px;background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+                <span>🔊 Test Speech Synthesis</span>
+              </button>
+            </div>
+
+            <div id="alexTranscriptBox" style="margin-top:14px;background:#020617;border:1px solid #1e293b;border-radius:8px;padding:10px 12px;font-size:12px;line-height:1.5;color:#94a3b8;">
+              <span style="color:#38bdf8;font-weight:700;">Alex:</span> "नमस्ते! मैं एलेक्स हूँ, आपका क्लिनिकल एआई साथी। मैं आपकी ईसीजी, ब्लड रिपोर्ट और लक्षणों का विश्लेषण कर सकता हूँ।"
+            </div>
           </div>
 
-          <!-- Doctor 2: Alex -->
-          <div class="doctor-card" id="docCardAlex" onclick="selectDoctor('alex')">
-            <div class="doctor-head">
-              <div class="doctor-avatar">🧘‍♀️</div>
-              <div>
-                <div class="doctor-name">Alex, Holistic RN</div>
-                <div class="doctor-specialty">Integrative Health & Mental Wellness</div>
+          <div>
+            <h3 style="font-size:15px;font-weight:800;color:var(--ink-primary);margin-bottom:6px;">Sample Voice Consultation Prompts:</h3>
+            <p style="font-size:12.5px;color:var(--ink-secondary);margin-bottom:12px;">Click any clinical scenario to test Alex's empathetic response engine:</p>
+
+            <div class="sample-prompt-chips">
+              <div class="prompt-chip" onclick="simulatePromptTest('Check drug interactions between Atorvastatin and Grapefruit')">
+                <span>💊 "Check drug interactions with Atorvastatin"</span>
+                <span style="color:var(--accent-warm);">Try ↗</span>
+              </div>
+              <div class="prompt-chip" onclick="simulatePromptTest('Analyze my fasting blood glucose of 142 mg/dL')">
+                <span>🩸 "Analyze my blood glucose of 142 mg/dL"</span>
+                <span style="color:var(--accent-warm);">Try ↗</span>
+              </div>
+              <div class="prompt-chip" onclick="simulatePromptTest('Emergency triage for acute left-sided chest discomfort')">
+                <span>🚨 "Emergency triage: acute chest discomfort"</span>
+                <span style="color:#dc2626;">SOS ↗</span>
               </div>
             </div>
-            <p style="font-size:13px;color:var(--ink-secondary);line-height:1.5;">
-              Warm, empathetic, and lifestyle-focused. Specializes in circadian rhythm balance, nervous system regulation, nutritional pacing, and stress resilience.
-            </p>
-            <div class="doctor-traits">
-              <span class="trait-badge">🌸 Circadian Rhythm</span>
-              <span class="trait-badge">🧠 Somatic Wellness</span>
-              <span class="trait-badge">🥗 Lifestyle Coaching</span>
+
+            <div style="margin-top:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;font-size:12px;color:#166534;line-height:1.45;">
+              ✅ <b>Instant Hands-Free:</b> Access Alex anytime via the floating microphone button or by navigating to <code>/alex</code> from any page.
             </div>
-            <button type="button" class="btn-audio-toggle" style="align-self:flex-start;margin-top:4px;" onclick="previewDoctorVoice('alex', event)">
-              <span>🔊</span> Voice Sample
-            </button>
           </div>
         </div>
 
-        <!-- Live Harmonic ECG Oscilloscope Canvas -->
-        <div class="ecg-waveform-card">
-          <div class="ecg-top">
-            <div class="ecg-title">
-              <span>🫀 LIVE DIGITAL TWIN ECG HARMONIC WAVEFORM</span>
-              <span class="radar-badge">LEAD II · REALTIME</span>
-            </div>
-            <div class="ecg-bpm-readout" id="ecgBpmDisplay">72 BPM · NSR</div>
-          </div>
-          <canvas id="ecgCanvas"></canvas>
-          <div class="ecg-controls-row">
-            <span>Adjust Resting Pulse Calibration:</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span id="sliderBpmValue" style="font-family:'Space Grotesk',monospace;color:#38bdf8;font-weight:700;">72</span>
-              <input type="range" class="ecg-range-slider" id="ecgSlider" min="55" max="110" value="72" oninput="adjustEcgBpm(this.value)">
-              <span style="font-size:11px;">BPM</span>
-            </div>
-          </div>
+        <div class="card-actions-row">
+          <button type="button" class="btn-back" onclick="previousStep()">← Previous</button>
+          <div style="font-size:12.5px;color:var(--ink-secondary);font-weight:700;">Step 2 of 6</div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to 3D Digital Twin →</button>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════
-           PAGE 3: CLINICAL CAPABILITIES RADAR
+           PAGE 3: 3D HOLOGRAPHIC TWIN & REAL-TIME ECG
            ══════════════════════════════════════════════════ -->
       <section class="page-panel" id="pageStep3">
         <div class="page-header">
-          <div class="page-badge">⚡ Stage 03 of 05 · Clinical Capabilities</div>
-          <h1 class="page-title">Select Your Primary Care Tools</h1>
-          <p class="page-subtitle">Choose the healthcare tools and suites you want active. Your personal dashboard will only show your selected tools.</p>
+          <div class="page-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0;">🧬 Stage 03 of 06 · 3D Digital Twin</div>
+          <h1 class="page-title">Holographic Biological Twin &amp; ECG Telemetry</h1>
+          <p class="page-subtitle">Your real-time physiological avatar models cardiovascular rhythm, respiratory mechanics, neural biomarkers, and metabolic load at 60 frames per second.</p>
         </div>
 
-        <!-- Presets and Live Selection Bar -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span style="font-size:12px;font-weight:700;color:var(--ink-secondary);">Quick Presets:</span>
-            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('all')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">✨ Select All (9 Tools)</button>
-            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('core')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">🎯 Core Medical</button>
-            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('wellness')" style="background:#f1f5f9;border:1px solid #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;">🌸 Holistic & Wellness</button>
-            <button type="button" class="btn-preset-pill" onclick="selectModulesPreset('clear')" style="background:#fff;border:1px dashed #cbd5e1;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;">🧹 Deselect All</button>
-          </div>
-          <div class="page-badge" id="step3SelectedCounter" style="background:#f0fdf4;border-color:#bbf7d0;color:#15803d;font-size:12px;font-weight:800;margin-bottom:0;">
-            ⚡ 6 of 9 Tools Selected · Personalized Dashboard
-          </div>
-        </div>
-
-        <div class="modules-matrix">
-          <!-- 1. AI Clinical Consult -->
-          <div class="module-item selected" data-module-key="aiConsult" onclick="toggleModule(this, 'aiConsult')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🩺</span>
-            <div class="module-name">AI Clinical Consult</div>
-            <p class="module-desc">Dual-specialist AI consultations with Dr. Nambi (Chief MD) and Alex (Mental Wellness).</p>
+        <div class="step3-grid">
+          <!-- 3D Anatomical Twin Canvas -->
+          <div class="twin-canvas-wrap">
+            <canvas id="bioTwinCanvas" style="width:100%;height:100%;"></canvas>
+            <div style="position:absolute;bottom:10px;left:12px;font-size:11px;color:#64748b;font-family:'Space Grotesk', monospace;">
+              3D WIREFRAME MESH · ROTATABLE
+            </div>
           </div>
 
-          <!-- 2. RxVision OCR -->
-          <div class="module-item selected" data-module-key="rxvision" onclick="toggleModule(this, 'rxvision')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🔬</span>
-            <div class="module-name">RxVision OCR & Prescriptions</div>
-            <p class="module-desc">Prescription scanner, chemical conflict radar & Jan Aushadhi generic alternatives.</p>
-          </div>
-
-          <!-- 3. 3D Digital Twin -->
-          <div class="module-item selected" data-module-key="twin" onclick="toggleModule(this, 'twin')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🧬</span>
-            <div class="module-name">3D Human Digital Twin</div>
-            <p class="module-desc">Interactive WebGL anatomical organ simulations with real-time biometric telemetry.</p>
-          </div>
-
-          <!-- 4. Connect Indian Doctors -->
-          <div class="module-item selected" data-module-key="doctorConnect" onclick="toggleModule(this, 'doctorConnect')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">👨‍⚕️</span>
-            <div class="module-name">Connect Indian Doctors</div>
-            <p class="module-desc">10,036 verified hospital specialists across 18 Indian cities with video & OPD clinic booking.</p>
-          </div>
-
-          <!-- 5. Cycle & Period Suite -->
-          <div class="module-item selected" data-module-key="cycle" onclick="toggleModule(this, 'cycle')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🌸</span>
-            <div class="module-name">Cycle & Hormone Suite</div>
-            <p class="module-desc">Menstrual AI forecasting, 4-phase biological cycle wheel & hormonal telemetry.</p>
-          </div>
-
-          <!-- 6. Metabolic & Nutrition -->
-          <div class="module-item" data-module-key="metabolic" onclick="toggleModule(this, 'metabolic')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🥗</span>
-            <div class="module-name">Metabolic & Nutrition</div>
-            <p class="module-desc">Indian regional glycemic load meal tracker, micronutrients & anti-inflammatory diet.</p>
-          </div>
-
-          <!-- 7. CareCast Feed -->
-          <div class="module-item selected" data-module-key="carecast" onclick="toggleModule(this, 'carecast')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">📡</span>
-            <div class="module-name">CareCast Outbreak Radar</div>
-            <p class="module-desc">IDSP state outbreak tracking, seasonal dengue/flu surge monitor & medical inshorts.</p>
-          </div>
-
-          <!-- 8. Explore Pharmacopoeia -->
-          <div class="module-item" data-module-key="medicine" onclick="toggleModule(this, 'medicine')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🧭</span>
-            <div class="module-name">Explore Pharmacopoeia</div>
-            <p class="module-desc">CDSCO verified drug safety, CYP450 liver enzyme conflict checker & 30+ language translation.</p>
-          </div>
-
-          <!-- 9. Emergency SOS -->
-          <div class="module-item selected" data-module-key="sos" onclick="toggleModule(this, 'sos')">
-            <span class="module-checkbox">✓</span>
-            <span class="module-icon">🚨</span>
-            <div class="module-name">Emergency SOS & Paramedic ID</div>
-            <p class="module-desc">1-tap geolocation beacon with instant paramedic telemetry and nearest hospital routing.</p>
-          </div>
-        </div>
-
-        <div style="margin-top:14px;padding:12px 16px;background:rgba(2,132,199,0.06);border:1px solid rgba(2,132,199,0.18);border-radius:12px;font-size:12.5px;color:#0369a1;display:flex;align-items:flex-start;gap:10px;">
-          <span style="font-size:16px;">💡</span>
           <div>
-            <b>Personalized Care Suite Filtering:</b> Your personal dashboard will only show the primary care tools you select above. Unselected tools are filtered out. (Clinician/Admin consoles retain 100% full access to all suites).
+            <div class="organ-inspect-pills">
+              <div class="organ-pill active" onclick="inspectOrgan('heart')">
+                <span>🫀 Heart &amp; Cardio</span>
+              </div>
+              <div class="organ-pill" onclick="inspectOrgan('brain')">
+                <span>🧠 Brain &amp; Neural</span>
+              </div>
+              <div class="organ-pill" onclick="inspectOrgan('lungs')">
+                <span>🫁 Lungs &amp; SpO2</span>
+              </div>
+              <div class="organ-pill" onclick="inspectOrgan('liver')">
+                <span>🧪 Hepatic &amp; Metabolic</span>
+              </div>
+            </div>
+
+            <!-- Live ECG Canvas with Interactive BPM Slider -->
+            <div style="background:#f8fafc;border:1px solid var(--card-border);border-radius:10px;padding:12px;margin-bottom:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:11px;font-weight:800;color:var(--ink-secondary);text-transform:uppercase;">Continuous ECG Telemetry</span>
+                <span style="font-size:12px;font-weight:800;color:#059669;font-family:'Space Grotesk', monospace;" id="bpmDisplayLabel">72 BPM · Normal Sinus</span>
+              </div>
+
+              <div class="ecg-canvas-box">
+                <canvas id="liveEcgCanvas" style="width:100%;height:100%;"></canvas>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:12px;">
+                <span style="font-size:11px;color:var(--ink-muted);">BPM Calibrator:</span>
+                <input type="range" min="50" max="150" value="72" id="bpmSlider" style="flex:1;accent-color:#059669;" oninput="adjustBpm(this.value)">
+                <span style="font-size:12px;font-weight:800;font-family:'Space Grotesk', monospace;" id="sliderValText">72</span>
+              </div>
+            </div>
+
+            <div id="organTelemetryData" style="font-size:11.5px;color:var(--ink-secondary);background:#f1f5f9;border-radius:8px;padding:10px 12px;line-height:1.5;">
+              <b>Cardiovascular Status:</b> Normal sinus rhythm with heart rate variability (HRV) at 68ms. Left ventricular ejection fraction estimated at 62%.
+            </div>
           </div>
+        </div>
+
+        <div class="card-actions-row">
+          <button type="button" class="btn-back" onclick="previousStep()">← Previous</button>
+          <div style="font-size:12.5px;color:var(--ink-secondary);font-weight:700;">Step 3 of 6</div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to Doctor Radar →</button>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════
-           PAGE 4: BIOMETRIC TELEMETRY & WEARABLE SYNC
+           PAGE 4: 10,036 DOCTORS & REAL-TIME DISPATCH RADAR
            ══════════════════════════════════════════════════ -->
       <section class="page-panel" id="pageStep4">
         <div class="page-header">
-          <div class="page-badge">📡 Stage 04 of 05 · Continuous Telemetry</div>
-          <h1 class="page-title">Biometric Sensors & Wearable Sync</h1>
-          <p class="page-subtitle">Configure real-time telemetry stream integrations for continuous physiological monitoring.</p>
+          <div class="page-badge" style="background:#ecfdf5;color:#059669;border-color:#a7f3d0;">⚡ Stage 04 of 06 · Clinical Dispatch</div>
+          <h1 class="page-title">10,036 Verified Indian Doctors in Real Time</h1>
+          <p class="page-subtitle">Instantly interrogate verified medical specialist endpoints across AIIMS, Apollo, Fortis, Max, and Medanta with authentic direct phone numbers in under 30 seconds.</p>
         </div>
 
-        <div class="telemetry-grid">
-          <div class="sensor-list">
-            <div class="sensor-item">
-              <div class="sensor-info">
-                <div class="sensor-icon">💓</div>
-                <div>
-                  <div class="sensor-label">Smartwatch Heart Rate & HRV</div>
-                  <div class="sensor-sub">Apple Watch, Fitbit & Wear OS continuous pulse stream</div>
-                </div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="toggleHr" checked onchange="updateTelemetryRadar()">
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            <div class="sensor-item">
-              <div class="sensor-info">
-                <div class="sensor-icon">🩸</div>
-                <div>
-                  <div class="sensor-label">SpO2 Blood Oxygen Monitoring</div>
-                  <div class="sensor-sub">Nocturnal desaturation warning & respiratory rate</div>
-                </div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="toggleSpo2" checked onchange="updateTelemetryRadar()">
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            <div class="sensor-item">
-              <div class="sensor-info">
-                <div class="sensor-icon">🌙</div>
-                <div>
-                  <div class="sensor-label">Sleep Architecture & Stages</div>
-                  <div class="sensor-sub">Deep REM cycling and circadian recovery scoring</div>
-                </div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="toggleSleep" checked onchange="updateTelemetryRadar()">
-                <span class="slider"></span>
-              </label>
-            </div>
-
-            <div class="sensor-item">
-              <div class="sensor-info">
-                <div class="sensor-icon">⚡</div>
-                <div>
-                  <div class="sensor-label">Immediate Fall & Crash Detection</div>
-                  <div class="sensor-sub">Automated 911 / EMS dispatch on acute impact</div>
-                </div>
-              </div>
-              <label class="switch">
-                <input type="checkbox" id="toggleFall" checked onchange="updateTelemetryRadar()">
-                <span class="slider"></span>
-              </label>
+        <div class="step4-grid">
+          <!-- Radar Canvas Sweep Wrap -->
+          <div class="radar-canvas-wrap">
+            <canvas id="doctorRadarCanvas" style="width:100%;height:100%;"></canvas>
+            <div style="position:absolute;bottom:10px;left:12px;font-size:11px;color:#38bdf8;font-family:'Space Grotesk', monospace;">
+              🛰️ 10,036 ACTIVE CLINICAL ENDPOINTS
             </div>
           </div>
 
-          <!-- Live Signal Quality & Stream Preview -->
-          <div class="telemetry-radar-box">
-            <div class="radar-header">
-              <span style="font-weight:700;color:#38bdf8;">TELEMETRY LINK STATUS</span>
-              <span class="radar-badge" id="telemetryStatusBadge">ACTIVE · 4/4 SENSORS</span>
-            </div>
-
-            <div class="telemetry-bars-group">
-              <div class="telemetry-bar-row">
-                <div class="bar-label-flex">
-                  <span>Pulse Buffer Latency</span>
-                  <span id="latencyDisplay">18ms</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-value-fill" id="barLatency" style="width: 88%;"></div>
-                </div>
-              </div>
-
-              <div class="telemetry-bar-row">
-                <div class="bar-label-flex">
-                  <span>Continuous Encryption Strength</span>
-                  <span>AES-GCM 256</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-value-fill" style="width: 100%; background: #34d399;"></div>
-                </div>
-              </div>
-
-              <div class="telemetry-bar-row">
-                <div class="bar-label-flex">
-                  <span>Digital Twin Fidelity Score</span>
-                  <span id="fidelityDisplay">98.4%</span>
-                </div>
-                <div class="bar-track">
-                  <div class="bar-value-fill" id="barFidelity" style="width: 98%;"></div>
-                </div>
+          <div>
+            <div class="input-field-group">
+              <label class="input-label" for="radarSpecialtySelect">Select Specialty to Query</label>
+              <div style="display:flex;gap:8px;">
+                <select id="radarSpecialtySelect" class="select-input" style="flex:1;">
+                  <option value="Cardiologist" selected>Cardiologist (Heart Specialist)</option>
+                  <option value="Neurologist">Neurologist (Brain &amp; Nerves)</option>
+                  <option value="Orthopedic">Orthopedic Surgeon (Bones &amp; Joints)</option>
+                  <option value="Pediatrician">Pediatrician (Child Specialist)</option>
+                  <option value="Gastroenterologist">Gastroenterologist (Digestive)</option>
+                </select>
+                <button type="button" class="btn-next" onclick="runSimulatedDoctorRadarMatch()" style="padding:10px 16px;white-space:nowrap;font-size:12px;background:linear-gradient(135deg, #059669 0%, #047857 100%);">
+                  ⚡ Radar Scan
+                </button>
               </div>
             </div>
 
-            <div style="margin-top:20px;padding:12px;background:rgba(255,255,255,0.04);border-radius:8px;font-size:11px;color:#94a3b8;font-family:'Space Grotesk',monospace;display:flex;align-items:center;gap:8px;">
-              <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;"></span>
-              <span>All biometric streams conform to HIPAA & ISO-27701 Zero-Knowledge policies.</span>
+            <!-- Matched Doctor Card with Authentic Direct Number -->
+            <div class="matched-doctor-badge" id="radarMatchedDoctorBox">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+                <div>
+                  <span style="font-size:10px;font-weight:800;color:#166534;text-transform:uppercase;">🟢 REAL-TIME MATCH ESTABLISHED</span>
+                  <div style="font-size:16px;font-weight:800;color:#065f46;" id="radarDocName">Dr. Rajesh Sharma</div>
+                  <div style="font-size:11.5px;color:#047857;" id="radarDocHospital">Cardiologist · Medanta The Medicity, Gurugram</div>
+                </div>
+                <span style="font-size:11px;background:#ffffff;border:1px solid #86efac;color:#15803d;padding:2px 8px;border-radius:12px;font-weight:800;" id="radarDocToken">LIVE-DEL-4091</span>
+              </div>
+
+              <div style="background:#ffffff;border:1px solid #bbf7d0;border-radius:8px;padding:8px 10px;margin-bottom:8px;">
+                <div style="font-size:10px;color:#166534;font-weight:700;">DOCTOR'S ORIGINAL DIRECT NUMBER</div>
+                <div style="font-size:18px;font-weight:900;color:#065f46;letter-spacing:0.5px;" id="radarDocNumber">+91 98110 38291</div>
+                <div style="font-size:10.5px;color:#64748b;">MCI-38291 · Chamber 312, Heart Institute</div>
+              </div>
+
+              <div style="display:flex;gap:8px;">
+                <button type="button" class="btn-next" onclick="copyRadarDoctorNumber()" style="flex:1;padding:6px 10px;font-size:11.5px;background:#ffffff;border:1px solid #10b981;color:#047857;justify-content:center;">
+                  📋 Copy Number
+                </button>
+                <button type="button" class="btn-next" onclick="testDoctorCallAlert()" style="flex:1;padding:6px 10px;font-size:11.5px;background:#059669;color:#ffffff;justify-content:center;">
+                  📞 Test Direct Dial
+                </button>
+              </div>
             </div>
           </div>
+        </div>
+
+        <div class="card-actions-row">
+          <button type="button" class="btn-back" onclick="previousStep()">← Previous</button>
+          <div style="font-size:12.5px;color:var(--ink-secondary);font-weight:700;">Step 4 of 6</div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to RxVision OCR →</button>
         </div>
       </section>
 
       <!-- ══════════════════════════════════════════════════
-           PAGE 5: ACTIVATION CELEBRATION & NEURAL HANDSHAKE
+           PAGE 5: RXVISION MULTIMODAL OCR SCANNER
            ══════════════════════════════════════════════════ -->
       <section class="page-panel" id="pageStep5">
-        <div class="step5-wrap">
-          <div class="page-badge" style="background:#d1fae5;color:#059669;border-color:rgba(5,150,105,0.3);">
-            🎉 Stage 05 of 05 · Calibration Complete
+        <div class="page-header">
+          <div class="page-badge" style="background:#f5f3ff;color:#7c3aed;border-color:#ddd6fe;">📑 Stage 05 of 06 · Multimodal Vision</div>
+          <h1 class="page-title">RxVision Multimodal OCR &amp; Lab Intelligence</h1>
+          <p class="page-subtitle">Digitize handwritten doctor prescriptions, blood panels, and radiology reports into structured medication schedules and drug interaction checks with clinical OCR.</p>
+        </div>
+
+        <div class="step5-grid">
+          <div>
+            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+              <button type="button" class="btn-back" onclick="loadSampleRx('cardio')" style="font-size:11.5px;padding:6px 12px;background:#f5f3ff;border-color:#ddd6fe;color:#6b21a8;font-weight:700;">
+                💊 Cardiology Rx
+              </button>
+              <button type="button" class="btn-back" onclick="loadSampleRx('blood')" style="font-size:11.5px;padding:6px 12px;">
+                🩸 Blood Panel (HbA1c)
+              </button>
+              <button type="button" class="btn-back" onclick="loadSampleRx('chest')" style="font-size:11.5px;padding:6px 12px;">
+                🫁 Chest CT Scan
+              </button>
+            </div>
+
+            <!-- Simulated Prescription Document Paper with Holographic Laser Scanner -->
+            <div class="rx-paper-mockup" id="rxPaperMockup">
+              <div class="rx-laser-scanner" id="rxLaserScanner"></div>
+              <div style="border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:10px;display:flex;justify-content:space-between;font-size:11px;color:#64748b;">
+                <span>🏥 APOLLO SPECIALTY CLINIC</span>
+                <span>Rx #4092-DEL</span>
+              </div>
+              <div style="font-family:'Courier New', monospace;font-size:12.5px;line-height:1.6;color:#1e293b;" id="rxTextSample">
+                ℞<br>
+                1. Tab Atorvastatin 20mg — 1 OD (Night, post meals)<br>
+                2. Tab Metformin 500mg — 1 BD (Morning &amp; Evening)<br>
+                3. Tab Telmisartan 40mg — 1 OD (Morning)<br>
+                Advice: Low sodium diet, 45 min brisk walking daily.
+              </div>
+            </div>
+
+            <div style="margin-top:12px;">
+              <button type="button" class="btn-next" onclick="triggerRxLaserScan()" style="width:100%;justify-content:center;background:linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);">
+                ⚡ Run Holographic OCR Laser Scan
+              </button>
+            </div>
           </div>
 
-          <!-- Circular SVG Calibration VFX Scanner -->
-          <div class="scanner-orb-wrap">
-            <svg class="scanner-svg" viewBox="0 0 140 140">
+          <div>
+            <h3 style="font-size:14px;font-weight:800;color:var(--ink-primary);margin-bottom:8px;">Structured Extracted Telemetry:</h3>
+            <div id="rxExtractedOutput" style="background:#faf8f5;border:1px solid var(--card-border);border-radius:10px;padding:14px;font-size:12px;line-height:1.5;">
+              <div style="margin-bottom:8px;">
+                <span style="font-weight:800;color:#0f172a;">Extracted Medications (3):</span>
+              </div>
+              <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;margin-bottom:6px;">
+                <b style="color:#0284c7;">Atorvastatin 20mg</b> · Statin for Lipid Control<br>
+                <span style="color:#64748b;font-size:11px;">⏰ 09:00 PM (After dinner) · 0 Contraindications detected</span>
+              </div>
+              <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;margin-bottom:6px;">
+                <b style="color:#059669;">Metformin 500mg</b> · Glycemic Regulation<br>
+                <span style="color:#64748b;font-size:11px;">⏰ 08:00 AM / 08:00 PM (With meals)</span>
+              </div>
+              <div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;padding:8px 10px;">
+                <b style="color:#7c3aed;">Telmisartan 40mg</b> · Angiotensin II Receptor Blocker<br>
+                <span style="color:#64748b;font-size:11px;">⏰ 08:30 AM (Blood pressure control)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-actions-row">
+          <button type="button" class="btn-back" onclick="previousStep()">← Previous</button>
+          <div style="font-size:12.5px;color:var(--ink-secondary);font-weight:700;">Step 5 of 6</div>
+          <button type="button" class="btn-next" onclick="nextStep()">Continue to Final Calibration →</button>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════
+           PAGE 6: CALIBRATION COMPLETE & ENTER INTRO PAGE
+           ══════════════════════════════════════════════════ -->
+      <section class="page-panel" id="pageStep6">
+        <div class="step6-wrap">
+          <div class="page-badge" style="background:#d1fae5;color:#059669;border-color:rgba(5,150,105,0.3);">
+            🎉 Stage 06 of 06 · Calibration Complete
+          </div>
+
+          <!-- Circular 0-100% SVG Calibration Gauge -->
+          <div class="calibration-gauge-orb">
+            <svg class="calibration-svg" viewBox="0 0 140 140">
               <defs>
-                <linearGradient id="scannerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="calibrationGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#8c6d46" />
-                  <stop offset="50%" stop-color="#38bdf8" />
+                  <stop offset="50%" stop-color="#0284c7" />
                   <stop offset="100%" stop-color="#059669" />
                 </linearGradient>
               </defs>
-              <circle class="scanner-bg-circle" cx="70" cy="70" r="60"></circle>
-              <circle class="scanner-progress-circle" id="scannerCircle" cx="70" cy="70" r="60"></circle>
+              <circle class="gauge-bg" cx="70" cy="70" r="60"></circle>
+              <circle class="gauge-fill" id="calibrationGaugeCircle" cx="70" cy="70" r="60"></circle>
             </svg>
-            <div class="scanner-center-content">
-              <div class="scanner-percentage" id="scannerPercentText">0%</div>
-              <div class="scanner-icon" id="scannerIconCheck">✨</div>
-            </div>
+            <div class="gauge-center-text" id="gaugePctText">0%</div>
           </div>
 
-          <h1 class="page-title" id="finalCelebrationTitle">Calibrating Neural Digital Twin...</h1>
-          <p class="page-subtitle" id="finalCelebrationSub" style="margin-bottom:28px;">
-            Synthesizing clinical baseline, doctor pairing, and telemetry data models into your personal HealthGPT workspace.
+          <h1 class="page-title" id="finalWelcomeTitle">Synthesizing Your HealthGPT Suite...</h1>
+          <p class="page-subtitle" style="margin:0 auto 20px;">
+            All information is saved. Your personal clinical AI twin, verified Indian doctor telemetry, and RxVision OCR engine are active.
           </p>
 
-          <!-- Summary Confirmation Card -->
-          <div class="summary-badge-card" id="summaryBadgeCard">
-            <div class="summary-row">
-              <span>Patient Profile:</span>
-              <span id="sumName">Eleanor Vance (25-34 yrs, O+)</span>
+          <!-- Activated Clinical Care Modules -->
+          <div class="modules-matrix">
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>🤖 AI Clinical Companion</span>
             </div>
-            <div class="summary-row">
-              <span>Assigned AI Physician:</span>
-              <span id="sumDoc">Dr. Nambi, MD (Internal Medicine)</span>
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>🎙️ Alex Voice 12 Languages</span>
             </div>
-            <div class="summary-row">
-              <span>Active Specialties:</span>
-              <span id="sumModules">RxVision, 3D Twin, Cycle Health, CareCast, SOS</span>
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>🧬 3D Digital Twin</span>
             </div>
-            <div class="summary-row">
-              <span>Telemetry Streams:</span>
-              <span id="sumSensors">Heart Rate, SpO2, Sleep, Fall Detection</span>
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>📞 10,036 Indian Doctors</span>
+            </div>
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>📑 RxVision OCR Lab</span>
+            </div>
+            <div class="module-item selected" onclick="toggleCareModule(this)">
+              <span>🚨 24/7 Casualty SOS</span>
             </div>
           </div>
 
-          <!-- Quick Navigation Actions -->
-          <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;">
-            <button type="button" class="btn-next btn-launch-final" id="btnLaunchDashboard" onclick="finishOnboarding('/dashboard')">
-              🚀 Enter HealthGPT Dashboard
+          <!-- THE GRAND ENTER INTRO PAGE ACTION -->
+          <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:10px;">
+            <button type="button" class="btn-launch-intro" id="btnLaunchIntroMain" onclick="finishOnboardingAndShowIntro()">
+              <span>✨ Enter HealthGPT Intro Page</span>
+              <span>→</span>
             </button>
-            <button type="button" class="btn-back" onclick="finishOnboarding('/carecast')">
-              📰 Open CareCast Feed
+            <button type="button" class="btn-back" onclick="finishOnboardingAndGoDashboard()">
+              <span>🚀 Or Jump Direct to Dashboard</span>
             </button>
           </div>
         </div>
       </section>
 
-      <!-- Bottom Navigation Footer Buttons -->
-      <footer class="card-actions-row" id="cardActionsRow">
-        <button type="button" class="btn-back" id="btnStepBack" onclick="previousStep()" disabled>
-          ← Back
-        </button>
-
-        <div class="step-counter-cluster">
-          <div style="font-size:13px;color:var(--ink-secondary);font-weight:700;" id="stepCounterText">
-            Step 1 of 5
-          </div>
-          <span class="footer-remaining-badge" id="footerRemainingBadge">
-            <strong id="footerRemainingNum">4</strong> steps remaining
-          </span>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:10px;">
-          <button type="button" class="btn-skip-subtle" id="btnFooterSkip" onclick="skipToLogin()" title="Bypass tutorial and jump directly to login interface">
-            Skip Tutorial
-          </button>
-          <button type="button" class="btn-next" id="btnStepNext" onclick="nextStep()">
-            Continue →
-          </button>
-        </div>
-      </footer>
-
     </div>
 
-    <!-- Swipe & Drag Interaction Guidance Banner -->
-    <div class="swipe-hint-banner" id="swipeHintBanner" aria-live="polite">
-      <span class="swipe-gesture-icon">↔</span>
-      <span><strong>Swipe or drag card</strong> to navigate slides · Keyboard Arrow keys (← →) also supported</span>
+    <!-- Swipe guidance hint -->
+    <div class="swipe-hint-banner">
+      <span>↔ <strong>Keyboard Arrow keys (← →)</strong> &amp; <strong>Swipe</strong> supported to navigate between slides</span>
     </div>
   </main>
 
   <!-- Interactive JavaScript Engine -->
   <script>
-    /* ══════════════════════════════════════════════════════════
-       STATE MACHINE & ONBOARDING DATA MODEL
-       ══════════════════════════════════════════════════════════ */
+    /* =========================================================
+       1. STATE MACHINE & ONBOARDING DATA MODEL
+       ========================================================= */
     let currentStep = 1;
-    const totalSteps = 5;
+    const totalSteps = 6;
 
     const onboardingState = {
       fullName: 'Eleanor Vance',
       age: '25-34',
       blood: 'O+',
-      goal: 'Holistic Longevity & Prevention',
+      archetype: 'longevity',
       avatar: '👩‍⚕️',
-      doctor: 'nambi',
+      voiceLanguage: 'hi',
       bpm: 72,
-      modules: ['aiConsult', 'rxvision', 'twin', 'doctorConnect', 'cycle', 'carecast', 'sos'],
-      telemetry: {
-        hr: true,
-        spo2: true,
-        sleep: true,
-        fall: true
-      },
-      soundEnabled: true
+      soundEnabled: true,
+      doctor: 'Dr. Rajesh Sharma',
+      activeModules: ['aiConsult', 'alexVoice', 'twin3d', 'doctorRadar', 'rxvision', 'sos']
     };
 
-    /* Web Audio Synthesizer for Interactive VFX Chimes */
+    /* =========================================================
+       2. WEB AUDIO SYNTHESIZER FOR EXTREME VFX SOUND DESIGN
+       ========================================================= */
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) {
@@ -2110,7 +1673,6 @@
       try {
         const ctx = getAudioContext();
         if (!ctx) return;
-
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -2119,45 +1681,60 @@
 
         if (type === 'blip') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(540, now);
-          osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(920, now + 0.08);
           gain.gain.setValueAtTime(0.06, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
           osc.start(now);
-          osc.stop(now + 0.1);
+          osc.stop(now + 0.09);
         } else if (type === 'step') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(440, now);
-          osc.frequency.exponentialRampToValueAtTime(660, now + 0.14);
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(680, now + 0.16);
           gain.gain.setValueAtTime(0.08, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
           osc.start(now);
-          osc.stop(now + 0.2);
-        } else if (type === 'toggle') {
+          osc.stop(now + 0.18);
+        } else if (type === 'radar') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(620, now);
-          osc.frequency.exponentialRampToValueAtTime(740, now + 0.06);
-          gain.gain.setValueAtTime(0.05, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(1760, now + 0.12);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
           osc.start(now);
-          osc.stop(now + 0.08);
+          osc.stop(now + 0.14);
+        } else if (type === 'heart') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(65, now);
+          osc.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+          osc.start(now);
+          osc.stop(now + 0.14);
         } else if (type === 'celebrate') {
-          // Arpeggio chord
-          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach((freq, idx) => {
             const chordOsc = ctx.createOscillator();
             const chordGain = ctx.createGain();
             chordOsc.connect(chordGain);
             chordGain.connect(ctx.destination);
             chordOsc.type = 'triangle';
-            chordOsc.frequency.setValueAtTime(freq, now + idx * 0.09);
-            chordGain.gain.setValueAtTime(0.08, now + idx * 0.09);
-            chordGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.4);
-            chordOsc.start(now + idx * 0.09);
-            chordOsc.stop(now + idx * 0.09 + 0.4);
+            chordOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            chordGain.gain.setValueAtTime(0.08, now + idx * 0.08);
+            chordGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.5);
+            chordOsc.start(now + idx * 0.08);
+            chordOsc.stop(now + idx * 0.08 + 0.5);
           });
+        } else if (type === 'warp') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.exponentialRampToValueAtTime(1800, now + 0.4);
+          gain.gain.setValueAtTime(0.09, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
         }
       } catch (e) {
-        console.debug('Audio synth notice:', e);
+        console.debug('Web audio notice:', e);
       }
     }
 
@@ -2166,60 +1743,45 @@
       const btn = document.getElementById('audioToggleBtn');
       const icon = document.getElementById('audioIcon');
       const label = document.getElementById('audioLabel');
-
-      if (onboardingState.soundEnabled) {
-        btn.classList.add('active');
-        icon.textContent = '🔊';
-        label.textContent = 'Sound ON';
-        playTone('blip');
-      } else {
-        btn.classList.remove('active');
-        icon.textContent = '🔇';
-        label.textContent = 'Muted';
-      }
+      if (btn) btn.classList.toggle('active', onboardingState.soundEnabled);
+      if (icon) icon.textContent = onboardingState.soundEnabled ? '🔊' : '🔇';
+      if (label) label.textContent = onboardingState.soundEnabled ? 'Sound ON' : 'Muted';
+      if (onboardingState.soundEnabled) playTone('blip');
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP TRANSITIONS & FRAMER MOTION ORCHESTRATION
-       ══════════════════════════════════════════════════ */
+    /* =========================================================
+       3. NAVIGATION ENGINE: NEXT NEXT NEXT & STEP CONTROLLER
+       ========================================================= */
     function updateStepperUI() {
-      const fillPct = (currentStep / totalSteps) * 100;
-      const stepsRemaining = totalSteps - currentStep;
+      const fillPct = Math.round((currentStep / totalSteps) * 100);
+      const remaining = totalSteps - currentStep;
 
-      // Update continuous progress bar
+      // Progress bar fill
       const barFill = document.getElementById('progressBarFill');
-      if (barFill) barFill.style.width = fillPct + '%';
+      if (barFill) barFill.style.width = `${fillPct}%`;
 
-      // Update Top Progress Bar Remaining Steps and Counters
-      const topStepPill = document.getElementById('topStepPill');
-      if (topStepPill) topStepPill.textContent = `Step ${currentStep} of ${totalSteps}`;
+      // Top tags
+      const topTag = document.getElementById('topStepTag');
+      if (topTag) topTag.textContent = `Step ${currentStep} of ${totalSteps}`;
 
-      const stepsRemainingCount = document.getElementById('stepsRemainingCount');
-      if (stepsRemainingCount) stepsRemainingCount.textContent = stepsRemaining;
+      const remNum = document.getElementById('stepsRemainingNum');
+      if (remNum) remNum.textContent = remaining;
 
-      const topStepsRemaining = document.getElementById('topStepsRemaining');
-      if (topStepsRemaining) {
-        if (stepsRemaining === 0) {
-          topStepsRemaining.innerHTML = '<span class="remaining-pulse-dot" style="background:#059669;"></span> <strong>0</strong> steps remaining · Complete!';
-          topStepsRemaining.style.borderColor = 'rgba(5, 150, 105, 0.3)';
-          topStepsRemaining.style.color = '#059669';
-        } else if (stepsRemaining === 1) {
-          topStepsRemaining.innerHTML = '<span class="remaining-pulse-dot"></span> <strong>1</strong> step remaining';
-          topStepsRemaining.style.borderColor = '';
-          topStepsRemaining.style.color = '';
+      const remBox = document.getElementById('topStepsRemaining');
+      if (remBox) {
+        if (remaining === 0) {
+          remBox.innerHTML = '<span class="remaining-pulse-dot" style="background:#059669;"></span> <strong>0</strong> steps remaining · Ready to Launch';
+          remBox.style.color = '#059669';
         } else {
-          topStepsRemaining.innerHTML = `<span class="remaining-pulse-dot"></span> <strong>${stepsRemaining}</strong> steps remaining`;
-          topStepsRemaining.style.borderColor = '';
-          topStepsRemaining.style.color = '';
+          remBox.innerHTML = `<span class="remaining-pulse-dot"></span> <strong id="stepsRemainingNum">${remaining}</strong> step${remaining === 1 ? '' : 's'} remaining`;
+          remBox.style.color = '';
         }
       }
 
-      const topProgressPct = document.getElementById('topProgressPct');
-      if (topProgressPct) {
-        topProgressPct.textContent = stepsRemaining === 0 ? '100% Calibrated' : `${fillPct}% Completed`;
-      }
+      const pctText = document.getElementById('topProgressPct');
+      if (pctText) pctText.textContent = remaining === 0 ? '100% Calibrated' : `${fillPct}% Completed`;
 
-      // Update pills
+      // Stepper Pills
       for (let i = 1; i <= totalSteps; i++) {
         const pill = document.getElementById(`stepPill${i}`);
         if (!pill) continue;
@@ -2230,90 +1792,36 @@
           pill.classList.add('completed');
         }
       }
-
-      // Update footer controls and remaining badge
-      const backBtn = document.getElementById('btnStepBack');
-      const nextBtn = document.getElementById('btnStepNext');
-      const counterText = document.getElementById('stepCounterText');
-      const actionsRow = document.getElementById('cardActionsRow');
-      const footerRemainingNum = document.getElementById('footerRemainingNum');
-      const footerRemainingBadge = document.getElementById('footerRemainingBadge');
-
-      if (backBtn) backBtn.disabled = currentStep === 1;
-      if (counterText) counterText.textContent = `Step ${currentStep} of ${totalSteps}`;
-
-      if (footerRemainingNum) footerRemainingNum.textContent = stepsRemaining;
-      if (footerRemainingBadge) {
-        if (stepsRemaining === 0) {
-          footerRemainingBadge.textContent = 'Calibration Complete ✨';
-        } else {
-          footerRemainingBadge.innerHTML = `<strong id="footerRemainingNum">${stepsRemaining}</strong> step${stepsRemaining === 1 ? '' : 's'} remaining`;
-        }
-      }
-
-      if (actionsRow) {
-        if (currentStep === totalSteps) {
-          actionsRow.style.display = 'none'; // Step 5 has its own prominent launch buttons
-        } else {
-          actionsRow.style.display = 'flex';
-          if (nextBtn) nextBtn.textContent = (currentStep === 4) ? 'Finish Calibration ✨' : 'Continue →';
-        }
-      }
     }
 
-    /* Skip onboarding and proceed straight to login interface */
-    function skipToLogin() {
-      try {
-        localStorage.setItem('healthgpt_onboarding_completed', 'true');
-        localStorage.setItem('healthgpt_onboarding_skipped', 'true');
-        localStorage.setItem('healthgpt_onboarding_completed_at', new Date().toISOString());
-      } catch (err) {
-        console.warn('LocalStorage save notice:', err);
-      }
-
-      playTone('step');
-
-      const card = document.getElementById('onboardingDeckCard');
-      if (card) {
-        card.style.transition = 'all 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(-14px) scale(0.98)';
-      }
-
-      setTimeout(() => {
-        window.location.href = '/user-login';
-      }, 200);
-    }
-
-    function showStep(stepNumber, direction = 1) {
-      if (stepNumber < 1 || stepNumber > totalSteps) return;
+    function showStep(targetStep, direction = 1) {
+      if (targetStep < 1 || targetStep > totalSteps) return;
 
       const currentPanel = document.getElementById(`pageStep${currentStep}`);
-      const nextPanel = document.getElementById(`pageStep${stepNumber}`);
+      const nextPanel = document.getElementById(`pageStep${targetStep}`);
+
+      // Warp particle pulse
+      triggerWarpPulse();
 
       const M = window.Motion;
+      if (M && typeof M.animate === 'function' && currentPanel && nextPanel) {
+        const outX = direction > 0 ? -30 : 30;
+        const inX = direction > 0 ? 30 : -30;
 
-      // Animate current out and next in with Framer Motion if available
-      if (M && typeof M.animate === 'function') {
-        const outX = direction > 0 ? -40 : 40;
-        const inX = direction > 0 ? 40 : -40;
-
-        M.animate(currentPanel, { opacity: [1, 0], x: [0, outX] }, { duration: 0.22, ease: 'easeOut' })
+        M.animate(currentPanel, { opacity: [1, 0], x: [0, outX] }, { duration: 0.18, ease: 'easeOut' })
           .then(() => {
             currentPanel.classList.remove('active');
             nextPanel.classList.add('active');
-            M.animate(nextPanel, { opacity: [0, 1], x: [inX, 0], scale: [0.98, 1] }, { duration: 0.38, ease: [0.16, 1, 0.3, 1] });
-
-            // Trigger step-specific logic
-            onStepEnter(stepNumber);
+            M.animate(nextPanel, { opacity: [0, 1], x: [inX, 0] }, { duration: 0.28, ease: [0.16, 1, 0.3, 1] });
+            onStepEnter(targetStep);
           });
       } else {
-        currentPanel.classList.remove('active');
-        nextPanel.classList.add('active');
-        onStepEnter(stepNumber);
+        if (currentPanel) currentPanel.classList.remove('active');
+        if (nextPanel) nextPanel.classList.add('active');
+        onStepEnter(targetStep);
       }
 
-      currentStep = stepNumber;
+      currentStep = targetStep;
       updateStepperUI();
       playTone('step');
     }
@@ -2330,688 +1838,715 @@
       }
     }
 
-    function jumpToStep(targetStep) {
-      if (targetStep === currentStep) return;
-      const dir = targetStep > currentStep ? 1 : -1;
-      showStep(targetStep, dir);
+    function jumpToStep(stepNum) {
+      if (stepNum === currentStep) return;
+      const dir = stepNum > currentStep ? 1 : -1;
+      showStep(stepNum, dir);
     }
 
-    function onStepEnter(stepNumber) {
-      if (stepNumber === 2) {
-        // Start ECG waveform
+    function onStepEnter(stepNum) {
+      if (stepNum === 2) {
+        startVoiceEqualizerAnim();
+      } else if (stepNum === 3) {
+        startBioTwinRender();
         startEcgWaveform();
-      } else if (stepNumber === 5) {
-        // Launch calibration scan and fireworks
-        launchActivationCelebration();
+      } else if (stepNum === 4) {
+        startDoctorRadarSweep();
+      } else if (stepNum === 6) {
+        runCalibrationGauge();
       }
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP 1: HOLOGRAPHIC BIO-CARD LIVE UPDATES
-       ══════════════════════════════════════════════════ */
-    function updateHolographicCard() {
-      const name = document.getElementById('onboardingFullName').value.trim() || 'Valued Patient';
-      const age = document.getElementById('onboardingAge').value;
-      const blood = document.getElementById('onboardingBlood').value;
-      const goal = document.getElementById('onboardingGoal').value;
+    // Keyboard Arrow navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT')) return;
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        e.preventDefault();
+        nextStep();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        previousStep();
+      }
+    });
 
-      onboardingState.fullName = name;
-      onboardingState.age = age;
-      onboardingState.blood = blood;
-      onboardingState.goal = goal;
+    /* =========================================================
+       4. STAGE 1: IDENTITY & REACTIVE HOLOGRAPHIC BIO-CARD
+       ========================================================= */
+    function updateBioCardPreview() {
+      const nameInput = document.getElementById('userNameInput');
+      const ageSelect = document.getElementById('userAgeSelect');
+      const bloodSelect = document.getElementById('userBloodSelect');
 
-      document.getElementById('holoNameDisplay').textContent = name.toUpperCase();
-      document.getElementById('holoAgeDisplay').textContent = age;
-      document.getElementById('holoBloodDisplay').textContent = blood;
-      document.getElementById('holoGoalDisplay').textContent = goal.split(' ')[0] + ' ' + (goal.split(' ')[1] || '');
+      if (nameInput) onboardingState.fullName = nameInput.value.trim() || 'Eleanor Vance';
+      if (ageSelect) onboardingState.age = ageSelect.value;
+      if (bloodSelect) onboardingState.blood = bloodSelect.value;
 
-      playTone('blip');
+      const pName = document.getElementById('bioPreviewName');
+      const pAge = document.getElementById('bioPreviewAge');
+      const pBlood = document.getElementById('bioPreviewBlood');
+
+      if (pName) pName.textContent = onboardingState.fullName;
+      if (pAge) pAge.textContent = `${onboardingState.age} yrs`;
+      if (pBlood) pBlood.textContent = onboardingState.blood;
     }
 
-    function selectAvatar(emoji, el) {
-      document.querySelectorAll('.avatar-opt').forEach(b => b.classList.remove('selected'));
+    function selectArchetype(el, archetypeKey) {
+      document.querySelectorAll('.archetype-card').forEach(c => c.classList.remove('selected'));
       el.classList.add('selected');
-      onboardingState.avatar = emoji;
-      document.getElementById('holoAvatarDisplay').textContent = `${emoji} Active`;
+      onboardingState.archetype = archetypeKey;
+
+      const descMap = {
+        longevity: 'Longevity & Vitals Persona',
+        chronic: 'Chronic Care & Cardiac Protocol',
+        family: 'Family Caregiver Persona',
+        fitness: 'Metabolic & HRV Biohack'
+      };
+      const pArch = document.getElementById('bioPreviewArchetype');
+      if (pArch) pArch.textContent = descMap[archetypeKey] || 'Clinical Persona';
       playTone('blip');
     }
 
-    // Holographic card 3D tilt
-    const holoCard = document.getElementById('holographicCard');
-    if (holoCard) {
-      holoCard.addEventListener('mousemove', (e) => {
-        const rect = holoCard.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        const cx = rect.width / 2;
-        const cy = rect.height / 2;
-
-        const rotX = -((y - cy) / cy) * 12;
-        const rotY = ((x - cx) / cx) * 14;
-
-        holoCard.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) scale3d(1.02, 1.02, 1.02)`;
-      });
-
-      holoCard.addEventListener('mouseleave', () => {
-        holoCard.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-      });
+    function selectAvatar(el, avatarEmoji) {
+      document.querySelectorAll('.avatar-chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      onboardingState.avatar = avatarEmoji;
+      const pAv = document.getElementById('bioPreviewAvatar');
+      if (pAv) pAv.textContent = avatarEmoji;
+      playTone('blip');
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP 2: AI CLINICAL PHYSICIAN & ECG OSCILLOSCOPE
-       ══════════════════════════════════════════════════ */
-    function selectDoctor(docKey) {
-      onboardingState.doctor = docKey;
-      document.getElementById('docCardNambi').classList.toggle('selected', docKey === 'nambi');
-      document.getElementById('docCardAlex').classList.toggle('selected', docKey === 'alex');
-      playTone('toggle');
-    }
-
-    function previewDoctorVoice(docKey, e) {
-      if (e) e.stopPropagation();
-      playTone('celebrate');
-
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const text = docKey === 'nambi'
-          ? "Hello, I am Doctor Nambi. I look forward to analyzing your symptoms and guiding your diagnostic journey."
-          : "Hello, I'm Alex. Welcome to your personalized wellness space. Let's cultivate your health and balance together.";
-
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = 1.0;
-        utterance.pitch = docKey === 'nambi' ? 0.95 : 1.1;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
-
-    /* Interactive Live ECG Canvas */
-    let ecgAnimId = null;
-    let ecgTime = 0;
-    function startEcgWaveform() {
-      const canvas = document.getElementById('ecgCanvas');
+    /* =========================================================
+       5. STAGE 2: ALEX AI VOICE ENGINE
+       ========================================================= */
+    let voiceWaveAnimId = null;
+    function startVoiceEqualizerAnim() {
+      const canvas = document.getElementById('voiceWaveformCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      // Adjust dimensions to devicePixelRatio
-      const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
 
-      if (ecgAnimId) cancelAnimationFrame(ecgAnimId);
+      let tick = 0;
+      function drawWave() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const bars = 36;
+        const barWidth = canvas.width / bars;
+
+        for (let i = 0; i < bars; i++) {
+          const height = Math.sin(tick * 0.05 + i * 0.3) * 25 + Math.cos(tick * 0.08 + i * 0.2) * 15 + 30;
+          const x = i * barWidth;
+          const y = (canvas.height - height) / 2;
+
+          const grad = ctx.createLinearGradient(0, y, 0, y + height);
+          grad.addColorStop(0, '#38bdf8');
+          grad.addColorStop(1, '#0284c7');
+          ctx.fillStyle = grad;
+          ctx.fillRect(x + 2, y, barWidth - 4, height);
+        }
+        tick++;
+        voiceWaveAnimId = requestAnimationFrame(drawWave);
+      }
+      if (voiceWaveAnimId) cancelAnimationFrame(voiceWaveAnimId);
+      drawWave();
+    }
+
+    function changeVoiceLanguage() {
+      const sel = document.getElementById('voiceLanguageSelect');
+      if (sel) {
+        onboardingState.voiceLanguage = sel.value;
+        const greetings = {
+          en: 'Hello! I am Alex, your clinical AI companion. I can analyze your ECG, blood tests, and symptoms.',
+          hi: 'नमस्ते! मैं एलेक्स हूँ, आपका क्लिनिकल एआई साथी। मैं आपकी ईसीजी, ब्लड रिपोर्ट और लक्षणों का विश्लेषण कर सकता हूँ।',
+          ta: 'வணக்கம்! நான் அலெக்ஸ், உங்கள் மருத்துவ AI உதவியாளர்.',
+          te: 'నమస్కారం! నేను అలెక్స్, మీ క్లినికల్ AI సహచరుడిని.',
+          bn: 'নমস্কার! আমি অ্যালেক্স, আপনার ক্লিনিকাল এআই সঙ্গী।',
+          mr: 'नमस्कार! मी अ‍ॅलेक्स, तुमचा क्लिनिकल एआय साथीदार.'
+        };
+        const box = document.getElementById('alexTranscriptBox');
+        if (box) {
+          box.innerHTML = `<span style="color:#38bdf8;font-weight:700;">Alex:</span> "${greetings[sel.value] || greetings.en}"`;
+        }
+        playTone('blip');
+      }
+    }
+
+    function triggerAlexVoiceDemo() {
+      const status = document.getElementById('voiceStatusBadge');
+      if (status) {
+        status.textContent = 'Speaking...';
+        status.style.color = '#34d399';
+      }
+      playTone('step');
+
+      // Attempt native speech synthesis if available
+      try {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+          const sel = document.getElementById('voiceLanguageSelect');
+          const lang = sel ? sel.value : 'hi';
+          const texts = {
+            en: 'Hello Eleanor! I am Alex. Your real-time clinical AI companion is ready.',
+            hi: 'नमस्ते एलेनोर! मैं एलेक्स हूँ। आपकी स्वास्थ्य निगरानी शुरू करने के लिए तैयार हूँ।'
+          };
+          const msg = new SpeechSynthesisUtterance(texts[lang] || texts.en);
+          msg.rate = 1.0;
+          msg.onend = () => {
+            if (status) {
+              status.textContent = 'Idle · Ready to speak';
+              status.style.color = '#38bdf8';
+            }
+          };
+          window.speechSynthesis.speak(msg);
+        }
+      } catch (e) {
+        setTimeout(() => {
+          if (status) {
+            status.textContent = 'Idle · Ready to speak';
+            status.style.color = '#38bdf8';
+          }
+        }, 2000);
+      }
+    }
+
+    function simulatePromptTest(promptText) {
+      const box = document.getElementById('alexTranscriptBox');
+      if (box) {
+        box.innerHTML = `<span style="color:#38bdf8;font-weight:700;">Analyzing:</span> "${promptText}"<br><span style="color:#34d399;font-weight:700;">Alex:</span> "Clinical parameters verified. No contraindications detected under standard dosage."`;
+      }
+      playTone('blip');
+    }
+
+    /* =========================================================
+       6. STAGE 3: 3D HOLOGRAPHIC BIOLOGICAL TWIN & ECG
+       ========================================================= */
+    let twinAnimId = null;
+    function startBioTwinRender() {
+      const canvas = document.getElementById('bioTwinCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      let angle = 0;
+      function renderTwin() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        ctx.save();
+        ctx.translate(cx, cy);
+
+        // Rotating torso wireframe ellipses
+        for (let y = -90; y <= 90; y += 18) {
+          const rx = 55 * Math.cos((y / 100) * 1.2);
+          const ry = 22;
+
+          ctx.beginPath();
+          ctx.ellipse(0, y, Math.max(10, rx), ry, angle * 0.4, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.28)';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+
+        // Spine axis
+        ctx.beginPath();
+        ctx.moveTo(0, -110);
+        ctx.lineTo(0, 110);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Pulsing Organ Spheres
+        // Heart
+        const pulse = Math.sin(Date.now() * 0.008) * 3;
+        ctx.beginPath();
+        ctx.arc(-14, -20, 10 + pulse, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.75)';
+        ctx.fill();
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = 14;
+
+        // Brain
+        ctx.beginPath();
+        ctx.arc(0, -110, 12, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.65)';
+        ctx.fill();
+
+        // Lungs
+        ctx.beginPath();
+        ctx.arc(18, -25, 9, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(14, 165, 233, 0.55)';
+        ctx.fill();
+
+        ctx.restore();
+        angle += 0.02;
+        twinAnimId = requestAnimationFrame(renderTwin);
+      }
+      if (twinAnimId) cancelAnimationFrame(twinAnimId);
+      renderTwin();
+    }
+
+    let ecgAnimId = null;
+    let ecgOffset = 0;
+    function startEcgWaveform() {
+      const canvas = document.getElementById('liveEcgCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
 
       function drawEcg() {
-        ctx.clearRect(0, 0, rect.width, rect.height);
-
-        // Draw faint oscilloscope grid lines
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
-        ctx.lineWidth = 1;
-        for (let x = 0; x < rect.width; x += 24) {
-          ctx.beginPath();
-          ctx.moveTo(x, 0);
-          ctx.lineTo(x, rect.height);
-          ctx.stroke();
-        }
-        for (let y = 0; y < rect.height; y += 18) {
-          ctx.beginPath();
-          ctx.moveTo(0, y);
-          ctx.lineTo(rect.width, y);
-          ctx.stroke();
-        }
-
-        // Draw ECG Waveform trace
-        const midY = rect.height / 2;
-        const bpmFactor = onboardingState.bpm / 60; // speed scale
-        ecgTime += 2.2 * bpmFactor;
-
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 2.5;
-        ctx.shadowColor = '#38bdf8';
-        ctx.shadowBlur = 10;
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.25)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.beginPath();
-        for (let x = 0; x < rect.width; x += 2) {
-          const t = (x + ecgTime) % 240;
-          let y = midY;
+        ctx.strokeStyle = '#10b981';
+        ctx.lineWidth = 2;
+        ctx.shadowColor = '#34d399';
+        ctx.shadowBlur = 8;
 
-          // P Wave
-          if (t > 40 && t < 65) {
-            y -= Math.sin(((t - 40) / 25) * Math.PI) * 7;
-          }
-          // Q Dip
-          else if (t >= 75 && t < 80) {
-            y += ((t - 75) / 5) * 6;
-          }
-          // R Spike
-          else if (t >= 80 && t < 90) {
-            y -= 28 - Math.abs(t - 85) * 5.6;
-          }
-          // S Dip
-          else if (t >= 90 && t < 98) {
-            y += Math.sin(((t - 90) / 8) * Math.PI) * 8;
-          }
-          // T Wave
-          else if (t > 120 && t < 165) {
-            y -= Math.sin(((t - 120) / 45) * Math.PI) * 11;
-          }
+        const cy = canvas.height / 2;
+        const speed = (onboardingState.bpm / 60) * 3.5;
+        ecgOffset += speed;
+
+        for (let x = 0; x < canvas.width; x += 3) {
+          const t = (x + ecgOffset) % 180;
+          let y = cy;
+          if (t > 40 && t < 48) y = cy - 4; // P wave
+          else if (t > 60 && t < 64) y = cy + 6; // Q wave
+          else if (t >= 64 && t < 72) y = cy - 32; // R spike
+          else if (t >= 72 && t < 78) y = cy + 10; // S dip
+          else if (t > 95 && t < 112) y = cy - 8; // T wave
 
           if (x === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
         ctx.stroke();
         ctx.shadowBlur = 0;
-
         ecgAnimId = requestAnimationFrame(drawEcg);
       }
+      if (ecgAnimId) cancelAnimationFrame(ecgAnimId);
       drawEcg();
     }
 
-    function adjustEcgBpm(val) {
+    function adjustBpm(val) {
       onboardingState.bpm = parseInt(val, 10);
-      document.getElementById('sliderBpmValue').textContent = val;
-      document.getElementById('ecgBpmDisplay').textContent = `${val} BPM · NSR`;
+      const disp = document.getElementById('bpmDisplayLabel');
+      const sVal = document.getElementById('sliderValText');
+      if (disp) disp.textContent = `${val} BPM · ${val < 60 ? 'Athletic Bradycardia' : val > 100 ? 'Sinus Tachycardia' : 'Normal Sinus'}`;
+      if (sVal) sVal.textContent = val;
+      playTone('heart');
+    }
+
+    function inspectOrgan(organKey) {
+      document.querySelectorAll('.organ-pill').forEach(p => p.classList.remove('active'));
+      const activePill = Array.from(document.querySelectorAll('.organ-pill')).find(p => p.textContent.toLowerCase().includes(organKey));
+      if (activePill) activePill.classList.add('active');
+
+      const dataBox = document.getElementById('organTelemetryData');
+      const organNotes = {
+        heart: '<b>Cardiovascular Status:</b> Normal sinus rhythm with HRV at 68ms. Left ventricular ejection fraction estimated at 62%.',
+        brain: '<b>Neural Telemetry:</b> Alpha brainwave symmetry at 10.2 Hz. Sleep architecture shows 22% deep restorative phase.',
+        lungs: '<b>Pulmonary Dynamics:</b> SpO2 at 98.4% on ambient air. Tidal volume 480mL with clear bilateral breath rhythm.',
+        liver: '<b>Metabolic Markers:</b> ALT/AST within standard ranges. Fasting insulin sensitivity score optimal.'
+      };
+      if (dataBox) dataBox.innerHTML = organNotes[organKey] || organNotes.heart;
       playTone('blip');
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP 3: CLINICAL CAPABILITIES RADAR & CARE TOOLS
-       ══════════════════════════════════════════════════ */
-    const MODULE_LABELS = {
-      aiConsult: 'AI Clinical Consult',
-      rxvision: 'RxVision OCR',
-      ocr: 'RxVision OCR',
-      twin: '3D Human Twin',
-      doctorConnect: 'Connect Indian Doctors',
-      cycle: 'Cycle & Hormones',
-      metabolic: 'Metabolic Nutrition',
-      carecast: 'CareCast Feed',
-      medicine: 'Explore Pharmacopoeia',
-      sos: 'Emergency SOS'
-    };
+    /* =========================================================
+       7. STAGE 4: 10,036 DOCTORS & REAL-TIME DISPATCH RADAR
+       ========================================================= */
+    let radarAnimId = null;
+    function startDoctorRadarSweep() {
+      const canvas = document.getElementById('doctorRadarCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
 
-    function updateModulesUI() {
-      const count = onboardingState.modules.length;
-      const counterBadge = document.getElementById('step3SelectedCounter');
-      if (counterBadge) {
-        counterBadge.textContent = `⚡ ${count} of 9 Tools Selected · Personalized Dashboard`;
+      let sweepAngle = 0;
+      const docNodes = [
+        { angle: 0.8, dist: 60, name: 'AIIMS Delhi' },
+        { angle: 2.1, dist: 95, name: 'Medanta Gurugram' },
+        { angle: 3.6, dist: 75, name: 'Apollo Greams' },
+        { angle: 4.8, dist: 110, name: 'Fortis Escorts' }
+      ];
+
+      function renderRadar() {
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.16)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        // Concentric range circles
+        [40, 80, 120].forEach(r => {
+          ctx.beginPath();
+          ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        });
+
+        // Crosshairs
+        ctx.beginPath();
+        ctx.moveTo(cx - 130, cy);
+        ctx.lineTo(cx + 130, cy);
+        ctx.moveTo(cx, cy - 130);
+        ctx.lineTo(cx, cy + 130);
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.15)';
+        ctx.stroke();
+
+        // Rotating sweep cone
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(sweepAngle);
+
+        const sweepGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 130);
+        sweepGrad.addColorStop(0, 'rgba(16, 185, 129, 0.45)');
+        sweepGrad.addColorStop(1, 'transparent');
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, 130, 0, Math.PI * 0.35);
+        ctx.closePath();
+        ctx.fillStyle = sweepGrad;
+        ctx.fill();
+        ctx.restore();
+
+        // Clinical doctor nodes
+        docNodes.forEach(node => {
+          const nx = cx + Math.cos(node.angle) * node.dist;
+          const ny = cy + Math.sin(node.angle) * node.dist;
+          ctx.beginPath();
+          ctx.arc(nx, ny, 4, 0, Math.PI * 2);
+          ctx.fillStyle = '#34d399';
+          ctx.fill();
+          ctx.shadowColor = '#34d399';
+          ctx.shadowBlur = 6;
+        });
+
+        sweepAngle += 0.04;
+        radarAnimId = requestAnimationFrame(renderRadar);
       }
-      const sumModEl = document.getElementById('sumModules');
-      if (sumModEl) {
-        sumModEl.textContent = onboardingState.modules.map(m => MODULE_LABELS[m] || m).join(', ') || 'None selected';
-      }
+      if (radarAnimId) cancelAnimationFrame(radarAnimId);
+      renderRadar();
     }
 
-    function toggleModule(el, moduleKey) {
-      el.classList.toggle('selected');
-      const isSelected = el.classList.contains('selected');
+    function runSimulatedDoctorRadarMatch() {
+      const spec = document.getElementById('radarSpecialtySelect')?.value || 'Cardiologist';
+      playTone('radar');
 
-      if (isSelected) {
-        if (!onboardingState.modules.includes(moduleKey)) onboardingState.modules.push(moduleKey);
-        playTone('toggle');
-      } else {
-        onboardingState.modules = onboardingState.modules.filter(m => m !== moduleKey);
-        playTone('blip');
-      }
-      updateModulesUI();
-    }
+      const nameEl = document.getElementById('radarDocName');
+      const hospEl = document.getElementById('radarDocHospital');
+      const numEl = document.getElementById('radarDocNumber');
+      const tokEl = document.getElementById('radarDocToken');
 
-    function selectModulesPreset(preset) {
-      let targetModules = [];
-      if (preset === 'all') {
-        targetModules = ['aiConsult', 'rxvision', 'twin', 'doctorConnect', 'cycle', 'metabolic', 'carecast', 'medicine', 'sos'];
-      } else if (preset === 'core') {
-        targetModules = ['aiConsult', 'rxvision', 'doctorConnect', 'sos'];
-      } else if (preset === 'wellness') {
-        targetModules = ['aiConsult', 'twin', 'cycle', 'metabolic'];
-      } else if (preset === 'clear') {
-        targetModules = [];
-      }
+      if (tokEl) tokEl.textContent = 'SCANNING...';
 
-      onboardingState.modules = [...targetModules];
-
-      document.querySelectorAll('.modules-matrix .module-item').forEach(card => {
-        const key = card.getAttribute('data-module-key');
-        if (targetModules.includes(key)) {
-          card.classList.add('selected');
+      setTimeout(() => {
+        if (tokEl) tokEl.textContent = `LIVE-IND-${Math.floor(1000 + Math.random() * 9000)}`;
+        if (spec === 'Neurologist') {
+          if (nameEl) nameEl.textContent = 'Dr. Priya Nair';
+          if (hospEl) hospEl.textContent = 'Neurologist · AIIMS New Delhi';
+          if (numEl) numEl.textContent = '+91 98201 44920';
+        } else if (spec === 'Orthopedic') {
+          if (nameEl) nameEl.textContent = 'Dr. Siddharth Dasgupta';
+          if (hospEl) hospEl.textContent = 'Orthopedic Surgeon · Apollo Indraprastha';
+          if (numEl) numEl.textContent = '+91 97599 48240';
         } else {
-          card.classList.remove('selected');
+          if (nameEl) nameEl.textContent = 'Dr. Rajesh Sharma';
+          if (hospEl) hospEl.textContent = 'Cardiologist · Medanta The Medicity';
+          if (numEl) numEl.textContent = '+91 98110 38291';
         }
-      });
-
-      updateModulesUI();
-      playTone('celebrate');
+        playTone('celebrate');
+      }, 600);
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP 4: BIOMETRIC TELEMETRY & SENSORS
-       ══════════════════════════════════════════════════ */
-    function updateTelemetryRadar() {
-      onboardingState.telemetry.hr = document.getElementById('toggleHr').checked;
-      onboardingState.telemetry.spo2 = document.getElementById('toggleSpo2').checked;
-      onboardingState.telemetry.sleep = document.getElementById('toggleSleep').checked;
-      onboardingState.telemetry.fall = document.getElementById('toggleFall').checked;
-
-      const activeCount = Object.values(onboardingState.telemetry).filter(Boolean).length;
-      document.getElementById('telemetryStatusBadge').textContent = `ACTIVE · ${activeCount}/4 SENSORS`;
-
-      const latencyMs = 15 + (4 - activeCount) * 4;
-      document.getElementById('latencyDisplay').textContent = `${latencyMs}ms`;
-      document.getElementById('barLatency').style.width = `${Math.min(100, 105 - activeCount * 4)}%`;
-
-      const fidelity = (86 + activeCount * 3.1).toFixed(1);
-      document.getElementById('fidelityDisplay').textContent = `${fidelity}%`;
-      document.getElementById('barFidelity').style.width = `${fidelity}%`;
-
-      playTone('toggle');
+    function copyRadarDoctorNumber() {
+      const num = document.getElementById('radarDocNumber')?.textContent || '+91 98110 38291';
+      navigator.clipboard.writeText(num);
+      playTone('blip');
+      alert(`📋 Doctor's original number ${num} copied to clipboard!`);
     }
 
-    /* ══════════════════════════════════════════════════
-       STEP 5: ACTIVATION SCANNER & CONFETTI FIREWORKS
-       ══════════════════════════════════════════════════ */
-    function launchActivationCelebration() {
-      const circle = document.getElementById('scannerCircle');
-      const pctText = document.getElementById('scannerPercentText');
-      const iconCheck = document.getElementById('scannerIconCheck');
-      const title = document.getElementById('finalCelebrationTitle');
-      const sub = document.getElementById('finalCelebrationSub');
+    function testDoctorCallAlert() {
+      const num = document.getElementById('radarDocNumber')?.textContent || '+91 98110 38291';
+      playTone('radar');
+      window.location.href = `tel:${num.replace(/[^0-9+]/g, '')}`;
+    }
 
-      // Populate summary details
-      document.getElementById('sumName').textContent = `${onboardingState.fullName} (${onboardingState.age} yrs, ${onboardingState.blood})`;
-      document.getElementById('sumDoc').textContent = onboardingState.doctor === 'nambi' ? 'Dr. Nambi, MD (Internal Medicine)' : 'Alex, Holistic RN (Integrative Wellness)';
+    /* =========================================================
+       8. STAGE 5: RXVISION MULTIMODAL OCR SCANNER
+       ========================================================= */
+    function loadSampleRx(type) {
+      const sampleText = document.getElementById('rxTextSample');
+      const outputBox = document.getElementById('rxExtractedOutput');
+      playTone('blip');
 
-      document.getElementById('sumModules').textContent = onboardingState.modules.map(m => MODULE_LABELS[m] || m).join(', ') || 'General Practice';
+      if (type === 'blood') {
+        if (sampleText) {
+          sampleText.innerHTML = `LAL PATHLABS CLINICAL BIOCHEMISTRY<br>
+          • Fasting Blood Sugar: 124 mg/dL (Elevated)<br>
+          • HbA1c: 6.8% (Pre-diabetic target)<br>
+          • Total Cholesterol: 198 mg/dL<br>
+          • eGFR: 94 mL/min (Normal renal clearance)`;
+        }
+        if (outputBox) {
+          outputBox.innerHTML = `<b>Extracted Metabolic Biomarkers:</b><br>
+          • Fasting Blood Sugar: 124 mg/dL (Lifestyle modification recommended)<br>
+          • HbA1c: 6.8% · Good glycemic control<br>
+          • eGFR: Normal kidney filtration`;
+        }
+      } else if (type === 'chest') {
+        if (sampleText) {
+          sampleText.innerHTML = `MEDANTA DIGITAL RADIOLOGY REPORT<br>
+          • Modality: High-Resolution Chest CT<br>
+          • Findings: Clear bilateral lung parenchymal fields. No consolidation, effusion, or pneumothorax.<br>
+          • Impression: Normal adult thoracic anatomy.`;
+        }
+        if (outputBox) {
+          outputBox.innerHTML = `<b>Radiology Diagnostic Summary:</b><br>
+          • Lung Fields: Clear and expanded<br>
+          • Cardiovascular silhouette: Normal transverse diameter<br>
+          • Recommendation: Routine follow-up`;
+        }
+      } else {
+        if (sampleText) {
+          sampleText.innerHTML = `℞<br>
+          1. Tab Atorvastatin 20mg — 1 OD (Night, post meals)<br>
+          2. Tab Metformin 500mg — 1 BD (Morning &amp; Evening)<br>
+          3. Tab Telmisartan 40mg — 1 OD (Morning)`;
+        }
+        if (outputBox) {
+          outputBox.innerHTML = `<b>Extracted Medications (3):</b><br>
+          • Atorvastatin 20mg (09:00 PM)<br>
+          • Metformin 500mg (08:00 AM / 08:00 PM)<br>
+          • Telmisartan 40mg (08:30 AM)`;
+        }
+      }
+    }
 
-      const activeSensors = [];
-      if (onboardingState.telemetry.hr) activeSensors.push('Heart Rate');
-      if (onboardingState.telemetry.spo2) activeSensors.push('SpO2');
-      if (onboardingState.telemetry.sleep) activeSensors.push('Sleep');
-      if (onboardingState.telemetry.fall) activeSensors.push('Fall SOS');
-      document.getElementById('sumSensors').textContent = activeSensors.join(', ') || 'Manual Logging Only';
+    function triggerRxLaserScan() {
+      const scanner = document.getElementById('rxLaserScanner');
+      if (scanner) {
+        scanner.classList.add('scanning');
+        playTone('radar');
+        setTimeout(() => {
+          scanner.classList.remove('scanning');
+          playTone('celebrate');
+        }, 2200);
+      }
+    }
 
-      // Animate circular scan progress from 0 to 100%
-      let progress = 0;
+    /* =========================================================
+       9. STAGE 6: CALIBRATION & INTRO TRANSITION
+       ========================================================= */
+    function runCalibrationGauge() {
+      const circle = document.getElementById('calibrationGaugeCircle');
+      const text = document.getElementById('gaugePctText');
+      const title = document.getElementById('finalWelcomeTitle');
+
+      if (!circle || !text) return;
+
+      let pct = 0;
       const circumference = 377;
       circle.style.strokeDashoffset = circumference;
 
-      const scanTimer = setInterval(() => {
-        progress += 4;
-        if (progress > 100) progress = 100;
+      const timer = setInterval(() => {
+        pct += 3;
+        if (pct > 100) pct = 100;
 
-        const offset = circumference - (progress / 100) * circumference;
+        const offset = circumference - (pct / 100) * circumference;
         circle.style.strokeDashoffset = offset;
-        pctText.textContent = `${progress}%`;
+        text.textContent = `${pct}%`;
 
-        if (progress === 100) {
-          clearInterval(scanTimer);
-          pctText.style.display = 'none';
-          iconCheck.style.display = 'block';
-
-          title.textContent = 'Welcome Aboard HealthGPT!';
-          sub.textContent = 'Your clinical digital twin is calibrated, encrypted, and ready for your first consultation.';
-
+        if (pct === 100) {
+          clearInterval(timer);
+          text.textContent = '✨';
+          if (title) title.textContent = `Welcome Aboard, ${onboardingState.fullName}!`;
           playTone('celebrate');
-          fireConfettiBurst();
+          launchConfetti();
         }
-      }, 50);
+      }, 35);
     }
 
-    /* Confetti Particle Cannon Animation */
-    function fireConfettiBurst() {
+    function toggleCareModule(el) {
+      el.classList.toggle('selected');
+      playTone('blip');
+    }
+
+    function launchConfetti() {
       const canvas = document.getElementById('confettiCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
-
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
 
-      const confettiPieces = [];
-      const colors = ['#8c6d46', '#38bdf8', '#059669', '#f59e0b', '#ec4899', '#7c3aed', '#10b981'];
+      const particles = [];
+      const colors = ['#8c6d46', '#0284c7', '#059669', '#f59e0b', '#ec4899', '#7c3aed'];
 
-      for (let i = 0; i < 110; i++) {
-        confettiPieces.push({
+      for (let i = 0; i < 90; i++) {
+        particles.push({
           x: canvas.width / 2,
           y: canvas.height / 2,
-          w: Math.random() * 9 + 4,
-          h: Math.random() * 6 + 3,
-          color: colors[Math.floor(Math.random() * colors.length)],
           vx: (Math.random() - 0.5) * 16,
-          vy: (Math.random() - 0.7) * 18,
-          gravity: 0.28,
-          rotation: Math.random() * 360,
-          rotationSpeed: (Math.random() - 0.5) * 12,
-          alpha: 1
+          vy: (Math.random() - 0.7) * 16,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1,
+          rot: Math.random() * 360
         });
       }
 
-      function updateConfetti() {
+      function renderConfetti() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         let active = 0;
-
-        for (let p of confettiPieces) {
+        particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += p.gravity;
-          p.rotation += p.rotationSpeed;
-          p.alpha -= 0.007;
+          p.vy += 0.25;
+          p.alpha -= 0.008;
 
           if (p.alpha > 0) {
             active++;
             ctx.save();
             ctx.translate(p.x, p.y);
-            ctx.rotate((p.rotation * Math.PI) / 180);
+            ctx.rotate(p.rot);
             ctx.fillStyle = p.color;
             ctx.globalAlpha = p.alpha;
-            ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
             ctx.restore();
           }
-        }
-
-        if (active > 0) {
-          requestAnimationFrame(updateConfetti);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        });
+        if (active > 0) requestAnimationFrame(renderConfetti);
       }
-      updateConfetti();
+      renderConfetti();
     }
 
-    /* Save preferences to localStorage & proceed */
-    function finishOnboarding(targetUrl) {
+    /* =========================================================
+       10. FINISH ONBOARDING & ENTER THE INTRO PAGE
+       ========================================================= */
+    function saveOnboardingPreferences() {
       try {
         localStorage.setItem('healthgpt_onboarding_completed', 'true');
+        localStorage.setItem('healthgpt_onboarding_completed_at', new Date().toISOString());
         localStorage.setItem('healthgpt_user_name', onboardingState.fullName);
         localStorage.setItem('healthgpt_user_age', onboardingState.age);
         localStorage.setItem('healthgpt_user_blood', onboardingState.blood);
-        localStorage.setItem('healthgpt_user_goal', onboardingState.goal);
+        localStorage.setItem('healthgpt_user_archetype', onboardingState.archetype);
         localStorage.setItem('healthgpt_user_avatar', onboardingState.avatar);
+        localStorage.setItem('healthgpt_user_bpm', onboardingState.bpm);
         localStorage.setItem('healthgpt_preferred_doctor', onboardingState.doctor);
-        localStorage.setItem('healthgpt_active_modules', JSON.stringify(onboardingState.modules));
-        localStorage.setItem('healthgpt_user_care_tools', JSON.stringify(onboardingState.modules));
-        localStorage.setItem('healthgpt_personalized_mode', 'true');
-        localStorage.setItem('healthgpt_view_mode', 'user');
-        localStorage.setItem('healthgpt_telemetry_prefs', JSON.stringify(onboardingState.telemetry));
-      } catch (err) {
-        console.warn('LocalStorage save notice:', err);
+        localStorage.setItem('healthgpt_active_modules', JSON.stringify(onboardingState.activeModules));
+      } catch (e) {
+        console.warn('LocalStorage save error:', e);
       }
+    }
 
-      playTone('celebrate');
+    function finishOnboardingAndShowIntro() {
+      saveOnboardingPreferences();
+      playTone('warp');
+
+      const overlay = document.getElementById('warpFlashOverlay');
+      if (overlay) overlay.classList.add('active');
+
       setTimeout(() => {
-        window.location.href = targetUrl;
-      }, 350);
+        // Smoothly land on the intro page with welcome parameter
+        window.location.href = '/?welcome=true';
+      }, 700);
     }
 
-    /* ══════════════════════════════════════════════════
-       SWIPE & DRAG NAVIGATION GESTURE CONTROLLER
-       ══════════════════════════════════════════════════ */
-    function initSwipeToNavigate() {
-      const card = document.getElementById('onboardingDeckCard');
-      if (!card) return;
-
-      const cueLeft = document.getElementById('swipeIndicatorLeft');
-      const cueRight = document.getElementById('swipeIndicatorRight');
-
-      let startX = 0;
-      let startY = 0;
-      let currentX = 0;
-      let isDragging = false;
-      let isHorizontalSwipe = false;
-      let startTime = 0;
-
-      function isInteractiveTarget(el) {
-        if (!el) return false;
-        const tag = el.tagName.toLowerCase();
-        return (
-          tag === 'input' ||
-          tag === 'select' ||
-          tag === 'textarea' ||
-          tag === 'button' ||
-          tag === 'canvas' ||
-          el.closest('button') ||
-          el.closest('input') ||
-          el.closest('select') ||
-          el.closest('textarea') ||
-          el.closest('.avatar-opt') ||
-          el.closest('.module-item') ||
-          el.closest('.doc-choice-card') ||
-          el.closest('.switch') ||
-          el.closest('.step-pill') ||
-          el.closest('.ecg-range-slider')
-        );
-      }
-
-      function handleDragStart(x, y, target) {
-        if (isInteractiveTarget(target)) return;
-        isDragging = true;
-        isHorizontalSwipe = false;
-        startX = x;
-        startY = y;
-        currentX = x;
-        startTime = Date.now();
-        card.classList.add('is-dragging');
-      }
-
-      function handleDragMove(x, y, e) {
-        if (!isDragging) return;
-
-        const deltaX = x - startX;
-        const deltaY = y - startY;
-
-        // Detect direction
-        if (!isHorizontalSwipe) {
-          if (Math.abs(deltaY) > Math.abs(deltaX) && Math.abs(deltaY) > 8) {
-            // Predominantly vertical scrolling; let user scroll normally
-            isDragging = false;
-            card.classList.remove('is-dragging');
-            resetDragTransform(false);
-            return;
-          }
-          if (Math.abs(deltaX) > 8) {
-            isHorizontalSwipe = true;
-          }
-        }
-
-        if (isHorizontalSwipe) {
-          if (e && e.cancelable) e.preventDefault();
-          currentX = x;
-
-          // Provide rubber-band resistance at boundaries
-          let effectiveDelta = deltaX;
-          if ((currentStep === 1 && deltaX > 0) || (currentStep === totalSteps && deltaX < 0)) {
-            effectiveDelta = deltaX * 0.22;
-          } else {
-            effectiveDelta = deltaX * 0.65;
-          }
-
-          const tilt = effectiveDelta * 0.014;
-          card.style.transform = `translateX(${effectiveDelta}px) rotate(${tilt}deg)`;
-
-          // Illuminate directional edge cues
-          if (deltaX > 25 && currentStep > 1) {
-            if (cueLeft) cueLeft.classList.add('visible');
-            if (cueRight) cueRight.classList.remove('visible');
-          } else if (deltaX < -25 && currentStep < totalSteps) {
-            if (cueRight) cueRight.classList.add('visible');
-            if (cueLeft) cueLeft.classList.remove('visible');
-          } else {
-            if (cueLeft) cueLeft.classList.remove('visible');
-            if (cueRight) cueRight.classList.remove('visible');
-          }
-        }
-      }
-
-      function handleDragEnd() {
-        if (!isDragging) return;
-        isDragging = false;
-        card.classList.remove('is-dragging');
-
-        if (cueLeft) cueLeft.classList.remove('visible');
-        if (cueRight) cueRight.classList.remove('visible');
-
-        const deltaX = currentX - startX;
-        const duration = Math.max(Date.now() - startTime, 1);
-        const velocity = Math.abs(deltaX) / duration;
-
-        // Swipe threshold: distance > 55px or fast flick (velocity > 0.35 and distance > 25px)
-        const thresholdMet = Math.abs(deltaX) > 55 || (velocity > 0.35 && Math.abs(deltaX) > 25);
-
-        if (thresholdMet) {
-          if (deltaX < 0 && currentStep < totalSteps) {
-            // Swiped left -> navigate to next slide
-            resetDragTransform(false);
-            nextStep();
-            return;
-          } else if (deltaX > 0 && currentStep > 1) {
-            // Swiped right -> navigate to previous slide
-            resetDragTransform(false);
-            previousStep();
-            return;
-          }
-        }
-
-        // Spring smoothly back to center if threshold not reached or boundary blocked
-        resetDragTransform(true);
-      }
-
-      function resetDragTransform(animate = false) {
-        if (animate) {
-          card.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
-          card.style.transform = 'translateX(0) rotate(0deg)';
-          setTimeout(() => {
-            card.style.transition = '';
-          }, 330);
-        } else {
-          card.style.transition = '';
-          card.style.transform = 'translateX(0) rotate(0deg)';
-        }
-      }
-
-      // Pointer events for desktop drag
-      card.addEventListener('pointerdown', (e) => {
-        if (e.pointerType === 'mouse' && e.button !== 0) return;
-        handleDragStart(e.clientX, e.clientY, e.target);
-      });
-
-      window.addEventListener('pointermove', (e) => {
-        handleDragMove(e.clientX, e.clientY, e);
-      });
-
-      window.addEventListener('pointerup', handleDragEnd);
-      window.addEventListener('pointercancel', handleDragEnd);
-
-      // Touch events for mobile/tablet swipe
-      card.addEventListener('touchstart', (e) => {
-        if (e.touches.length === 1) {
-          handleDragStart(e.touches[0].clientX, e.touches[0].clientY, e.target);
-        }
-      }, { passive: true });
-
-      window.addEventListener('touchmove', (e) => {
-        if (isDragging && e.touches.length === 1) {
-          handleDragMove(e.touches[0].clientX, e.touches[0].clientY, e);
-        }
-      }, { passive: false });
-
-      window.addEventListener('touchend', handleDragEnd);
-      window.addEventListener('touchcancel', handleDragEnd);
+    function finishOnboardingAndGoDashboard() {
+      saveOnboardingPreferences();
+      playTone('warp');
+      window.location.href = '/dashboard';
     }
 
-    /* ══════════════════════════════════════════════════
-       BACKGROUND QUANTUM CONSTELLATION CANVAS VFX
-       ══════════════════════════════════════════════════ */
-    function initAmbientConstellation() {
-      const canvas = document.getElementById('ambientConstellationCanvas');
+    function skipDirectToIntro() {
+      saveOnboardingPreferences();
+      playTone('step');
+      window.location.href = '/?welcome=true&skip=true';
+    }
+
+    /* =========================================================
+       11. QUANTUM WARP PARTICLES ENGINE (BACKGROUND VFX)
+       ========================================================= */
+    let warpSpeedMultiplier = 1;
+    function triggerWarpPulse() {
+      warpSpeedMultiplier = 5;
+      setTimeout(() => { warpSpeedMultiplier = 1; }, 500);
+    }
+
+    function initQuantumWarpCanvas() {
+      const canvas = document.getElementById('quantumWarpCanvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
 
-      let width = (canvas.width = window.innerWidth);
-      let height = (canvas.height = window.innerHeight);
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize);
 
-      window.addEventListener('resize', () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      });
-
-      const particleCount = Math.min(width > 768 ? 55 : 30, 65);
-      const particles = [];
-
-      for (let i = 0; i < particleCount; i++) {
-        particles.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          vx: (Math.random() - 0.5) * 0.45,
-          vy: (Math.random() - 0.5) * 0.45,
-          radius: Math.random() * 1.8 + 1,
-          alpha: Math.random() * 0.45 + 0.15
+      const nodes = [];
+      const nodeCount = 90;
+      for (let i = 0; i < nodeCount; i++) {
+        nodes.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 0.7,
+          vy: (Math.random() - 0.5) * 0.7,
+          radius: Math.random() * 2.2 + 1,
+          color: Math.random() > 0.5 ? '#8c6d46' : '#0284c7'
         });
       }
 
-      function drawConstellation() {
-        ctx.clearRect(0, 0, width, height);
+      function drawWarp() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.x += p.vx;
-          p.y += p.vy;
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          a.x += a.vx * warpSpeedMultiplier;
+          a.y += a.vy * warpSpeedMultiplier;
 
-          if (p.x < 0 || p.x > width) p.vx *= -1;
-          if (p.y < 0 || p.y > height) p.vy *= -1;
+          if (a.x < 0) a.x = canvas.width;
+          if (a.x > canvas.width) a.x = 0;
+          if (a.y < 0) a.y = canvas.height;
+          if (a.y > canvas.height) a.y = 0;
 
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(140, 109, 70, ${p.alpha})`;
+          ctx.arc(a.x, a.y, a.radius, 0, Math.PI * 2);
+          ctx.fillStyle = a.color;
+          ctx.globalAlpha = 0.45;
           ctx.fill();
 
-          for (let j = i + 1; j < particles.length; j++) {
-            const p2 = particles[j];
-            const dx = p.x - p2.x;
-            const dy = p.y - p2.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < 115) {
+          // Connective axons
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b = nodes[j];
+            const dist = Math.hypot(a.x - b.x, a.y - b.y);
+            if (dist < 110) {
               ctx.beginPath();
-              ctx.moveTo(p.x, p.y);
-              ctx.lineTo(p2.x, p2.y);
-              const linkAlpha = (1 - dist / 115) * 0.16;
-              ctx.strokeStyle = `rgba(140, 109, 70, ${linkAlpha})`;
-              ctx.lineWidth = 1;
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.strokeStyle = a.color;
+              ctx.globalAlpha = (1 - dist / 110) * 0.18;
               ctx.stroke();
             }
           }
         }
-        requestAnimationFrame(drawConstellation);
+        requestAnimationFrame(drawWarp);
       }
-      drawConstellation();
+      drawWarp();
     }
 
-    /* Keyboard accessibility navigation */
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' && currentStep < totalSteps) {
-        // Only advance if not typing inside input
-        if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
-          nextStep();
-        }
-      } else if (e.key === 'ArrowLeft' && currentStep > 1) {
-        if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
-          previousStep();
-        }
-      }
-    });
-
-    // Initialize on load
+    // Initialize on page load
     window.addEventListener('DOMContentLoaded', () => {
-      // Check if arriving with ?restart=true to show replay notice
-      try {
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('restart') === 'true' || params.get('force') === 'true') {
-          const banner = document.getElementById('restartModeBanner');
-          if (banner) banner.style.display = 'flex';
-        }
-      } catch (err) {
-        console.warn('URL params check notice:', err);
-      }
-
-      initAmbientConstellation();
-      initSwipeToNavigate();
+      initQuantumWarpCanvas();
+      updateBioCardPreview();
       updateStepperUI();
     });
   </script>
