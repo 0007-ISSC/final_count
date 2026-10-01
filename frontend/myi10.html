@@ -33,6 +33,10 @@
 
 <!-- Three.js & OrbitControls for HealthGPT 3D Human Digital Twin -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- jsQR Optical QR Decoding Engine -->
+<script src="/assets/jsqr.js"></script>
+<!-- Doctor Digital Business Card QR Scanner & Telehealth Gateway Engine -->
+<script src="/assets/doctor-qr-scanner.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
   // Safe Three.js CapsuleGeometry polyfill for r128 to prevent uncaught constructor exceptions
@@ -8464,20 +8468,32 @@ window.go = window.go || function(pageId, subParam) {
           </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:10px;" id="rxSampleChipsContainer">
             <div class="rxv-sample-chip" onclick="loadSampleRx('lab_blood_report', this)">
-              <b>🧪 Lab Blood Report (PDF)</b>
-              <span style="color:var(--muted);font-size:11px;">CBC, HbA1c 7.2%, Lipids, Creatinine</span>
+              <b>🧪 Comprehensive Lab Panel (PDF)</b>
+              <span style="color:var(--muted);font-size:11px;">CBC, HbA1c 7.2%, Lipids, Renal KFT</span>
+            </div>
+            <div class="rxv-sample-chip" onclick="loadSampleRx('cardiac_ecg_lipid', this)">
+              <b>⚡ 12-Lead ECG &amp; Cardiac Biomarkers</b>
+              <span style="color:var(--muted);font-size:11px;">Troponin-I, hs-CRP, ApoB, ECG ST changes</span>
+            </div>
+            <div class="rxv-sample-chip" onclick="loadSampleRx('radiology_ultrasound', this)">
+              <b>🩻 Abdomen Ultrasound &amp; Radiology</b>
+              <span style="color:var(--muted);font-size:11px;">Hepatosplenomegaly, NAFLD Grade-2, Gallbladder</span>
+            </div>
+            <div class="rxv-sample-chip" onclick="loadSampleRx('thyroid_endocrine', this)">
+              <b>🦋 Extended Thyroid &amp; Endocrine</b>
+              <span style="color:var(--muted);font-size:11px;">TSH 8.64, Free T4, Anti-TPO Hashimoto's</span>
             </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('cardio_htn', this)">
               <b>🫀 Cardiology &amp; BP Rx</b>
               <span style="color:var(--muted);font-size:11px;">Telmisartan, Amlodipine, Rosuvastatin</span>
             </div>
-            <div class="rxv-sample-chip" onclick="loadSampleRx('resp_infect', this)">
-              <b>🫁 Bronchitis &amp; Cold Rx</b>
-              <span style="color:var(--muted);font-size:11px;">Augmentin Duo, Montair-LC, Dolo 650</span>
-            </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('diabetes_regimen', this)">
               <b>🩸 Type-2 Diabetes Rx</b>
               <span style="color:var(--muted);font-size:11px;">Metformin 500 SR, Glimepiride, B12</span>
+            </div>
+            <div class="rxv-sample-chip" onclick="loadSampleRx('resp_infect', this)">
+              <b>🫁 Bronchitis &amp; Cold Rx</b>
+              <span style="color:var(--muted);font-size:11px;">Augmentin Duo, Montair-LC, Dolo 650</span>
             </div>
             <div class="rxv-sample-chip" onclick="loadSampleRx('derma_allergy', this)">
               <b>🧴 Dermatology Rx</b>
@@ -8655,10 +8671,41 @@ window.go = window.go || function(pageId, subParam) {
                     <span style="font-size:12px;color:var(--muted);" id="rxLabSubheading">Automated extraction from PDF / medical report scan</span>
                   </div>
                 </div>
-                <div style="display:flex;gap:6px;align-items:center;">
+                <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                  <button type="button" class="btn btn-sm btn-secondary" onclick="copyReportFindingsSummary()" title="Copy extracted diagnostic summary to clipboard" style="font-size:11px;padding:3px 8px;">
+                    📋 Copy Summary
+                  </button>
+                  <button type="button" class="btn btn-sm btn-secondary" onclick="exportReportClinicalPdf()" title="Export clinical report as PDF" style="font-size:11px;padding:3px 8px;">
+                    📄 Export PDF
+                  </button>
+                  <button type="button" class="btn btn-sm" onclick="consultAiAboutReport()" title="Discuss report findings with Dr. Nambi AI Companion" style="background:#0284c7;color:white;font-size:11px;padding:3px 10px;font-weight:700;">
+                    💬 Ask Dr. Nambi
+                  </button>
                   <span class="pill" id="rxPdfDocBadge" style="background:#e0f2fe;color:#0284c7;font-weight:700;font-size:11px;">📄 PDF Report</span>
                   <span class="pill" id="rxLabCountBadge" style="background:#dcfce7;color:#166534;font-weight:800;font-size:11px;">0 Parameters</span>
                 </div>
+              </div>
+
+              <!-- Biomarker Category Filter Toolbar -->
+              <div style="display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;" id="rxLabFilterBar">
+                <button type="button" class="rxv-filter-chip active" onclick="filterRxLabCategory('all', this)" style="background:#0284c7;color:white;border:none;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  All Biomarkers (<span id="rxLabFilterCountAll">0</span>)
+                </button>
+                <button type="button" class="rxv-filter-chip" onclick="filterRxLabCategory('abnormal', this)" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  ⚠️ Abnormal Only (<span id="rxLabFilterCountAbnormal">0</span>)
+                </button>
+                <button type="button" class="rxv-filter-chip" onclick="filterRxLabCategory('lipid', this)" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  🫀 Lipids &amp; Cardio
+                </button>
+                <button type="button" class="rxv-filter-chip" onclick="filterRxLabCategory('metabolic', this)" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  🩸 Sugar &amp; HbA1c
+                </button>
+                <button type="button" class="rxv-filter-chip" onclick="filterRxLabCategory('cbc', this)" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  🔬 CBC &amp; Hematology
+                </button>
+                <button type="button" class="rxv-filter-chip" onclick="filterRxLabCategory('renal', this)" style="background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">
+                  🧪 Renal &amp; Liver
+                </button>
               </div>
 
               <!-- Lab Biomarkers Table -->
@@ -8669,6 +8716,7 @@ window.go = window.go || function(pageId, subParam) {
                       <th style="padding:10px 12px;">Test / Biomarker</th>
                       <th style="padding:10px 12px;">Observed Value</th>
                       <th style="padding:10px 12px;">Reference Interval</th>
+                      <th style="padding:10px 12px;min-width:130px;">Physiological Range Gauge</th>
                       <th style="padding:10px 12px;">Status</th>
                       <th style="padding:10px 12px;">Clinical Interpretation</th>
                     </tr>
@@ -8677,6 +8725,23 @@ window.go = window.go || function(pageId, subParam) {
                     <!-- Populated dynamically -->
                   </tbody>
                 </table>
+              </div>
+
+              <!-- EXPERT SPECIALIST REFERRAL & 1-CLICK TELEHEALTH BOX -->
+              <div id="rxSpecialistReferralBox" style="margin-top:14px;background:linear-gradient(135deg, rgba(2,132,199,0.06), rgba(16,185,129,0.06));border:1.5px solid rgba(2,132,199,0.25);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#0284c7,#0284c7);color:white;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 2px 8px rgba(2,132,199,0.3);">
+                    👨‍⚕️
+                  </div>
+                  <div>
+                    <div style="font-size:10.5px;font-weight:800;color:#0284c7;text-transform:uppercase;letter-spacing:0.5px;">Recommended Specialist Consultation</div>
+                    <div style="font-size:14px;font-weight:800;color:#0f172a;" id="rxRecommendedSpecialistName">Dr. Rajesh Sharma · Chief Interventional Cardiologist</div>
+                    <div style="font-size:11.5px;color:#64748b;" id="rxRecommendedSpecialistReason">Specialist review indicated for abnormal metabolic &amp; lipid biomarkers</div>
+                  </div>
+                </div>
+                <button type="button" class="btn btn-sm" id="btnBookReferralDoctor" onclick="bookReferralDoctorForReport()" style="background:linear-gradient(135deg,#0284c7,#059669);color:white;font-weight:800;padding:9px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 3px 12px rgba(2,132,199,0.25);">
+                  ⚡ 1-Click Book Telehealth with Specialist
+                </button>
               </div>
             </div>
 
@@ -15359,6 +15424,11 @@ function initNavigation() {
   }
 }
 
+function switchMainView(pageId, subParam) {
+  return go(pageId, subParam);
+}
+window.switchMainView = switchMainView;
+
 function go(pageId, subParam) {
   closeSidebarMenu();
 
@@ -20903,7 +20973,56 @@ RENAL & HEPATIC FUNCTION:
 - eGFR: > 90 mL/min/1.73m² [NORMAL]
 - SGPT / ALT: 38 U/L (Reference: < 45 U/L) [NORMAL]
 
-Clinical Impression: Impaired Fasting Glycemia (HbA1c 7.2%), Mixed Dyslipidemia, and Mild Microcytic Anemia. Lifestyle interventions, iron-rich nutrition, and metabolic follow-up recommended.`
+Clinical Impression: Impaired Fasting Glycemia (HbA1c 7.2%), Mixed Dyslipidemia, and Mild Microcytic Anemia. Lifestyle interventions, iron-rich nutrition, and metabolic follow-up recommended.`,
+
+  cardiac_ecg_lipid: `FORTIS ESCORTS HEART INSTITUTE & RESEARCH CENTRE
+Ref Dr: Dr. Rajesh Sharma, MD, DM (Cardiology), FACC
+Patient: Vikram Singhania, 54M | Date: 2026-08-28
+Diagnostic Investigation: ADVANCED CARDIOLOGY & ATHEROSCLEROTIC RISK PANEL
+
+ELECTROCARDIOGRAM (12-Lead ECG):
+- Heart Rate (Sinus): 78 bpm (Reference: 60 - 100 bpm) [NORMAL]
+- PR Interval: 156 ms (Reference: 120 - 200 ms) [NORMAL]
+- QRS Duration: 88 ms (Reference: 80 - 120 ms) [NORMAL]
+- QTc Interval: 418 ms (Reference: < 440 ms) [NORMAL]
+- ST Segment: Nonspecific T-wave flattening in Leads V4-V6 [BORDERLINE - Early Subendocardial Ischemic Strain]
+
+CARDIAC BIOMARKERS & ADVANCED LIPIDS:
+- High-Sensitivity Troponin-I: 4.2 pg/mL (Reference: < 14.0 pg/mL) [NORMAL - No Acute Myocardial Necrosis]
+- High-Sensitivity CRP (hs-CRP): 3.8 mg/L (Reference: < 1.0 Low, 1.0 - 3.0 Average, > 3.0 High Risk) [HIGH - Systemic Vascular Inflammation]
+- Apolipoprotein B (ApoB): 118 mg/dL (Reference: < 90 mg/dL) [HIGH - Atherogenic Particle Count Elevated]
+- Lipoprotein(a) [Lp(a)]: 48 nmol/L (Reference: < 75 nmol/L) [NORMAL]
+- Total Cholesterol: 236 mg/dL (Reference: < 200 mg/dL) [HIGH]
+- LDL-C (Direct): 154 mg/dL (Reference: < 100 mg/dL, Optimal < 70 mg/dL) [HIGH]
+- Triglycerides: 210 mg/dL (Reference: < 150 mg/dL) [HIGH]
+
+Clinical Impression: Elevated Cardiovascular Atherogenic Burden (High ApoB, High LDL-C, Elevated hs-CRP) with Nonspecific Lateral T-wave Changes. Statin therapy optimization, cardiovascular lifestyle conditioning, and cardiologist consultation strongly recommended.`,
+
+  radiology_ultrasound: `APOLLO ADVANCED RADIOLOGY & DIAGNOSTIC IMAGING
+Patient: Sangeeta Kapoor, 42F | Ref Dr: Dr. Ananya Iyer, MD (Internal Medicine)
+Date: 2026-08-29 | Investigation: ULTRASOUND WHOLE ABDOMEN & PELVIS
+
+FINDINGS:
+- Liver: Enlarged, measuring 16.2 cm (Normal: < 15.0 cm). Diffuse increase in parenchymal echogenicity with sound attenuation [HIGH - Grade-II Hepatic Steatosis / Non-Alcoholic Fatty Liver Disease]. No focal mass lesion or intrahepatic biliary radicle dilatation.
+- Gallbladder: Well distended, wall thickness normal (2.1 mm). No calculus, sludge, or mass lesion seen.
+- Common Bile Duct (CBD): Caliber is normal (3.8 mm).
+- Pancreas: Visualized portions are normal in size and echotexture. Main pancreatic duct is not dilated.
+- Spleen: Normal in size (9.8 cm), uniform echotexture. No splenomegaly.
+- Both Kidneys: Right kidney measures 10.4 x 4.2 cm, Left kidney measures 10.8 x 4.6 cm. Corticomedullary differentiation is well preserved. No hydronephrosis, calculus, or mass seen.
+- Urinary Bladder: Well distended with smooth margins.
+- Impression: Hepatomegaly with Grade-II Fatty Liver (Hepatic Steatosis). Normal biliary tree, kidneys, pancreas, and spleen. Dietary lifestyle modification and liver function follow-up advised.`,
+
+  thyroid_endocrine: `DR. LAL PATHLABS CLINICAL ENDOCRINE PROFILE
+Patient: Pooja Bhatt, 34F | Ref Dr: Dr. Sunita Reddy, MD, DM (Endocrinology)
+Date: 2026-08-27 | Specimen: Serum | Test: EXTENDED THYROID FUNCTION PROFILE
+
+FINDINGS:
+- Ultrasensitive TSH: 8.64 μIU/mL (Reference: 0.45 - 4.50 μIU/mL) [HIGH - Subclinical Hypothyroidism]
+- Total Triiodothyronine (T3): 1.12 ng/mL (Reference: 0.80 - 2.00 ng/mL) [NORMAL]
+- Free Thyroxine (FT4): 0.94 ng/dL (Reference: 0.82 - 1.77 ng/dL) [LOW-NORMAL]
+- Anti-Thyroperoxidase (Anti-TPO) Antibodies: 184.0 IU/mL (Reference: < 35.0 IU/mL) [HIGH - Autoimmune Thyroiditis / Hashimoto's Etiology]
+
+Clinical Impression: Elevated TSH with Positive Anti-TPO Titres and Low-Normal FT4 consistent with Autoimmune Subclinical Hypothyroidism (Hashimoto's Thyroiditis). Recommended endocrinology consultation for Levothyroxine initiation.`
 };
 
 // Global RxVision State
@@ -21730,41 +21849,63 @@ function renderRxResults(rx) {
   const pdfDocBadge = document.getElementById('rxPdfDocBadge');
   const labSubheading = document.getElementById('rxLabSubheading');
 
-  const labParams = Array.isArray(rx.labParameters) ? rx.labParameters : [];
+    const labParams = Array.isArray(rx.labParameters) ? rx.labParameters : [];
+  window.currentLabBiomarkersList = labParams;
+
   if (labParams.length > 0) {
     if (labCard) labCard.style.display = 'block';
     if (labCountBadge) labCountBadge.textContent = `${labParams.length} Parameter${labParams.length > 1 ? 's' : ''}`;
     if (pdfDocBadge) {
       pdfDocBadge.textContent = rx.documentType?.toLowerCase().includes('lab') ? '🧪 Diagnostic Pathology Report' : '📄 Clinical PDF Report';
     }
-    const abnormalCount = labParams.filter(p => (p.status || '').toUpperCase() === 'HIGH' || (p.status || '').toUpperCase() === 'LOW' || (p.status || '').toUpperCase() === 'CRITICAL').length;
+    const abnormalCount = labParams.filter(p => {
+      const s = (p.status || '').toUpperCase();
+      return s === 'HIGH' || s === 'LOW' || s === 'CRITICAL' || s === 'BORDERLINE';
+    }).length;
+
+    const countAllEl = document.getElementById('rxLabFilterCountAll');
+    const countAbnormalEl = document.getElementById('rxLabFilterCountAbnormal');
+    if (countAllEl) countAllEl.textContent = labParams.length;
+    if (countAbnormalEl) countAbnormalEl.textContent = abnormalCount;
+
     if (labSubheading) {
-      labSubheading.textContent = `Automated analysis · ${abnormalCount} abnormal biomarker(s) flagged with clinical interpretations`;
+      labSubheading.textContent = `Automated clinical analysis · ${abnormalCount} abnormal biomarker(s) flagged with specialist interpretations`;
     }
-    if (labBody) {
-      labBody.innerHTML = labParams.map(p => {
-        const stat = (p.status || 'NORMAL').toUpperCase();
-        let badgeStyle = 'background:#dcfce7;color:#166534;';
-        let badgeIcon = '🟢';
-        if (stat === 'HIGH' || stat === 'CRITICAL') {
-          badgeStyle = 'background:#fee2e2;color:#991b1b;';
-          badgeIcon = '🔴';
-        } else if (stat === 'LOW') {
-          badgeStyle = 'background:#fef3c7;color:#92400e;';
-          badgeIcon = '🟡';
-        }
-        return `
-          <tr style="border-bottom:1px solid #e2e8f0;background:${stat !== 'NORMAL' ? '#fffafb' : '#ffffff'};">
-            <td style="padding:10px 12px;font-weight:700;color:#0f172a;">${escapeHtml(p.testName || 'Test')}</td>
-            <td style="padding:10px 12px;font-weight:700;color:#0369a1;">${escapeHtml(p.value || '-')} ${escapeHtml(p.unit || '')}</td>
-            <td style="padding:10px 12px;color:#64748b;">${escapeHtml(p.referenceRange || 'N/A')}</td>
-            <td style="padding:10px 12px;">
-              <span class="pill" style="${badgeStyle}font-size:11px;font-weight:700;padding:2px 8px;">${badgeIcon} ${escapeHtml(stat)}</span>
-            </td>
-            <td style="padding:10px 12px;color:#334155;font-size:12px;">${escapeHtml(p.clinicalInterpretation || 'Clinically evaluated')}</td>
-          </tr>
-        `;
-      }).join('');
+
+    // Render table rows
+    renderFilteredLabRows(labParams);
+
+    // Dynamic Specialist Recommendation based on report findings
+    const referralBox = document.getElementById('rxSpecialistReferralBox');
+    const specNameEl = document.getElementById('rxRecommendedSpecialistName');
+    const specReasonEl = document.getElementById('rxRecommendedSpecialistReason');
+
+    if (referralBox && specNameEl && specReasonEl) {
+      const reportText = (JSON.stringify(labParams) + ' ' + (rx.diagnosis || '') + ' ' + (rx.clinicalExplanation || '')).toLowerCase();
+      let recDoc = 'Dr. Rajesh Sharma · Chief Interventional Cardiologist';
+      let recReason = 'Recommended for clinical follow-up on cardiovascular & atherogenic risk profile';
+
+      if (reportText.includes('hba1c') || reportText.includes('glucose') || reportText.includes('diabetes') || reportText.includes('glycemia')) {
+        recDoc = 'Dr. Sunita Reddy · Senior Endocrinologist & Diabetologist';
+        recReason = 'Specialist review indicated for glycemic control, HbA1c optimization & metabolic therapy';
+      } else if (reportText.includes('creatinine') || reportText.includes('egfr') || reportText.includes('kidney') || reportText.includes('renal') || reportText.includes('steatosis') || reportText.includes('liver')) {
+        recDoc = 'Dr. Ananya Iyer · Senior Consultant Physician & Diabetologist';
+        recReason = 'Specialist review recommended for hepatic/renal organ function follow-up';
+      } else if (reportText.includes('tsh') || reportText.includes('thyroid') || reportText.includes('hashimoto')) {
+        recDoc = 'Dr. Sunita Reddy · Senior Endocrinologist & Diabetologist';
+        recReason = 'Thyroid specialist consultation recommended for autoimmune antibody & TSH titration';
+      } else if (reportText.includes('troponin') || reportText.includes('ecg') || reportText.includes('apob') || reportText.includes('cholesterol') || reportText.includes('ldl') || reportText.includes('hypertension')) {
+        recDoc = 'Dr. Rajesh Sharma · Chief Interventional Cardiologist';
+        recReason = 'Cardiology consult recommended for cardiovascular plaque prevention and lipid targets';
+      } else if (reportText.includes('hemoglobin') || reportText.includes('anemia') || reportText.includes('cbc') || reportText.includes('platelet')) {
+        recDoc = 'Dr. Ananya Iyer · Internal Medicine & Clinical Hematology Specialist';
+        recReason = 'Hematology evaluation recommended for microcytic anemia & blood parameters';
+      }
+
+      specNameEl.textContent = recDoc;
+      specReasonEl.textContent = recReason;
+      referralBox.style.display = 'flex';
+      window.currentReportRecommendedDoctor = { name: recDoc, reason: recReason };
     }
   } else if (labCard) {
     labCard.style.display = 'none';
@@ -24133,7 +24274,7 @@ function consultTargetedTwinSpecialist() {
   const data = TARGETED_TWIN_INSIGHTS[currentSelectedTwinPart] || TARGETED_TWIN_INSIGHTS.heart;
   
   // Switch to Dr. Nambi / Companion screen
-  switchMainView('consult');
+  go('consult');
   
   // Pre-fill question into consult input
   const input = document.getElementById('consultInput') || document.getElementById('chatInput');

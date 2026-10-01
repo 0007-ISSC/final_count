@@ -674,7 +674,7 @@ JSON Schema:
       const effectiveMimeType = isPdf ? 'application/pdf' : (mimeType && mimeType.startsWith('image/') ? mimeType : 'image/jpeg');
       const promptWithText = systemPrompt + (extraPdfText ? `\n\n--- EXTRACTED DIGITAL TEXT FROM PDF DOCUMENT STREAM (${pdfPages} pages) ---\n${extraPdfText.slice(0, 18000)}\n-------------------------------------------------------------` : '');
 
-      const visionModels = ['gemini-2.5-flash', 'gemini-3.8-flash', 'gemini-3.1-flash-lite'];
+      const visionModels = ['gemini-3.8-flash', 'gemini-3.1-flash-lite'];
       for (const model of visionModels) {
         try {
           const response = await ai.models.generateContent({
@@ -1284,20 +1284,61 @@ JSON Schema:
   public static parsePrescriptionHeuristics(text: string): ParsedPrescription {
     const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
     let doctorName = 'Verified Clinician';
-    let hospital = 'Hospital / Medical Center';
+    let hospital = 'Hospital / Medical Diagnostic Center';
     let diagnosis = 'Clinical Health Consultation';
     const rawMeds: any[] = [];
+    const labParams: LabTestParameter[] = [];
+
+    const isLikelyLabReport = text.toLowerCase().includes('lab report') ||
+      text.toLowerCase().includes('pathology') ||
+      text.toLowerCase().includes('hematology') ||
+      text.toLowerCase().includes('haematology') ||
+      text.toLowerCase().includes('reference:') ||
+      text.toLowerCase().includes('biomarker') ||
+      text.toLowerCase().includes('lipid profile') ||
+      text.toLowerCase().includes('glucose') ||
+      text.toLowerCase().includes('hba1c') ||
+      text.toLowerCase().includes('creatinine');
 
     for (const line of lines) {
       const lower = line.toLowerCase();
-      if (lower.includes('dr.') || lower.includes('doctor:')) {
-        doctorName = line.replace(/doctor:?/i, '').trim();
+      if (lower.includes('dr.') || lower.includes('doctor:') || lower.includes('ref dr:')) {
+        doctorName = line.replace(/(doctor|ref dr):?/i, '').trim();
       }
-      if (lower.includes('hospital') || lower.includes('clinic') || lower.includes('speciality') || lower.includes('health center')) {
+      if (lower.includes('hospital') || lower.includes('clinic') || lower.includes('speciality') || lower.includes('health center') || lower.includes('diagnostics') || lower.includes('metropolis') || lower.includes('srl')) {
         hospital = line.trim();
       }
-      if (lower.includes('diagnosis:') || lower.includes('condition:') || lower.includes('impression:')) {
-        diagnosis = line.replace(/(diagnosis|condition|impression):?/i, '').trim();
+      if (lower.includes('diagnosis:') || lower.includes('condition:') || lower.includes('impression:') || lower.includes('clinical impression:')) {
+        diagnosis = line.replace(/(clinical impression|diagnosis|condition|impression):?/i, '').trim();
+      }
+
+      // Check for diagnostic lab report lines
+      // Pattern: "- Hemoglobin (Hb): 11.4 g/dL (Reference: 13.0 - 17.0 g/dL) [LOW - Mild Microcytic Anemia]"
+      const labMatch = line.match(/^[-*•]?\s*([a-zA-Z0-9\s\(\)\/\-\+]+?):\s*([<>]?\s*\d+(?:[\.,]\d+)?)\s*([a-zA-Z%μ\/\^]+)?(?:\s*\(?(?:Reference:?|Ref:?|Norm:?)?\s*([^)]+)\)?)?(?:\s*\[([^\]]+)\])?/i);
+      if (labMatch && !lower.startsWith('patient:') && !lower.startsWith('ref dr:') && !lower.startsWith('doctor:') && !lower.startsWith('date:') && !lower.startsWith('clinic:') && !lower.startsWith('specimen:')) {
+        const testName = labMatch[1].trim();
+        const measuredValue = labMatch[2].trim();
+        const unit = (labMatch[3] || '').trim();
+        const refRange = (labMatch[4] || '').replace(/Reference:?/i, '').trim();
+        const note = (labMatch[5] || '').trim();
+
+        let status: 'normal' | 'low' | 'high' | 'critical' | 'indeterminate' = 'normal';
+        const noteLower = note.toLowerCase();
+        if (noteLower.includes('critical')) status = 'critical';
+        else if (noteLower.includes('high')) status = 'high';
+        else if (noteLower.includes('low')) status = 'low';
+        else if (noteLower.includes('normal')) status = 'normal';
+
+        if (testName.length > 2 && !testName.toLowerCase().includes('rx') && !testName.toLowerCase().includes('tab') && !testName.toLowerCase().includes('cap')) {
+          labParams.push({
+            testName,
+            measuredValue,
+            unit,
+            referenceRange: refRange || 'Normal reference interval',
+            status,
+            clinicalInterpretation: note ? note : (status !== 'normal' ? `${status.toUpperCase()} relative to normal biological threshold` : 'Within physiological baseline interval'),
+          });
+        }
       }
 
       // Check for prescription drug patterns
@@ -1336,12 +1377,12 @@ JSON Schema:
           instructions: 'Take with adequate water after meals',
           purpose: 'Prescribed therapeutic management',
           critical_precaution: 'Take with adequate water; do not exceed prescribed dosage',
-          confidence: 82,
+          confidence: 85,
         });
       }
     }
 
-    if (rawMeds.length === 0) {
+    if (rawMeds.length === 0 && labParams.length === 0) {
       rawMeds.push({
         name: 'Prescription Medication Course',
         dosage: '1 unit as directed',
@@ -1356,11 +1397,66 @@ JSON Schema:
       });
     }
 
+    const documentType = labParams.length > 0 ? 'Diagnostic Pathology Lab Report' : 'Clinical Prescription';
+    const abnormalLabs = labParams.filter(l => l.status === 'high' || l.status === 'low' || l.status === 'critical');
+
+    const clinicalExplanation = labParams.length > 0
+      ? `This diagnostic pathology panel evaluates critical hematological, glycemic, lipid, and metabolic organ biomarkers. ${abnormalLabs.length > 0 ? `It highlights ${abnormalLabs.length} biomarker deviations requiring targeted clinical intervention, including ${abnormalLabs.map(a => a.testName).slice(0, 3).join(', ')}.` : 'All monitored organ biomarkers demonstrate physiological homeostasis within standard biological intervals.'}`
+      : `This clinical prescription establishes an evidence-based pharmacological treatment protocol for ${diagnosis}. The prescribed regimen aims to target active symptoms and support recovery.`;
+
+    const healthRiskAssessment: PrescriptionHealthRiskAssessment = {
+      summary: abnormalLabs.length > 0
+        ? `Moderate to elevated health risk identified across ${abnormalLabs.length} abnormal lab biomarkers. Active follow-up is recommended to mitigate cardiovascular and metabolic complications.`
+        : 'Low health risk index. Maintaining routine health checkups and preventive lifestyle habits will sustain long-term homeostasis.',
+      riskLevel: abnormalLabs.length >= 3 ? 'high' : (abnormalLabs.length > 0 ? 'moderate' : 'low'),
+      potentialComplications: abnormalLabs.length > 0
+        ? [
+            'Atherosclerotic cardiovascular disease progression if dyslipidemia is unmanaged',
+            'Microvascular and renal stress if elevated blood glucose remains unaddressed',
+            'Fatigue, reduced oxygen-carrying capacity, and exercise intolerance if anemia worsens'
+          ]
+        : ['Risk of delayed recovery if therapy is prematurely stopped', 'Seasonal symptom recurrence'],
+      redFlags: [
+        'Acute chest discomfort, left arm numbness, or severe shortness of breath',
+        'Severe dizziness, sudden confusion, or blood sugar drop below 70 mg/dL',
+        'Sudden severe allergic reactions, swelling of lips/face, or acute rash'
+      ],
+      contraindications: ['Avoid unverified over-the-counter supplements that may strain liver or kidney clearance']
+    };
+
+    const preventionPlan: PrescriptionPreventionPlan = {
+      summary: 'Actionable preventive lifestyle protocol focused on nutrition, biomarker monitoring, and metabolic balance.',
+      actionableSteps: [
+        'Adopt a fiber-rich, low-glycemic Mediterranean or whole-grain dietary plan',
+        'Maintain 30 minutes of moderate aerobic activity (e.g. brisk walking) 5 days weekly',
+        'Ensure 2.5 to 3 liters of daily water hydration and 7-8 hours restful sleep'
+      ],
+      dietaryGuidance: [
+        'Emphasize green leafy vegetables, legumes, whole oats, and lean proteins',
+        'Strictly eliminate refined trans-fats, sugary beverages, deep-fried snacks, and excessive sodium (< 2g/day)',
+        'Avoid alcohol consumption during medical therapy'
+      ],
+      lifestyleRecommendations: [
+        'Practice daily stress reduction through mindful breathing or yoga',
+        'Maintain a consistent sleep-wake schedule to optimize circadian hormonal rhythm'
+      ],
+      monitoringAndFollowup: [
+        'Monitor fasting and post-prandial blood sugar 2-3 times weekly',
+        'Check resting blood pressure weekly (target < 120/80 mmHg)',
+        'Schedule a 30-day review with your specialist to repeat relevant blood biomarkers'
+      ]
+    };
+
     return this.enrichExtractedPrescription({
       doctorName,
       clinicHospital: hospital,
-      diagnosis,
+      diagnosis: isLikelyLabReport ? (abnormalLabs.length > 0 ? `Biomarker Deviations (${abnormalLabs.map(a => a.testName).slice(0, 2).join(', ')})` : 'Comprehensive Diagnostic Lab Profile') : diagnosis,
+      documentType,
       medications: rawMeds,
+      labParameters: labParams,
+      clinicalExplanation,
+      healthRiskAssessment,
+      preventionPlan
     });
   }
 
@@ -1705,6 +1801,55 @@ Rx:
 2. Tab. Domperidone 10 mg - 1 tab before meals x 5 days
 3. Syp. Sucralfate 1g - 10 ml 2 hrs after meals x 7 days
 Note: Faint cursive ink requires clinical confirmation of dosage.`,
+
+        cardiac_ecg_lipid: `FORTIS ESCORTS HEART INSTITUTE & RESEARCH CENTRE
+Ref Dr: Dr. Rajesh Sharma, MD, DM (Cardiology), FACC
+Patient: Vikram Singhania, 54M | Date: 2026-08-28
+Diagnostic Investigation: ADVANCED CARDIOLOGY & ATHEROSCLEROTIC RISK PANEL
+
+ELECTROCARDIOGRAM (12-Lead ECG):
+- Heart Rate (Sinus): 78 bpm (Reference: 60 - 100 bpm) [NORMAL]
+- PR Interval: 156 ms (Reference: 120 - 200 ms) [NORMAL]
+- QRS Duration: 88 ms (Reference: 80 - 120 ms) [NORMAL]
+- QTc Interval: 418 ms (Reference: < 440 ms) [NORMAL]
+- ST Segment: Nonspecific T-wave flattening in Leads V4-V6 [BORDERLINE - Early Subendocardial Ischemic Strain]
+
+CARDIAC BIOMARKERS & ADVANCED LIPIDS:
+- High-Sensitivity Troponin-I: 4.2 pg/mL (Reference: < 14.0 pg/mL) [NORMAL - No Acute Myocardial Necrosis]
+- High-Sensitivity CRP (hs-CRP): 3.8 mg/L (Reference: < 1.0 Low, 1.0 - 3.0 Average, > 3.0 High Risk) [HIGH - Systemic Vascular Inflammation]
+- Apolipoprotein B (ApoB): 118 mg/dL (Reference: < 90 mg/dL) [HIGH - Atherogenic Particle Count Elevated]
+- Lipoprotein(a) [Lp(a)]: 48 nmol/L (Reference: < 75 nmol/L) [NORMAL]
+- Total Cholesterol: 236 mg/dL (Reference: < 200 mg/dL) [HIGH]
+- LDL-C (Direct): 154 mg/dL (Reference: < 100 mg/dL, Optimal < 70 mg/dL) [HIGH]
+- Triglycerides: 210 mg/dL (Reference: < 150 mg/dL) [HIGH]
+
+Clinical Impression: Elevated Cardiovascular Atherogenic Burden (High ApoB, High LDL-C, Elevated hs-CRP) with Nonspecific Lateral T-wave Changes. Statin therapy optimization, cardiovascular lifestyle conditioning, and cardiologist consultation strongly recommended.`,
+
+        radiology_ultrasound: `APOLLO ADVANCED RADIOLOGY & DIAGNOSTIC IMAGING
+Patient: Sangeeta Kapoor, 42F | Ref Dr: Dr. Ananya Iyer, MD (Internal Medicine)
+Date: 2026-08-29 | Investigation: ULTRASOUND WHOLE ABDOMEN & PELVIS
+
+FINDINGS:
+- Liver: Enlarged, measuring 16.2 cm (Normal: < 15.0 cm). Diffuse increase in parenchymal echogenicity with sound attenuation [HIGH - Grade-II Hepatic Steatosis / Non-Alcoholic Fatty Liver Disease]. No focal mass lesion or intrahepatic biliary radicle dilatation.
+- Gallbladder: Well distended, wall thickness normal (2.1 mm). No calculus, sludge, or mass lesion seen.
+- Common Bile Duct (CBD): Caliber is normal (3.8 mm).
+- Pancreas: Visualized portions are normal in size and echotexture. Main pancreatic duct is not dilated.
+- Spleen: Normal in size (9.8 cm), uniform echotexture. No splenomegaly.
+- Both Kidneys: Right kidney measures 10.4 x 4.2 cm, Left kidney measures 10.8 x 4.6 cm. Corticomedullary differentiation is well preserved. No hydronephrosis, calculus, or mass seen.
+- Urinary Bladder: Well distended with smooth margins.
+- Impression: Hepatomegaly with Grade-II Fatty Liver (Hepatic Steatosis). Normal biliary tree, kidneys, pancreas, and spleen. Dietary lifestyle modification and liver function follow-up advised.`,
+
+        thyroid_endocrine: `DR. LAL PATHLABS CLINICAL ENDOCRINE PROFILE
+Patient: Pooja Bhatt, 34F | Ref Dr: Dr. Sunita Reddy, MD, DM (Endocrinology)
+Date: 2026-08-27 | Specimen: Serum | Test: EXTENDED THYROID FUNCTION PROFILE
+
+FINDINGS:
+- Ultrasensitive TSH: 8.64 μIU/mL (Reference: 0.45 - 4.50 μIU/mL) [HIGH - Subclinical Hypothyroidism]
+- Total Triiodothyronine (T3): 1.12 ng/mL (Reference: 0.80 - 2.00 ng/mL) [NORMAL]
+- Free Thyroxine (FT4): 0.94 ng/dL (Reference: 0.82 - 1.77 ng/dL) [LOW-NORMAL]
+- Anti-Thyroperoxidase (Anti-TPO) Antibodies: 184.0 IU/mL (Reference: < 35.0 IU/mL) [HIGH - Autoimmune Thyroiditis / Hashimoto's Etiology]
+
+Clinical Impression: Elevated TSH with Positive Anti-TPO Titres and Low-Normal FT4 consistent with Autoimmune Subclinical Hypothyroidism (Hashimoto's Thyroiditis). Recommended endocrinology consultation for Levothyroxine initiation.`
       };
 
       if (samples[params.sampleId]) {

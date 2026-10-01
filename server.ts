@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import QRCode from 'qrcode';
 import { GoogleGenAI } from '@google/genai';
 import {
   GrokService,
@@ -3124,6 +3125,95 @@ app.get('/api/doctors/:id', (req: Request, res: Response) => {
     success: true,
     doctor: doc
   });
+});
+
+app.get('/api/doctors/:id/qr-card', async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const doc = getDoctorById(id) || DOCTORS_DATABASE.find(d => d.id === id);
+    if (!doc) {
+      return res.status(404).json({ success: false, detail: 'Doctor not found.' });
+    }
+
+    const payload = {
+      protocol: 'healthgpt-doctor-card-v1',
+      doctorId: doc.id,
+      name: doc.name,
+      specialty: doc.specialty,
+      hospital: doc.hospital,
+      city: doc.city,
+      registrationNumber: doc.registrationNumber,
+      consultationFee: doc.consultationFeeINR,
+      nextSlot: doc.nextSlot,
+      telehealthUrl: doc.telehealthUrl || `https://meet.google.com/hgpt-${doc.id}-${Math.random().toString(36).substring(2, 7)}`,
+      phone: doc.phone || '+91 98765 43210'
+    };
+
+    const qrDataUrl = await QRCode.toDataURL(JSON.stringify(payload), {
+      errorCorrectionLevel: 'M',
+      margin: 1,
+      color: {
+        dark: '#0f172a',
+        light: '#ffffff'
+      }
+    });
+
+    return res.json({
+      success: true,
+      doctor: doc,
+      payload,
+      qrDataUrl
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, detail: err?.message || 'Error generating doctor QR card' });
+  }
+});
+
+app.get('/api/doctors-sample-cards', async (_req: Request, res: Response) => {
+  try {
+    const sampleIds = [1, 2, 3, 4, 5, 2821];
+    const sampleDocs = sampleIds
+      .map(id => getDoctorById(id) || DOCTORS_DATABASE.find(d => d.id === id))
+      .filter((d): d is any => Boolean(d));
+
+    const cards = await Promise.all(sampleDocs.map(async (doc) => {
+      const payload = {
+        protocol: 'healthgpt-doctor-card-v1',
+        doctorId: doc.id,
+        name: doc.name,
+        specialty: doc.specialty,
+        hospital: doc.hospital,
+        city: doc.city,
+        registrationNumber: doc.registrationNumber,
+        consultationFee: doc.consultationFeeINR,
+        nextSlot: doc.nextSlot,
+        telehealthUrl: doc.telehealthUrl || `https://meet.google.com/hgpt-${doc.id}`,
+        phone: doc.phone || '+91 98765 43210'
+      };
+
+      const qrDataUrl = await QRCode.toDataURL(JSON.stringify(payload), {
+        errorCorrectionLevel: 'M',
+        margin: 1,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff'
+        }
+      });
+
+      return {
+        doctor: doc,
+        payload,
+        qrDataUrl
+      };
+    }));
+
+    return res.json({
+      success: true,
+      cards
+    });
+  } catch (err: any) {
+    return res.status(500).json({ success: false, detail: err?.message || 'Error fetching sample cards' });
+  }
 });
 
 app.get('/api/appointments', (req: Request, res: Response) => {

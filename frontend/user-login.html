@@ -24,6 +24,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- jsQR Optical QR Decoding Engine -->
+  <script src="/assets/jsqr.js"></script>
+  <!-- Doctor Digital Business Card QR Scanner & Telehealth Gateway Engine -->
+  <script src="/assets/doctor-qr-scanner.js"></script>
 
   <style>
     :root {
@@ -1986,6 +1990,12 @@
           Tap node to verify biometric credentials
         </div>
 
+        <div style="margin-top:10px;display:flex;justify-content:center;">
+          <button type="button" onclick="openDoctorQrScanner('camera')" style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);color:#38bdf8;padding:6px 14px;border-radius:20px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;">
+            <span>📷</span> <span>Scan Doctor's Digital Card QR · Auto-Book Telehealth</span>
+          </button>
+        </div>
+
         <!-- Real-time Telemetry Data Stream Feed -->
         <div class="telemetry-feed" id="telemetryTerminalFeed">
           <div class="log-line"><span class="log-success">[OK]</span> 3D Digital Twin Contours Initialized (1,840 vertices loaded)</div>
@@ -3449,6 +3459,13 @@
           newLog.innerHTML = `<span class="log-success">[VERIFIED]</span> Optical Bio-ID match confirmed (${new Date().toLocaleTimeString()})`;
           feed.prepend(newLog);
         }
+
+        // Open Doctor Digital Card QR Scanner to initiate Telehealth consultation
+        setTimeout(() => {
+          if (typeof window.openDoctorQrScanner === 'function') {
+            window.openDoctorQrScanner('camera');
+          }
+        }, 400);
 
         // Smoothly glide user to terminal
         setTimeout(() => {
