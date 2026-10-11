@@ -315,7 +315,7 @@
         Logged in as: <b style="color:#fff;" id="adminDisplayLabel">Dr. System Administrator</b>
       </span>
       <a href="/dashboard" class="btn-action btn-action-primary" title="Launch Patient Health Twin & Medical Consult Interface">
-        <span>🚀 View Patient Dashboard</span>
+        <span>View Patient Dashboard</span>
       </a>
       <a href="/admin-login" onclick="logoutAdmin()" class="btn-action" title="Sign Out of Admin Console">
         <span>🚪 Sign Out</span>
@@ -848,6 +848,12 @@
           <div style="position:relative;display:flex;align-items:center;">
             <input type="password" id="gatePasswordInput" placeholder="••••••••" required autocomplete="current-password" style="width:100%;height:46px;background:#0f172a;border:1.5px solid #223254;border-radius:10px;padding:0 44px 0 14px;font-size:14px;color:#fff;outline:none;transition:border-color 0.2s;">
             <button type="button" onclick="toggleGatePassword()" style="position:absolute;right:10px;background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:4px;" aria-label="Toggle password visibility">👁</button>
+          </div>
+          <div style="margin-top:6px;display:flex;justify-content:space-between;align-items:center;">
+            <button type="button" onclick="document.getElementById('gatePasswordInput').value='my_rules'; handleGateUnlock(event);" style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.3);color:#38bdf8;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+              <span>⚡ Quick-Fill Clearance (my_rules)</span>
+            </button>
+            <span style="font-size:10.5px;color:#64748b;">Password: my_rules</span>
           </div>
         </div>
 

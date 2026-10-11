@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>HealthGPT — Where AI Meets HealthCare | Access Portal</title>
+  <title>HealthGPT — Dedicated Patient &amp; Clinical Access Portal</title>
   <link rel="icon" type="image/svg+xml" href="/healthgpt-logo.svg">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="shortcut icon" href="/favicon.ico">
@@ -67,7 +67,7 @@
     }
 
     body {
-      min-height: 300vh;
+      min-height: 100vh;
       position: relative;
       background: radial-gradient(circle at 50% 20%, #0a1733 0%, #040813 65%);
       color: var(--text-white);
@@ -230,20 +230,46 @@
       transition: width 0.1s linear;
     }
 
-    /* Cinematic Scroll Sections (Acts 1, 2, 3) */
-    .scroll-content-container {
+    /* Dedicated Patient Portal Layout */
+    .portal-main-container {
       position: relative;
       z-index: 10;
+      width: 100%;
+      max-width: 1360px;
+      margin: 86px auto 40px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .portal-main-container {
+        grid-template-columns: 1fr;
+        max-width: 680px;
+        margin-top: 76px;
+        gap: 28px;
+      }
+    }
+
+    .portal-telemetry-col {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .portal-terminal-col {
+      position: relative;
       width: 100%;
     }
 
     .cinematic-section {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      padding: 100px 24px 60px;
+      padding: 0;
       position: relative;
     }
 
@@ -1873,7 +1899,7 @@
       <img src="/healthgpt-logo.svg" alt="HealthGPT Logo" class="brand-symbol-img" style="width:40px;height:40px;border-radius:12px;object-fit:cover;box-shadow:0 4px 14px rgba(0,229,255,0.3);border:1.5px solid rgba(56,189,248,0.4);background:#0c1929;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
       <div class="brand-text">
         <h1 style="margin:0;font-size:18px;font-weight:800;letter-spacing:-0.3px;color:#ffffff;">HealthGPT</h1>
-        <span style="font-size:10.5px;color:#5eead4;font-weight:750;letter-spacing:0.3px;text-transform:none;">Where AI Meets HealthCare</span>
+        <span style="font-size:10.5px;color:#5eead4;font-weight:750;letter-spacing:0.3px;text-transform:none;">Dedicated Patient Portal</span>
       </div>
     </a>
 
@@ -1885,17 +1911,13 @@
         <span class="supabase-hud-latency" id="supabaseHudLatency">~35ms</span>
       </button>
 
-      <a href="/dashboard" onclick="triggerPageExitTransition('/dashboard', 'Opening Clinical Dashboard'); return false;" class="btn-hud" style="background:rgba(52,211,153,0.15);border-color:#34d399;color:#34d399;font-weight:700;" title="Smooth Transition to HealthGPT Main Clinical Dashboard">
-        <span>←</span> <span>Dashboard</span>
-      </a>
       <button class="btn-hud" id="audioToggleBtn" onclick="toggleAudioSynthesizer()" title="Toggle Cinematic Ambient Synth">
         <span id="audioIcon">🔈</span> <span id="audioText">Audio HUD</span>
       </button>
-      <a href="#terminalAct" class="btn-hud" style="background:rgba(56,189,248,0.18);border-color:#38bdf8;" title="Jump directly to Clinical Terminal">
-        <span>⚡</span> <span>Instant Access</span>
-      </a>
-      <a href="/admin-login" class="btn-hud" title="Switch to Clinician & Admin Console">
-        <span>👨‍⚕️</span> <span>Admin</span>
+
+      <!-- Dedicated Admin Portal Link -->
+      <a href="/admin/dashboard" class="btn-hud" style="background:rgba(56,189,248,0.18);border-color:#38bdf8;color:#38bdf8;font-weight:700;text-decoration:none;" title="Launch HealthGPT Clinical Ops & Administrative Command Center">
+        <span>🛡️ Admin Portal</span>
       </a>
     </div>
   </header>
@@ -1903,115 +1925,100 @@
   <!-- SCROLL PROGRESS STRIP -->
   <div class="cinematic-progress-bar" id="cinematicProgressBar"></div>
 
-  <!-- SCROLL-DRIVEN CINEMATIC EXPERIENCE -->
-  <main class="scroll-content-container">
+  <!-- DEDICATED PATIENT & CLINICAL ACCESS PORTAL -->
+  <main class="portal-main-container">
 
-    <!-- ACT 1: THE AI FRONTIER -->
-    <section class="cinematic-section" id="heroAct">
-      <div class="hero-container">
-        <div class="hero-eyebrow">
-          <span class="pulsing-node"></span>
-          <span>Next-Generation Neural Healthcare Engine</span>
-        </div>
+    <!-- LEFT COLUMN: Biometric Intelligence & Telemetry Showcase -->
+    <div class="portal-telemetry-col" id="telemetryColumn">
+      <div class="hero-eyebrow" style="margin-bottom:8px;align-self:flex-start;">
+        <span class="pulsing-node"></span>
+        <span>Dedicated Patient Access Portal</span>
+      </div>
 
-        <h1 class="hero-headline">
-          Where AI Meets<br>Healthcare
-        </h1>
+      <h1 class="hero-headline" style="text-align:left;font-size:clamp(28px, 3.4vw, 46px);margin-bottom:8px;">
+        Where AI Meets<br>Healthcare
+      </h1>
 
-        <p class="hero-subline">
-          Experience full-spectrum clinical intelligence. Powered by <b>multimodal diagnostics</b>, 
-          CDSCO-verified pharmacopeia, interactive 3D digital twin telemetry, and real-time clinical companions.
-        </p>
+      <p class="hero-subline" style="text-align:left;font-size:14px;line-height:1.55;margin-bottom:18px;max-width:560px;">
+        Experience verified clinical intelligence. Powered by <b>multimodal diagnostics</b>, CDSCO-verified pharmacopeia, 3D digital twin telemetry, and instant on-duty doctor access.
+      </p>
 
-        <!-- Live Floating Telemetry Chips -->
-        <div class="metrics-dock">
-          <div class="metric-chip">
-            <span class="icon">❤️</span>
-            <div class="info">
-              <div class="label">Cardiac Rhythm</div>
-              <div class="value" id="hudHrText">72 BPM · Normal Sinus</div>
-            </div>
-          </div>
-          <div class="metric-chip">
-            <span class="icon">🫁</span>
-            <div class="info">
-              <div class="label">Oxygen Saturation</div>
-              <div class="value">99% SpO2 · Ambient</div>
-            </div>
-          </div>
-          <div class="metric-chip">
-            <span class="icon">⚡</span>
-            <div class="info">
-              <div class="label">Synaptic Latency</div>
-              <div class="value">1.2 ms · Homeostasis</div>
-            </div>
-          </div>
-          <div class="metric-chip">
-            <span class="icon">🛡️</span>
-            <div class="info">
-              <div class="label">Security Architecture</div>
-              <div class="value">CDSCO · 256-Bit TLS</div>
-            </div>
+      <!-- Live Floating Telemetry Chips -->
+      <div class="metrics-dock" style="justify-content:flex-start;margin-bottom:16px;max-width:100%;gap:10px;">
+        <div class="metric-chip">
+          <span class="icon">❤️</span>
+          <div class="info">
+            <div class="label">Cardiac Rhythm</div>
+            <div class="value" id="hudHrText">72 BPM · Normal Sinus</div>
           </div>
         </div>
-
-        <div class="scroll-cue" onclick="scrollToAct('biometricAct')">
-          <span>Scroll to initiate neural clearance</span>
-          <div class="mouse-wheel"></div>
+        <div class="metric-chip">
+          <span class="icon">🫁</span>
+          <div class="info">
+            <div class="label">Oxygen Saturation</div>
+            <div class="value">99% SpO2 · Ambient</div>
+          </div>
+        </div>
+        <div class="metric-chip">
+          <span class="icon">⚡</span>
+          <div class="info">
+            <div class="label">Synaptic Latency</div>
+            <div class="value">1.2 ms · Homeostasis</div>
+          </div>
+        </div>
+        <div class="metric-chip">
+          <span class="icon">🛡️</span>
+          <div class="info">
+            <div class="label">Security Architecture</div>
+            <div class="value">CDSCO · 256-Bit TLS</div>
+          </div>
         </div>
       </div>
-    </section>
 
-    <!-- ACT 2: BIOMETRIC DECRYPTION GATEWAY -->
-    <section class="cinematic-section" id="biometricAct">
-      <div class="biometric-container">
-        <div class="hero-eyebrow" style="margin-bottom:16px;">
-          <span>Biometric & Neural Clearance Layer</span>
+      <!-- Biometric & Neural Clearance Layer -->
+      <div class="biometric-container" style="max-width:100%;margin:0;text-align:center;padding:24px 20px;">
+        <div class="hero-eyebrow" style="margin-bottom:12px;">
+          <span>Biometric &amp; Neural Clearance Layer</span>
         </div>
-        <h2 style="font-family:var(--font-display);font-size:32px;font-weight:700;margin-bottom:12px;">
+        <h3 style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:6px;">
           Physiological Identity Verification
-        </h2>
-        <p style="font-size:14px;color:var(--text-muted);max-width:540px;margin:0 auto 28px;">
-          HealthGPT scans and synchronizes with your personal clinical telemetry. 
-          Touch the biometric node below to simulate instant optical clearance.
+        </h3>
+        <p style="font-size:12px;color:var(--text-muted);max-width:520px;margin:0 auto 16px;line-height:1.45;">
+          HealthGPT scans and synchronizes with your personal clinical telemetry. Touch the biometric node below to simulate instant optical clearance.
         </p>
 
         <!-- Interactive Biometric Scanner Node -->
-        <div class="biometric-scanner-wrap" id="biometricTouchNode" onclick="triggerBiometricScan()">
+        <div class="biometric-scanner-wrap" id="biometricTouchNode" onclick="triggerBiometricScan()" style="margin-bottom:12px;width:110px;height:110px;">
           <div class="scanner-ring-outer"></div>
           <div class="scanner-ring-inner"></div>
           <div class="scanner-beam"></div>
-          <div class="scanner-core-btn">
+          <div class="scanner-core-btn" style="width:72px;height:72px;font-size:28px;">
             <span id="scannerIcon">👆</span>
           </div>
         </div>
 
-        <div id="biometricStatusText" style="font-size:13px;font-weight:700;color:var(--cyan-bright);letter-spacing:1px;text-transform:uppercase;">
+        <div id="biometricStatusText" style="font-size:12px;font-weight:700;color:var(--cyan-bright);letter-spacing:1px;text-transform:uppercase;">
           Tap node to verify biometric credentials
         </div>
 
-        <div style="margin-top:10px;display:flex;justify-content:center;">
+        <div style="margin-top:12px;display:flex;justify-content:center;">
           <button type="button" onclick="openDoctorQrScanner('camera')" style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);color:#38bdf8;padding:6px 14px;border-radius:20px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;">
             <span>📷</span> <span>Scan Doctor's Digital Card QR · Auto-Book Telehealth</span>
           </button>
         </div>
 
         <!-- Real-time Telemetry Data Stream Feed -->
-        <div class="telemetry-feed" id="telemetryTerminalFeed">
+        <div class="telemetry-feed" id="telemetryTerminalFeed" style="margin-top:14px;">
           <div class="log-line"><span class="log-success">[OK]</span> 3D Digital Twin Contours Initialized (1,840 vertices loaded)</div>
           <div class="log-line"><span class="log-success">[OK]</span> Oscilloscope ECG Feed: 72 BPM Sinus Homeostasis</div>
           <div class="log-line"><span class="log-success">[OK]</span> CDSCO Bioequivalence Database Ready (10,000+ PMBJP Generics)</div>
           <div class="log-line"><span style="color:#38bdf8;">[SYS]</span> Awaiting clinical terminal handshake...</div>
         </div>
-
-        <div class="scroll-cue" style="margin-top:32px;" onclick="scrollToAct('terminalAct')">
-          <span>Proceed to Clinical Terminal ↓</span>
-        </div>
       </div>
-    </section>
+    </div>
 
-    <!-- ACT 3: CLINICAL ACCESS TERMINAL -->
-    <section class="cinematic-section" id="terminalAct">
+    <!-- RIGHT COLUMN: Clinical Neural Terminal (Dedicated Access Portal) -->
+    <div class="portal-terminal-col" id="terminalAct">
       <div class="terminal-container" id="userAuthCard">
         <!-- Rotating Holographic Perimeter Light Beam -->
         <div class="card-perimeter-beam"></div>
@@ -2021,24 +2028,21 @@
         <canvas id="terminalVfxCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:35;"></canvas>
 
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;">
-          <div style="display:flex;gap:8px;align-items:center;">
-            <a href="/dashboard" onclick="triggerPageExitTransition('/dashboard', 'Opening Clinical Dashboard'); return false;" class="btn-return-dash" title="Smooth transition to HealthGPT Main Clinical Dashboard">
-              <span>⚡</span> <span>Open Clinical Dashboard</span>
-            </a>
-            <a href="/" onclick="triggerPageExitTransition('/', 'Returning to Main Portal'); return false;" class="btn-return-dash" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.12);color:#94a3b8;" title="Return to Main Portal Landing Page">
-              <span>←</span> <span>Portal Hub</span>
-            </a>
-          </div>
-          <span style="font-size:11px;color:#94a3b8;font-weight:600;">CDSCO 256-bit Portal</span>
+          <a href="/dashboard" onclick="triggerPageExitTransition('/dashboard', 'Opening Clinical Dashboard'); return false;" class="btn-return-dash" title="Smooth transition to HealthGPT Main Clinical Dashboard">
+            <span>Open Clinical Dashboard</span>
+          </a>
+          <a href="/admin/dashboard" class="btn-hud" style="background:rgba(56,189,248,0.15);border-color:rgba(56,189,248,0.4);color:#38bdf8;font-size:11.5px;padding:4px 12px;text-decoration:none;border-radius:12px;font-weight:700;" title="Access Admin Command Center">
+            <span>🛡️ Admin Portal</span>
+          </a>
         </div>
 
-        <!-- Bidirectional Cross-Portal Live Synchronization Indicator -->
-        <div class="sync-status-bar" id="syncStatusBar" title="Changes typed here synchronize instantly with HealthGPT Clinical Workspace in real time">
+        <!-- Dedicated Portal Synchronization & Telemetry Status -->
+        <div class="sync-status-bar" id="syncStatusBar" title="Dedicated Portal Active: Real-time Supabase cloud telemetry and session synchronization">
           <div style="display:flex;align-items:center;gap:8px;">
             <span class="sync-pulse-node"></span>
-            <span id="syncStatusText">Dual Sync Active · HealthGPT Clinical Dashboard Connected</span>
+            <span id="syncStatusText">🟢 Dedicated Portal Active · Clinical Gateway &amp; EHR Connected</span>
           </div>
-          <span id="syncStatusTag" style="font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(52,211,153,0.15);color:#34d399;font-weight:800;border:1px solid rgba(52,211,153,0.3);">LIVE SYNC</span>
+          <span id="syncStatusTag" style="font-size:10px;padding:2px 8px;border-radius:12px;background:rgba(52,211,153,0.15);color:#34d399;font-weight:800;border:1px solid rgba(52,211,153,0.3);">ACTIVE PORTAL</span>
         </div>
 
         <!-- Supabase Cloud PostgreSQL Live Telemetry Dock -->
@@ -2065,8 +2069,8 @@
 
         <div class="terminal-header" style="text-align:center;">
           <img src="/healthgpt-logo.svg" alt="HealthGPT Logo" style="width:56px;height:56px;border-radius:14px;margin:0 auto 10px;display:block;box-shadow:0 6px 20px rgba(0,229,255,0.3);border:1.5px solid rgba(56,189,248,0.4);background:#0c1929;" onerror="this.onerror=null;this.src='/healthgpt-logo.jpg';"/>
-          <h2>Clinical Neural Terminal</h2>
-          <p style="margin-top:4px;font-size:12.5px;color:#5eead4;font-weight:750;letter-spacing:0.4px;">Where AI Meets HealthCare</p>
+          <h2>Dedicated Login Portal</h2>
+          <p style="margin-top:4px;font-size:12.5px;color:#5eead4;font-weight:750;letter-spacing:0.4px;">Dual-Portal Sync Active · Unified Authorized Access</p>
         </div>
 
         <!-- Alert Notification Box -->
@@ -2075,25 +2079,17 @@
           <span id="alertMessage"></span>
         </div>
 
-        <!-- Quick Demo Role Presets -->
-        <div class="role-presets">
-          <div class="role-preset-btn active" id="presetPatient" onclick="applyRolePreset('patient')">
-            <span class="icon">👤</span>
-            <div>
-              <span class="role-title">Patient Portal</span>
-              <span class="role-desc">demo@gmail.com</span>
-            </div>
-          </div>
-          <div class="role-preset-btn" id="presetClinician" onclick="applyRolePreset('clinician')">
-            <span class="icon">🩺</span>
-            <div>
-              <span class="role-title">Clinician Portal</span>
-              <span class="role-desc">clinician@healthgpt.io</span>
-            </div>
-          </div>
+        <!-- Dual Portal Mode Selector: Patient Portal vs Admin Portal -->
+        <div style="display:flex;gap:8px;margin-bottom:14px;background:rgba(15,23,42,0.6);padding:4px;border-radius:12px;border:1px solid rgba(56,189,248,0.2);">
+          <button type="button" id="presetPatient" onclick="applyRolePreset('patient')" style="flex:1;background:rgba(56,189,248,0.2);color:#38bdf8;border:1px solid rgba(56,189,248,0.4);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+            <span>👤 Patient Portal</span>
+          </button>
+          <button type="button" id="presetClinician" onclick="applyRolePreset('clinician')" style="flex:1;background:transparent;color:#94a3b8;border:1px solid transparent;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s;">
+            <span>🛡️ Admin Portal</span>
+          </button>
         </div>
 
-        <!-- Main Authentication Form -->
+        <!-- Main Dedicated Authentication Form -->
         <form id="userLoginForm" onsubmit="handleCinematicSignIn(event)">
           <div class="form-group">
             <label class="form-label">Username / Patient ID</label>
@@ -2129,39 +2125,21 @@
             </div>
           </div>
 
-
           <button type="submit" class="btn-submit" id="btnTerminalSubmit">
-            <span>Enter HealthGPT System</span>
+            <span>Sign In to Dedicated Portal</span>
             <span>→</span>
           </button>
-
-          <!-- Standardized Credentials Quick Loaders (Strict Authentication, No Bypass) -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-            <button type="button" class="btn-guest" onclick="applyRolePreset('patient')" style="margin-top:0;font-size:11px;padding:8px 6px;">
-              ⚡ Standard Patient Account
-            </button>
-            <button type="button" class="btn-guest" onclick="applyRolePreset('clinician')" style="margin-top:0;font-size:11px;padding:8px 6px;">
-              🛡️ Standard Admin Account
-            </button>
-          </div>
-
-          <!-- Interactive App Tour & Care Tool Customization -->
-          <a href="/onboarding?restart=true" class="btn-guest" style="margin-top:8px;background:rgba(245,158,11,0.12);border:1.5px solid rgba(245,158,11,0.4);color:#fbbf24;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;">
-            <span>✨</span>
-            <span>Interactive App Tour · Choose Your Care Tools</span>
-            <span style="font-size:11px;background:rgba(245,158,11,0.25);padding:2px 8px;border-radius:10px;">Tour ↗</span>
-          </a>
         </form>
-
 
         <div class="terminal-footer">
           <div>Encrypted with CDSCO 256-bit Healthcare Protocols.</div>
-          <div style="margin-top:6px;">
-            Need clinical administrator access? <a href="/admin-login">Switch to Admin Portal</a>
+          <div style="margin-top:6px;color:#38bdf8;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;display:inline-block;"></span>
+            <span>Dedicated Intro &amp; Login Portal · Single Authorized Gateway</span>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
   </main>
 
@@ -3489,11 +3467,23 @@
       const userInput = document.getElementById('userInputUsername');
       const emailInput = document.getElementById('userInputEmail');
       const passInput = document.getElementById('userInputPassword');
+      const submitBtn = document.getElementById('btnTerminalSubmit');
 
       if (role === 'clinician') {
-        pClinician?.classList.add('active');
-        pPatient?.classList.remove('active');
-        if (userInput) userInput.value = 'Medical Administrator';
+        if (pClinician) {
+          pClinician.style.background = 'rgba(56, 189, 248, 0.2)';
+          pClinician.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+          pClinician.style.color = '#38bdf8';
+        }
+        if (pPatient) {
+          pPatient.style.background = 'transparent';
+          pPatient.style.borderColor = 'transparent';
+          pPatient.style.color = '#94a3b8';
+        }
+        if (submitBtn) {
+          submitBtn.innerHTML = '<span>Sign In to Admin Portal</span> <span>→</span>';
+        }
+        if (userInput) userInput.value = 'Dr. System Administrator';
         if (emailInput) {
           emailInput.value = 'admin@healthgpt.ai';
           handleEmailInputChanged('admin@healthgpt.ai', true);
@@ -3502,8 +3492,19 @@
         showTerminalAlert('Standard Admin Credentials Loaded (admin@healthgpt.ai / my_rules)', 'info');
         playHarmonicChime(523.25, 'sine', 0.3);
       } else {
-        pPatient?.classList.add('active');
-        pClinician?.classList.remove('active');
+        if (pPatient) {
+          pPatient.style.background = 'rgba(56, 189, 248, 0.2)';
+          pPatient.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+          pPatient.style.color = '#38bdf8';
+        }
+        if (pClinician) {
+          pClinician.style.background = 'transparent';
+          pClinician.style.borderColor = 'transparent';
+          pClinician.style.color = '#94a3b8';
+        }
+        if (submitBtn) {
+          submitBtn.innerHTML = '<span>Sign In to Dedicated Portal</span> <span>→</span>';
+        }
         if (userInput) userInput.value = 'demo';
         if (emailInput) {
           emailInput.value = 'demo@healthgpt.ai';
@@ -3873,6 +3874,10 @@
         localStorage.setItem('healthgpt_user_name', userName);
         localStorage.setItem('healthgpt_user_email', userEmail);
         localStorage.setItem('healthgpt_user_role', userRole);
+        if (userRole === 'clinician' || userEmail.includes('admin')) {
+          sessionStorage.setItem('healthgpt_admin_auth', 'my_rules');
+          localStorage.setItem('healthgpt_admin_clearance', 'super_admin');
+        }
         localStorage.setItem('healthgpt_current_user', JSON.stringify({
           id: userId,
           name: userName,
@@ -3899,8 +3904,12 @@
         source: 'user_login'
       });
 
-      // Smooth cinematic Framer Motion / CSS Keyframe Transition to Dashboard
-      triggerPageExitTransition('/dashboard', `Entering HealthGPT Dashboard: ${userName}`, 'Synchronizing personal health records, AI twin & clinical telemetry...');
+      // Smooth cinematic Framer Motion / CSS Keyframe Transition to Dashboard or Admin Command Center
+      if (userRole === 'clinician' || userEmail.includes('admin')) {
+        triggerPageExitTransition('/admin/dashboard', `Entering Admin Command Center: ${userName}`, 'Synchronizing clinical operations, user registries & system telemetry...');
+      } else {
+        triggerPageExitTransition('/dashboard', `Entering HealthGPT Dashboard: ${userName}`, 'Synchronizing personal health records, AI twin & clinical telemetry...');
+      }
     }
 
     /* ============================================================

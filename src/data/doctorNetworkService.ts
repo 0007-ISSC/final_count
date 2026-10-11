@@ -29,6 +29,7 @@ export interface Doctor {
   hospitalDeskPhone?: string;
   emergencyNumber?: string;
   opdRoom?: string;
+  distanceKm?: number;
   realtimeStatus?: {
     isOnline: boolean;
     queueLength: number;
@@ -1797,6 +1798,41 @@ export const DOCTOR_SPECIALTIES = [
   "Urologist & Andrologist"
 ];
 
+// Helper: Haversine distance in km
+export function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Math.round(R * c * 10) / 10;
+}
+
+// Find nearest major clinical city cluster
+export function findNearestCityHub(lat: number, lng: number) {
+  let closest = CITY_CLUSTERS[0];
+  let minDistance = calculateDistanceKm(lat, lng, closest.lat, closest.lng);
+
+  for (let i = 1; i < CITY_CLUSTERS.length; i++) {
+    const d = calculateDistanceKm(lat, lng, CITY_CLUSTERS[i].lat, CITY_CLUSTERS[i].lng);
+    if (d < minDistance) {
+      minDistance = d;
+      closest = CITY_CLUSTERS[i];
+    }
+  }
+
+  return {
+    city: closest.city,
+    state: closest.state,
+    hubLat: closest.lat,
+    hubLng: closest.lng,
+    distanceToHubKm: minDistance
+  };
+}
+
 export interface DoctorFilterOptions {
   q?: string;
   city?: string;
@@ -1808,6 +1844,8 @@ export interface DoctorFilterOptions {
   sort?: string;
   page?: number;
   limit?: number;
+  lat?: number;
+  lng?: number;
 }
 
 export function searchDoctorConnections(options: DoctorFilterOptions = {}) {
@@ -1821,9 +1859,12 @@ export function searchDoctorConnections(options: DoctorFilterOptions = {}) {
     maxPrice = 2500,
     sort = "rating",
     page = 1,
-    limit = 60
+    limit = 60,
+    lat,
+    lng
   } = options;
 
+  const hasGeo = typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
   const cleanQ = q.toLowerCase().trim();
   const cleanCity = city.toLowerCase().trim();
   const cleanSpec = specialty.toLowerCase().trim();
@@ -1865,14 +1906,35 @@ export function searchDoctorConnections(options: DoctorFilterOptions = {}) {
     return true;
   });
 
-  if (sort === "price_low") {
+  // Calculate distance if coordinates provided
+  if (hasGeo) {
+    filtered = filtered.map(d => ({
+      ...d,
+      distanceKm: calculateDistanceKm(lat!, lng!, d.lat, d.lng)
+    }));
+  }
+
+  if (sort === "nearest" && hasGeo) {
+    filtered.sort((a, b) => {
+      // Prioritize on-duty doctors if distance is comparable within 12km
+      if (a.availableNow !== b.availableNow && Math.abs((a.distanceKm || 0) - (b.distanceKm || 0)) < 12) {
+        return a.availableNow ? -1 : 1;
+      }
+      return (a.distanceKm || 9999) - (b.distanceKm || 9999);
+    });
+  } else if (sort === "price_low") {
     filtered.sort((a, b) => a.consultationFeeINR - b.consultationFeeINR);
   } else if (sort === "price_high") {
     filtered.sort((a, b) => b.consultationFeeINR - a.consultationFeeINR);
   } else if (sort === "experience") {
     filtered.sort((a, b) => b.experienceYears - a.experienceYears);
   } else {
-    filtered.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
+    // If geo is present and city was auto-selected, factor proximity lightly into rating
+    if (hasGeo && (!cleanCity || cleanCity === "all cities")) {
+      filtered.sort((a, b) => (a.distanceKm || 9999) - (b.distanceKm || 9999) || b.rating - a.rating);
+    } else {
+      filtered.sort((a, b) => b.rating - a.rating || b.reviewCount - a.reviewCount);
+    }
   }
 
   const total = filtered.length;
@@ -1909,12 +1971,14 @@ export interface RealtimeDoctorMatchResult {
   hospitalDeskPhone: string;
   emergencyNumber: string;
   opdRoom: string;
+  distanceKm?: number;
 }
 
-export function findRealtimeDoctorMatch(options: { specialty?: string; city?: string; urgency?: string } = {}): RealtimeDoctorMatchResult {
-  const { specialty = "", city = "", urgency = "normal" } = options;
+export function findRealtimeDoctorMatch(options: { specialty?: string; city?: string; urgency?: string; lat?: number; lng?: number } = {}): RealtimeDoctorMatchResult {
+  const { specialty = "", city = "", urgency = "normal", lat, lng } = options;
   const cleanSpec = specialty.toLowerCase().trim();
   const cleanCity = city.toLowerCase().trim();
+  const hasGeo = typeof lat === 'number' && typeof lng === 'number' && !isNaN(lat) && !isNaN(lng);
 
   // Try to find available doctor matching specialty and city
   let candidates = DOCTORS_DATABASE.filter(d => {
@@ -1933,14 +1997,26 @@ export function findRealtimeDoctorMatch(options: { specialty?: string; city?: st
     candidates = DOCTORS_DATABASE.filter(d => d.availableNow);
   }
 
-  // Fallback to top rated doctor
-  const doc = candidates.length > 0 ? candidates[Math.floor(Math.random() * Math.min(candidates.length, 5))] : DOCTORS_DATABASE[0];
+  // If coordinates provided, sort candidates by physical distance to user
+  if (hasGeo) {
+    candidates = candidates.map(d => ({
+      ...d,
+      distanceKm: calculateDistanceKm(lat!, lng!, d.lat, d.lng)
+    })).sort((a, b) => (a.distanceKm || 9999) - (b.distanceKm || 9999));
+  }
+
+  // Pick top closest available on-duty doctor
+  const doc = candidates.length > 0 ? candidates[0] : DOCTORS_DATABASE[0];
+  const distanceKm = hasGeo ? calculateDistanceKm(lat!, lng!, doc.lat, doc.lng) : doc.distanceKm;
 
   const waitSec = urgency === 'immediate' ? 5 : (doc.realtimeStatus?.estimatedWaitMins || 2) * 60;
   const queue = urgency === 'immediate' ? 0 : (doc.realtimeStatus?.queueLength || 1);
 
   return {
-    doctor: doc,
+    doctor: {
+      ...doc,
+      distanceKm
+    },
     token: `LIVE-${doc.city.includes('Delhi') ? 'DEL' : doc.city.includes('Bengaluru') ? 'BLR' : 'IND'}-${Math.floor(1000 + Math.random() * 9000)}`,
     matchedAt: new Date().toISOString(),
     status: "CONNECTED",
@@ -1954,6 +2030,7 @@ export function findRealtimeDoctorMatch(options: { specialty?: string; city?: st
     telehealthUrl: doc.telehealthUrl || `https://meet.google.com/hgpt-doc${doc.id}`,
     hospitalDeskPhone: doc.hospitalDeskPhone || `${doc.phone || '+91 11 2658 8500'}`,
     emergencyNumber: doc.emergencyNumber || "1066",
-    opdRoom: doc.opdRoom || "Chamber 204, OPD Block"
+    opdRoom: doc.opdRoom || "Chamber 204, OPD Block",
+    distanceKm
   };
 }
